@@ -8,8 +8,13 @@
     "start": "next start"
   },
   "dependencies": {
+    "autoprefixer": "^10.2.4",
+    "framer-motion": "^3.2.2-rc.1",
     "next": "10.0.6",
+    "postcss": "^8.2.4",
     "react": "17.0.1",
-    "react-dom": "17.0.1"
+    "react-dom": "17.0.1",
+    "sass": "^1.32.5",
+    "tailwindcss": "^2.0.2"
   }
 }
