@@ -3,10 +3,10 @@ import Document, { Html, Head, Main, NextScript } from 'next/document'
 const InjectScript = () => {
   let codeToRunOnClient = `
     (function() {
-      if (localStorage.theme === "dark" || (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
-        document.documentElement.classList.add("dark")
-      } else {
+      if (localTheme === "light" || !("theme" in localStorage)) {
         document.documentElement.classList.remove("dark")
+      } else {
+        document.documentElement.classList.add("dark")
       }
     })()
   `

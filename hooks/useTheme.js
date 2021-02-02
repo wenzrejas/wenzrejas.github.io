@@ -20,12 +20,12 @@ const useTheme = () => {
 	useEffect(() => {
     const localTheme = localStorage.getItem("theme")
     
-		if (localTheme === "dark" || (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
-      document.documentElement.classList.add("dark")
-			setTheme("dark")
-		} else {
+		if (localTheme === "light" || !("theme" in localStorage)) {
       document.documentElement.classList.remove("dark")
-      setTheme("light")
+			setTheme("light")
+		} else {
+      document.documentElement.classList.add("dark")
+      setTheme("dark")
     }
 	}, [])
 
