@@ -2,7 +2,7 @@ import React from 'react'
 import { MainLayout } from 'layouts'
 import { motion } from 'framer-motion'
 
-const Home = () => {
+const About = () => {
   return (
     <div className="content">
       <motion.span 
@@ -11,12 +11,15 @@ const Home = () => {
           scale: 1.1
         }}
       >
-        Home
+        About
       </motion.span>
     </div>
   )
 }
 
-Home.Layout = MainLayout
+About.Layout = MainLayout
+About.LayoutProps = {
+  title: "About"
+}
 
-export default Home
+export default About

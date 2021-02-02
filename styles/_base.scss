@@ -1,0 +1,31 @@
+@layer base {
+  * {
+    outline: 0 !important;
+    -webkit-backface-visibility: hidden;
+    cursor: none !important;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    font-family: 'Karla', sans-serif;
+    font-size: 16px;
+  }
+
+  body {
+    @apply dark:bg-black dark:text-white;
+    overscroll-behavior: none;
+    overflow-x: hidden;
+  }
+
+  header {
+    @apply fixed flex items-center justify-between;
+    top: 30px;
+    left: 5vw;
+    right: 5vw;
+    z-index: 999;
+  }
+
+  main {
+    height: 100vh;
+  }
+}

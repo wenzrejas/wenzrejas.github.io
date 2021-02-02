@@ -1,0 +1,30 @@
+@layer components {
+  .heading {
+    font-family: 'Archivo Black', sans-serif;
+  }
+
+  .heading-bg {
+    @apply opacity-10 text-9xl uppercase;
+  }
+
+  .content {
+    @apply fixed flex items-center justify-center;
+    top: 50%;
+    left: 5vw;
+    right: 5vw;
+    transform: translateY(-50%);
+  }
+
+  .cursor,
+  .cursor-trail {
+    z-index: 999;
+  }
+
+  .cursor {
+    @apply w-2 h-2 rounded-full absolute bg-gray-600 pointer-events-none;
+  }
+
+  .cursor-trail {
+    @apply w-9 h-9 rounded-full absolute border-gray-600 border bg-transparent pointer-events-none;
+  }
+}
