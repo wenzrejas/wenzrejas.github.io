@@ -1,3 +1,4 @@
+import React from 'react'
 import { GlobalProvider } from 'context/GlobalContext'
 import 'styles/globals.scss'
 
