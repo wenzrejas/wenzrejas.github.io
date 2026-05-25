@@ -6,65 +6,61 @@ import styles from './ComingSoon.module.css'
 const TITLE = 'WENZ'
 
 export default function ComingSoon() {
-  const wrapperRef  = useRef()
-  const cursorRef   = useRef()
-  const glowRef     = useRef()
-  const badgeRef    = useRef()
-  const titleRef    = useRef()
-  const lettersRef  = useRef([])
-  const nameRef     = useRef()
-  const taglineRef  = useRef()
-  const linksRef    = useRef()
+  const wrapperRef = useRef()
+  const cursorRef = useRef()
+  const glowRef = useRef()
+  const badgeRef = useRef()
+  const titleRef = useRef()
+  const lettersRef = useRef([])
+  const nameRef = useRef()
+  const taglineRef = useRef()
+  const linksRef = useRef()
 
   useEffect(() => {
     // ── Cursor tracking ──────────────────────────────────
     const xCursor = gsap.quickTo(cursorRef.current, 'x', { duration: 0.15, ease: 'power2.out' })
     const yCursor = gsap.quickTo(cursorRef.current, 'y', { duration: 0.15, ease: 'power2.out' })
-    const xGlow   = gsap.quickTo(glowRef.current,   'x', { duration: 0.7,  ease: 'power2.out' })
-    const yGlow   = gsap.quickTo(glowRef.current,   'y', { duration: 0.7,  ease: 'power2.out' })
+    const xGlow = gsap.quickTo(glowRef.current, 'x', { duration: 0.7, ease: 'power2.out' })
+    const yGlow = gsap.quickTo(glowRef.current, 'y', { duration: 0.7, ease: 'power2.out' })
 
     const onMouseMove = (e) => {
-      xCursor(e.clientX); yCursor(e.clientY)
-      xGlow(e.clientX);   yGlow(e.clientY)
+      xCursor(e.clientX)
+      yCursor(e.clientY)
+      xGlow(e.clientX)
+      yGlow(e.clientY)
     }
     window.addEventListener('mousemove', onMouseMove)
 
     // ── Entrance animation ───────────────────────────────
     const validLetters = lettersRef.current.filter(Boolean)
-    const linkEls      = Array.from(linksRef.current?.children ?? [])
+    const linkEls = Array.from(linksRef.current?.children ?? [])
 
-    gsap.set(
-      [badgeRef.current, validLetters, nameRef.current, taglineRef.current, ...linkEls],
-      { opacity: 0 },
-    )
+    gsap.set([badgeRef.current, validLetters, nameRef.current, taglineRef.current, ...linkEls], {
+      opacity: 0,
+    })
 
     const tl = gsap.timeline({ defaults: { ease: 'power4.out' } })
 
-    tl.fromTo(badgeRef.current,
+    tl.fromTo(
+      badgeRef.current,
       { opacity: 0, y: 30, scale: 0.85 },
-      { opacity: 1, y: 0,  scale: 1,   duration: 0.9 },
+      { opacity: 1, y: 0, scale: 1, duration: 0.9 },
       0.3
     )
-    .fromTo(validLetters,
-      { opacity: 0, y: 160 },
-      { opacity: 1, y: 0,  duration: 1.1, stagger: 0.07, ease: 'expo.out' },
-      0.4
-    )
-    .fromTo(nameRef.current,
-      { opacity: 0, x: -30 },
-      { opacity: 1, x: 0,  duration: 0.7 },
-      1.2
-    )
-    .fromTo(taglineRef.current,
-      { opacity: 0, y: 16 },
-      { opacity: 1, y: 0,  duration: 0.7 },
-      1.4
-    )
-    .fromTo(linkEls,
-      { opacity: 0, y: 22 },
-      { opacity: 1, y: 0,  duration: 0.5, stagger: 0.1 },
-      1.6
-    )
+      .fromTo(
+        validLetters,
+        { opacity: 0, y: 160 },
+        { opacity: 1, y: 0, duration: 1.1, stagger: 0.07, ease: 'expo.out' },
+        0.4
+      )
+      .fromTo(nameRef.current, { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.7 }, 1.2)
+      .fromTo(taglineRef.current, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.7 }, 1.4)
+      .fromTo(
+        linkEls,
+        { opacity: 0, y: 22 },
+        { opacity: 1, y: 0, duration: 0.5, stagger: 0.1 },
+        1.6
+      )
 
     // ── Letter hover bounce ──────────────────────────────
     validLetters.forEach((el) => {
@@ -103,7 +99,7 @@ export default function ComingSoon() {
   return (
     <div ref={wrapperRef} className={styles.csWrapper}>
       <div ref={cursorRef} className={styles.cursor} />
-      <div ref={glowRef}   className={styles.cursorGlow} />
+      <div ref={glowRef} className={styles.cursorGlow} />
 
       <div className={styles.csScene}>
         <Scene />
@@ -111,7 +107,6 @@ export default function ComingSoon() {
 
       <div className={styles.csOverlay}>
         <div className={styles.csContent}>
-
           <div ref={badgeRef} className={styles.csBadge}>
             <span className={styles.csBadgeDot} />
             Loading Portfolio &mdash; Coming Soon
@@ -121,7 +116,9 @@ export default function ComingSoon() {
             {TITLE.split('').map((char, i) => (
               <span
                 key={i}
-                ref={(el) => { lettersRef.current[i] = el }}
+                ref={(el) => {
+                  lettersRef.current[i] = el
+                }}
                 className={styles.csLetter}
               >
                 {char}
@@ -136,19 +133,26 @@ export default function ComingSoon() {
           </div>
 
           <p ref={taglineRef} className={styles.csTagline}>
-            I build things that look good<br />
+            I build things that look good
+            <br />
             and work even better.
           </p>
 
           <div ref={linksRef} className={styles.csLinks}>
-            <a href="mailto:wenzrej@gmail.com" className={`${styles.csLink} ${styles.csLinkPrimary}`}>
+            <a
+              href="mailto:wenzrej@gmail.com"
+              className={`${styles.csLink} ${styles.csLinkPrimary}`}
+            >
               Get in touch
             </a>
-            <a href="https://github.com/wenzrejas" target="_blank" className={`${styles.csLink} ${styles.csLinkSecondary}`}>
+            <a
+              href="https://github.com/wenzrejas"
+              target="_blank"
+              className={`${styles.csLink} ${styles.csLinkSecondary}`}
+            >
               GitHub
             </a>
           </div>
-
         </div>
       </div>
     </div>

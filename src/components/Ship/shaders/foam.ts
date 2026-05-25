@@ -1,4 +1,4 @@
-export const FOAM_VERT = /* glsl */`
+export const FOAM_VERT = /* glsl */ `
   varying vec2 vUv;
   void main() {
     vUv = uv;
@@ -6,7 +6,7 @@ export const FOAM_VERT = /* glsl */`
   }
 `
 
-export const FOAM_FRAG = /* glsl */`
+export const FOAM_FRAG = /* glsl */ `
   uniform float uTime;
   uniform float uFoamBound;
   varying vec2  vUv;

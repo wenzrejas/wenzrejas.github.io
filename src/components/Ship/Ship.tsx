@@ -79,8 +79,7 @@ const Ship = forwardRef<THREE.Mesh>((_props, ref) => {
     if (rippleInstances) {
       dummyObject.scale.setScalar(0)
       dummyObject.updateMatrix()
-      for (let i = 0; i < TOTAL_PARTICLES; i++)
-        rippleInstances.setMatrixAt(i, dummyObject.matrix)
+      for (let i = 0; i < TOTAL_PARTICLES; i++) rippleInstances.setMatrixAt(i, dummyObject.matrix)
       rippleInstances.instanceMatrix.needsUpdate = true
     }
 
@@ -89,16 +88,13 @@ const Ship = forwardRef<THREE.Mesh>((_props, ref) => {
       if (e.key === 's' || e.key === 'S' || e.key === 'ArrowDown')
         pressedKeys.current.backward = true
       if (e.key === 'a' || e.key === 'A' || e.key === 'ArrowLeft') pressedKeys.current.left = true
-      if (e.key === 'd' || e.key === 'D' || e.key === 'ArrowRight')
-        pressedKeys.current.right = true
+      if (e.key === 'd' || e.key === 'D' || e.key === 'ArrowRight') pressedKeys.current.right = true
     }
     const onKeyUp = (e: KeyboardEvent) => {
-      if (e.key === 'w' || e.key === 'W' || e.key === 'ArrowUp')
-        pressedKeys.current.forward = false
+      if (e.key === 'w' || e.key === 'W' || e.key === 'ArrowUp') pressedKeys.current.forward = false
       if (e.key === 's' || e.key === 'S' || e.key === 'ArrowDown')
         pressedKeys.current.backward = false
-      if (e.key === 'a' || e.key === 'A' || e.key === 'ArrowLeft')
-        pressedKeys.current.left = false
+      if (e.key === 'a' || e.key === 'A' || e.key === 'ArrowLeft') pressedKeys.current.left = false
       if (e.key === 'd' || e.key === 'D' || e.key === 'ArrowRight')
         pressedKeys.current.right = false
     }
