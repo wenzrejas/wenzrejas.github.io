@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import Scene from './Scene'
+import styles from './ComingSoon.module.css'
 
 const TITLE = 'WENZ'
 
@@ -66,7 +67,7 @@ export default function ComingSoon() {
     )
 
     // ── Letter hover bounce ──────────────────────────────
-    validLetters.forEach((el, i) => {
+    validLetters.forEach((el) => {
       el.addEventListener('mouseenter', () => {
         gsap.to(el, { y: -14, duration: 0.3, ease: 'power2.out' })
       })
@@ -79,7 +80,7 @@ export default function ComingSoon() {
       })
     })
 
-    // ── Breathing letter-spacing (like the original) ─────
+    // ── Breathing letter-spacing ─────────────────────────
     const breathDelay = gsap.delayedCall(2.5, () => {
       gsap.to(titleRef.current, {
         letterSpacing: '0.08em',
@@ -100,50 +101,50 @@ export default function ComingSoon() {
   }, [])
 
   return (
-    <div ref={wrapperRef} className="cs-wrapper">
-      <div ref={cursorRef} className="cursor" />
-      <div ref={glowRef}   className="cursor-glow" />
+    <div ref={wrapperRef} className={styles.csWrapper}>
+      <div ref={cursorRef} className={styles.cursor} />
+      <div ref={glowRef}   className={styles.cursorGlow} />
 
-      <div className="cs-scene">
+      <div className={styles.csScene}>
         <Scene />
       </div>
 
-      <div className="cs-overlay">
-        <div className="cs-content">
+      <div className={styles.csOverlay}>
+        <div className={styles.csContent}>
 
-          <div ref={badgeRef} className="cs-badge">
-            <span className="cs-badge-dot" />
+          <div ref={badgeRef} className={styles.csBadge}>
+            <span className={styles.csBadgeDot} />
             Loading Portfolio &mdash; Coming Soon
           </div>
 
-          <h1 ref={titleRef} className="cs-title">
+          <h1 ref={titleRef} className={styles.csTitle}>
             {TITLE.split('').map((char, i) => (
               <span
                 key={i}
                 ref={(el) => { lettersRef.current[i] = el }}
-                className={`cs-letter`}
+                className={styles.csLetter}
               >
                 {char}
               </span>
             ))}
           </h1>
 
-          <div ref={nameRef} className="cs-name">
-            <span className="cs-name-label">Creative Frontend Developer</span>
-            {/* <span className="cs-name-line" />
-            <span className="cs-name-value">Wenz</span> */}
+          <div ref={nameRef} className={styles.csName}>
+            <span className={styles.csNameLabel}>Creative Frontend Developer</span>
+            {/* <span className={styles.csNameLine} />
+            <span className={styles.csNameValue}>Wenz</span> */}
           </div>
 
-          <p ref={taglineRef} className="cs-tagline">
+          <p ref={taglineRef} className={styles.csTagline}>
             I build things that look good<br />
             and work even better.
           </p>
 
-          <div ref={linksRef} className="cs-links">
-            <a href="mailto:wenzrej@gmail.com" className="cs-link cs-link--primary">
+          <div ref={linksRef} className={styles.csLinks}>
+            <a href="mailto:wenzrej@gmail.com" className={`${styles.csLink} ${styles.csLinkPrimary}`}>
               Get in touch
             </a>
-            <a href="https://github.com/wenzrejas" target="_blank" className="cs-link cs-link--secondary">
+            <a href="https://github.com/wenzrejas" target="_blank" className={`${styles.csLink} ${styles.csLinkSecondary}`}>
               GitHub
             </a>
           </div>
