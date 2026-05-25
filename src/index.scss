@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+$bg:    #ffffff;
+$blue:  #4169e1;
+$sky:   #38bdf8;
+$gold:  #f59e0b;
+$navy:  #1e3a8a;
+$text:  #0f172a;
+$muted: #475569;
+$dim:   #94a3b8;
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg:    #{$bg};
+  --blue:  #{$blue};
+  --sky:   #{$sky};
+  --gold:  #{$gold};
+  --navy:  #{$navy};
+  --text:  #{$text};
+  --muted: #{$muted};
+  --dim:   #{$dim};
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: $bg;
+  color: $text;
+  font-family: 'Space Grotesk', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  height: 100%;
+}

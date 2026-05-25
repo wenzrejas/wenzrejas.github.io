@@ -1,0 +1,52 @@
+export const WAKE_VERT = /* glsl */`
+  varying vec2 vUv;
+  varying vec2 vWorldPos;
+  void main() {
+    vUv       = uv;
+    vWorldPos = position.xz;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`
+
+export const WAKE_FRAG = /* glsl */`
+  uniform float uTime;
+  uniform float uFadeProgress;  // 0 = fully visible, 1.1 = fully gone
+  uniform float uInvActiveMax;  // (WAKE_LEN-1)/(size-1): remaps vUv.y so oldest point = 1.0
+  varying vec2  vUv;
+  varying vec2  vWorldPos;
+
+  float hash(vec2 p) {
+    p = fract(p * vec2(127.1, 311.7));
+    p += dot(p, p + 45.32);
+    return fract(p.x * p.y);
+  }
+  float noise(vec2 p) {
+    vec2 i = floor(p), f = fract(p);
+    f = f * f * (3.0 - 2.0 * f);
+    return mix(mix(hash(i),             hash(i + vec2(1,0)), f.x),
+               mix(hash(i + vec2(0,1)), hash(i + vec2(1,1)), f.x), f.y);
+  }
+
+  void main() {
+    // Quantised noise — same pixel-art jag as hull foam
+    float n  = noise(vWorldPos * 0.80 + vec2(uTime * 0.06, -uTime * 0.05));
+    float nq = floor(n * 4.0) / 4.0;
+
+    float outerJag = 0.14 + (nq - 0.30) * 0.38;
+    float innerJag = 0.84 - (nq - 0.30) * 0.32;
+    if (vUv.x < outerJag || vUv.x > innerJag) discard;
+
+    // Remap so oldest active point always = 1.0
+    float normAge = clamp(vUv.y * uInvActiveMax, 0.0, 1.0);
+    float ageFade = pow(1.0 - normAge, 1.4);
+
+    // Sweep dissolve: tail disappears first, front last
+    float aliveThresh = 1.0 - uFadeProgress;
+    float fadeSweep   = 1.0 - smoothstep(aliveThresh - 0.10, aliveThresh + 0.10, vUv.y);
+    if (fadeSweep <= 0.0) discard;
+
+    float alpha = ageFade * fadeSweep * 0.80;
+
+    gl_FragColor = vec4(1.0, 1.0, 1.0, alpha);
+  }
+`
