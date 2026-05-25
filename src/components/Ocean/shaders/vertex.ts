@@ -59,4 +59,4 @@ export const VERT = /* glsl */ `
     vPos        = worldPos.xyz;
     gl_Position = projectionMatrix * viewMatrix * worldPos;
   }
-`;
+`

@@ -26,7 +26,7 @@ function WText() {
     if (!groupRef.current) return
     groupRef.current.rotation.y = Math.sin(t * 0.28) * 0.55
     groupRef.current.rotation.x = Math.sin(t * 0.18) * 0.18
-    groupRef.current.position.y = Math.sin(t * 0.45) * 0.10
+    groupRef.current.position.y = Math.sin(t * 0.45) * 0.1
   })
 
   return (
@@ -61,12 +61,12 @@ function OrbitalRings() {
 
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime()
-    r1.current.rotation.z      = t * 0.03
-    r1.current.position.y      = Math.sin(t * 0.38) * 0.18
-    r2.current.rotation.y      = t * 0.055
-    r2.current.position.x      = Math.sin(t * 0.28) * 0.12
-    r3.current.rotation.x     += 0.002
-    r3.current.rotation.z     += 0.001
+    r1.current.rotation.z = t * 0.03
+    r1.current.position.y = Math.sin(t * 0.38) * 0.18
+    r2.current.rotation.y = t * 0.055
+    r2.current.position.x = Math.sin(t * 0.28) * 0.12
+    r3.current.rotation.x += 0.002
+    r3.current.rotation.z += 0.001
   })
 
   return (
@@ -103,16 +103,16 @@ function ParticleField({ count = 500 }) {
     ]
 
     for (let i = 0; i < count; i++) {
-      const r     = 7 + Math.random() * 11
+      const r = 7 + Math.random() * 11
       const theta = Math.random() * Math.PI * 2
-      const phi   = Math.acos(2 * Math.random() - 1)
+      const phi = Math.acos(2 * Math.random() - 1)
 
-      pos[i * 3]     = r * Math.sin(phi) * Math.cos(theta)
+      pos[i * 3] = r * Math.sin(phi) * Math.cos(theta)
       pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta)
       pos[i * 3 + 2] = r * Math.cos(phi) - 2
 
       const c = palette[Math.floor(Math.random() * palette.length)]
-      col[i * 3]     = c.r
+      col[i * 3] = c.r
       col[i * 3 + 1] = c.g
       col[i * 3 + 2] = c.b
     }
@@ -130,7 +130,7 @@ function ParticleField({ count = 500 }) {
     <points ref={pointsRef}>
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
-        <bufferAttribute attach="attributes-color"    args={[colors,    3]} />
+        <bufferAttribute attach="attributes-color" args={[colors, 3]} />
       </bufferGeometry>
       <pointsMaterial size={0.18} vertexColors transparent opacity={0.8} sizeAttenuation />
     </points>
@@ -174,9 +174,9 @@ export default function Scene() {
       <color attach="background" args={['#ffffff']} />
 
       <ambientLight intensity={0.15} />
-      <pointLight position={[6,  6,  6]}  color="#4169e1" intensity={1.5} />
-      <pointLight position={[-6,-6, -4]}  color="#38bdf8" intensity={0.8} />
-      <pointLight position={[0, -8,  4]}  color="#f59e0b" intensity={0.5} />
+      <pointLight position={[6, 6, 6]} color="#4169e1" intensity={1.5} />
+      <pointLight position={[-6, -6, -4]} color="#38bdf8" intensity={0.8} />
+      <pointLight position={[0, -8, 4]} color="#f59e0b" intensity={0.5} />
 
       <SceneGroup />
 

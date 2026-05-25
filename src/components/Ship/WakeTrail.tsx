@@ -97,10 +97,13 @@ export default function WakeTrail({ shipRef }: { shipRef: React.RefObject<THREE.
     []
   )
 
-  useEffect(() => () => {
-    geometry.dispose()
-    material.dispose()
-  }, [geometry, material])
+  useEffect(
+    () => () => {
+      geometry.dispose()
+      material.dispose()
+    },
+    [geometry, material]
+  )
 
   useFrame(({ clock }, delta) => {
     const ship = shipRef.current
@@ -203,7 +206,5 @@ export default function WakeTrail({ shipRef }: { shipRef: React.RefObject<THREE.
     geometry.attributes.position.needsUpdate = true
   })
 
-  return (
-    <mesh geometry={geometry} material={material} frustumCulled={false} renderOrder={3} />
-  )
+  return <mesh geometry={geometry} material={material} frustumCulled={false} renderOrder={3} />
 }

@@ -30,10 +30,7 @@ export default function Experience() {
       dpr={[1, 2]}
     >
       <color attach="background" args={['#1a7fa8']} />
-      {IS_DEBUG
-        ? <OrbitControls />
-        : <CameraRig shipRef={shipRef} />
-      }
+      {IS_DEBUG ? <OrbitControls /> : <CameraRig shipRef={shipRef} />}
       <Lighting />
       <Ocean />
       <Ship ref={shipRef} />

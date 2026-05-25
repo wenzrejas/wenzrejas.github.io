@@ -1,4 +1,4 @@
-export const WAKE_VERT = /* glsl */`
+export const WAKE_VERT = /* glsl */ `
   varying vec2 vUv;
   varying vec2 vWorldPos;
   void main() {
@@ -8,7 +8,7 @@ export const WAKE_VERT = /* glsl */`
   }
 `
 
-export const WAKE_FRAG = /* glsl */`
+export const WAKE_FRAG = /* glsl */ `
   uniform float uTime;
   uniform float uFadeProgress;  // 0 = fully visible, 1.1 = fully gone
   uniform float uInvActiveMax;  // (WAKE_LEN-1)/(size-1): remaps vUv.y so oldest point = 1.0
