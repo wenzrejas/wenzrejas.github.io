@@ -1,11 +1,30 @@
+import { useRef } from 'react'
+import { useHelper } from '@react-three/drei'
+import * as THREE from 'three'
+import { useDebug } from '../Debug/DebugControls'
+import { IS_DEBUG } from '../Experience/constants'
+
 export default function Lighting() {
+  const { lighting } = useDebug()
+  const { hemiSky, hemiGround, hemiIntensity, sunX, sunY, sunZ, sunIntensity, sunColor } = lighting
+
+  const sunRef = useRef<THREE.DirectionalLight>(null)
+  useHelper(
+    IS_DEBUG && (sunRef as React.RefObject<THREE.Object3D>),
+    THREE.DirectionalLightHelper,
+    10,
+    '#ffe8b0'
+  )
+
   return (
     <>
-      {/* Sky-to-ocean ambient — pale blue from above, deep blue from below */}
-      <hemisphereLight args={['#c8e0ff', '#1a3a5c', 2.5]} />
-
-      {/* Sun — matches Sky component sunPosition={[1, 0.3, 0]}, warm golden */}
-      <directionalLight position={[10, 3, 0]} intensity={4.0} color="#ffe8b0" />
+      <hemisphereLight color={hemiSky} groundColor={hemiGround} intensity={hemiIntensity} />
+      <directionalLight
+        ref={sunRef}
+        position={[sunX, sunY, sunZ]}
+        intensity={sunIntensity}
+        color={sunColor}
+      />
     </>
   )
 }

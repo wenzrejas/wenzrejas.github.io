@@ -4,9 +4,9 @@ import * as THREE from 'three'
 import { VERT } from './shaders/vertex'
 import { FRAG } from './shaders/fragment'
 import { OCEAN_DEFAULTS } from './constants'
-import { useDebug } from '../Debug/DebugControls'
+import { useDebug } from '../../Debug/DebugControls'
 
-export default function Ocean({ deepOpacityOverride }: { deepOpacityOverride?: number }) {
+export default function Ocean() {
   const meshRef = useRef<THREE.Mesh>(null)
   const { ocean } = useDebug()
 
@@ -41,6 +41,12 @@ export default function Ocean({ deepOpacityOverride }: { deepOpacityOverride?: n
           uFresnelPower: { value: OCEAN_DEFAULTS.fresnelPower },
           uFresnelStrength: { value: OCEAN_DEFAULTS.fresnelStrength },
           uFoamAmount: { value: OCEAN_DEFAULTS.foamAmount },
+          uSpecularStrength: { value: OCEAN_DEFAULTS.specularStrength },
+          uSpecularPower: { value: OCEAN_DEFAULTS.specularPower },
+          uCrestStrength: { value: OCEAN_DEFAULTS.crestStrength },
+          uSunDir: {
+            value: new THREE.Vector3(OCEAN_DEFAULTS.sunX, OCEAN_DEFAULTS.sunY, OCEAN_DEFAULTS.sunZ),
+          },
         },
       }),
     []
@@ -68,10 +74,14 @@ export default function Ocean({ deepOpacityOverride }: { deepOpacityOverride?: n
     uniforms.uMidPos.value = ocean.midPos
     uniforms.uHighlight.value.set(ocean.highlightColor)
     uniforms.uOpacity.value = ocean.opacity
-    uniforms.uDeepOpacity.value = deepOpacityOverride ?? ocean.deepOpacity
+    uniforms.uDeepOpacity.value = ocean.deepOpacity
     uniforms.uFresnelPower.value = ocean.fresnelPower
     uniforms.uFresnelStrength.value = ocean.fresnelStrength
     uniforms.uFoamAmount.value = ocean.foamAmount
+    uniforms.uSpecularStrength.value = ocean.specularStrength
+    uniforms.uSpecularPower.value = ocean.specularPower
+    uniforms.uCrestStrength.value = ocean.crestStrength
+    uniforms.uSunDir.value.set(ocean.sunX, ocean.sunY, ocean.sunZ)
   })
 
   return (
@@ -82,7 +92,7 @@ export default function Ocean({ deepOpacityOverride }: { deepOpacityOverride?: n
       frustumCulled={false}
       renderOrder={2}
     >
-      <planeGeometry args={[1500, 1500, 256, 256]} />
+      <planeGeometry args={[2600, 2600, 256, 256]} />
       <primitive object={material} attach="material" />
     </mesh>
   )

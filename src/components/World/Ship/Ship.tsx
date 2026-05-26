@@ -1,17 +1,20 @@
 import { forwardRef, useRef, useEffect, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
+import { useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
 import { FOAM_VERT, FOAM_FRAG } from './shaders/foam'
+import { useKeyboardInput } from '../../../hooks/useKeyboardInput'
 import {
-  DIR_OFFSET,
-  SHIP_HALF_WIDTH,
-  SHIP_HALF_DEPTH,
+  MODEL_BOW_OFFSET,
+  MODEL_TARGET_SIZE,
+  INITIAL_HEADING,
   FOAM_PLANE_SIZE,
   RIPPLE_MAX,
   PARTICLES_PER_RIPPLE,
   TOTAL_PARTICLES,
 } from './constants'
-import { useDebug } from '../Debug/DebugControls'
+import { BOUNDARY_RADIUS } from '../Boundary/constants'
+import { useDebug } from '../../Debug/DebugControls'
 
 interface Particle {
   alive: boolean
@@ -23,16 +26,40 @@ interface Particle {
   size: number
 }
 
-const Ship = forwardRef<THREE.Mesh>((_props, ref) => {
+const Ship = forwardRef<THREE.Group>((_props, ref) => {
   const { ship } = useDebug()
-  const { baseY, bobAmp, bobSpeed, moveSpeed, turnSpeed, tiltMax, tiltSpeed, partLife, partSpeed } =
-    ship
+  const {
+    baseY,
+    bobAmp,
+    bobSpeed,
+    moveSpeed,
+    turnSpeed,
+    tiltMax,
+    tiltSpeed,
+    partLife,
+    partSpeed,
+    foamBound,
+    foamY,
+  } = ship
 
-  const shipMeshRef = useRef<THREE.Mesh>(null)
+  const { scene: shipScene } = useGLTF('/models/ship/ship-medium.glb')
+  const clonedScene = useMemo(() => {
+    const clone = shipScene.clone(true)
+    const box = new THREE.Box3().setFromObject(clone)
+    const size = new THREE.Vector3()
+    box.getSize(size)
+    const maxDim = Math.max(size.x, size.z)
+    const scale = MODEL_TARGET_SIZE / maxDim
+    clone.scale.setScalar(scale)
+    clone.rotation.y = MODEL_BOW_OFFSET
+    return clone
+  }, [shipScene])
+
+  const shipGroupRef = useRef<THREE.Group>(null)
   const foamMeshRef = useRef<THREE.Mesh>(null)
   const rippleInstancesRef = useRef<THREE.InstancedMesh>(null)
-  const pressedKeys = useRef({ forward: false, backward: false, left: false, right: false })
-  const headingAngle = useRef(0)
+  const pressedKeys = useKeyboardInput()
+  const headingAngle = useRef(INITIAL_HEADING)
   const tiltAngle = useRef(0)
   const prevBobSign = useRef(1)
   const rippleGroupIndex = useRef(0)
@@ -56,7 +83,11 @@ const Ship = forwardRef<THREE.Mesh>((_props, ref) => {
         transparent: true,
         depthWrite: false,
         side: THREE.DoubleSide,
-        uniforms: { uTime: { value: 0 }, uFoamBound: { value: 0.29 } },
+        uniforms: {
+          uTime: { value: 0 },
+          uFoamBound: { value: 0.13 },
+          uHullAspect: { value: 1.0 },
+        },
         vertexShader: FOAM_VERT,
         fragmentShader: FOAM_FRAG,
       }),
@@ -82,77 +113,73 @@ const Ship = forwardRef<THREE.Mesh>((_props, ref) => {
       for (let i = 0; i < TOTAL_PARTICLES; i++) rippleInstances.setMatrixAt(i, dummyObject.matrix)
       rippleInstances.instanceMatrix.needsUpdate = true
     }
-
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'w' || e.key === 'W' || e.key === 'ArrowUp') pressedKeys.current.forward = true
-      if (e.key === 's' || e.key === 'S' || e.key === 'ArrowDown')
-        pressedKeys.current.backward = true
-      if (e.key === 'a' || e.key === 'A' || e.key === 'ArrowLeft') pressedKeys.current.left = true
-      if (e.key === 'd' || e.key === 'D' || e.key === 'ArrowRight') pressedKeys.current.right = true
-    }
-    const onKeyUp = (e: KeyboardEvent) => {
-      if (e.key === 'w' || e.key === 'W' || e.key === 'ArrowUp') pressedKeys.current.forward = false
-      if (e.key === 's' || e.key === 'S' || e.key === 'ArrowDown')
-        pressedKeys.current.backward = false
-      if (e.key === 'a' || e.key === 'A' || e.key === 'ArrowLeft') pressedKeys.current.left = false
-      if (e.key === 'd' || e.key === 'D' || e.key === 'ArrowRight')
-        pressedKeys.current.right = false
-    }
-
-    window.addEventListener('keydown', onKeyDown)
-    window.addEventListener('keyup', onKeyUp)
     return () => {
-      window.removeEventListener('keydown', onKeyDown)
-      window.removeEventListener('keyup', onKeyUp)
       foamMaterial.dispose()
       rippleGeometry.dispose()
       rippleMaterial.dispose()
     }
-  }, [dummyObject, foamMaterial, rippleGeometry, rippleMaterial])
+  }, [])
 
-  const spawnHullRipple = (time: number, mesh: THREE.Mesh) => {
+  const spawnHullRipple = (time: number, group: THREE.Group) => {
     const cos = Math.cos(headingAngle.current)
     const sin = Math.sin(headingAngle.current)
     const slotBase = (rippleGroupIndex.current % RIPPLE_MAX) * PARTICLES_PER_RIPPLE
-    const shipWidth = SHIP_HALF_WIDTH * 2
-    const shipHeight = SHIP_HALF_DEPTH * 2
-    const perimeter = 2 * (shipWidth + shipHeight)
+
+    const fb = foamBound - Math.sin(time * bobSpeed) * 0.008
+    const hullAspect = MODEL_TARGET_SIZE / (2 * fb * FOAM_PLANE_SIZE)
+
+    // Mirror the foam shader hull shape
+    const getHullDist = (ax: number, ny: number): number => {
+      const ay = Math.abs(ny)
+      const bowProgress = Math.max(0, ny)
+      const bowWidthScale = Math.max(1 - bowProgress * 0.5, 0.02)
+      const bx = ax / bowWidthScale
+      const by = ay * 1.2
+      const bowDist = Math.cbrt(bx * bx * bx + by * by * by)
+      const sternSide = Math.max(0, -ny)
+      const sternBeam = Math.max(1 - Math.pow(sternSide, 3) * 0.3, 0.05)
+      const sternDist = Math.max(ax / sternBeam, ay)
+      const bowBlend = Math.max(0, Math.min(1, ny * 2))
+      return bowDist * bowBlend + sternDist * (1 - bowBlend)
+    }
+
+    const findBoundaryNx = (ny: number): number => {
+      let lo = 0,
+        hi = 2
+      for (let i = 0; i < 16; i++) {
+        const mid = (lo + hi) / 2
+        if (getHullDist(mid, ny) < 1) lo = mid
+        else hi = mid
+      }
+      return (lo + hi) / 2
+    }
 
     for (let i = 0; i < PARTICLES_PER_RIPPLE; i++) {
-      const dist = (i / PARTICLES_PER_RIPPLE) * perimeter
-      let localX: number, localZ: number
+      const t = i / PARTICLES_PER_RIPPLE
 
-      if (dist < shipWidth) {
-        localX = dist - SHIP_HALF_WIDTH
-        localZ = -SHIP_HALF_DEPTH
-      } else if (dist < shipWidth + shipHeight) {
-        localX = SHIP_HALF_WIDTH
-        localZ = dist - shipWidth - SHIP_HALF_DEPTH
-      } else if (dist < 2 * shipWidth + shipHeight) {
-        localX = SHIP_HALF_WIDTH - (dist - shipWidth - shipHeight)
-        localZ = SHIP_HALF_DEPTH
-      } else {
-        localX = -SHIP_HALF_WIDTH
-        localZ = SHIP_HALF_DEPTH - (dist - 2 * shipWidth - shipHeight)
-      }
+      // Port side (0→0.5): stern→bow, nx < 0
+      // Starboard side (0.5→1): bow→stern, nx > 0
+      const ny_norm = t < 0.5 ? t * 4 - 1 : 1 - (t - 0.5) * 4
+      const nx_norm = (t < 0.5 ? -1 : 1) * findBoundaryNx(ny_norm)
 
-      localX += (Math.random() - 0.5) * 2.0
-      localZ += (Math.random() - 0.5) * 2.0
+      // Ship-local offsets: localX = starboard+, localZ = bow- (world -Z when heading=0)
+      const localX = nx_norm * fb * FOAM_PLANE_SIZE + (Math.random() - 0.5) * 1.5
+      const localZ = -ny_norm * fb * hullAspect * FOAM_PLANE_SIZE + (Math.random() - 0.5) * 1.5
 
-      const worldX = mesh.position.x + cos * localX + sin * localZ
-      const worldZ = mesh.position.z - sin * localX + cos * localZ
+      const worldX = group.position.x + cos * localX + sin * localZ
+      const worldZ = group.position.z - sin * localX + cos * localZ
 
-      const outwardX = worldX - mesh.position.x
-      const outwardZ = worldZ - mesh.position.z
-      const outwardDist = Math.sqrt(outwardX * outwardX + outwardZ * outwardZ) || 1
+      const dx = worldX - group.position.x
+      const dz = worldZ - group.position.z
+      const len = Math.sqrt(dx * dx + dz * dz) || 1
 
       const particle = particles.current[slotBase + i]
       particle.alive = true
       particle.spawnTime = time
       particle.x = worldX
       particle.z = worldZ
-      particle.velocityX = outwardX / outwardDist + (Math.random() - 0.5) * 0.25
-      particle.velocityZ = outwardZ / outwardDist + (Math.random() - 0.5) * 0.25
+      particle.velocityX = dx / len + (Math.random() - 0.5) * 0.25
+      particle.velocityZ = dz / len + (Math.random() - 0.5) * 0.25
       particle.size = 0.6 + Math.random() * 1.0
     }
 
@@ -160,8 +187,8 @@ const Ship = forwardRef<THREE.Mesh>((_props, ref) => {
   }
 
   useFrame(({ clock }, delta) => {
-    const mesh = shipMeshRef.current
-    if (!mesh) return
+    const group = shipGroupRef.current
+    if (!group) return
 
     const dt = isFinite(delta) && delta > 0 ? Math.min(delta, 0.05) : 0.016
     const time = clock.getElapsedTime()
@@ -170,30 +197,39 @@ const Ship = forwardRef<THREE.Mesh>((_props, ref) => {
     if (pressedKeys.current.right) headingAngle.current -= turnSpeed * dt
 
     if (pressedKeys.current.forward || pressedKeys.current.backward) {
-      const angle = headingAngle.current + DIR_OFFSET
       const direction = pressedKeys.current.forward ? 1 : -1
-      mesh.position.x -= Math.sin(angle) * moveSpeed * direction * dt
-      mesh.position.z -= Math.cos(angle) * moveSpeed * direction * dt
+      group.position.x -= Math.sin(headingAngle.current) * moveSpeed * direction * dt
+      group.position.z -= Math.cos(headingAngle.current) * moveSpeed * direction * dt
+    }
+
+    const distFromCenter = Math.sqrt(group.position.x ** 2 + group.position.z ** 2)
+    if (distFromCenter > BOUNDARY_RADIUS) {
+      const scale = BOUNDARY_RADIUS / distFromCenter
+      group.position.x *= scale
+      group.position.z *= scale
     }
 
     const tiltTarget = pressedKeys.current.left ? tiltMax : pressedKeys.current.right ? -tiltMax : 0
     tiltAngle.current += (tiltTarget - tiltAngle.current) * Math.min(1, tiltSpeed * dt)
 
-    mesh.rotation.y = headingAngle.current
-    mesh.rotation.z = tiltAngle.current
-    mesh.position.y = baseY + Math.sin(time * bobSpeed) * bobAmp
+    group.rotation.y = headingAngle.current
+    group.rotation.z = tiltAngle.current
+    group.position.y = baseY + Math.sin(time * bobSpeed) * bobAmp
 
     const foamMesh = foamMeshRef.current
     if (foamMesh) {
-      foamMesh.position.x = mesh.position.x
-      foamMesh.position.z = mesh.position.z
+      foamMesh.position.x = group.position.x
+      foamMesh.position.y = foamY
+      foamMesh.position.z = group.position.z
       foamMesh.rotation.set(-Math.PI / 2, headingAngle.current, 0, 'YXZ')
       foamMaterial.uniforms.uTime.value = time
-      foamMaterial.uniforms.uFoamBound.value = 0.275 - Math.sin(time * bobSpeed) * 0.015
+      foamMaterial.uniforms.uFoamBound.value = foamBound - Math.sin(time * bobSpeed) * 0.008
+      foamMaterial.uniforms.uHullAspect.value =
+        MODEL_TARGET_SIZE / (2 * foamBound * FOAM_PLANE_SIZE)
     }
 
     const bobSign = Math.sin(time * bobSpeed) >= 0 ? 1 : -1
-    if (prevBobSign.current > 0 && bobSign < 0) spawnHullRipple(time, mesh)
+    if (prevBobSign.current > 0 && bobSign < 0) spawnHullRipple(time, group)
     prevBobSign.current = bobSign
 
     const rippleInstances = rippleInstancesRef.current
@@ -236,22 +272,20 @@ const Ship = forwardRef<THREE.Mesh>((_props, ref) => {
 
   return (
     <>
-      <mesh
+      <group
         ref={(el) => {
-          shipMeshRef.current = el
+          shipGroupRef.current = el
           if (typeof ref === 'function') ref(el)
           else if (ref) ref.current = el
         }}
         position={[0, baseY, 0]}
-        scale={8}
       >
-        <boxGeometry />
-        <meshStandardMaterial color="#f59e0b" />
-      </mesh>
+        <primitive object={clonedScene} />
+      </group>
 
       <mesh
         ref={foamMeshRef}
-        position={[0, 0.5, 0]}
+        position={[0, foamY, 0]}
         material={foamMaterial}
         renderOrder={3}
         frustumCulled={false}
