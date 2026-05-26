@@ -3,13 +3,11 @@ import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
 import { CAMERA_OFFSET, IS_DEBUG } from './constants'
+import type { IslandKey } from '../World/Islands/constants'
 import Lighting from '../Lighting/Lighting'
-import Ocean from '../Ocean/Ocean'
-import Ship from '../Ship/Ship'
-import WakeTrail from '../Ship/WakeTrail'
-import WakeRipples from '../Ship/WakeRipples'
+import World from '../World/World'
 
-function CameraRig({ shipRef }: { shipRef: React.RefObject<THREE.Mesh | null> }) {
+function CameraRig({ shipRef }: { shipRef: React.RefObject<THREE.Group | null> }) {
   useFrame(({ camera }) => {
     if (!shipRef.current) return
     const { x, y, z } = shipRef.current.position
@@ -19,8 +17,12 @@ function CameraRig({ shipRef }: { shipRef: React.RefObject<THREE.Mesh | null> })
   return null
 }
 
-export default function Experience() {
-  const shipRef = useRef<THREE.Mesh>(null)
+interface ExperienceProps {
+  onIslandSelect: (key: IslandKey) => void
+}
+
+export default function Experience({ onIslandSelect }: ExperienceProps) {
+  const shipRef = useRef<THREE.Group>(null)
 
   return (
     <Canvas
@@ -30,12 +32,9 @@ export default function Experience() {
       dpr={[1, 2]}
     >
       <color attach="background" args={['#1a7fa8']} />
-      {IS_DEBUG ? <OrbitControls /> : <CameraRig shipRef={shipRef} />}
+      {IS_DEBUG ? <OrbitControls makeDefault /> : <CameraRig shipRef={shipRef} />}
       <Lighting />
-      <Ocean />
-      <Ship ref={shipRef} />
-      <WakeTrail shipRef={shipRef} />
-      <WakeRipples shipRef={shipRef} />
+      <World ref={shipRef} onIslandSelect={onIslandSelect} />
     </Canvas>
   )
 }

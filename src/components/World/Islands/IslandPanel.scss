@@ -1,0 +1,101 @@
+.island-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 100dvh;
+  overflow: hidden;
+  z-index: 100;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &--open {
+    width: 40vw;
+  }
+
+  // Inner div is always full panel width so content never reflows during transition
+  &__inner {
+    position: relative;
+    width: 40vw;
+    height: 100%;
+    background: #faf6f0;
+    border-left: 1px solid rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 1.75rem;
+    overflow-y: auto;
+  }
+
+  &__close {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    background: none;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 6px;
+    color: #475569;
+    font-size: 0.9rem;
+    line-height: 1;
+    width: 2rem;
+    height: 2rem;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition:
+      color 0.15s,
+      border-color 0.15s,
+      background 0.15s;
+
+    &:hover {
+      color: #0f172a;
+      border-color: rgba(0, 0, 0, 0.25);
+      background: rgba(0, 0, 0, 0.04);
+    }
+  }
+
+  &__header {
+    padding-top: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  &__tag {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: 1px solid currentColor;
+    border-radius: 4px;
+    padding: 0.2rem 0.55rem;
+    opacity: 0.85;
+    width: fit-content;
+  }
+
+  &__title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+
+  &__divider {
+    height: 2px;
+    border-radius: 2px;
+    margin: 1.5rem 0;
+    opacity: 0.4;
+  }
+
+  &__body {
+    flex: 1;
+  }
+
+  &__placeholder {
+    color: #94a3b8;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+}

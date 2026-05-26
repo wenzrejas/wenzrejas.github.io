@@ -1,16 +1,8 @@
 import { useRef, useMemo, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
-import {
-  RIPPLE_MAX_GROUPS,
-  RIPPLE_SPRITES_PER_GROUP,
-  TOTAL_RIPPLE_SPRITES,
-  RIPPLE_LIFETIME,
-  RIPPLE_EXPAND_SPEED,
-  RIPPLE_SPAWN_DIST,
-  RIPPLE_HALF_SPREAD,
-  RIPPLE_DEPTH,
-} from './constants'
+import { RIPPLE_MAX_GROUPS, RIPPLE_SPRITES_PER_GROUP, TOTAL_RIPPLE_SPRITES } from './constants'
+import { useDebug } from '../../Debug/DebugControls'
 
 interface RippleSprite {
   alive: boolean
@@ -27,7 +19,9 @@ interface SpawnPoint {
   z: number
 }
 
-export default function WakeRipples({ shipRef }: { shipRef: React.RefObject<THREE.Mesh | null> }) {
+export default function WakeRipples({ shipRef }: { shipRef: React.RefObject<THREE.Group | null> }) {
+  const { wake } = useDebug()
+
   const rippleInstancesRef = useRef<THREE.InstancedMesh>(null)
   const dummyObject = useMemo(() => new THREE.Object3D(), [])
   const rippleGroupIndex = useRef(0)
@@ -75,7 +69,7 @@ export default function WakeRipples({ shipRef }: { shipRef: React.RefObject<THRE
       spriteGeometry.dispose()
       spriteMaterial.dispose()
     }
-  }, [dummyObject, spriteGeometry, spriteMaterial])
+  }, [])
 
   useFrame(({ clock }) => {
     const ship = shipRef.current
@@ -92,17 +86,16 @@ export default function WakeRipples({ shipRef }: { shipRef: React.RefObject<THRE
     }
 
     const lastSpawn = lastSpawnPoint.current
-    if (Math.hypot(shipX - lastSpawn.x, shipZ - lastSpawn.z) >= RIPPLE_SPAWN_DIST) {
+    if (Math.hypot(shipX - lastSpawn.x, shipZ - lastSpawn.z) >= wake.spawnDist) {
       const heading = ship.rotation.y
       const cos = Math.cos(heading)
       const sin = Math.sin(heading)
       const slotBase = (rippleGroupIndex.current % RIPPLE_MAX_GROUPS) * RIPPLE_SPRITES_PER_GROUP
 
       for (let i = 0; i < RIPPLE_SPRITES_PER_GROUP; i++) {
-        // theta sweeps 0→π: localX goes right→0→left, localZ goes 0→depth→0 (bowl into wake)
         const theta = (i / (RIPPLE_SPRITES_PER_GROUP - 1)) * Math.PI
-        const localX = Math.cos(theta) * RIPPLE_HALF_SPREAD
-        const localZ = Math.sin(theta) * RIPPLE_DEPTH
+        const localX = Math.cos(theta) * wake.halfSpread
+        const localZ = Math.sin(theta) * wake.rippleDepth
 
         const worldX = shipX + cos * localX + sin * localZ
         const worldZ = shipZ - sin * localX + cos * localZ
@@ -140,7 +133,7 @@ export default function WakeRipples({ shipRef }: { shipRef: React.RefObject<THRE
       }
 
       const age = time - sprite.spawnTime
-      if (age >= RIPPLE_LIFETIME) {
+      if (age >= wake.rippleLifetime) {
         sprite.alive = false
         dummyObject.scale.setScalar(0)
         dummyObject.position.y = -9999
@@ -149,11 +142,11 @@ export default function WakeRipples({ shipRef }: { shipRef: React.RefObject<THRE
         continue
       }
 
-      const progress = age / RIPPLE_LIFETIME
+      const progress = age / wake.rippleLifetime
       dummyObject.position.set(
-        sprite.x + sprite.velocityX * age * RIPPLE_EXPAND_SPEED,
+        sprite.x + sprite.velocityX * age * wake.expandSpeed,
         0.4,
-        sprite.z + sprite.velocityZ * age * RIPPLE_EXPAND_SPEED
+        sprite.z + sprite.velocityZ * age * wake.expandSpeed
       )
       dummyObject.scale.setScalar(sprite.size * Math.max(0, 1 - progress * 1.25))
       dummyObject.updateMatrix()

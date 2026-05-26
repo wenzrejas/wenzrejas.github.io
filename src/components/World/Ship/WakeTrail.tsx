@@ -2,21 +2,17 @@ import { useRef, useMemo, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { WAKE_VERT, WAKE_FRAG } from './shaders/wake'
-import {
-  WAKE_TRAIL_LENGTH,
-  WAKE_ARM_NEAR,
-  WAKE_ARM_FAR,
-  WAKE_ARM_HALF_WIDTH,
-  WAKE_MIN_SAMPLE_DIST,
-  WAKE_TOTAL_VERTS,
-} from './constants'
+import { WAKE_TRAIL_LENGTH, WAKE_TOTAL_VERTS } from './constants'
+import { useDebug } from '../../Debug/DebugControls'
 
 interface TrailPoint {
   x: number
   z: number
 }
 
-export default function WakeTrail({ shipRef }: { shipRef: React.RefObject<THREE.Mesh | null> }) {
+export default function WakeTrail({ shipRef }: { shipRef: React.RefObject<THREE.Group | null> }) {
+  const { wake } = useDebug()
+
   const trailPoints = useRef<TrailPoint[]>(
     Array.from({ length: WAKE_TRAIL_LENGTH }, () => ({ x: 0, z: 0 }))
   )
@@ -119,7 +115,7 @@ export default function WakeTrail({ shipRef }: { shipRef: React.RefObject<THREE.
     const sampled = lastSampledPoint.current
 
     let moved = false
-    if (Math.hypot(shipX - sampled.x, shipZ - sampled.z) > WAKE_MIN_SAMPLE_DIST) {
+    if (Math.hypot(shipX - sampled.x, shipZ - sampled.z) > wake.minSampleDist) {
       headIndex.current = (headIndex.current - 1 + WAKE_TRAIL_LENGTH) % WAKE_TRAIL_LENGTH
       trailPoints.current[headIndex.current].x = shipX
       trailPoints.current[headIndex.current].z = shipZ
@@ -181,9 +177,9 @@ export default function WakeTrail({ shipRef }: { shipRef: React.RefObject<THREE.
       const trailPosition = i / (WAKE_TRAIL_LENGTH - 1)
       const normalizedAge = i / Math.max(1, count - 1)
       const taper = 1.0 - normalizedAge
-      const armWidth = WAKE_ARM_NEAR + (WAKE_ARM_FAR - WAKE_ARM_NEAR) * trailPosition
-      const outerHalfWidth = armWidth + WAKE_ARM_HALF_WIDTH * taper
-      const innerHalfWidth = Math.max(0.01, armWidth - WAKE_ARM_HALF_WIDTH * taper)
+      const armWidth = wake.armNear + (wake.armFar - wake.armNear) * trailPosition
+      const outerHalfWidth = armWidth + wake.armHalfWidth * taper
+      const innerHalfWidth = Math.max(0.01, armWidth - wake.armHalfWidth * taper)
 
       positionArray[outerLeftOffset] = point.x + perpX * outerHalfWidth
       positionArray[outerLeftOffset + 1] = 0.3

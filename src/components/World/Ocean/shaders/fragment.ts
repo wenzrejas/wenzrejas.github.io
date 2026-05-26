@@ -19,10 +19,15 @@ export const FRAG = /* glsl */ `
   uniform float uFresnelPower;
   uniform float uFresnelStrength;
   uniform float uFoamAmount;
-  uniform float uWaveAmp;
+  uniform float uSpecularStrength;
+  uniform float uSpecularPower;
+  uniform float uCrestStrength;
+  uniform vec3  uSunDir;
 
-  varying vec2 vWorldPos;
-  varying vec3 vPos;
+  varying vec2  vWorldPos;
+  varying vec3  vPos;
+  varying vec3  vNormal;
+  varying float vWaveHeight;
 
   vec2 hash2(vec2 p) {
     p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
@@ -83,9 +88,13 @@ export const FRAG = /* glsl */ `
   }
 
   void main() {
-    vec2 noiseUV   = vWorldPos * uNoiseScale + vec2(uTime * uNoiseFlowSpeed, 0.0);
-    float noiseFac = fbm(noiseUV);
-    vec2 distort   = vec2(noiseFac - 0.5) * uDistortAmount;
+    vec2 noiseUV = vWorldPos * uNoiseScale + vec2(uTime * uNoiseFlowSpeed, 0.0);
+    // Two independent FBM samples so X and Z distort differently (avoids diagonal-only warp)
+    vec2 distort = vec2(
+      fbm(noiseUV),
+      fbm(noiseUV + vec2(5.2, 1.3))
+    ) - 0.5;
+    distort *= uDistortAmount;
 
     vec2 uv = vWorldPos * uScale + vec2(uFlowX, uFlowZ) * uTime + distort;
 
@@ -109,25 +118,34 @@ export const FRAG = /* glsl */ `
       inSeg1
     );
 
-    // ── Fresnel ────────────────────────────────────────────────────────────────
-    vec3 normal  = normalize(cross(dFdx(vPos), dFdy(vPos)));
+    // Analytical wave normal from vertex shader
+    vec3 N       = normalize(vNormal);
     vec3 viewDir = normalize(cameraPosition - vPos);
-    if (dot(normal, viewDir) < 0.0) normal = -normal;
-    float nDotV  = clamp(dot(normal, viewDir), 0.0, 1.0);
+
+    // Fresnel — uses per-vertex wave normal (smoother than screen-space dFdx)
+    float nDotV  = clamp(dot(N, viewDir), 0.0, 1.0);
     float fresnel = pow(1.0 - nDotV, uFresnelPower) * uFresnelStrength;
     color = mix(color, uHighlight, fresnel);
 
+    // Blinn-Phong specular
+    vec3  sunDir = normalize(uSunDir);
+    vec3  H      = normalize(sunDir + viewDir);
+    float spec   = pow(max(dot(N, H), 0.0), uSpecularPower) * uSpecularStrength;
+    color = mix(color, uHighlight, spec);
+
+    // Smooth crest highlight — continuous height-based brightening, no noise gate
+    float crestFactor = smoothstep(0.1, 0.72, vWaveHeight);
+    color = mix(color, uHighlight, crestFactor * uCrestStrength);
+
     float alpha = mix(uDeepOpacity, 1.0, max(t, fresnel)) * uOpacity;
 
-    // ── Foam ──────────────────────────────────────────────────────────────────
-    // Patchy noise offset from the distortion noise so it doesn't repeat
+    // Foam — patchy noise layer on top of crest highlight
     vec2  foamUV    = vWorldPos * uNoiseScale * 2.1 + vec2(uFlowX, uFlowZ) * uTime * 0.4 + vec2(4.7, 2.1);
     float foamNoise = fbm(foamUV);
-    // Edge foam — Voronoi boundaries where waves visually break
+    // Edge foam at Voronoi cell boundaries
     float foamEdge  = smoothstep(uEdgeThreshold * 0.3, uEdgeThreshold + uEdgeSoftness * 1.5, edge);
-    // Crest foam — tops of waves
-    float crest     = smoothstep(uWaveAmp * 0.3, uWaveAmp * 0.82, vPos.y);
-    // Gate both with noise for organic, patchy look
+    // Crest foam — lower threshold so foam covers more of the peak
+    float crest     = smoothstep(0.12, 0.60, vWaveHeight);
     float foam      = clamp(foamEdge + crest * 0.75, 0.0, 1.0)
                     * smoothstep(0.38, 0.56, foamNoise)
                     * uFoamAmount;
