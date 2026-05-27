@@ -1,9 +1,11 @@
 import { useRef, useMemo, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
-import { WAKE_VERT, WAKE_FRAG } from './shaders/wake'
+import WAKE_VERT from './shaders/wake.vert.glsl'
+import WAKE_FRAG from './shaders/wake.frag.glsl'
 import { WAKE_TRAIL_LENGTH, WAKE_TOTAL_VERTS } from './constants'
-import { useDebug } from '../../Debug/DebugControls'
+import { useDebugStore } from '../../../store/debugStore'
+import { useCycleStore } from '../../../store/cycleStore'
 
 interface TrailPoint {
   x: number
@@ -11,7 +13,6 @@ interface TrailPoint {
 }
 
 export default function WakeTrail({ shipRef }: { shipRef: React.RefObject<THREE.Group | null> }) {
-  const { wake } = useDebug()
 
   const trailPoints = useRef<TrailPoint[]>(
     Array.from({ length: WAKE_TRAIL_LENGTH }, () => ({ x: 0, z: 0 }))
@@ -86,6 +87,7 @@ export default function WakeTrail({ shipRef }: { shipRef: React.RefObject<THREE.
           uTime: { value: 0 },
           uFadeProgress: { value: 1.1 },
           uInvActiveMax: { value: 1.0 },
+          uColor: { value: new THREE.Color(1, 1, 1) },
         },
         vertexShader: WAKE_VERT,
         fragmentShader: WAKE_FRAG,
@@ -106,7 +108,10 @@ export default function WakeTrail({ shipRef }: { shipRef: React.RefObject<THREE.
     if (!ship) return
 
     const dt = isFinite(delta) && delta > 0 ? Math.min(delta, 0.05) : 0.016
+    const wake = useDebugStore.getState().wake
+    const cycle = useCycleStore.getState()
     material.uniforms.uTime.value = clock.getElapsedTime()
+    material.uniforms.uColor.value.copy(cycle.foamColor)
     material.uniforms.uInvActiveMax.value =
       (WAKE_TRAIL_LENGTH - 1) / Math.max(1, activeCount.current - 1)
 

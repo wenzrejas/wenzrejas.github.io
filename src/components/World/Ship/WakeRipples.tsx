@@ -2,7 +2,8 @@ import { useRef, useMemo, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { RIPPLE_MAX_GROUPS, RIPPLE_SPRITES_PER_GROUP, TOTAL_RIPPLE_SPRITES } from './constants'
-import { useDebug } from '../../Debug/DebugControls'
+import { useDebugStore } from '../../../store/debugStore'
+import { useCycleStore } from '../../../store/cycleStore'
 
 interface RippleSprite {
   alive: boolean
@@ -20,8 +21,6 @@ interface SpawnPoint {
 }
 
 export default function WakeRipples({ shipRef }: { shipRef: React.RefObject<THREE.Group | null> }) {
-  const { wake } = useDebug()
-
   const rippleInstancesRef = useRef<THREE.InstancedMesh>(null)
   const dummyObject = useMemo(() => new THREE.Object3D(), [])
   const rippleGroupIndex = useRef(0)
@@ -78,6 +77,8 @@ export default function WakeRipples({ shipRef }: { shipRef: React.RefObject<THRE
     const rippleInstances = rippleInstancesRef.current
     if (!rippleInstances) return
 
+    const wake = useDebugStore.getState().wake
+    const cycle = useCycleStore.getState()
     const shipX = ship.position.x
     const shipZ = ship.position.z
 
@@ -154,6 +155,7 @@ export default function WakeRipples({ shipRef }: { shipRef: React.RefObject<THRE
     }
 
     rippleInstances.instanceMatrix.needsUpdate = true
+    spriteMaterial.color.copy(cycle.foamColor)
   })
 
   return (

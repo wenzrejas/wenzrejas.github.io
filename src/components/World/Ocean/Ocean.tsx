@@ -1,14 +1,20 @@
 import { useRef, useMemo, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
-import { VERT } from './shaders/vertex'
-import { FRAG } from './shaders/fragment'
+import VERT from './shaders/ocean.vert.glsl'
+import FRAG from './shaders/ocean.frag.glsl'
 import { OCEAN_DEFAULTS } from './constants'
-import { useDebug } from '../../Debug/DebugControls'
+import { useDebugStore } from '../../../store/debugStore'
+import { useCycleStore } from '../../../store/cycleStore'
+import { useWindStore } from '../../../store/windStore'
+import { useWeatherStore } from '../../../store/weatherStore'
+
+// Primary wave travel direction (XZ) — used to compute wind alignment
+const PRIMARY_WAVE_DIR = new THREE.Vector2(0.97, -0.26).normalize()
 
 export default function Ocean() {
   const meshRef = useRef<THREE.Mesh>(null)
-  const { ocean } = useDebug()
+  const smoothedWindAmp = useRef(1.0)
 
   const material = useMemo(
     () =>
@@ -47,6 +53,7 @@ export default function Ocean() {
           uSunDir: {
             value: new THREE.Vector3(OCEAN_DEFAULTS.sunX, OCEAN_DEFAULTS.sunY, OCEAN_DEFAULTS.sunZ),
           },
+          uWindAmp: { value: 1.0 },
         },
       }),
     []
@@ -54,7 +61,12 @@ export default function Ocean() {
 
   useEffect(() => () => material.dispose(), [material])
 
-  useFrame(({ clock }) => {
+  useFrame(({ clock }, delta) => {
+    const ocean = useDebugStore.getState().ocean
+    const cycle = useCycleStore.getState()
+    const wind = useWindStore.getState()
+    const weather = useWeatherStore.getState()
+
     const uniforms = material.uniforms
     uniforms.uTime.value = clock.getElapsedTime()
     uniforms.uWaveAmp.value = ocean.waveAmp
@@ -69,8 +81,8 @@ export default function Ocean() {
     uniforms.uNoiseScale.value = ocean.noiseScale
     uniforms.uNoiseFlowSpeed.value = ocean.noiseFlowSpeed
     uniforms.uDistortAmount.value = ocean.distortAmount
-    uniforms.uDeepColor.value.set(ocean.deepColor)
-    uniforms.uMidColor.value.set(ocean.midColor)
+    uniforms.uDeepColor.value.copy(cycle.oceanDeep)
+    uniforms.uMidColor.value.copy(cycle.oceanMid)
     uniforms.uMidPos.value = ocean.midPos
     uniforms.uHighlight.value.set(ocean.highlightColor)
     uniforms.uOpacity.value = ocean.opacity
@@ -81,7 +93,11 @@ export default function Ocean() {
     uniforms.uSpecularStrength.value = ocean.specularStrength
     uniforms.uSpecularPower.value = ocean.specularPower
     uniforms.uCrestStrength.value = ocean.crestStrength
-    uniforms.uSunDir.value.set(ocean.sunX, ocean.sunY, ocean.sunZ)
+    uniforms.uSunDir.value.copy(cycle.oceanSunDir)
+    const alignment = wind.dir.dot(PRIMARY_WAVE_DIR)
+    const targetAmp = (0.5 + 0.8 * (alignment + 1) / 2) * weather.waveAmpMult
+    smoothedWindAmp.current += (targetAmp - smoothedWindAmp.current) * Math.min(1, delta * 0.05)
+    uniforms.uWindAmp.value = smoothedWindAmp.current
   })
 
   return (

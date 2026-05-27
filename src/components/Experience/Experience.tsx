@@ -2,27 +2,28 @@ import { useRef } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
-import { CAMERA_OFFSET, IS_DEBUG } from './constants'
-import type { IslandKey } from '../World/Islands/constants'
-import Lighting from '../Lighting/Lighting'
+import { CAMERA_OFFSET, CAMERA_LOOK_Y_OFFSET } from './constants'
 import World from '../World/World'
+import DayNightCycle from '../World/DayNightCycle/DayNightCycle'
+import { useDebugStore } from '../../store/debugStore'
+import { useUIStore } from '../../store/uiStore'
+import { IS_DEBUG } from './constants'
+import { Perf } from 'r3f-perf'
 
 function CameraRig({ shipRef }: { shipRef: React.RefObject<THREE.Group | null> }) {
   useFrame(({ camera }) => {
     if (!shipRef.current) return
     const { x, y, z } = shipRef.current.position
     camera.position.set(x + CAMERA_OFFSET[0], y + CAMERA_OFFSET[1], z + CAMERA_OFFSET[2])
-    camera.lookAt(x, y, z)
+    camera.lookAt(x, y + CAMERA_LOOK_Y_OFFSET, z)
   })
   return null
 }
 
-interface ExperienceProps {
-  onIslandSelect: (key: IslandKey) => void
-}
-
-export default function Experience({ onIslandSelect }: ExperienceProps) {
+export default function Experience() {
   const shipRef = useRef<THREE.Group>(null)
+  const orbitCamera = useDebugStore((s) => s.camera.orbitCamera)
+  const selectIsland = useUIStore((s) => s.selectIsland)
 
   return (
     <Canvas
@@ -32,9 +33,10 @@ export default function Experience({ onIslandSelect }: ExperienceProps) {
       dpr={[1, 2]}
     >
       <color attach="background" args={['#1a7fa8']} />
-      {IS_DEBUG ? <OrbitControls makeDefault /> : <CameraRig shipRef={shipRef} />}
-      <Lighting />
-      <World ref={shipRef} onIslandSelect={onIslandSelect} />
+      {IS_DEBUG && <Perf position="top-left" />}
+      {orbitCamera ? <OrbitControls makeDefault /> : <CameraRig shipRef={shipRef} />}
+      <DayNightCycle />
+      <World ref={shipRef} onIslandSelect={selectIsland} />
     </Canvas>
   )
 }
