@@ -2,7 +2,8 @@ import { forwardRef, useRef, useEffect, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
-import { FOAM_VERT, FOAM_FRAG } from './shaders/foam'
+import FOAM_VERT from './shaders/foam.vert.glsl'
+import FOAM_FRAG from './shaders/foam.frag.glsl'
 import { useKeyboardInput } from '../../../hooks/useKeyboardInput'
 import {
   MODEL_BOW_OFFSET,
@@ -14,7 +15,10 @@ import {
   TOTAL_PARTICLES,
 } from './constants'
 import { BOUNDARY_RADIUS } from '../Boundary/constants'
-import { useDebug } from '../../Debug/DebugControls'
+import { useDebugStore } from '../../../store/debugStore'
+import { useCycleStore } from '../../../store/cycleStore'
+import { useWindStore } from '../../../store/windStore'
+import { useWeatherStore } from '../../../store/weatherStore'
 
 interface Particle {
   alive: boolean
@@ -27,7 +31,7 @@ interface Particle {
 }
 
 const Ship = forwardRef<THREE.Group>((_props, ref) => {
-  const { ship } = useDebug()
+  const ship = useDebugStore((s) => s.ship)
   const {
     baseY,
     bobAmp,
@@ -87,6 +91,7 @@ const Ship = forwardRef<THREE.Group>((_props, ref) => {
           uTime: { value: 0 },
           uFoamBound: { value: 0.13 },
           uHullAspect: { value: 1.0 },
+          uColor: { value: new THREE.Color(1, 1, 1) },
         },
         vertexShader: FOAM_VERT,
         fragmentShader: FOAM_FRAG,
@@ -192,14 +197,21 @@ const Ship = forwardRef<THREE.Group>((_props, ref) => {
 
     const dt = isFinite(delta) && delta > 0 ? Math.min(delta, 0.05) : 0.016
     const time = clock.getElapsedTime()
+    const wind = useWindStore.getState()
+    const weather = useWeatherStore.getState()
+    const cycle = useCycleStore.getState()
 
     if (pressedKeys.current.left) headingAngle.current += turnSpeed * dt
     if (pressedKeys.current.right) headingAngle.current -= turnSpeed * dt
 
     if (pressedKeys.current.forward || pressedKeys.current.backward) {
       const direction = pressedKeys.current.forward ? 1 : -1
-      group.position.x -= Math.sin(headingAngle.current) * moveSpeed * direction * dt
-      group.position.z -= Math.cos(headingAngle.current) * moveSpeed * direction * dt
+      const fwdX = -Math.sin(headingAngle.current)
+      const fwdZ = -Math.cos(headingAngle.current)
+      const windAlignment = fwdX * wind.dir.x + fwdZ * wind.dir.y
+      const windMultiplier = 1 + Math.max(0, windAlignment) * 0.5 * Math.min(weather.windMult, 2.5)
+      group.position.x += fwdX * moveSpeed * windMultiplier * direction * dt
+      group.position.z += fwdZ * moveSpeed * windMultiplier * direction * dt
     }
 
     const distFromCenter = Math.sqrt(group.position.x ** 2 + group.position.z ** 2)
@@ -214,7 +226,7 @@ const Ship = forwardRef<THREE.Group>((_props, ref) => {
 
     group.rotation.y = headingAngle.current
     group.rotation.z = tiltAngle.current
-    group.position.y = baseY + Math.sin(time * bobSpeed) * bobAmp
+    group.position.y = baseY + Math.sin(time * bobSpeed) * bobAmp * weather.waveAmpMult
 
     const foamMesh = foamMeshRef.current
     if (foamMesh) {
@@ -226,6 +238,7 @@ const Ship = forwardRef<THREE.Group>((_props, ref) => {
       foamMaterial.uniforms.uFoamBound.value = foamBound - Math.sin(time * bobSpeed) * 0.008
       foamMaterial.uniforms.uHullAspect.value =
         MODEL_TARGET_SIZE / (2 * foamBound * FOAM_PLANE_SIZE)
+      foamMaterial.uniforms.uColor.value.copy(cycle.foamColor)
     }
 
     const bobSign = Math.sin(time * bobSpeed) >= 0 ? 1 : -1
@@ -268,6 +281,7 @@ const Ship = forwardRef<THREE.Group>((_props, ref) => {
     }
 
     rippleInstances.instanceMatrix.needsUpdate = true
+    rippleMaterial.color.copy(cycle.foamColor)
   })
 
   return (

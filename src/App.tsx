@@ -1,19 +1,20 @@
-import { useState } from 'react'
 import { Leva } from 'leva'
-import { DebugProvider } from './components/Debug/DebugControls'
 import Experience from './components/Experience/Experience'
 import IslandPanel from './components/World/Islands/IslandPanel'
+import { DebugSync } from './components/Debug/DebugControls'
 import { IS_DEBUG } from './components/Experience/constants'
-import type { IslandKey } from './components/World/Islands/constants'
+import { useUIStore } from './store/uiStore'
 
 export default function App() {
-  const [selectedIsland, setSelectedIsland] = useState<IslandKey | null>(null)
+  const selectedIsland = useUIStore((s) => s.selectedIsland)
+  const clearIsland = useUIStore((s) => s.clearIsland)
 
   return (
-    <DebugProvider>
+    <>
+      <DebugSync />
       <Leva hidden={!IS_DEBUG} collapsed />
-      <Experience onIslandSelect={setSelectedIsland} />
-      <IslandPanel selectedKey={selectedIsland} onClose={() => setSelectedIsland(null)} />
-    </DebugProvider>
+      <Experience />
+      <IslandPanel selectedKey={selectedIsland} onClose={clearIsland} />
+    </>
   )
 }

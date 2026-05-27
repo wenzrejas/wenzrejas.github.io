@@ -1,5 +1,3 @@
-/** Shared GLSL hash + value-noise + fbm — paste into any shader string. */
-export const GLSL_NOISE = /* glsl */ `
 float hash(vec2 p) {
   p = fract(p * vec2(127.1, 311.7));
   p += dot(p, p + 45.32);
@@ -22,4 +20,3 @@ float fbm(vec2 p) {
   }
   return v;
 }
-`

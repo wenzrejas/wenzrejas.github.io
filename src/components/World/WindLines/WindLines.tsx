@@ -1,61 +1,16 @@
 import { useRef, useMemo, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
-import { useDebug } from '../../Debug/DebugControls'
+import { useDebugStore } from '../../../store/debugStore'
+import { useWindStore } from '../../../store/windStore'
+import { useWeatherStore } from '../../../store/weatherStore'
+import WIND_VERT from './shaders/windlines.vert.glsl'
+import WIND_FRAG from './shaders/windlines.frag.glsl'
+import { CYCLE_DURATION } from '../DayNightCycle/DayNightCycle'
 
 const POOL_SIZE = 8
 const HANDLES_COUNT = 5
 const CURVE_DIVISIONS = 40
-
-const WIND_VERT = /* glsl */ `
-  attribute float ratio;
-  attribute float side;
-
-  uniform float uProgress;
-  uniform float uThickness;
-
-  varying float vRatio;
-  varying float vActive;
-
-  void main() {
-    vRatio = ratio;
-
-    // Bruno-style: remap progress so the window sweeps ratio 0→1 as progress 0→1
-    float remapped  = uProgress * 3.0 - 1.0;
-    float baseTaper = smoothstep(0.0, 1.0, 1.0 - abs(ratio - 0.5) * 2.0);
-    float envelope  = smoothstep(0.0, 1.0, 1.0 - abs(ratio - remapped));
-    float thickness = uThickness * baseTaper * envelope;
-
-    vActive = envelope;
-
-    // Expand in local Z — perpendicular to the XY curve plane
-    vec3 localPos = position + vec3(0.0, 0.0, side * thickness);
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(localPos, 1.0);
-  }
-`
-
-const WIND_FRAG = /* glsl */ `
-  uniform float uProgress;
-  uniform float uOpacity;
-
-  varying float vRatio;
-  varying float vActive;
-
-  void main() {
-    float endFade = smoothstep(0.0, 0.07, vRatio) * smoothstep(1.0, 0.93, vRatio);
-
-    float remapped = uProgress * 3.0 - 1.0;
-    float dist  = abs(vRatio - remapped);
-    float pulse = exp(-dist * dist * 18.0);
-    float trail = max(0.0, 1.0 - max(0.0, remapped - vRatio) * 4.0) * 0.25
-                  * step(vRatio, remapped);
-
-    float alpha = (pulse + trail) * endFade * uOpacity;
-    if (alpha < 0.005) discard;
-
-    gl_FragColor = vec4(1.0, 1.0, 1.0, alpha);
-  }
-`
 
 // One vertex pair per curve point; shader expands each pair in local Z
 function buildWindLineGeometry(handlesCount: number, divisions: number): THREE.BufferGeometry {
@@ -118,8 +73,6 @@ interface LineState {
 }
 
 export default function WindLines({ shipRef }: { shipRef: React.RefObject<THREE.Group | null> }) {
-  const { windLines: wl } = useDebug()
-
   const geometry = useMemo(() => buildWindLineGeometry(HANDLES_COUNT, CURVE_DIVISIONS), [])
   useEffect(() => () => geometry.dispose(), [geometry])
 
@@ -137,11 +90,35 @@ export default function WindLines({ shipRef }: { shipRef: React.RefObject<THREE.
   )
 
   const nextSpawnAt = useRef(0)
+  const windAngle = useRef(useWindStore.getState().angle)
+  const windTarget = useRef(useWindStore.getState().angle + (0.5 + Math.random()) * Math.PI * (Math.random() < 0.5 ? 1 : -1))
+  const nextWindChange = useRef(CYCLE_DURATION / 2)
 
   useFrame(({ clock }, delta) => {
     const dt = Math.min(delta, 0.05)
     const time = clock.getElapsedTime()
     const ship = shipRef.current
+    const wl = useDebugStore.getState().windLines
+    const wind = useWindStore.getState()
+
+    // Animate wind direction — faster rate so the gap stays brief
+    let diff = windTarget.current - windAngle.current
+    diff = ((diff + Math.PI) % (2 * Math.PI)) - Math.PI
+    const absDiff = Math.abs(diff)
+    windAngle.current += Math.max(-1.5 * dt, Math.min(1.5 * dt, diff))
+    nextWindChange.current -= dt
+    if (nextWindChange.current <= 0) {
+      const shift = (0.5 + Math.random() * 0.8) * Math.PI * (Math.random() < 0.5 ? 1 : -1)
+      windTarget.current = windAngle.current + shift
+      nextWindChange.current = CYCLE_DURATION / 2
+      // Kill all active lines so no old-direction streaks remain visible
+      for (let i = 0; i < POOL_SIZE; i++) {
+        states.current[i].active = false
+        if (meshRefs.current[i]) meshRefs.current[i]!.visible = false
+      }
+    }
+    wind.angle = windAngle.current
+    wind.dir.set(Math.cos(windAngle.current), -Math.sin(windAngle.current))
 
     for (let i = 0; i < POOL_SIZE; i++) {
       const state = states.current[i]
@@ -170,6 +147,9 @@ export default function WindLines({ shipRef }: { shipRef: React.RefObject<THREE.
 
     if (!wl.windEnabled) return
 
+    // Don't spawn while direction is still changing — avoids mixed-angle lines
+    if (absDiff > 0.1) return
+
     if (time >= nextSpawnAt.current) {
       const idx = states.current.findIndex((s) => !s.active)
       if (idx !== -1) {
@@ -177,7 +157,8 @@ export default function WindLines({ shipRef }: { shipRef: React.RefObject<THREE.
         const mesh = meshRefs.current[idx]
         const mat = matRefs.current[idx]
         if (mesh && mat) {
-          const rad = (wl.windAngle * Math.PI) / 180
+          const { windMult } = useWeatherStore.getState()
+          const rad = wind.angle
           const cx = ship ? ship.position.x : 0
           const cz = ship ? ship.position.z : 0
 
@@ -185,8 +166,8 @@ export default function WindLines({ shipRef }: { shipRef: React.RefObject<THREE.
           state.progress = 0
           state.duration = wl.lineDuration
           // Local X after mesh.rotation.y = rad maps to world (cos rad, 0, –sin rad)
-          state.vx = Math.cos(rad) * wl.windSpeed
-          state.vz = -Math.sin(rad) * wl.windSpeed
+          state.vx = Math.cos(rad) * wl.windSpeed * windMult
+          state.vz = -Math.sin(rad) * wl.windSpeed * windMult
 
           mesh.position.set(
             cx + (Math.random() - 0.5) * 300,

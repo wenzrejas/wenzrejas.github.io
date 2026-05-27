@@ -1,4 +1,3 @@
-import { createContext, useContext, type ReactNode } from 'react'
 import { useControls, folder } from 'leva'
 import { OCEAN_DEFAULTS } from '../World/Ocean/constants'
 import {
@@ -13,8 +12,6 @@ import {
   PARTICLE_SPEED,
   FOAM_BOUND,
   FOAM_Y,
-} from '../World/Ship/constants'
-import {
   WAKE_ARM_NEAR,
   WAKE_ARM_FAR,
   WAKE_ARM_HALF_WIDTH,
@@ -27,16 +24,6 @@ import {
 } from '../World/Ship/constants'
 import { BOUNDARY_RADIUS, BOUNDARY_FALLOFF, BOUNDARY_FOG_COLOR } from '../World/Boundary/constants'
 import {
-  HEMI_SKY_COLOR,
-  HEMI_GROUND_COLOR,
-  HEMI_INTENSITY,
-  SUN_X,
-  SUN_Y,
-  SUN_Z,
-  SUN_INTENSITY,
-  SUN_COLOR,
-} from '../Lighting/constants'
-import {
   WIND_ENABLED,
   WIND_ANGLE,
   WIND_SPEED,
@@ -48,105 +35,21 @@ import {
   SPAWN_INTERVAL,
   WIND_OPACITY,
 } from '../World/WindLines/constants'
+import type {
+  OceanControls,
+  ShipControls,
+  WakeControls,
+  BoundaryControls,
+  WindLineControls,
+  WeatherControls,
+  DayCycleControls,
+  CameraControls,
+} from './types'
+import { useDebugStore } from '../../store/debugStore'
 
-export interface OceanControls {
-  waveAmp: number
-  waveSpeed: number
-  waterScale: number
-  cellSmoothness: number
-  edgeThreshold: number
-  edgeSoftness: number
-  cellSpeed: number
-  flowX: number
-  flowZ: number
-  noiseScale: number
-  noiseFlowSpeed: number
-  distortAmount: number
-  deepColor: string
-  midColor: string
-  midPos: number
-  highlightColor: string
-  opacity: number
-  deepOpacity: number
-  fresnelPower: number
-  fresnelStrength: number
-  foamAmount: number
-  specularStrength: number
-  specularPower: number
-  crestStrength: number
-  sunX: number
-  sunY: number
-  sunZ: number
-}
-
-export interface ShipControls {
-  moveSpeed: number
-  turnSpeed: number
-  baseY: number
-  bobAmp: number
-  bobSpeed: number
-  tiltMax: number
-  tiltSpeed: number
-  partLife: number
-  partSpeed: number
-  foamBound: number
-  foamY: number
-}
-
-export interface WakeControls {
-  armNear: number
-  armFar: number
-  armHalfWidth: number
-  minSampleDist: number
-  rippleLifetime: number
-  expandSpeed: number
-  spawnDist: number
-  halfSpread: number
-  rippleDepth: number
-}
-
-export interface LightingControls {
-  hemiSky: string
-  hemiGround: string
-  hemiIntensity: number
-  sunX: number
-  sunY: number
-  sunZ: number
-  sunIntensity: number
-  sunColor: string
-}
-
-export interface BoundaryControls {
-  radius: number
-  fogColor: string
-  falloff: number
-}
-
-export interface WindLineControls {
-  windEnabled: boolean
-  windAngle: number
-  windSpeed: number
-  lineDuration: number
-  lineLength: number
-  lineY: number
-  waveAmplitude: number
-  lineWidth: number
-  spawnInterval: number
-  windOpacity: number
-}
-
-interface DebugContextValue {
-  ocean: OceanControls
-  ship: ShipControls
-  wake: WakeControls
-  windLines: WindLineControls
-  boundary: BoundaryControls
-  lighting: LightingControls
-}
-
-const DebugContext = createContext<DebugContextValue>(null!)
-
-export function DebugProvider({ children }: { children: ReactNode }) {
+// Syncs Leva panel values into the Zustand debug store each render.
+// Components read from useDebugStore instead of a React context.
+export function DebugSync() {
   const ocean = useControls(
     'Ocean',
     {
@@ -271,25 +174,6 @@ export function DebugProvider({ children }: { children: ReactNode }) {
     { collapsed: true }
   ) as BoundaryControls
 
-  const lighting = useControls(
-    'Lighting',
-    {
-      Hemisphere: folder({
-        hemiSky: { value: HEMI_SKY_COLOR, label: 'sky color' },
-        hemiGround: { value: HEMI_GROUND_COLOR, label: 'ground color' },
-        hemiIntensity: { value: HEMI_INTENSITY, min: 0, max: 10, step: 0.1, label: 'intensity' },
-      }),
-      Sun: folder({
-        sunX: { value: SUN_X, min: -100, max: 100, step: 1, label: 'X' },
-        sunY: { value: SUN_Y, min: 0, max: 100, step: 1, label: 'Y' },
-        sunZ: { value: SUN_Z, min: -100, max: 100, step: 1, label: 'Z' },
-        sunIntensity: { value: SUN_INTENSITY, min: 0, max: 20, step: 0.1, label: 'intensity' },
-        sunColor: { value: SUN_COLOR, label: 'color' },
-      }),
-    },
-    { collapsed: true }
-  ) as LightingControls
-
   const windLines = useControls(
     'Wind Lines',
     {
@@ -313,13 +197,36 @@ export function DebugProvider({ children }: { children: ReactNode }) {
     { collapsed: true }
   ) as WindLineControls
 
-  return (
-    <DebugContext.Provider value={{ ocean, ship, wake, windLines, boundary, lighting }}>
-      {children}
-    </DebugContext.Provider>
-  )
-}
+  const weather = useControls(
+    'Weather',
+    {
+      weatherEnabled: { value: true, label: 'enabled' },
+      weatherType: {
+        value: 'auto',
+        options: ['auto', 'sunny', 'cloudy', 'rainy', 'windy', 'moonlit'],
+        label: 'type',
+      },
+    },
+    { collapsed: true }
+  ) as WeatherControls
 
-export function useDebug() {
-  return useContext(DebugContext)
+  const dayCycle = useControls(
+    'Day / Night',
+    {
+      cycleSpeed: { value: 1.0, min: 0, max: 10, step: 0.1, label: 'speed (0 = pause)' },
+    },
+    { collapsed: true }
+  ) as DayCycleControls
+
+  const camera = useControls(
+    'Camera',
+    {
+      orbitCamera: { value: false, label: 'orbit (free look)' },
+    },
+    { collapsed: true }
+  ) as CameraControls
+
+  useDebugStore.setState({ ocean, ship, wake, windLines, boundary, weather, dayCycle, camera })
+
+  return null
 }
