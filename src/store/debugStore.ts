@@ -32,7 +32,11 @@ import {
   RIPPLE_HALF_SPREAD,
   RIPPLE_DEPTH,
 } from '../components/World/Ship/constants'
-import { BOUNDARY_RADIUS, BOUNDARY_FALLOFF, BOUNDARY_FOG_COLOR } from '../components/World/Boundary/constants'
+import {
+  BOUNDARY_RADIUS,
+  BOUNDARY_FALLOFF,
+  BOUNDARY_FOG_COLOR,
+} from '../components/World/Boundary/constants'
 import {
   WIND_ENABLED,
   WIND_ANGLE,

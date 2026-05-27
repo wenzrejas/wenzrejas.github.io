@@ -18,9 +18,6 @@ export const FOAM_BOUND = 0.13 // ellipse radius in UV space
 export const FOAM_Y = 0.1 // world-space Y of the foam plane
 
 // ── Hull ripple particles ─────────────────────────────────────────────────────
-export const RIPPLE_MAX = 5
-export const PARTICLES_PER_RIPPLE = 40
-export const TOTAL_PARTICLES = RIPPLE_MAX * PARTICLES_PER_RIPPLE // 200
 export const PARTICLE_LIFETIME = 2.5
 export const PARTICLE_SPEED = 8
 

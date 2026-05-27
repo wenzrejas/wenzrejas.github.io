@@ -91,7 +91,9 @@ export default function WindLines({ shipRef }: { shipRef: React.RefObject<THREE.
 
   const nextSpawnAt = useRef(0)
   const windAngle = useRef(useWindStore.getState().angle)
-  const windTarget = useRef(useWindStore.getState().angle + (0.5 + Math.random()) * Math.PI * (Math.random() < 0.5 ? 1 : -1))
+  const windTarget = useRef(
+    useWindStore.getState().angle + (0.5 + Math.random()) * Math.PI * (Math.random() < 0.5 ? 1 : -1)
+  )
   const nextWindChange = useRef(CYCLE_DURATION / 2)
 
   useFrame(({ clock }, delta) => {

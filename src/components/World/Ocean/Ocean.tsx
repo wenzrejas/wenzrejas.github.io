@@ -53,6 +53,8 @@ export default function Ocean() {
           uSunDir: {
             value: new THREE.Vector3(OCEAN_DEFAULTS.sunX, OCEAN_DEFAULTS.sunY, OCEAN_DEFAULTS.sunZ),
           },
+          uMoonDir: { value: new THREE.Vector3(5, 80, 5).normalize() },
+          uMoonIntensity: { value: 0 },
           uWindAmp: { value: 1.0 },
         },
       }),
@@ -94,8 +96,10 @@ export default function Ocean() {
     uniforms.uSpecularPower.value = ocean.specularPower
     uniforms.uCrestStrength.value = ocean.crestStrength
     uniforms.uSunDir.value.copy(cycle.oceanSunDir)
+    uniforms.uMoonDir.value.copy(cycle.oceanMoonDir)
+    uniforms.uMoonIntensity.value = cycle.nightFactor * Math.max(0, weather.moonMult - 1.0)
     const alignment = wind.dir.dot(PRIMARY_WAVE_DIR)
-    const targetAmp = (0.5 + 0.8 * (alignment + 1) / 2) * weather.waveAmpMult
+    const targetAmp = (0.5 + (0.8 * (alignment + 1)) / 2) * weather.waveAmpMult
     smoothedWindAmp.current += (targetAmp - smoothedWindAmp.current) * Math.min(1, delta * 0.05)
     uniforms.uWindAmp.value = smoothedWindAmp.current
   })
@@ -108,7 +112,7 @@ export default function Ocean() {
       frustumCulled={false}
       renderOrder={2}
     >
-      <planeGeometry args={[2600, 2600, 256, 256]} />
+      <planeGeometry args={[2600, 2600, 128, 128]} />
       <primitive object={material} attach="material" />
     </mesh>
   )
