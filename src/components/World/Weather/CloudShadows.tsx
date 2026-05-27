@@ -24,9 +24,9 @@ export default function CloudShadows() {
         depthTest: false,
         blending: THREE.NormalBlending,
         uniforms: {
-          uCover:  { value: 0 },
+          uCover: { value: 0 },
           uOffset: { value: new THREE.Vector2() },
-          uTime:   { value: 0 },
+          uTime: { value: 0 },
         },
         vertexShader: CLOUD_VERT,
         fragmentShader: CLOUD_FRAG,
@@ -49,7 +49,7 @@ export default function CloudShadows() {
     }
 
     material.uniforms.uCover.value = weather.cloudShadow
-    material.uniforms.uTime.value  = clock.getElapsedTime()
+    material.uniforms.uTime.value = clock.getElapsedTime()
     const drift = DRIFT_SPEED * weather.windMult * dt
     material.uniforms.uOffset.value.x += wind.dir.x * drift
     material.uniforms.uOffset.value.y += wind.dir.y * drift

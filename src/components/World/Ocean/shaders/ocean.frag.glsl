@@ -22,6 +22,8 @@ uniform float uSpecularStrength;
 uniform float uSpecularPower;
 uniform float uCrestStrength;
 uniform vec3  uSunDir;
+uniform vec3  uMoonDir;
+uniform float uMoonIntensity;
 
 varying vec2  vWorldPos;
 varying vec3  vPos;
@@ -42,11 +44,12 @@ vec2 cellPt(vec2 seed) {
   return 0.5 + 0.5 * sin(uTime * uCellSpeed + 6.2831 * seed);
 }
 
+// 2x2 neighborhood — floor(p-0.5) ensures p always sits inside the sampled 2x2 block
 float voronoiF1(vec2 p) {
-  vec2 i = floor(p), f = fract(p);
+  vec2 i = floor(p - 0.5), f = p - i;
   float md = 8.0;
-  for (int y = -1; y <= 1; y++)
-    for (int x = -1; x <= 1; x++) {
+  for (int y = 0; y <= 1; y++)
+    for (int x = 0; x <= 1; x++) {
       vec2 n  = vec2(float(x), float(y));
       vec2 pt = cellPt(hash2(i + n));
       md = min(md, length(n + pt - f));
@@ -55,10 +58,10 @@ float voronoiF1(vec2 p) {
 }
 
 float voronoiSF1(vec2 p) {
-  vec2 i = floor(p), f = fract(p);
+  vec2 i = floor(p - 0.5), f = p - i;
   float res = 8.0;
-  for (int y = -1; y <= 1; y++)
-    for (int x = -1; x <= 1; x++) {
+  for (int y = 0; y <= 1; y++)
+    for (int x = 0; x <= 1; x++) {
       vec2 n  = vec2(float(x), float(y));
       vec2 pt = cellPt(hash2(i + n));
       res = smin(res, length(n + pt - f), uSmoothness);
@@ -126,11 +129,17 @@ void main() {
   float fresnel = pow(1.0 - nDotV, uFresnelPower) * uFresnelStrength;
   color = mix(color, uHighlight, fresnel);
 
-  // Blinn-Phong specular
+  // Blinn-Phong specular — sun
   vec3  sunDir = normalize(uSunDir);
   vec3  H      = normalize(sunDir + viewDir);
   float spec   = pow(max(dot(N, H), 0.0), uSpecularPower) * uSpecularStrength;
   color = mix(color, uHighlight, spec);
+
+  // Blinn-Phong specular — moon (tight, cool-blue reflection)
+  vec3  moonDir = normalize(uMoonDir);
+  vec3  Hm      = normalize(moonDir + viewDir);
+  float moonSpec = pow(max(dot(N, Hm), 0.0), 64.0) * uMoonIntensity * 0.45;
+  color = mix(color, vec3(0.72, 0.82, 1.0), clamp(moonSpec, 0.0, 1.0));
 
   // Smooth crest highlight — continuous height-based brightening, no noise gate
   float crestFactor = smoothstep(0.1, 0.72, vWaveHeight);

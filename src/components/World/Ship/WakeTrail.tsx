@@ -13,7 +13,6 @@ interface TrailPoint {
 }
 
 export default function WakeTrail({ shipRef }: { shipRef: React.RefObject<THREE.Group | null> }) {
-
   const trailPoints = useRef<TrailPoint[]>(
     Array.from({ length: WAKE_TRAIL_LENGTH }, () => ({ x: 0, z: 0 }))
   )

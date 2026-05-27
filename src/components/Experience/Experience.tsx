@@ -30,13 +30,13 @@ export default function Experience() {
       orthographic
       camera={{ zoom: 5, position: CAMERA_OFFSET, near: 0.1, far: 10000 }}
       gl={{ antialias: true }}
-      dpr={[1, 2]}
+      dpr={[1, 1.5]}
     >
       <color attach="background" args={['#1a7fa8']} />
       {IS_DEBUG && <Perf position="top-left" />}
-      {orbitCamera ? <OrbitControls makeDefault /> : <CameraRig shipRef={shipRef} />}
       <DayNightCycle />
       <World ref={shipRef} onIslandSelect={selectIsland} />
+      {orbitCamera ? <OrbitControls makeDefault /> : <CameraRig shipRef={shipRef} />}
     </Canvas>
   )
 }

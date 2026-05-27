@@ -7,6 +7,7 @@ import { useCycleStore } from '../../../store/cycleStore'
 
 interface RippleSprite {
   alive: boolean
+  written: boolean
   spawnTime: number
   x: number
   z: number
@@ -29,6 +30,7 @@ export default function WakeRipples({ shipRef }: { shipRef: React.RefObject<THRE
   const sprites = useRef<RippleSprite[]>(
     Array.from({ length: TOTAL_RIPPLE_SPRITES }, () => ({
       alive: false,
+      written: true,
       spawnTime: 0,
       x: 0,
       z: 0,
@@ -109,6 +111,7 @@ export default function WakeRipples({ shipRef }: { shipRef: React.RefObject<THRE
 
         const sprite = sprites.current[slotBase + i]
         sprite.alive = true
+        sprite.written = false
         sprite.spawnTime = time
         sprite.x = worldX
         sprite.z = worldZ
@@ -122,24 +125,27 @@ export default function WakeRipples({ shipRef }: { shipRef: React.RefObject<THRE
       lastSpawn.z = shipZ
     }
 
+    let matrixDirty = false
+
     for (let i = 0; i < TOTAL_RIPPLE_SPRITES; i++) {
       const sprite = sprites.current[i]
 
       if (!sprite.alive) {
-        dummyObject.scale.setScalar(0)
-        dummyObject.position.y = -9999
-        dummyObject.updateMatrix()
-        rippleInstances.setMatrixAt(i, dummyObject.matrix)
+        if (!sprite.written) {
+          sprite.written = true
+          dummyObject.scale.setScalar(0)
+          dummyObject.position.y = -9999
+          dummyObject.updateMatrix()
+          rippleInstances.setMatrixAt(i, dummyObject.matrix)
+          matrixDirty = true
+        }
         continue
       }
 
       const age = time - sprite.spawnTime
       if (age >= wake.rippleLifetime) {
         sprite.alive = false
-        dummyObject.scale.setScalar(0)
-        dummyObject.position.y = -9999
-        dummyObject.updateMatrix()
-        rippleInstances.setMatrixAt(i, dummyObject.matrix)
+        sprite.written = false // will be parked next frame
         continue
       }
 
@@ -152,9 +158,10 @@ export default function WakeRipples({ shipRef }: { shipRef: React.RefObject<THRE
       dummyObject.scale.setScalar(sprite.size * Math.max(0, 1 - progress * 1.25))
       dummyObject.updateMatrix()
       rippleInstances.setMatrixAt(i, dummyObject.matrix)
+      matrixDirty = true
     }
 
-    rippleInstances.instanceMatrix.needsUpdate = true
+    if (matrixDirty) rippleInstances.instanceMatrix.needsUpdate = true
     spriteMaterial.color.copy(cycle.foamColor)
   })
 

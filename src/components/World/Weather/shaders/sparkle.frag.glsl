@@ -1,16 +1,25 @@
+uniform vec3  uColor;
+uniform float uArmSharpness;
+uniform float uArmFalloff;
+uniform float uGlowRadius;
+
 varying float vAlpha;
 
 void main() {
   if (vAlpha < 0.005) discard;
 
-  // Gaussian soft glow — bright core, smooth falloff to edge
-  vec2  c    = gl_PointCoord - 0.5;
-  float d    = length(c) * 2.0;        // 0 at centre, 1 at corner
-  float glow = exp(-d * d * 5.5);
+  // gl_PointCoord [0,1]² → remap to [-1,1]²
+  vec2 uv = gl_PointCoord * 2.0 - 1.0;
 
-  float alpha = glow * vAlpha;
-  if (alpha < 0.005) discard;
+  // Horizontal arm: sharp in Y, gradual in X
+  float hArm = exp(-abs(uv.y) * uArmSharpness) * exp(-abs(uv.x) * uArmFalloff);
+  // Vertical arm: sharp in X, gradual in Y
+  float vArm = exp(-abs(uv.x) * uArmSharpness) * exp(-abs(uv.y) * uArmFalloff);
+  // Central radial glow
+  float glow = exp(-length(uv) * uGlowRadius);
 
-  // Silver-blue moonlit tint
-  gl_FragColor = vec4(0.88, 0.95, 1.0, alpha);
+  float star = max(max(hArm, vArm), glow);
+  if (star < 0.005) discard;
+
+  gl_FragColor = vec4(uColor, star * vAlpha);
 }
