@@ -7,7 +7,7 @@ import { useWeatherStore } from '../../../store/weatherStore'
 import { useWindStore } from '../../../store/windStore'
 import { useCycleStore } from '../../../store/cycleStore'
 
-const RAIN_COUNT = 1000
+const RAIN_COUNT = 600
 const CORNERS = [
   [-0.5, 0],
   [0.5, 0],

@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import * as THREE from 'three'
 
 export type WeatherType = 'sunny' | 'cloudy' | 'rainy' | 'windy' | 'moonlit'
 
@@ -12,6 +13,7 @@ interface WeatherState {
   overcastAmount: number
   cloudShadow: number
   lightningFlash: number
+  cloudOffset: THREE.Vector2
 }
 
 export const useWeatherStore = create<WeatherState>(() => ({
@@ -24,4 +26,5 @@ export const useWeatherStore = create<WeatherState>(() => ({
   overcastAmount: 0.0,
   cloudShadow: 0.0,
   lightningFlash: 0.0,
+  cloudOffset: new THREE.Vector2(),
 }))

@@ -12,6 +12,14 @@ const POOL_SIZE = 8
 const HANDLES_COUNT = 5
 const CURVE_DIVISIONS = 40
 
+const WIND_AXIS = Math.PI / 4
+const WIND_SPREAD = Math.PI / 4
+
+function pickWindAngle(): number {
+  const base = WIND_AXIS + (Math.random() < 0.5 ? 0 : Math.PI)
+  return base + (Math.random() - 0.5) * 2 * WIND_SPREAD
+}
+
 // One vertex pair per curve point; shader expands each pair in local Z
 function buildWindLineGeometry(handlesCount: number, divisions: number): THREE.BufferGeometry {
   const handles: THREE.Vector3[] = []
@@ -90,10 +98,8 @@ export default function WindLines({ shipRef }: { shipRef: React.RefObject<THREE.
   )
 
   const nextSpawnAt = useRef(0)
-  const windAngle = useRef(useWindStore.getState().angle)
-  const windTarget = useRef(
-    useWindStore.getState().angle + (0.5 + Math.random()) * Math.PI * (Math.random() < 0.5 ? 1 : -1)
-  )
+  const windAngle = useRef(pickWindAngle())
+  const windTarget = useRef(pickWindAngle())
   const nextWindChange = useRef(CYCLE_DURATION / 2)
 
   useFrame(({ clock }, delta) => {
@@ -110,8 +116,7 @@ export default function WindLines({ shipRef }: { shipRef: React.RefObject<THREE.
     windAngle.current += Math.max(-1.5 * dt, Math.min(1.5 * dt, diff))
     nextWindChange.current -= dt
     if (nextWindChange.current <= 0) {
-      const shift = (0.5 + Math.random() * 0.8) * Math.PI * (Math.random() < 0.5 ? 1 : -1)
-      windTarget.current = windAngle.current + shift
+      windTarget.current = pickWindAngle()
       nextWindChange.current = CYCLE_DURATION / 2
       // Kill all active lines so no old-direction streaks remain visible
       for (let i = 0; i < POOL_SIZE; i++) {
