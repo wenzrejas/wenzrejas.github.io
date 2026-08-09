@@ -11,12 +11,18 @@ import { useDebugStore } from '../../../store/debugStore'
 import { useCycleStore } from '../../../store/cycleStore'
 import { useWindStore } from '../../../store/windStore'
 import { useWeatherStore } from '../../../store/weatherStore'
+import { cloudCoverageAt } from '../../../utils/cloudField'
+
+const CLOUD_DARK = 0.65
+
+type DimTarget = { mat: THREE.MeshStandardMaterial; base: THREE.Color }
 
 const Ship = forwardRef<THREE.Group>((_props, ref) => {
   const { baseY, bobAmp, bobSpeed, moveSpeed, turnSpeed, tiltMax, tiltSpeed, foamBound, foamY } =
     useDebugStore((s) => s.ship)
 
   const { scene: shipScene } = useGLTF('/models/ship/ship-medium.glb')
+  const dimTargets = useRef<DimTarget[]>([])
   const clonedScene = useMemo(() => {
     const clone = shipScene.clone(true)
     const box = new THREE.Box3().setFromObject(clone)
@@ -25,6 +31,25 @@ const Ship = forwardRef<THREE.Group>((_props, ref) => {
     const scale = MODEL_TARGET_SIZE / Math.max(size.x, size.z)
     clone.scale.setScalar(scale)
     clone.rotation.y = MODEL_BOW_OFFSET
+
+    const targets: DimTarget[] = []
+    const cache = new Map<THREE.Material, THREE.Material>()
+    const cloneMat = (m: THREE.Material): THREE.Material => {
+      const cached = cache.get(m)
+      if (cached) return cached
+      const mat = m.clone() as THREE.MeshStandardMaterial
+      if ('color' in mat) targets.push({ mat, base: mat.color.clone() })
+      cache.set(m, mat)
+      return mat
+    }
+    clone.traverse((obj) => {
+      const mesh = obj as THREE.Mesh
+      if (!mesh.isMesh) return
+      mesh.material = Array.isArray(mesh.material)
+        ? mesh.material.map(cloneMat)
+        : cloneMat(mesh.material)
+    })
+    dimTargets.current = targets
     return clone
   }, [shipScene])
 
@@ -110,6 +135,19 @@ const Ship = forwardRef<THREE.Group>((_props, ref) => {
     group.rotation.y = headingAngle.current
     group.rotation.z = tiltAngle.current
     group.position.y = baseY + Math.sin(time * bobSpeed) * bobAmp * weather.waveAmpMult
+
+    const cover =
+      cloudCoverageAt(
+        group.position.x,
+        group.position.z,
+        weather.cloudOffset,
+        time,
+        weather.cloudShadow
+      ) * CLOUD_DARK
+    const dim = 1 - cover
+    for (const { mat, base } of dimTargets.current) {
+      mat.color.copy(base).multiplyScalar(dim)
+    }
 
     // ── Foam plane ────────────────────────────────────────────────────────
     const foamMesh = foamMeshRef.current

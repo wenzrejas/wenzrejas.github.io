@@ -4,7 +4,7 @@ import * as THREE from 'three'
 import { useWeatherStore, type WeatherType } from '../../../store/weatherStore'
 import { useDebugStore } from '../../../store/debugStore'
 import { PARAMS, TRANSITION, STABLE_MIN, pickOther, lerpParam } from './weatherParams'
-import CloudShadows from './CloudShadows'
+import { useWindStore } from '../../../store/windStore'
 import RainRipples from './RainRipples'
 import Rain from './Rain'
 import OceanSparkles from './OceanSparkles'
@@ -12,6 +12,8 @@ import OceanSparkles from './OceanSparkles'
 interface Props {
   shipRef: React.RefObject<THREE.Group | null>
 }
+
+const DRIFT_SPEED = 0.006
 
 export default function WeatherSystem({ shipRef }: Props) {
   const currentType = useRef<WeatherType>('sunny')
@@ -82,6 +84,11 @@ export default function WeatherSystem({ shipRef }: Props) {
       w.cloudShadow = lerpParam(cur.cloudShadow, nxt.cloudShadow, s)
     }
 
+    const wind = useWindStore.getState()
+    const drift = DRIFT_SPEED * w.windMult * dt
+    w.cloudOffset.x += wind.dir.x * drift
+    w.cloudOffset.y += wind.dir.y * drift
+
     // ── Lightning — always evaluated after weather state is set ─────────
     if (w.type === 'rainy') {
       nextLightning.current -= dt
@@ -123,7 +130,6 @@ export default function WeatherSystem({ shipRef }: Props) {
 
   return (
     <>
-      <CloudShadows />
       <Rain shipRef={shipRef} />
       <RainRipples shipRef={shipRef} />
       <OceanSparkles shipRef={shipRef} />

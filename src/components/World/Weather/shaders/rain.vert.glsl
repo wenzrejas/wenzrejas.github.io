@@ -10,6 +10,7 @@ attribute vec3 aSeed;   // (xSeed, phaseSeed, zSeed)  all 0..1
 attribute vec2 aCorner; // (-0.5|+0.5  left/right,  0=tip | 1=tail)
 
 varying float vV;
+varying float vU;
 varying float vDistFade;
 
 // Camera right in world space (fixed: camera is always at ship+[200,140,200])
@@ -18,9 +19,9 @@ const vec3 CAM_RIGHT = vec3(0.7071, 0.0, -0.7071);
 const float AREA      = 560.0;
 const float DROP_TOP  = 160.0;
 const float DROP_BOT  = -5.0;
-const float SPEED     = 150.0;
-const float DROP_W    = 0.30;
-const float DROP_LEN  = 16.0;
+const float SPEED     = 450.0;
+const float DROP_W    = 0.50;
+const float DROP_LEN  = 20.0;
 const float WIND_TILT = 0.20;
 
 const float CAM_DX = 200.0;
@@ -46,8 +47,8 @@ void main() {
   float dropY    = DROP_TOP - t * SPEED;
 
   // ── Per-drop fall direction (wind + turbulence) ───────────────────────────────
-  float tiltX = uWindDir.x * WIND_TILT + (r1 - 0.5) * 0.15;
-  float tiltZ = uWindDir.y * WIND_TILT + (r2 - 0.5) * 0.15;
+  float tiltX = uWindDir.x * WIND_TILT + (r1 - 0.5) * 0.06;
+  float tiltZ = uWindDir.y * WIND_TILT + (r2 - 0.5) * 0.06;
   vec3 fallDir = normalize(vec3(tiltX, -1.0, tiltZ));
 
   // ── Wind drift in XZ ─────────────────────────────────────────────────────────
@@ -75,5 +76,6 @@ void main() {
 
   vDistFade = distFade * surfaceFade;
   vV = aCorner.y;
+  vU = aCorner.x;
   gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
 }

@@ -12,6 +12,8 @@ import { useWeatherStore } from '../../../store/weatherStore'
 // Primary wave travel direction (XZ) — used to compute wind alignment
 const PRIMARY_WAVE_DIR = new THREE.Vector2(0.97, -0.26).normalize()
 
+const CLOUD_DARK = 0.95
+
 export default function Ocean() {
   const meshRef = useRef<THREE.Mesh>(null)
   const smoothedWindAmp = useRef(1.0)
@@ -56,6 +58,10 @@ export default function Ocean() {
           uMoonDir: { value: new THREE.Vector3(5, 80, 5).normalize() },
           uMoonIntensity: { value: 0 },
           uWindAmp: { value: 1.0 },
+          uCloudCover: { value: 0 },
+          uCloudOffset: { value: new THREE.Vector2() },
+          uCloudTime: { value: 0 },
+          uCloudDark: { value: CLOUD_DARK },
         },
       }),
     []
@@ -102,6 +108,9 @@ export default function Ocean() {
     const targetAmp = (0.5 + (0.8 * (alignment + 1)) / 2) * weather.waveAmpMult
     smoothedWindAmp.current += (targetAmp - smoothedWindAmp.current) * Math.min(1, delta * 0.05)
     uniforms.uWindAmp.value = smoothedWindAmp.current
+    uniforms.uCloudCover.value = weather.cloudShadow
+    uniforms.uCloudOffset.value.copy(weather.cloudOffset)
+    uniforms.uCloudTime.value = clock.getElapsedTime()
   })
 
   return (

@@ -2,6 +2,7 @@ uniform float uIntensity;
 uniform vec3  uColor;
 
 varying float vV;
+varying float vU;
 varying float vDistFade;
 
 void main() {
@@ -15,7 +16,11 @@ void main() {
   vec3 color = mix(min(base * 1.2, vec3(1.0)), base, vV);
 
   float fade  = 1.0 - smoothstep(0.0, 1.0, vV * vV);
-  float alpha = fade * vDistFade * uIntensity * 0.40;
+
+  float across    = vU * 2.0;
+  float widthBlur = exp(-across * across * 2.8);
+
+  float alpha = fade * vDistFade * uIntensity * 0.30 * widthBlur;
 
   if (alpha < 0.005) discard;
   gl_FragColor = vec4(color, alpha);

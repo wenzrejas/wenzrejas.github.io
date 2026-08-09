@@ -24,6 +24,10 @@ uniform float uCrestStrength;
 uniform vec3  uSunDir;
 uniform vec3  uMoonDir;
 uniform float uMoonIntensity;
+uniform float uCloudCover;
+uniform vec2  uCloudOffset;
+uniform float uCloudTime;
+uniform float uCloudDark;
 
 varying vec2  vWorldPos;
 varying vec3  vPos;
@@ -89,6 +93,43 @@ float fbm(vec2 p) {
   return v;
 }
 
+float cHash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+vec2  cGrad(vec2 p) { float h = cHash(p) * 6.28318; return vec2(cos(h), sin(h)); }
+float cGnoise(vec2 p) {
+  vec2 i = floor(p), f = fract(p);
+  vec2 u = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
+  return mix(
+    mix(dot(cGrad(i),           f          ), dot(cGrad(i+vec2(1,0)), f-vec2(1,0)), u.x),
+    mix(dot(cGrad(i+vec2(0,1)), f-vec2(0,1)), dot(cGrad(i+vec2(1,1)), f-vec2(1,1)), u.x),
+    u.y
+  ) * 0.5 + 0.5;
+}
+float cFbm(vec2 p) {
+  const mat2 rot = mat2(0.8, 0.6, -0.6, 0.8);
+  float v = 0.0, a = 0.5;
+  for (int i = 0; i < 3; i++) {
+    v += a * cGnoise(p);
+    p  = rot * p * 2.1 + vec2(1.7, 9.2);
+    a *= 0.5;
+  }
+  return v;
+}
+
+float cloudCoverage(vec2 worldXZ) {
+  vec2 uv = worldXZ * 0.006 + uCloudOffset;
+  float t = uCloudTime * 0.015;
+  vec2  w = vec2(
+    cGnoise(uv * 0.5 + vec2(t,   1.9        )),
+    cGnoise(uv * 0.5 + vec2(9.7, 6.4 + t*0.7))
+  ) - 0.5;
+  float n = cFbm(uv + w * 0.35);
+
+  float threshold = mix(0.64, 0.40, uCloudCover);
+  float soft = 0.20;
+  float aa   = clamp(fwidth(n), 0.0, 0.04);
+  return smoothstep(threshold - soft - aa, threshold + soft + aa, n);
+}
+
 void main() {
   vec2 noiseUV = vWorldPos * uNoiseScale + vec2(uTime * uNoiseFlowSpeed, 0.0);
   // Two independent FBM samples so X and Z distort differently (avoids diagonal-only warp)
@@ -144,6 +185,9 @@ void main() {
   // Smooth crest highlight — continuous height-based brightening, no noise gate
   float crestFactor = smoothstep(0.1, 0.72, vWaveHeight);
   color = mix(color, uHighlight, crestFactor * uCrestStrength);
+
+  float shadow = cloudCoverage(vWorldPos) * uCloudDark;
+  color *= mix(vec3(1.0), vec3(0.08, 0.11, 0.17), shadow);
 
   float alpha = mix(uDeepOpacity, 1.0, max(t, fresnel)) * uOpacity;
 
