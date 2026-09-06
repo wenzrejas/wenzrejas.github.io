@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import type {
   OceanControls,
   ShipControls,
+  IslandControls,
   WakeControls,
   BoundaryControls,
   WindLineControls,
@@ -11,6 +12,7 @@ import type {
 } from '../components/Debug/types'
 import { OCEAN_DEFAULTS } from '../components/World/Ocean/constants'
 import {
+  MODEL_TARGET_SIZE,
   BASE_Y,
   BOB_AMP,
   BOB_SPEED,
@@ -20,7 +22,7 @@ import {
   TILT_SPEED,
   PARTICLE_LIFETIME,
   PARTICLE_SPEED,
-  FOAM_BOUND,
+  FOAM_WIDTH_TRIM,
   FOAM_Y,
   WAKE_ARM_NEAR,
   WAKE_ARM_FAR,
@@ -37,6 +39,7 @@ import {
   BOUNDARY_FALLOFF,
   BOUNDARY_FOG_COLOR,
 } from '../components/World/Boundary/constants'
+import { ISLAND_MODEL_DEFAULTS } from '../components/World/Islands/constants'
 import {
   WIND_ENABLED,
   WIND_ANGLE,
@@ -53,6 +56,7 @@ import {
 export interface DebugState {
   ocean: OceanControls
   ship: ShipControls
+  island: IslandControls
   wake: WakeControls
   windLines: WindLineControls
   boundary: BoundaryControls
@@ -64,6 +68,7 @@ export interface DebugState {
 export const useDebugStore = create<DebugState>(() => ({
   ocean: { ...OCEAN_DEFAULTS },
   ship: {
+    modelSize: MODEL_TARGET_SIZE,
     moveSpeed: MOVE_SPEED,
     turnSpeed: TURN_SPEED,
     baseY: BASE_Y,
@@ -73,9 +78,10 @@ export const useDebugStore = create<DebugState>(() => ({
     tiltSpeed: TILT_SPEED,
     partLife: PARTICLE_LIFETIME,
     partSpeed: PARTICLE_SPEED,
-    foamBound: FOAM_BOUND,
+    foamWidth: FOAM_WIDTH_TRIM,
     foamY: FOAM_Y,
   },
+  island: { ...ISLAND_MODEL_DEFAULTS },
   wake: {
     armNear: WAKE_ARM_NEAR,
     armFar: WAKE_ARM_FAR,

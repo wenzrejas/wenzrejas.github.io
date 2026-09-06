@@ -3,16 +3,13 @@ import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import VERT from './shaders/ocean.vert.glsl'
 import FRAG from './shaders/ocean.frag.glsl'
-import { OCEAN_DEFAULTS } from './constants'
+import { OCEAN_DEFAULTS, OCEAN_PLANE_SIZE, OCEAN_SEGMENTS } from './constants'
 import { useDebugStore } from '../../../store/debugStore'
 import { useCycleStore } from '../../../store/cycleStore'
 import { useWindStore } from '../../../store/windStore'
 import { useWeatherStore } from '../../../store/weatherStore'
 
-// Primary wave travel direction (XZ) — used to compute wind alignment
 const PRIMARY_WAVE_DIR = new THREE.Vector2(0.97, -0.26).normalize()
-
-const CLOUD_DARK = 0.95
 
 export default function Ocean() {
   const meshRef = useRef<THREE.Mesh>(null)
@@ -58,10 +55,6 @@ export default function Ocean() {
           uMoonDir: { value: new THREE.Vector3(5, 80, 5).normalize() },
           uMoonIntensity: { value: 0 },
           uWindAmp: { value: 1.0 },
-          uCloudCover: { value: 0 },
-          uCloudOffset: { value: new THREE.Vector2() },
-          uCloudTime: { value: 0 },
-          uCloudDark: { value: CLOUD_DARK },
         },
       }),
     []
@@ -108,9 +101,6 @@ export default function Ocean() {
     const targetAmp = (0.5 + (0.8 * (alignment + 1)) / 2) * weather.waveAmpMult
     smoothedWindAmp.current += (targetAmp - smoothedWindAmp.current) * Math.min(1, delta * 0.05)
     uniforms.uWindAmp.value = smoothedWindAmp.current
-    uniforms.uCloudCover.value = weather.cloudShadow
-    uniforms.uCloudOffset.value.copy(weather.cloudOffset)
-    uniforms.uCloudTime.value = clock.getElapsedTime()
   })
 
   return (
@@ -121,7 +111,7 @@ export default function Ocean() {
       frustumCulled={false}
       renderOrder={2}
     >
-      <planeGeometry args={[2600, 2600, 128, 128]} />
+      <planeGeometry args={[OCEAN_PLANE_SIZE, OCEAN_PLANE_SIZE, OCEAN_SEGMENTS, OCEAN_SEGMENTS]} />
       <primitive object={material} attach="material" />
     </mesh>
   )

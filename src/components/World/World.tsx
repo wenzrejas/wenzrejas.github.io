@@ -10,6 +10,7 @@ import WakeTrail from './Ship/WakeTrail'
 import WakeRipples from './Ship/WakeRipples'
 import WindLines from './WindLines/WindLines'
 import WeatherSystem from './Weather/WeatherSystem'
+import CloudShadows from './Weather/CloudShadows'
 
 interface WorldProps {
   onIslandSelect: (key: IslandKey) => void
@@ -35,6 +36,7 @@ const World = forwardRef<THREE.Group, WorldProps>(({ onIslandSelect }, forwarded
       <WakeRipples shipRef={shipRef} />
       <WindLines shipRef={shipRef} />
       <WeatherSystem shipRef={shipRef} />
+      <CloudShadows />
     </>
   )
 })

@@ -1,6 +1,9 @@
+export const OCEAN_PLANE_SIZE = 2600
+export const OCEAN_SEGMENTS = 128
+
 export const OCEAN_DEFAULTS = {
   waterScale: 0.08,
-  cellSmoothness: 0.2,
+  cellSmoothness: 0.18,
   edgeThreshold: 0.075,
   edgeSoftness: 0.065,
   flowX: -0.23,
@@ -14,13 +17,13 @@ export const OCEAN_DEFAULTS = {
   midPos: 0.31,
   highlightColor: '#ffffff',
   opacity: 1,
-  deepOpacity: 0.25,
+  deepOpacity: 0.85,
   waveAmp: 2.5,
   waveSpeed: 1,
   fresnelPower: 3.5,
   fresnelStrength: 0.45,
-  foamAmount: 0.25,
-  specularStrength: 0.85,
+  foamAmount: 0.2,
+  specularStrength: 0.45,
   specularPower: 5.0,
   crestStrength: 0.15,
   sunX: 2.5,
