@@ -13,7 +13,8 @@ import { Perf } from 'r3f-perf'
 function CameraRig({ shipRef }: { shipRef: React.RefObject<THREE.Group | null> }) {
   useFrame(({ camera }) => {
     if (!shipRef.current) return
-    const { x, y, z } = shipRef.current.position
+    const { x, z } = shipRef.current.position
+    const y = useDebugStore.getState().ship.baseY
     camera.position.set(x + CAMERA_OFFSET[0], y + CAMERA_OFFSET[1], z + CAMERA_OFFSET[2])
     camera.lookAt(x, y + CAMERA_LOOK_Y_OFFSET, z)
   })
@@ -28,13 +29,15 @@ export default function Experience() {
   return (
     <Canvas
       orthographic
+      flat
+      shadows="variance"
       camera={{ zoom: 5, position: CAMERA_OFFSET, near: 0.1, far: 10000 }}
       gl={{ antialias: true }}
       dpr={[1, 1.5]}
     >
       <color attach="background" args={['#1a7fa8']} />
       {IS_DEBUG && <Perf position="top-left" />}
-      <DayNightCycle />
+      <DayNightCycle shipRef={shipRef} />
       <World ref={shipRef} onIslandSelect={selectIsland} />
       {orbitCamera ? <OrbitControls makeDefault /> : <CameraRig shipRef={shipRef} />}
     </Canvas>

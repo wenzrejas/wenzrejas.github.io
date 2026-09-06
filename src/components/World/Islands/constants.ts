@@ -7,11 +7,12 @@ export const WORLD_LOCATIONS = {
     color: '#4a90d9',
   },
   sanctuary: {
-    label: 'The Sanctuary',
-    description: 'Tech Stack',
-    position: [-360, 0, 530] as [number, number, number],
+    label: 'Ko-fi Island',
+    description: 'Support',
+    position: [-720, 0, 170] as [number, number, number],
     radius: 55,
     color: '#5aab61',
+    model: '/models/islands/cozy_isle_web_draco.glb',
   },
   beacon: {
     label: 'The Beacon',
@@ -28,13 +29,24 @@ export const WORLD_LOCATIONS = {
     color: '#9b59b6',
   },
   kofi: {
-    label: 'Ko-fi Island',
-    description: 'Support',
-    position: [-720, 0, 170] as [number, number, number],
+    label: 'The Sanctuary',
+    description: 'Tech Stack',
+    position: [-360, 0, 530] as [number, number, number],
     radius: 30,
     color: '#f0a500',
   },
 } as const
+
+export const ISLAND_INTERACTION = false
+
+export const ISLAND_MODEL_DEFAULTS = {
+  scale: 1,
+  rotation: -8,
+  offsetX: 0,
+  offsetY: 0,
+  offsetZ: 0,
+  brightness: 1.05,
+}
 
 export type IslandKey = keyof typeof WORLD_LOCATIONS
 export type IslandConfig = (typeof WORLD_LOCATIONS)[IslandKey]

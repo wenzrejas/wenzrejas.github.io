@@ -3,11 +3,11 @@ import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useDebugStore } from '../../../store/debugStore'
 import { useCycleStore } from '../../../store/cycleStore'
-import { MODEL_TARGET_SIZE, FOAM_PLANE_SIZE } from './constants'
+import { FOAM_PLANE_SIZE, hullFoamBound } from './constants'
 
 const GROUPS = 5
 const PARTICLES_PER_GROUP = 40
-const TOTAL = GROUPS * PARTICLES_PER_GROUP // 200
+const TOTAL = GROUPS * PARTICLES_PER_GROUP
 
 interface Particle {
   alive: boolean
@@ -20,7 +20,6 @@ interface Particle {
   size: number
 }
 
-// Mirror the foam shader hull shape — used for particle spawn positions.
 function getHullDist(ax: number, ny: number): number {
   const ay = Math.abs(ny)
   const bowWidthScale = Math.max(1 - Math.max(0, ny) * 0.5, 0.02)
@@ -102,12 +101,10 @@ export default function HullRipples({ shipRef }: { shipRef: React.RefObject<THRE
     const cycle = useCycleStore.getState()
     const time = clock.getElapsedTime()
 
-    // Spawn a ripple ring on every bob downstroke (sin crosses zero downward)
     const bobSign = Math.sin(time * s.bobSpeed) >= 0 ? 1 : -1
     if (prevBobSign.current > 0 && bobSign < 0) spawnGroup(time, ship, s)
     prevBobSign.current = bobSign
 
-    // Update instanced particle matrices
     let dirty = false
     for (let i = 0; i < TOTAL; i++) {
       const p = particles.current[i]
@@ -156,16 +153,18 @@ export default function HullRipples({ shipRef }: { shipRef: React.RefObject<THRE
     const cos = Math.cos(heading)
     const sin = Math.sin(heading)
     const slotBase = (groupIndex.current % GROUPS) * PARTICLES_PER_GROUP
-    const fb = s.foamBound - Math.sin(time * s.bobSpeed) * 0.008
-    const hullAspect = MODEL_TARGET_SIZE / (2 * fb * FOAM_PLANE_SIZE)
+    const fb = hullFoamBound(s.modelSize, s.foamWidth) - Math.sin(time * s.bobSpeed) * 0.008
+    const hullAspect = s.modelSize / (2 * fb * FOAM_PLANE_SIZE)
+    const hullHalf = fb * FOAM_PLANE_SIZE
 
     for (let i = 0; i < PARTICLES_PER_GROUP; i++) {
       const t = i / PARTICLES_PER_GROUP
       const ny_norm = t < 0.5 ? t * 4 - 1 : 1 - (t - 0.5) * 4
       const nx_norm = (t < 0.5 ? -1 : 1) * findBoundaryNx(ny_norm)
 
-      const localX = nx_norm * fb * FOAM_PLANE_SIZE + (Math.random() - 0.5) * 1.5
-      const localZ = -ny_norm * fb * hullAspect * FOAM_PLANE_SIZE + (Math.random() - 0.5) * 1.5
+      const jitter = hullHalf * 0.23
+      const localX = nx_norm * hullHalf + (Math.random() - 0.5) * jitter
+      const localZ = -ny_norm * hullHalf * hullAspect + (Math.random() - 0.5) * jitter
 
       const worldX = ship.position.x + cos * localX + sin * localZ
       const worldZ = ship.position.z - sin * localX + cos * localZ
@@ -181,7 +180,7 @@ export default function HullRipples({ shipRef }: { shipRef: React.RefObject<THRE
       p.z = worldZ
       p.velocityX = dx / len + (Math.random() - 0.5) * 0.25
       p.velocityZ = dz / len + (Math.random() - 0.5) * 0.25
-      p.size = 0.6 + Math.random() * 1.0
+      p.size = hullHalf * (0.09 + Math.random() * 0.15)
     }
 
     groupIndex.current++

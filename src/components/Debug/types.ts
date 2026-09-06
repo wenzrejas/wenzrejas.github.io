@@ -31,6 +31,7 @@ export interface OceanControls {
 }
 
 export interface ShipControls {
+  modelSize: number
   moveSpeed: number
   turnSpeed: number
   baseY: number
@@ -40,8 +41,17 @@ export interface ShipControls {
   tiltSpeed: number
   partLife: number
   partSpeed: number
-  foamBound: number
+  foamWidth: number
   foamY: number
+}
+
+export interface IslandControls {
+  scale: number
+  rotation: number
+  offsetX: number
+  offsetY: number
+  offsetZ: number
+  brightness: number
 }
 
 export interface WakeControls {
