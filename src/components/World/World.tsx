@@ -4,6 +4,7 @@ import type { IslandKey } from './Islands/constants'
 import Boundary from './Boundary/Boundary'
 import Islands from './Islands/Islands'
 import Ocean from './Ocean/Ocean'
+import ShoreRipples from './Shore/ShoreRipples'
 import Ship from './Ship/Ship'
 import HullRipples from './Ship/HullRipples'
 import WakeTrail from './Ship/WakeTrail'
@@ -24,6 +25,7 @@ const World = forwardRef<THREE.Group, WorldProps>(({ onIslandSelect }, forwarded
       <Boundary />
       <Islands onSelect={onIslandSelect} />
       <Ocean />
+      <ShoreRipples />
       <Ship
         ref={(el) => {
           ;(shipRef as React.MutableRefObject<THREE.Group | null>).current = el

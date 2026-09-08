@@ -4,6 +4,8 @@ import type * as THREE from 'three'
 import { useKeyboardInput } from '../../../hooks/useKeyboardInput'
 import { INITIAL_HEADING } from './constants'
 import { BOUNDARY_RADIUS } from '../Boundary/constants'
+import { WORLD_LOCATIONS } from '../Islands/constants'
+import { COZY_COLLISION_RADIUS } from '../Islands/CozyIsle/constants'
 import { useDebugStore } from '../../../store/debugStore'
 import { useWindStore } from '../../../store/windStore'
 import { useWeatherStore } from '../../../store/weatherStore'
@@ -13,11 +15,8 @@ const VELOCITY_LERP = 6
 const WIND_ASSIST = 0.3
 const WIND_ASSIST_CAP = 2.5
 
-/**
- * Drives the ship group's transform each frame. Returns the heading, which the
- * hull foam needs; call this before any hook that reads the ship's transform,
- * since useFrame callbacks of equal priority run in subscription order.
- */
+const [COZY_X, , COZY_Z] = WORLD_LOCATIONS.cozy.position
+
 export function useShipMovement(groupRef: RefObject<THREE.Group | null>) {
   const pressedKeys = useKeyboardInput()
   const heading = useRef(INITIAL_HEADING)
@@ -67,6 +66,16 @@ export function useShipMovement(groupRef: RefObject<THREE.Group | null>) {
       const scale = BOUNDARY_RADIUS / dist
       group.position.x *= scale
       group.position.z *= scale
+    }
+
+    // ── Island collision ──────────────────────────────────────────────────
+    const dx = group.position.x - COZY_X
+    const dz = group.position.z - COZY_Z
+    const islandDist = Math.sqrt(dx * dx + dz * dz)
+    if (islandDist > 0 && islandDist < COZY_COLLISION_RADIUS) {
+      const push = COZY_COLLISION_RADIUS / islandDist
+      group.position.x = COZY_X + dx * push
+      group.position.z = COZY_Z + dz * push
     }
 
     // ── Tilt and bob ──────────────────────────────────────────────────────

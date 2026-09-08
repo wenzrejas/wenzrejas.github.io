@@ -3,13 +3,30 @@ import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import VERT from './shaders/ocean.vert.glsl'
 import FRAG from './shaders/ocean.frag.glsl'
-import { OCEAN_DEFAULTS, OCEAN_PLANE_SIZE, OCEAN_SEGMENTS } from './constants'
+import {
+  MAX_SHORE_ISLANDS,
+  OCEAN_DEFAULTS,
+  OCEAN_PLANE_SIZE,
+  OCEAN_SEGMENTS,
+  SHORE_CALM_BAND,
+} from './constants'
+import { WORLD_LOCATIONS } from '../Islands/constants'
 import { useDebugStore } from '../../../store/debugStore'
 import { useCycleStore } from '../../../store/cycleStore'
 import { useWindStore } from '../../../store/windStore'
 import { useWeatherStore } from '../../../store/weatherStore'
 
 const PRIMARY_WAVE_DIR = new THREE.Vector2(0.97, -0.26).normalize()
+
+const SHORE_ISLANDS: THREE.Vector4[] = Object.values(WORLD_LOCATIONS)
+  .slice(0, MAX_SHORE_ISLANDS)
+  .map(
+    (cfg) =>
+      new THREE.Vector4(cfg.position[0], cfg.position[2], cfg.shoreRadius[0], cfg.shoreRadius[1])
+  )
+while (SHORE_ISLANDS.length < MAX_SHORE_ISLANDS) {
+  SHORE_ISLANDS.push(new THREE.Vector4(1e6, 1e6, 1, 1))
+}
 
 export default function Ocean() {
   const meshRef = useRef<THREE.Mesh>(null)
@@ -41,6 +58,7 @@ export default function Ocean() {
           uMidColor: { value: new THREE.Color(OCEAN_DEFAULTS.midColor) },
           uMidPos: { value: OCEAN_DEFAULTS.midPos },
           uHighlight: { value: new THREE.Color(OCEAN_DEFAULTS.highlightColor) },
+          uFoamColor: { value: new THREE.Color(1, 1, 1) },
           uOpacity: { value: OCEAN_DEFAULTS.opacity },
           uDeepOpacity: { value: OCEAN_DEFAULTS.deepOpacity },
           uFresnelPower: { value: OCEAN_DEFAULTS.fresnelPower },
@@ -55,6 +73,8 @@ export default function Ocean() {
           uMoonDir: { value: new THREE.Vector3(5, 80, 5).normalize() },
           uMoonIntensity: { value: 0 },
           uWindAmp: { value: 1.0 },
+          uIslands: { value: SHORE_ISLANDS },
+          uShoreCalmBand: { value: SHORE_CALM_BAND },
         },
       }),
     []
@@ -86,6 +106,7 @@ export default function Ocean() {
     uniforms.uMidColor.value.copy(cycle.oceanMid)
     uniforms.uMidPos.value = ocean.midPos
     uniforms.uHighlight.value.set(ocean.highlightColor)
+    uniforms.uFoamColor.value.copyLinearToSRGB(cycle.foamColor)
     uniforms.uOpacity.value = ocean.opacity
     uniforms.uDeepOpacity.value = ocean.deepOpacity
     uniforms.uFresnelPower.value = ocean.fresnelPower
