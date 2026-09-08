@@ -13,6 +13,7 @@ uniform vec3  uDeepColor;
 uniform vec3  uMidColor;
 uniform float uMidPos;
 uniform vec3  uHighlight;
+uniform vec3  uFoamColor;
 uniform float uOpacity;
 uniform float uDeepOpacity;
 uniform float uFresnelPower;
@@ -124,7 +125,7 @@ void main() {
   color = mix(color, vec3(0.72, 0.82, 1.0), clamp(moonSpec, 0.0, 1.0));
 
   float crestFactor = smoothstep(0.1, 0.72, vWaveHeight);
-  color = mix(color, uHighlight, crestFactor * uCrestStrength);
+  color = mix(color, uFoamColor, crestFactor * uCrestStrength);
 
   float alpha = mix(uDeepOpacity, 1.0, max(t, fresnel)) * uOpacity;
 
@@ -135,7 +136,7 @@ void main() {
   float foam      = clamp(foamEdge + crest * 0.75, 0.0, 1.0)
                   * smoothstep(0.38, 0.56, foamNoise)
                   * uFoamAmount;
-  color = mix(color, vec3(1.0), foam);
+  color = mix(color, uFoamColor, foam);
   alpha = max(alpha, foam);
 
   float dither = fract(52.9829189 * fract(dot(gl_FragCoord.xy, vec2(0.06711056, 0.00583715))));

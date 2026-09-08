@@ -1,6 +1,6 @@
 // ── Ship model ────────────────────────────────────────────────────────────────
 export const MODEL_BOW_OFFSET = Math.PI
-export const MODEL_TARGET_SIZE = 42
+export const MODEL_TARGET_SIZE = 40
 export const INITIAL_HEADING = 0
 
 // ── Ship physics ──────────────────────────────────────────────────────────────

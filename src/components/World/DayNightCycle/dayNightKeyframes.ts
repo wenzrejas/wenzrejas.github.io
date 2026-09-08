@@ -33,7 +33,7 @@ export const KFS: KF[] = [
     moonPos: [5, 80, 5],
     oceanDeep: '#030710',
     oceanMid: '#060c1a',
-    foam: '#253060',
+    foam: '#7c88bc',
   },
   // ── first light ──────────────────────────────────────────────────────
   {
@@ -51,7 +51,7 @@ export const KFS: KF[] = [
     moonPos: [-28, 42, 10],
     oceanDeep: '#0e1e30',
     oceanMid: '#162438',
-    foam: '#503828',
+    foam: '#9a8470',
   },
   // ── sunrise / golden hour ────────────────────────────────────────────
   {
@@ -159,7 +159,7 @@ export const KFS: KF[] = [
     moonPos: [30, 35, -12],
     oceanDeep: '#080a1a',
     oceanMid: '#0c1225',
-    foam: '#607090',
+    foam: '#8a97b8',
   },
   // ── night ────────────────────────────────────────────────────────────
   {
@@ -177,7 +177,7 @@ export const KFS: KF[] = [
     moonPos: [15, 60, -8],
     oceanDeep: '#030712',
     oceanMid: '#060a18',
-    foam: '#364070',
+    foam: '#7f8bbe',
   },
   // ── midnight ─────────────────────────────────────────────────────────
   {
@@ -195,7 +195,7 @@ export const KFS: KF[] = [
     moonPos: [5, 80, 5],
     oceanDeep: '#020510',
     oceanMid: '#040816',
-    foam: '#252e58',
+    foam: '#8b96c8',
   },
   // ── back to pre-dawn (seamless loop) ─────────────────────────────────
   {
@@ -213,7 +213,7 @@ export const KFS: KF[] = [
     moonPos: [5, 80, 5],
     oceanDeep: '#030710',
     oceanMid: '#060c1a',
-    foam: '#253060',
+    foam: '#7c88bc',
   },
 ]
 

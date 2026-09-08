@@ -1,7 +1,11 @@
+#define MAX_ISLANDS 8
+
 uniform float uTime;
 uniform float uWaveAmp;
 uniform float uWaveSpeed;
 uniform float uWindAmp;
+uniform vec4  uIslands[MAX_ISLANDS];
+uniform float uShoreCalmBand;
 
 varying vec2 vWorldPos;
 varying vec3 vPos;
@@ -73,10 +77,21 @@ void main() {
   dHdx += ((lsX - lsC) / ls_eps) * ls_amp;
   dHdz += ((lsZ - lsC) / ls_eps) * ls_amp;
 
-  vWaveHeight = y;
-  worldPos.y += y * uWaveAmp;
+  float calm = 1.0;
+  for (int i = 0; i < MAX_ISLANDS; i++) {
+    vec4  isl = uIslands[i];
+    vec2  rel = xz - isl.xy;
+    vec2  dir = rel / max(length(rel), 1e-4);
+    float d   = (length(rel / isl.zw) - 1.0) * length(dir * isl.zw);
+    calm = min(calm, smoothstep(0.0, uShoreCalmBand, d));
+  }
 
-  vNormal   = normalize(vec3(-dHdx * uWaveAmp, 1.0, -dHdz * uWaveAmp));
+  float amp = uWaveAmp * calm;
+
+  vWaveHeight = y * calm;
+  worldPos.y += y * amp;
+
+  vNormal   = normalize(vec3(-dHdx * amp, 1.0, -dHdz * amp));
   vWorldPos = worldPos.xz;
   vPos      = worldPos.xyz;
   gl_Position = projectionMatrix * viewMatrix * worldPos;
