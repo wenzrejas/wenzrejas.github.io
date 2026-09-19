@@ -3,6 +3,7 @@ import * as THREE from 'three'
 import type { IslandKey } from './Islands/constants'
 import Boundary from './Boundary/Boundary'
 import Islands from './Islands/Islands'
+import IslandReveal from './Islands/IslandReveal'
 import Ocean from './Ocean/Ocean'
 import ShoreRipples from './Shore/ShoreRipples'
 import Ship from './Ship/Ship'
@@ -33,6 +34,7 @@ const World = forwardRef<THREE.Group, WorldProps>(({ onIslandSelect }, forwarded
           else if (forwardedRef) forwardedRef.current = el
         }}
       />
+      <IslandReveal shipRef={shipRef} />
       <HullRipples shipRef={shipRef} />
       <WakeTrail shipRef={shipRef} />
       <WakeRipples shipRef={shipRef} />

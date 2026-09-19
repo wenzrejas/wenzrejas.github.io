@@ -12,7 +12,6 @@
     width: 40vw;
   }
 
-  // Inner div is always full panel width so content never reflows during transition
   &__inner {
     position: relative;
     width: 40vw;
@@ -61,7 +60,7 @@
 
   &__tag {
     display: inline-block;
-    font-family: 'Space Mono', monospace;
+    font-family: 'Oxanium', sans-serif;
     font-size: 0.65rem;
     font-weight: 700;
     letter-spacing: 0.14em;
@@ -74,7 +73,7 @@
   }
 
   &__title {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Sora', sans-serif;
     font-size: 1.85rem;
     font-weight: 800;
     color: #0f172a;

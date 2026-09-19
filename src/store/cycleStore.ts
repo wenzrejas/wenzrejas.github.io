@@ -9,10 +9,10 @@ interface CycleState {
   oceanMoonDir: THREE.Vector3
   foamColor: THREE.Color
   nightFactor: number
+  fresnel: number
+  specular: number
 }
 
-// THREE.Color / Vector3 objects are mutated in-place each frame by DayNightCycle.
-// Readers access them via getState() in useFrame — no React subscriptions needed.
 export const useCycleStore = create<CycleState>(() => ({
   fogColor: new THREE.Color('#c8dff0'),
   oceanDeep: new THREE.Color('#27a3d8'),
@@ -21,4 +21,6 @@ export const useCycleStore = create<CycleState>(() => ({
   oceanMoonDir: new THREE.Vector3(5, 80, 5).normalize(),
   foamColor: new THREE.Color('#ffffff'),
   nightFactor: 0,
+  fresnel: 1,
+  specular: 1,
 }))

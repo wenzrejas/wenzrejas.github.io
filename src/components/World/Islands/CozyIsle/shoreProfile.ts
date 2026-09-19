@@ -1,5 +1,9 @@
 export const COZY_FOOTPRINT = 13.712
 
+export const COZY_MODEL_TOP = 5.21
+
+export const COZY_SHORE_PEAK = 6.442
+
 export const COZY_SHORE_PROFILE = new Float32Array([
   4.664, 4.658, 4.654, 4.654, 4.671, 4.691, 4.719, 4.74, 4.756, 4.775, 4.801, 4.84, 4.882, 4.919,
   4.944, 4.966, 4.992, 5.021, 5.055, 5.076, 5.091, 5.104, 5.123, 5.139, 5.133, 5.104, 5.057, 5.016,

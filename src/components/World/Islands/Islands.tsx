@@ -1,12 +1,16 @@
-import { useState, type ComponentType } from 'react'
+import { useRef, useState, type ComponentType } from 'react'
+import type * as THREE from 'three'
 import type { ThreeEvent } from '@react-three/fiber'
 import { ISLAND_INTERACTION, WORLD_LOCATIONS, type IslandConfig, type IslandKey } from './constants'
 import type { IslandBodyProps } from './types'
 import CozyIsle from './CozyIsle/CozyIsle'
+import BeaconIsle from './BeaconIsle/BeaconIsle'
 import PlaceholderIsland from './PlaceholderIsland/PlaceholderIsland'
+import { useNearViewport } from './useNearViewport'
 
 const ISLAND_BODIES: Partial<Record<IslandKey, ComponentType<IslandBodyProps>>> = {
   cozy: CozyIsle,
+  beacon: BeaconIsle,
 }
 
 interface IslandProps {
@@ -19,6 +23,9 @@ function Island({ islandKey, config, onSelect }: IslandProps) {
   const [hovered, setHovered] = useState(false)
   const [x, , z] = config.position
   const Body = ISLAND_BODIES[islandKey] ?? PlaceholderIsland
+
+  const groupRef = useRef<THREE.Group>(null)
+  useNearViewport(groupRef, islandKey)
 
   const interaction = ISLAND_INTERACTION
     ? {
@@ -39,8 +46,8 @@ function Island({ islandKey, config, onSelect }: IslandProps) {
     : {}
 
   return (
-    <group position={[x, 0, z]} {...interaction}>
-      <Body config={config} hovered={hovered} />
+    <group ref={groupRef} position={[x, 0, z]} {...interaction}>
+      <Body islandKey={islandKey} config={config} hovered={hovered} />
     </group>
   )
 }

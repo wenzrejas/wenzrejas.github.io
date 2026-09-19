@@ -14,6 +14,10 @@ void main() {
   float fade = 1.0 - smoothstep(0.0, 1.0, vProgress);
 
   float alpha = ring * fade * uIntensity * 0.55;
+
+  float dither = fract(52.9829189 * fract(dot(gl_FragCoord.xy, vec2(0.06711056, 0.00583715))));
+  alpha *= mix(0.68, 1.0, dither);
+
   if (alpha < 0.005) discard;
 
   float lum   = dot(uColor, vec3(0.299, 0.587, 0.114));

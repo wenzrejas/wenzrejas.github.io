@@ -1,6 +1,7 @@
 import { Leva } from 'leva'
 import Experience from './components/Experience/Experience'
 import IslandPanel from './components/World/Islands/IslandPanel'
+import IslandTitle from './components/World/Islands/IslandTitle'
 import { ISLAND_INTERACTION } from './components/World/Islands/constants'
 import { DebugSync } from './components/Debug/DebugControls'
 import { IS_DEBUG } from './components/Experience/constants'
@@ -15,6 +16,7 @@ export default function App() {
       <DebugSync />
       <Leva hidden={!IS_DEBUG} collapsed />
       <Experience />
+      <IslandTitle />
       {ISLAND_INTERACTION && <IslandPanel selectedKey={selectedIsland} onClose={clearIsland} />}
     </>
   )

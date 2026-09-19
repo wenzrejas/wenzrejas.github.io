@@ -14,6 +14,8 @@ export interface KF {
   oceanDeep: string
   oceanMid: string
   foam: string
+  fresnel: number
+  specular: number
 }
 
 export const KFS: KF[] = [
@@ -34,6 +36,8 @@ export const KFS: KF[] = [
     oceanDeep: '#030710',
     oceanMid: '#060c1a',
     foam: '#7c88bc',
+    fresnel: 0.3,
+    specular: 0.12,
   },
   // ── first light ──────────────────────────────────────────────────────
   {
@@ -52,6 +56,8 @@ export const KFS: KF[] = [
     oceanDeep: '#0e1e30',
     oceanMid: '#162438',
     foam: '#9a8470',
+    fresnel: 0.45,
+    specular: 0.35,
   },
   // ── sunrise / golden hour ────────────────────────────────────────────
   {
@@ -70,6 +76,8 @@ export const KFS: KF[] = [
     oceanDeep: '#2a4e6a',
     oceanMid: '#3a6882',
     foam: '#d4a860',
+    fresnel: 0.85,
+    specular: 0.9,
   },
   // ── morning ──────────────────────────────────────────────────────────
   {
@@ -88,6 +96,8 @@ export const KFS: KF[] = [
     oceanDeep: '#1e8ab8',
     oceanMid: '#40aad4',
     foam: '#e8e0d0',
+    fresnel: 1.0,
+    specular: 1.0,
   },
   // ── noon ─────────────────────────────────────────────────────────────
   {
@@ -106,6 +116,8 @@ export const KFS: KF[] = [
     oceanDeep: '#27a3d8',
     oceanMid: '#59c0e8',
     foam: '#ffffff',
+    fresnel: 1.0,
+    specular: 1.0,
   },
   // ── afternoon ────────────────────────────────────────────────────────
   {
@@ -124,6 +136,8 @@ export const KFS: KF[] = [
     oceanDeep: '#2092c2',
     oceanMid: '#4aaee0',
     foam: '#f0f2f8',
+    fresnel: 1.0,
+    specular: 1.0,
   },
   // ── sunset / golden hour ─────────────────────────────────────────────
   {
@@ -142,6 +156,8 @@ export const KFS: KF[] = [
     oceanDeep: '#2a4060',
     oceanMid: '#3a5878',
     foam: '#d4a840',
+    fresnel: 0.9,
+    specular: 0.9,
   },
   // ── dusk / twilight ──────────────────────────────────────────────────
   {
@@ -160,6 +176,8 @@ export const KFS: KF[] = [
     oceanDeep: '#080a1a',
     oceanMid: '#0c1225',
     foam: '#8a97b8',
+    fresnel: 0.5,
+    specular: 0.3,
   },
   // ── night ────────────────────────────────────────────────────────────
   {
@@ -178,6 +196,8 @@ export const KFS: KF[] = [
     oceanDeep: '#030712',
     oceanMid: '#060a18',
     foam: '#7f8bbe',
+    fresnel: 0.3,
+    specular: 0.12,
   },
   // ── midnight ─────────────────────────────────────────────────────────
   {
@@ -196,6 +216,8 @@ export const KFS: KF[] = [
     oceanDeep: '#020510',
     oceanMid: '#040816',
     foam: '#8b96c8',
+    fresnel: 0.25,
+    specular: 0.08,
   },
   // ── back to pre-dawn (seamless loop) ─────────────────────────────────
   {
@@ -214,8 +236,25 @@ export const KFS: KF[] = [
     oceanDeep: '#030710',
     oceanMid: '#060c1a',
     foam: '#7c88bc',
+    fresnel: 0.3,
+    specular: 0.12,
   },
 ]
+
+export const PHASES = {
+  'pre-dawn': 0.0,
+  'first light': 0.1,
+  sunrise: 0.18,
+  morning: 0.28,
+  noon: 0.38,
+  afternoon: 0.5,
+  sunset: 0.6,
+  dusk: 0.68,
+  night: 0.76,
+  midnight: 0.88,
+} as const
+
+export type PhaseName = keyof typeof PHASES
 
 export function sampleKeyframes(ct: number): { lo: KF; hi: KF; a: number } {
   for (let i = 0; i < KFS.length - 1; i++) {
