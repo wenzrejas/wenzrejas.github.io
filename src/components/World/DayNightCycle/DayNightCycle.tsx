@@ -4,7 +4,7 @@ import * as THREE from 'three'
 import { useCycleStore } from '../../../store/cycleStore'
 import { useWeatherStore } from '../../../store/weatherStore'
 import { useDebugStore } from '../../../store/debugStore'
-import { sampleKeyframes } from './dayNightKeyframes'
+import { PHASES, sampleKeyframes } from './dayNightKeyframes'
 import { mix, lerpColor, lerpVec3 } from '../../../utils/math'
 
 export const CYCLE_DURATION = 480
@@ -23,7 +23,11 @@ export default function DayNightCycle() {
 
   useFrame((_, delta) => {
     const { dayCycle } = useDebugStore.getState()
-    timeRef.current = (timeRef.current + (delta * dayCycle.cycleSpeed) / CYCLE_DURATION) % 1
+    if (dayCycle.timeOfDay === 'auto') {
+      timeRef.current = (timeRef.current + (delta * dayCycle.cycleSpeed) / CYCLE_DURATION) % 1
+    } else {
+      timeRef.current = PHASES[dayCycle.timeOfDay]
+    }
 
     const { lo, hi, a } = sampleKeyframes(timeRef.current)
     const cycle = useCycleStore.getState()
@@ -31,6 +35,8 @@ export default function DayNightCycle() {
 
     // ── Cycle-store colors (read by Ocean, Boundary, Ship each frame) ─────
     cycle.nightFactor = mix(lo.moonInt, hi.moonInt, a) / 1.2
+    cycle.fresnel = mix(lo.fresnel, hi.fresnel, a)
+    cycle.specular = mix(lo.specular, hi.specular, a)
     lerpColor(lo.fog, hi.fog, a, cycle.fogColor)
     lerpColor(lo.oceanDeep, hi.oceanDeep, a, cycle.oceanDeep)
     lerpColor(lo.oceanMid, hi.oceanMid, a, cycle.oceanMid)

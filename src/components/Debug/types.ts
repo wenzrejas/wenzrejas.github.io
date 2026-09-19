@@ -1,3 +1,6 @@
+import type { PhaseName } from '../World/DayNightCycle/dayNightKeyframes'
+import type { IslandKey } from '../World/Islands/constants'
+import type { IslandModelTuning } from '../World/Islands/islandSpec'
 import type { WeatherType } from '../../store/weatherStore'
 
 export interface OceanControls {
@@ -45,14 +48,7 @@ export interface ShipControls {
   foamY: number
 }
 
-export interface IslandControls {
-  scale: number
-  rotation: number
-  offsetX: number
-  offsetY: number
-  offsetZ: number
-  brightness: number
-}
+export type IslandControls = IslandModelTuning
 
 export interface WakeControls {
   armNear: number
@@ -92,8 +88,13 @@ export interface WeatherControls {
 
 export interface DayCycleControls {
   cycleSpeed: number
+  timeOfDay: 'auto' | PhaseName
 }
 
 export interface CameraControls {
   orbitCamera: boolean
+}
+
+export interface RevealControls {
+  previewCard: 'off' | IslandKey
 }

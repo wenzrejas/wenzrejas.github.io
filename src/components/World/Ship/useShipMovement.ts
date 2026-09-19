@@ -1,21 +1,27 @@
 import { useRef, type RefObject } from 'react'
 import { useFrame } from '@react-three/fiber'
-import type * as THREE from 'three'
+import * as THREE from 'three'
 import { useKeyboardInput } from '../../../hooks/useKeyboardInput'
 import { INITIAL_HEADING } from './constants'
 import { BOUNDARY_RADIUS } from '../Boundary/constants'
-import { WORLD_LOCATIONS } from '../Islands/constants'
-import { COZY_COLLISION_RADIUS } from '../Islands/CozyIsle/constants'
+import { REVEAL_SPEED } from '../Islands/constants'
+import { ISLAND_KEYS, ISLAND_SPECS } from '../Islands/islandSpecs'
+import { createIslandTransform, islandTransform, toWorld } from '../Islands/islandTransform'
 import { useDebugStore } from '../../../store/debugStore'
 import { useWindStore } from '../../../store/windStore'
 import { useWeatherStore } from '../../../store/weatherStore'
+import { useRevealStore } from '../../../store/revealStore'
+import { mix } from '../../../utils/math'
+import { MAX_DT } from '../../../utils/time'
 
-const MAX_DT = 0.05
 const VELOCITY_LERP = 6
 const WIND_ASSIST = 0.3
 const WIND_ASSIST_CAP = 2.5
 
-const [COZY_X, , COZY_Z] = WORLD_LOCATIONS.cozy.position
+const BLOCKERS = ISLAND_KEYS.filter((key) => ISLAND_SPECS[key].collision.length > 0)
+
+const _transform = createIslandTransform()
+const _centre = new THREE.Vector2()
 
 export function useShipMovement(groupRef: RefObject<THREE.Group | null>) {
   const pressedKeys = useKeyboardInput()
@@ -34,6 +40,7 @@ export function useShipMovement(groupRef: RefObject<THREE.Group | null>) {
       useDebugStore.getState().ship
     const wind = useWindStore.getState()
     const weather = useWeatherStore.getState()
+    const reveal = useRevealStore.getState()
 
     // ── Turning ───────────────────────────────────────────────────────────
     if (keys.left) heading.current += turnSpeed * dt
@@ -50,8 +57,9 @@ export function useShipMovement(groupRef: RefObject<THREE.Group | null>) {
       const alignment = fwdX * wind.dir.x + fwdZ * wind.dir.y
       const windMult =
         1 + Math.max(0, alignment) * WIND_ASSIST * Math.min(weather.windMult, WIND_ASSIST_CAP)
-      targetVelX = fwdX * moveSpeed * windMult * direction
-      targetVelZ = fwdZ * moveSpeed * windMult * direction
+      const speed = moveSpeed * mix(1, REVEAL_SPEED, reveal.blend)
+      targetVelX = fwdX * speed * windMult * direction
+      targetVelZ = fwdZ * speed * windMult * direction
     }
 
     const lerp = Math.min(1, VELOCITY_LERP * dt)
@@ -69,13 +77,23 @@ export function useShipMovement(groupRef: RefObject<THREE.Group | null>) {
     }
 
     // ── Island collision ──────────────────────────────────────────────────
-    const dx = group.position.x - COZY_X
-    const dz = group.position.z - COZY_Z
-    const islandDist = Math.sqrt(dx * dx + dz * dz)
-    if (islandDist > 0 && islandDist < COZY_COLLISION_RADIUS) {
-      const push = COZY_COLLISION_RADIUS / islandDist
-      group.position.x = COZY_X + dx * push
-      group.position.z = COZY_Z + dz * push
+    const tuning = useDebugStore.getState().islands
+    for (const key of BLOCKERS) {
+      islandTransform(key, tuning[key], _transform)
+
+      for (const circle of ISLAND_SPECS[key].collision) {
+        toWorld(_transform, circle.x, circle.z, _centre)
+        const r = circle.radius * _transform.scale
+
+        const dx = group.position.x - _centre.x
+        const dz = group.position.z - _centre.y
+        const dist = Math.sqrt(dx * dx + dz * dz)
+        if (dist > 0 && dist < r) {
+          const push = r / dist
+          group.position.x = _centre.x + dx * push
+          group.position.z = _centre.y + dz * push
+        }
+      }
     }
 
     // ── Tilt and bob ──────────────────────────────────────────────────────

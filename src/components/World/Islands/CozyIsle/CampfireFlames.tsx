@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
-import { fireGlow } from './useNightGlow'
+import { fireGlow } from './fireGlow'
 
 const TONGUES = 5
 const FLAME_SCALE = 2.4

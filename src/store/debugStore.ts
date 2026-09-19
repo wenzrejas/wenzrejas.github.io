@@ -9,6 +9,7 @@ import type {
   WeatherControls,
   DayCycleControls,
   CameraControls,
+  RevealControls,
 } from '../components/Debug/types'
 import { OCEAN_DEFAULTS } from '../components/World/Ocean/constants'
 import {
@@ -39,7 +40,8 @@ import {
   BOUNDARY_FALLOFF,
   BOUNDARY_FOG_COLOR,
 } from '../components/World/Boundary/constants'
-import { ISLAND_MODEL_DEFAULTS } from '../components/World/Islands/constants'
+import type { IslandKey } from '../components/World/Islands/constants'
+import { ISLAND_MODEL_DEFAULTS } from '../components/World/Islands/islandSpecs'
 import {
   WIND_ENABLED,
   WIND_ANGLE,
@@ -56,13 +58,14 @@ import {
 export interface DebugState {
   ocean: OceanControls
   ship: ShipControls
-  island: IslandControls
+  islands: Record<IslandKey, IslandControls>
   wake: WakeControls
   windLines: WindLineControls
   boundary: BoundaryControls
   weather: WeatherControls
   dayCycle: DayCycleControls
   camera: CameraControls
+  reveal: RevealControls
 }
 
 export const useDebugStore = create<DebugState>(() => ({
@@ -81,7 +84,7 @@ export const useDebugStore = create<DebugState>(() => ({
     foamWidth: FOAM_WIDTH_TRIM,
     foamY: FOAM_Y,
   },
-  island: { ...ISLAND_MODEL_DEFAULTS },
+  islands: { ...ISLAND_MODEL_DEFAULTS },
   wake: {
     armNear: WAKE_ARM_NEAR,
     armFar: WAKE_ARM_FAR,
@@ -116,8 +119,12 @@ export const useDebugStore = create<DebugState>(() => ({
   },
   dayCycle: {
     cycleSpeed: 1.0,
+    timeOfDay: 'auto',
   },
   camera: {
     orbitCamera: false,
+  },
+  reveal: {
+    previewCard: 'off',
   },
 }))

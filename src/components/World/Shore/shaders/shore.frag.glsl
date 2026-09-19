@@ -11,6 +11,7 @@ uniform float uSpeed;
 uniform float uSegments;
 uniform float uDashMin;
 uniform float uDashMax;
+uniform float uDashBias;
 uniform float uStrength;
 uniform float uWobble;
 
@@ -62,7 +63,9 @@ float arcAt(float s, float salt, float d) {
   float reach  = uReach * (0.55 + hReach * 0.45);
   float bright = 0.6 + hBright * 0.4;
 
-  return lapAt(ph, d, reach, fract(s), mix(uDashMin, uDashMax, hLen), bright, uWidth);
+  float hSpan = pow(hLen, uDashBias);
+
+  return lapAt(ph, d, reach, fract(s), mix(uDashMin, uDashMax, hSpan), bright, uWidth);
 }
 
 void main() {

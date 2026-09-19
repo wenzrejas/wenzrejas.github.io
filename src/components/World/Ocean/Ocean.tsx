@@ -8,9 +8,11 @@ import {
   OCEAN_DEFAULTS,
   OCEAN_PLANE_SIZE,
   OCEAN_SEGMENTS,
+  RAIN_DARKEN,
   SHORE_CALM_BAND,
 } from './constants'
-import { WORLD_LOCATIONS } from '../Islands/constants'
+import { ISLAND_KEYS, ISLAND_SPECS } from '../Islands/islandSpecs'
+import { createIslandTransform, islandTransform } from '../Islands/islandTransform'
 import { useDebugStore } from '../../../store/debugStore'
 import { useCycleStore } from '../../../store/cycleStore'
 import { useWindStore } from '../../../store/windStore'
@@ -18,12 +20,11 @@ import { useWeatherStore } from '../../../store/weatherStore'
 
 const PRIMARY_WAVE_DIR = new THREE.Vector2(0.97, -0.26).normalize()
 
-const SHORE_ISLANDS: THREE.Vector4[] = Object.values(WORLD_LOCATIONS)
-  .slice(0, MAX_SHORE_ISLANDS)
-  .map(
-    (cfg) =>
-      new THREE.Vector4(cfg.position[0], cfg.position[2], cfg.shoreRadius[0], cfg.shoreRadius[1])
-  )
+const SHORE_ISLANDS: THREE.Vector4[] = ISLAND_KEYS.slice(0, MAX_SHORE_ISLANDS).map((key) => {
+  const spec = ISLAND_SPECS[key]
+  const { x, z, scale } = islandTransform(key, spec.tuning, createIslandTransform())
+  return new THREE.Vector4(x, z, spec.calm.inner * scale, spec.calm.outer * scale)
+})
 while (SHORE_ISLANDS.length < MAX_SHORE_ISLANDS) {
   SHORE_ISLANDS.push(new THREE.Vector4(1e6, 1e6, 1, 1))
 }
@@ -102,17 +103,18 @@ export default function Ocean() {
     uniforms.uNoiseScale.value = ocean.noiseScale
     uniforms.uNoiseFlowSpeed.value = ocean.noiseFlowSpeed
     uniforms.uDistortAmount.value = ocean.distortAmount
-    uniforms.uDeepColor.value.copy(cycle.oceanDeep)
-    uniforms.uMidColor.value.copy(cycle.oceanMid)
+    const rainDarken = 1 - weather.rainIntensity * RAIN_DARKEN
+    uniforms.uDeepColor.value.copy(cycle.oceanDeep).multiplyScalar(rainDarken)
+    uniforms.uMidColor.value.copy(cycle.oceanMid).multiplyScalar(rainDarken)
     uniforms.uMidPos.value = ocean.midPos
     uniforms.uHighlight.value.set(ocean.highlightColor)
     uniforms.uFoamColor.value.copyLinearToSRGB(cycle.foamColor)
     uniforms.uOpacity.value = ocean.opacity
     uniforms.uDeepOpacity.value = ocean.deepOpacity
     uniforms.uFresnelPower.value = ocean.fresnelPower
-    uniforms.uFresnelStrength.value = ocean.fresnelStrength
+    uniforms.uFresnelStrength.value = ocean.fresnelStrength * cycle.fresnel
     uniforms.uFoamAmount.value = ocean.foamAmount
-    uniforms.uSpecularStrength.value = ocean.specularStrength
+    uniforms.uSpecularStrength.value = ocean.specularStrength * cycle.specular
     uniforms.uSpecularPower.value = ocean.specularPower
     uniforms.uCrestStrength.value = ocean.crestStrength
     uniforms.uSunDir.value.copy(cycle.oceanSunDir)

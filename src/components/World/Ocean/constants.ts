@@ -6,6 +6,8 @@ export const MAX_SHORE_ISLANDS = 8
 
 export const SHORE_CALM_BAND = 95
 
+export const RAIN_DARKEN = 0.22
+
 export const OCEAN_DEFAULTS = {
   waterScale: 0.08,
   cellSmoothness: 0.18,
