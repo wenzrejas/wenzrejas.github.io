@@ -1,36 +1,36 @@
 ﻿export const WORLD_LOCATIONS = {
-  archipelago: {
-    label: 'The Archipelago',
-    description: 'Projects',
-    position: [400, 0, 660] as [number, number, number],
+  timewell: {
+    label: 'Timewell Depth',
+    description: 'Experience & Journey',
+    position: [-150, 0, 800] as [number, number, number],
     radius: 70,
     color: '#4a90d9',
   },
   cozy: {
     label: 'Cozy Isle',
-    description: 'Support',
-    position: [-720, 0, 170] as [number, number, number],
+    description: 'Coffee & Support',
+    position: [-788, 0, 265] as [number, number, number],
     radius: 55,
     color: '#5aab61',
   },
-  beacon: {
-    label: 'The Beacon',
-    description: 'Contact',
-    position: [760, 0, 60] as [number, number, number],
+  lumina: {
+    label: 'Lumina Point',
+    description: 'Contact & Connect',
+    position: [650, 0, 400] as [number, number, number],
     radius: 45,
     color: '#e07b39',
   },
-  whirlpool: {
-    label: 'The Whirlpool',
-    description: 'Experience',
-    position: [0, 0, -600] as [number, number, number],
+  buildshore: {
+    label: 'Buildshore Archipelago',
+    description: 'Projects & Works',
+    position: [-300, 0, -670] as [number, number, number],
     radius: 80,
     color: '#9b59b6',
   },
-  sanctuary: {
-    label: 'The Sanctuary',
-    description: 'Tech Stack',
-    position: [-360, 0, 530] as [number, number, number],
+  tech: {
+    label: 'Tech Grove',
+    description: 'Skills & Technologies',
+    position: [730, 0, -450] as [number, number, number],
     radius: 30,
     color: '#f0a500',
   },

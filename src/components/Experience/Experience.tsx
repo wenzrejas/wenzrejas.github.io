@@ -10,6 +10,7 @@ import {
   CAMERA_ZOOM,
   IS_DEBUG,
 } from './constants'
+import TopView from './TopView'
 import World from '../World/World'
 import DayNightCycle from '../World/DayNightCycle/DayNightCycle'
 import { useDebugStore } from '../../store/debugStore'
@@ -48,6 +49,7 @@ function CameraRig({ shipRef }: { shipRef: React.RefObject<THREE.Group | null> }
 export default function Experience() {
   const shipRef = useRef<THREE.Group>(null)
   const orbitCamera = useDebugStore((s) => s.camera.orbitCamera)
+  const topView = useDebugStore((s) => s.camera.topView)
   const selectIsland = useUIStore((s) => s.selectIsland)
 
   return (
@@ -67,7 +69,13 @@ export default function Experience() {
       {IS_DEBUG && <Perf position="top-left" />}
       <DayNightCycle />
       <World ref={shipRef} onIslandSelect={selectIsland} />
-      {orbitCamera ? <OrbitControls makeDefault /> : <CameraRig shipRef={shipRef} />}
+      {topView ? (
+        <TopView />
+      ) : orbitCamera ? (
+        <OrbitControls makeDefault />
+      ) : (
+        <CameraRig shipRef={shipRef} />
+      )}
     </Canvas>
   )
 }

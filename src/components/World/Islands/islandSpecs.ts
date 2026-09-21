@@ -1,15 +1,16 @@
 import type { IslandKey } from './constants'
 import type { IslandModelTuning, IslandSpec } from './islandSpec'
 import { COZY_SPEC } from './CozyIsle/constants'
-import { BEACON_SPEC } from './BeaconIsle/constants'
+import { LUMINA_SPEC } from './LuminaPoint/constants'
+import { TECH_SPEC } from './TechGrove/constants'
 import { placeholderSpec } from './PlaceholderIsland/constants'
 
 export const ISLAND_SPECS: Record<IslandKey, IslandSpec> = {
-  archipelago: placeholderSpec(),
+  timewell: placeholderSpec(),
   cozy: COZY_SPEC,
-  beacon: BEACON_SPEC,
-  whirlpool: placeholderSpec(),
-  sanctuary: placeholderSpec(),
+  lumina: LUMINA_SPEC,
+  buildshore: placeholderSpec(),
+  tech: TECH_SPEC,
 }
 
 export const ISLAND_KEYS = Object.keys(ISLAND_SPECS) as IslandKey[]

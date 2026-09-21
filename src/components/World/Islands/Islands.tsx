@@ -4,13 +4,15 @@ import type { ThreeEvent } from '@react-three/fiber'
 import { ISLAND_INTERACTION, WORLD_LOCATIONS, type IslandConfig, type IslandKey } from './constants'
 import type { IslandBodyProps } from './types'
 import CozyIsle from './CozyIsle/CozyIsle'
-import BeaconIsle from './BeaconIsle/BeaconIsle'
+import LuminaPoint from './LuminaPoint/LuminaPoint'
 import PlaceholderIsland from './PlaceholderIsland/PlaceholderIsland'
+import TechGrove from './TechGrove/TechGrove'
 import { useNearViewport } from './useNearViewport'
 
 const ISLAND_BODIES: Partial<Record<IslandKey, ComponentType<IslandBodyProps>>> = {
   cozy: CozyIsle,
-  beacon: BeaconIsle,
+  lumina: LuminaPoint,
+  tech: TechGrove,
 }
 
 interface IslandProps {

@@ -10,42 +10,19 @@ import {
   cloudShadowUniforms,
   updateCloudScroll,
 } from '../../../utils/cloudShadow'
+import CLOUD_VERT from './shaders/cloudShadow.vert.glsl'
+import CLOUD_FRAG from './shaders/cloudShadow.frag.glsl'
 
 const PLANE_Y = 0.06
 const MAX_OPACITY = 0.5
 const SHADOW_COLOR = '#0a2233'
 
-const VERT = /* glsl */ `
-  varying vec2 vCloudUv;
-  void main() {
-    vCloudUv = uv;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-  }
-`
-
-const FRAG = /* glsl */ `
-  uniform sampler2D uMap;
-  uniform vec2  uRepeat;
-  uniform vec2  uOffset;
-  uniform float uGain;
-  uniform float uBias;
-  uniform float uOpacity;
-  uniform vec3  uColor;
-  varying vec2  vCloudUv;
-
-  void main() {
-    float d = texture2D(uMap, vCloudUv * uRepeat + uOffset).a;
-    float cloud = clamp(d * uGain + uBias, 0.0, 1.0);
-    gl_FragColor = vec4(uColor, cloud * uOpacity);
-  }
-`
-
 export default function CloudShadows() {
   const material = useMemo(() => {
     const repeat = CLOUD_PLANE_SIZE / CLOUD_TILE
     return new THREE.ShaderMaterial({
-      vertexShader: VERT,
-      fragmentShader: FRAG,
+      vertexShader: CLOUD_VERT,
+      fragmentShader: CLOUD_FRAG,
       transparent: true,
       depthWrite: false,
       uniforms: {

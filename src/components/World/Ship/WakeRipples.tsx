@@ -4,6 +4,9 @@ import * as THREE from 'three'
 import { RIPPLE_MAX_GROUPS, RIPPLE_SPRITES_PER_GROUP, TOTAL_RIPPLE_SPRITES } from './constants'
 import { useDebugStore } from '../../../store/debugStore'
 import { useCycleStore } from '../../../store/cycleStore'
+import { algaeAt, algaeUniforms } from '../Algae/algaeField'
+
+const _tint = new THREE.Color()
 
 interface RippleSprite {
   alive: boolean
@@ -158,11 +161,20 @@ export default function WakeRipples({ shipRef }: { shipRef: React.RefObject<THRE
       dummyObject.scale.setScalar(sprite.size * Math.max(0, 1 - progress * 1.25))
       dummyObject.updateMatrix()
       rippleInstances.setMatrixAt(i, dummyObject.matrix)
+      _tint
+        .copy(cycle.foamColor)
+        .lerp(
+          algaeUniforms.uAlgaeGlow.value,
+          algaeAt(dummyObject.position.x, dummyObject.position.z)
+        )
+      rippleInstances.setColorAt(i, _tint)
       matrixDirty = true
     }
 
-    if (matrixDirty) rippleInstances.instanceMatrix.needsUpdate = true
-    spriteMaterial.color.copy(cycle.foamColor)
+    if (matrixDirty) {
+      rippleInstances.instanceMatrix.needsUpdate = true
+      if (rippleInstances.instanceColor) rippleInstances.instanceColor.needsUpdate = true
+    }
   })
 
   return (

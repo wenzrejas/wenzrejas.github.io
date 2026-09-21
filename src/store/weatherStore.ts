@@ -16,6 +16,8 @@ interface WeatherState {
   cloudOffset: THREE.Vector2
 }
 
+const RAIN_CUTOFF = 0.01
+
 export const useWeatherStore = create<WeatherState>(() => ({
   type: 'sunny',
   lightMult: 1.0,
@@ -28,3 +30,8 @@ export const useWeatherStore = create<WeatherState>(() => ({
   lightningFlash: 0.0,
   cloudOffset: new THREE.Vector2(),
 }))
+
+export function isRaining(): boolean {
+  const { type, rainIntensity } = useWeatherStore.getState()
+  return type === 'rainy' || rainIntensity > RAIN_CUTOFF
+}

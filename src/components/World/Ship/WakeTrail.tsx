@@ -6,6 +6,7 @@ import WAKE_FRAG from './shaders/wake.frag.glsl'
 import { WAKE_TRAIL_LENGTH, WAKE_TOTAL_VERTS } from './constants'
 import { useDebugStore } from '../../../store/debugStore'
 import { useCycleStore } from '../../../store/cycleStore'
+import { algaeDefines, algaeUniforms } from '../Algae/algaeField'
 
 interface TrailPoint {
   x: number
@@ -87,9 +88,11 @@ export default function WakeTrail({ shipRef }: { shipRef: React.RefObject<THREE.
           uFadeProgress: { value: 1.1 },
           uInvActiveMax: { value: 1.0 },
           uColor: { value: new THREE.Color(1, 1, 1) },
+          ...algaeUniforms,
         },
         vertexShader: WAKE_VERT,
         fragmentShader: WAKE_FRAG,
+        defines: algaeDefines,
       }),
     []
   )

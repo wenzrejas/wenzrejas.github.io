@@ -10,6 +10,7 @@ import type {
   DayCycleControls,
   CameraControls,
   RevealControls,
+  WildlifeControls,
 } from '../components/Debug/types'
 import { OCEAN_DEFAULTS } from '../components/World/Ocean/constants'
 import {
@@ -54,6 +55,18 @@ import {
   SPAWN_INTERVAL,
   WIND_OPACITY,
 } from '../components/World/WindLines/constants'
+import {
+  SPAWN_DELAY_MAX as BIRD_DELAY_MAX,
+  SPAWN_DELAY_MIN as BIRD_DELAY_MIN,
+} from '../components/World/Birds/constants'
+import {
+  SPAWN_DELAY_MAX as FISH_DELAY_MAX,
+  SPAWN_DELAY_MIN as FISH_DELAY_MIN,
+} from '../components/World/Fish/constants'
+import {
+  CHECK_INTERVAL as DOLPHIN_INTERVAL,
+  SPAWN_CHANCE as DOLPHIN_CHANCE,
+} from '../components/World/Dolphins/constants'
 
 export interface DebugState {
   ocean: OceanControls
@@ -66,6 +79,7 @@ export interface DebugState {
   dayCycle: DayCycleControls
   camera: CameraControls
   reveal: RevealControls
+  wildlife: WildlifeControls
 }
 
 export const useDebugStore = create<DebugState>(() => ({
@@ -123,8 +137,17 @@ export const useDebugStore = create<DebugState>(() => ({
   },
   camera: {
     orbitCamera: false,
+    topView: false,
   },
   reveal: {
     previewCard: 'off',
+  },
+  wildlife: {
+    birdDelayMin: BIRD_DELAY_MIN,
+    birdDelayMax: BIRD_DELAY_MAX,
+    fishDelayMin: FISH_DELAY_MIN,
+    fishDelayMax: FISH_DELAY_MAX,
+    dolphinChance: DOLPHIN_CHANCE,
+    dolphinInterval: DOLPHIN_INTERVAL,
   },
 }))
