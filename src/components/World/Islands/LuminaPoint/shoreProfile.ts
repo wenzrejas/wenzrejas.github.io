@@ -1,12 +1,12 @@
-export const BEACON_FOOTPRINT = 55.182
+export const LUMINA_FOOTPRINT = 55.182
 
-export const BEACON_MODEL_TOP = 24.07
+export const LUMINA_MODEL_TOP = 24.07
 
-export const BEACON_LAND_CENTER = { x: 0.126, z: -0.291 }
+export const LUMINA_LAND_CENTER = { x: 0.126, z: -0.291 }
 
-export const BEACON_SHORE_PEAK = 8.57
+export const LUMINA_SHORE_PEAK = 8.57
 
-export const BEACON_SHORE_PROFILE = new Float32Array([
+export const LUMINA_SHORE_PROFILE = new Float32Array([
   6.962, 7.306, 7.707, 7.965, 7.942, 7.656, 7.272, 6.947, 6.751, 6.664, 6.654, 6.714, 6.873, 7.132,
   7.442, 7.706, 7.862, 7.916, 7.925, 7.926, 7.909, 7.863, 7.804, 7.778, 7.801, 7.861, 7.926, 7.993,
   8.07, 8.149, 8.201, 8.192, 8.115, 8.006, 7.929, 7.922, 7.964, 7.987, 7.97, 7.945, 7.961, 7.99,
@@ -19,16 +19,16 @@ export const BEACON_SHORE_PROFILE = new Float32Array([
   6.704, 6.77,
 ])
 
-export const BEACON_MONOLITHS = [
+export const LUMINA_MONOLITHS = [
   { x: -25.758, z: -3.63 },
   { x: -3.63, z: 25.736 },
   { x: 25.736, z: 3.607 },
   { x: 3.607, z: -25.758 },
 ]
 
-export const BEACON_MONOLITH_RADIUS = 1.844
+export const LUMINA_MONOLITH_RADIUS = 1.844
 
-export const BEACON_ROCKS = [
+export const LUMINA_ROCKS = [
   { x: -7.4, z: 3.58, radius: 1.08 },
   { x: -4.13, z: 7.21, radius: 1.08 },
   { x: -6.95, z: -3.56, radius: 0.75 },

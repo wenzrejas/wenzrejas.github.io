@@ -5,6 +5,14 @@ export function mix(a: number, b: number, t: number): number {
   return a + (b - a) * t
 }
 
+export const rand = (min: number, max: number) => mix(min, max, Math.random())
+
+export const wrapAngle = (angle: number) => Math.atan2(Math.sin(angle), Math.cos(angle))
+
+export function turnToward(from: number, to: number, maxStep: number): number {
+  return from + THREE.MathUtils.clamp(wrapAngle(to - from), -maxStep, maxStep)
+}
+
 // Scratch instances — avoids per-frame heap allocation in hot paths
 const _ca = new THREE.Color()
 const _cb = new THREE.Color()

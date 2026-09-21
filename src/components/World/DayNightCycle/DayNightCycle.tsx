@@ -35,6 +35,7 @@ export default function DayNightCycle() {
 
     // ── Cycle-store colors (read by Ocean, Boundary, Ship each frame) ─────
     cycle.nightFactor = mix(lo.moonInt, hi.moonInt, a) / 1.2
+    cycle.timeOfDay = timeRef.current
     cycle.fresnel = mix(lo.fresnel, hi.fresnel, a)
     cycle.specular = mix(lo.specular, hi.specular, a)
     lerpColor(lo.fog, hi.fog, a, cycle.fogColor)

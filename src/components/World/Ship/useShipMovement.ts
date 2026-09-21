@@ -11,6 +11,7 @@ import { useDebugStore } from '../../../store/debugStore'
 import { useWindStore } from '../../../store/windStore'
 import { useWeatherStore } from '../../../store/weatherStore'
 import { useRevealStore } from '../../../store/revealStore'
+import { useShipStore } from '../../../store/shipStore'
 import { mix } from '../../../utils/math'
 import { MAX_DT } from '../../../utils/time'
 
@@ -102,6 +103,14 @@ export function useShipMovement(groupRef: RefObject<THREE.Group | null>) {
 
     group.rotation.y = heading.current
     group.rotation.z = tilt.current
+
+    const motion = useShipStore.getState()
+    motion.x = group.position.x
+    motion.z = group.position.z
+    motion.vx = velocity.current.x
+    motion.vz = velocity.current.z
+    motion.speed = Math.hypot(velocity.current.x, velocity.current.z)
+    motion.heading = heading.current + Math.PI
     group.position.y = baseY + Math.sin(time * bobSpeed) * bobAmp * weather.waveAmpMult
   })
 

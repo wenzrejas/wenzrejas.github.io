@@ -8,14 +8,14 @@ import { placeIsland } from '../islandTransform'
 import { useNightGlow } from '../nightGlow'
 import IslandShadow from '../IslandShadow'
 import {
-  BEACON_BLOB,
-  BEACON_MODEL_URL,
+  LUMINA_BLOB,
+  LUMINA_MODEL_URL,
   BEAM_ANCHOR_NODE,
   BEAM_HALO_NODE,
   BEAM_HEAD_NODE,
   BODY_NODE,
 } from './constants'
-import BeaconBeam from './BeaconBeam'
+import LuminaBeam from './LuminaBeam'
 
 function rigBeam(model: THREE.Object3D) {
   model.updateMatrixWorld(true)
@@ -34,10 +34,10 @@ function rigBeam(model: THREE.Object3D) {
   }
 }
 
-export default function BeaconIsle({ config, hovered }: IslandBodyProps) {
+export default function LuminaPoint({ config, hovered }: IslandBodyProps) {
   const root = useThree((s) => s.scene)
-  const tuning = useDebugStore((s) => s.islands.beacon)
-  const island = useIslandModel(BEACON_MODEL_URL, BODY_NODE, tuning.brightness)
+  const tuning = useDebugStore((s) => s.islands.lumina)
+  const island = useIslandModel(LUMINA_MODEL_URL, BODY_NODE, tuning.brightness)
   const beam = useMemo(() => rigBeam(island.model), [island])
 
   useNightGlow(island.glows)
@@ -46,7 +46,7 @@ export default function BeaconIsle({ config, hovered }: IslandBodyProps) {
 
   return (
     <>
-      <IslandShadow radius={config.radius} tuning={tuning} blob={BEACON_BLOB} />
+      <IslandShadow radius={config.radius} tuning={tuning} blob={LUMINA_BLOB} />
       <group {...placement}>
         {hovered && island.outline && <primitive object={island.outline} />}
         <primitive object={island.model} />
@@ -55,7 +55,7 @@ export default function BeaconIsle({ config, hovered }: IslandBodyProps) {
         createPortal(
           <group position={[config.position[0], 0, config.position[2]]}>
             <group {...placement}>
-              <BeaconBeam {...beam} />
+              <LuminaBeam {...beam} />
             </group>
           </group>,
           root

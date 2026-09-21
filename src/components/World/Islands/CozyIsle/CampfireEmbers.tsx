@@ -1,7 +1,10 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
+import { floatDefines } from '../../../../utils/glsl'
 import { fireGlow } from './fireGlow'
+import EMBERS_VERT from './shaders/campfireEmbers.vert.glsl'
+import EMBERS_FRAG from './shaders/campfireEmbers.frag.glsl'
 
 const EMBER_COUNT = 24
 const EMBER_SIZE = 0.075
@@ -11,52 +14,6 @@ const RISE = 1.2
 const SPREAD = 0.35
 const DRIFT = 0.45
 const SWAY = 0.25
-
-const VERT = /* glsl */ `
-uniform float uTime;
-uniform float uSize;
-uniform float uRise;
-uniform float uSpread;
-uniform float uDrift;
-uniform float uSway;
-
-attribute vec3 aSeed;
-
-varying float vLife;
-
-void main() {
-  float life  = fract(uTime / ${LIFETIME.toFixed(1)} + aSeed.x);
-  float climb = pow(life, 0.75);
-  float angle = aSeed.y;
-
-  vec3 pos = position;
-  pos.y += climb * uRise;
-
-  float radius = uSpread + climb * uDrift;
-  pos.x += cos(angle) * radius + sin(life * 7.0 + aSeed.x * 30.0) * uSway * life;
-  pos.z += sin(angle) * radius + cos(life * 6.0 + aSeed.x * 21.0) * uSway * life;
-
-  gl_Position  = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
-  gl_PointSize = uSize * aSeed.z * (1.0 - life * 0.75);
-  vLife = life;
-}
-`
-
-const FRAG = /* glsl */ `
-uniform float uIntensity;
-
-varying float vLife;
-
-void main() {
-  float mask = smoothstep(0.5, 0.05, length(gl_PointCoord - 0.5));
-  if (mask <= 0.0) discard;
-
-  vec3 color = mix(vec3(1.0, 0.86, 0.55), vec3(0.95, 0.32, 0.08), smoothstep(0.0, 0.7, vLife));
-  float fade = smoothstep(0.0, 0.12, vLife) * (1.0 - smoothstep(0.45, 1.0, vLife));
-
-  gl_FragColor = vec4(color, mask * fade * uIntensity);
-}
-`
 
 interface CampfireEmbersProps {
   origin: THREE.Vector3
@@ -92,6 +49,7 @@ export default function CampfireEmbers({
   const material = useMemo(
     () =>
       new THREE.ShaderMaterial({
+        defines: floatDefines({ LIFETIME }),
         transparent: true,
         depthWrite: false,
         blending: THREE.AdditiveBlending,
@@ -104,8 +62,8 @@ export default function CampfireEmbers({
           uSway: { value: 0 },
           uIntensity: { value: 0 },
         },
-        vertexShader: VERT,
-        fragmentShader: FRAG,
+        vertexShader: EMBERS_VERT,
+        fragmentShader: EMBERS_FRAG,
       }),
     []
   )

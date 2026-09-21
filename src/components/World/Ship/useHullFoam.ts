@@ -6,6 +6,7 @@ import FOAM_FRAG from './shaders/foam.frag.glsl'
 import { FOAM_PLANE_SIZE, hullFoamBound } from './constants'
 import { useDebugStore } from '../../../store/debugStore'
 import { useCycleStore } from '../../../store/cycleStore'
+import { algaeAt, algaeUniforms } from '../Algae/algaeField'
 
 const BOB_PULSE = 0.008
 
@@ -56,7 +57,9 @@ export function useHullFoam(
     material.uniforms.uTime.value = time
     material.uniforms.uFoamBound.value = bound - Math.sin(time * bobSpeed) * BOB_PULSE
     material.uniforms.uHullAspect.value = modelSize / (2 * bound * FOAM_PLANE_SIZE)
-    material.uniforms.uColor.value.copy(cycle.foamColor)
+    material.uniforms.uColor.value
+      .copy(cycle.foamColor)
+      .lerp(algaeUniforms.uAlgaeGlow.value, algaeAt(group.position.x, group.position.z))
   })
 
   return { meshRef, material }

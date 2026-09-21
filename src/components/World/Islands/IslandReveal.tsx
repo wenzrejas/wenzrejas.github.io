@@ -43,6 +43,7 @@ export default function IslandReveal({ shipRef }: IslandRevealProps) {
     if (!ship) return
 
     if (elapsed.current < 0) {
+      if (useDebugStore.getState().camera.topView) return
       sampleGroundFrame(camera)
       const tuning = useDebugStore.getState().islands
       let started = false

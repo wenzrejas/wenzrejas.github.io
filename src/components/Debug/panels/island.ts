@@ -21,17 +21,17 @@ const panel = (key: IslandKey) => `Islands / ${WORLD_LOCATIONS[key].label}`
 const opts = { collapsed: true }
 
 export function useIslandControls(): Record<IslandKey, IslandControls> {
-  const archipelago = useControls(panel('archipelago'), schema('archipelago'), opts)
+  const timewell = useControls(panel('timewell'), schema('timewell'), opts)
   const cozy = useControls(panel('cozy'), schema('cozy'), opts)
-  const beacon = useControls(panel('beacon'), schema('beacon'), opts)
-  const whirlpool = useControls(panel('whirlpool'), schema('whirlpool'), opts)
-  const sanctuary = useControls(panel('sanctuary'), schema('sanctuary'), opts)
+  const lumina = useControls(panel('lumina'), schema('lumina'), opts)
+  const buildshore = useControls(panel('buildshore'), schema('buildshore'), opts)
+  const tech = useControls(panel('tech'), schema('tech'), opts)
 
   return {
-    archipelago,
+    timewell,
     cozy,
-    beacon,
-    whirlpool,
-    sanctuary,
+    lumina,
+    buildshore,
+    tech,
   } as Record<IslandKey, IslandControls>
 }

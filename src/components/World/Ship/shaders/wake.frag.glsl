@@ -1,4 +1,5 @@
 #include "../../../../utils/noise.glsl"
+#include "../../Algae/shaders/algaeMask.glsl"
 
 uniform float uTime;
 uniform float uFadeProgress;  // 0 = fully visible, 1.1 = fully gone
@@ -27,5 +28,6 @@ void main() {
 
   float alpha = ageFade * fadeSweep * 0.80;
 
-  gl_FragColor = vec4(uColor, alpha);
+  float glow = algaeMask(vWorldPos);
+  gl_FragColor = vec4(mix(uColor, uAlgaeGlow, glow), mix(alpha, min(1.0, alpha * 1.5), glow));
 }

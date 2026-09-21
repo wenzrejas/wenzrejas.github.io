@@ -1,17 +1,17 @@
 import { BASE_TUNING, type ContactBlob, type IslandSpec } from '../islandSpec'
 import { SHORE_LONG_LINES } from '../../Shore/constants'
 import {
-  BEACON_FOOTPRINT,
-  BEACON_LAND_CENTER,
-  BEACON_MODEL_TOP,
-  BEACON_MONOLITHS,
-  BEACON_MONOLITH_RADIUS,
-  BEACON_ROCKS,
-  BEACON_SHORE_PEAK,
-  BEACON_SHORE_PROFILE,
+  LUMINA_FOOTPRINT,
+  LUMINA_LAND_CENTER,
+  LUMINA_MODEL_TOP,
+  LUMINA_MONOLITHS,
+  LUMINA_MONOLITH_RADIUS,
+  LUMINA_ROCKS,
+  LUMINA_SHORE_PEAK,
+  LUMINA_SHORE_PROFILE,
 } from './shoreProfile'
 
-export const BEACON_MODEL_URL = '/models/islands/beacon_web_draco.glb'
+export const LUMINA_MODEL_URL = '/models/islands/beacon_web_draco.glb'
 
 // ── Model nodes ───────────────────────────────────────────────────────────────
 export const BODY_NODE = 'Beacon_Static'
@@ -33,28 +33,28 @@ const MONOLITH_SHORE = {
 }
 const ROCK_SHORE = { rim: 0, reach: 4, segments: 6 }
 
-export const BEACON_SPEC: IslandSpec = {
+export const LUMINA_SPEC: IslandSpec = {
   tuning: { ...BASE_TUNING, scale: 3.3, rotation: -80, offsetY: 3.2, brightness: 1.5 },
-  footprint: BEACON_FOOTPRINT,
-  height: BEACON_MODEL_TOP,
+  footprint: LUMINA_FOOTPRINT,
+  height: LUMINA_MODEL_TOP,
   collision: [
-    { ...BEACON_LAND_CENTER, radius: MAIN_COLLISION },
-    ...BEACON_MONOLITHS.map(({ x, z }) => ({ x, z, radius: MONOLITH_COLLISION })),
+    { ...LUMINA_LAND_CENTER, radius: MAIN_COLLISION },
+    ...LUMINA_MONOLITHS.map(({ x, z }) => ({ x, z, radius: MONOLITH_COLLISION })),
   ],
   shore: [
     {
-      ...BEACON_LAND_CENTER,
-      radius: BEACON_SHORE_PEAK,
-      profile: BEACON_SHORE_PROFILE,
+      ...LUMINA_LAND_CENTER,
+      radius: LUMINA_SHORE_PEAK,
+      profile: LUMINA_SHORE_PROFILE,
       options: MAIN_SHORE,
     },
-    ...BEACON_MONOLITHS.map(({ x, z }) => ({
+    ...LUMINA_MONOLITHS.map(({ x, z }) => ({
       x,
       z,
-      radius: BEACON_MONOLITH_RADIUS,
+      radius: LUMINA_MONOLITH_RADIUS,
       options: MONOLITH_SHORE,
     })),
-    ...BEACON_ROCKS.filter((r) => r.radius >= ROCK_RIPPLE_MIN).map((r) => ({
+    ...LUMINA_ROCKS.filter((r) => r.radius >= ROCK_RIPPLE_MIN).map((r) => ({
       ...r,
       options: ROCK_SHORE,
     })),
@@ -78,7 +78,7 @@ export const BEAM_SUN_ON = 0.4
 export const BEAM_SUN_FULL = 0.05
 
 // ── Contact blob ──────────────────────────────────────────────────────────────
-export const BEACON_BLOB: ContactBlob = {
+export const LUMINA_BLOB: ContactBlob = {
   spread: 1.25,
   y: 0.05,
   color: '#f4f0e2',

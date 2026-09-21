@@ -6,6 +6,7 @@ export function useCameraControls() {
     'Camera',
     {
       orbitCamera: { value: false, label: 'orbit (free look)' },
+      topView: { value: false, label: 'top view' },
     },
     { collapsed: true }
   ) as CameraControls

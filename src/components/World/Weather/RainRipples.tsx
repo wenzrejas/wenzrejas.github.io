@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useWeatherStore } from '../../../store/weatherStore'
 import { useCycleStore } from '../../../store/cycleStore'
+import { algaeAt, queueRainHit } from '../Algae/algaeField'
 import RIPPLE_VERT from './shaders/rainRipple.vert.glsl'
 import RIPPLE_FRAG from './shaders/rainRipple.frag.glsl'
 
@@ -114,6 +115,7 @@ export default function RainRipples({ shipRef }: { shipRef: React.RefObject<THRE
         aCenter.array[slot * 2] = rx
         aCenter.array[slot * 2 + 1] = rz
         centerDirty = true
+        if (Math.random() < algaeAt(rx, rz)) queueRainHit(rx, rz)
       }
     }
 

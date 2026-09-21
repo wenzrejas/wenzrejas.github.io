@@ -4,6 +4,9 @@ import * as THREE from 'three'
 import { useDebugStore } from '../../../store/debugStore'
 import { useCycleStore } from '../../../store/cycleStore'
 import { FOAM_PLANE_SIZE, hullFoamBound } from './constants'
+import { algaeAt, algaeUniforms } from '../Algae/algaeField'
+
+const _tint = new THREE.Color()
 
 const GROUPS = 5
 const PARTICLES_PER_GROUP = 40
@@ -137,11 +140,17 @@ export default function HullRipples({ shipRef }: { shipRef: React.RefObject<THRE
       dummy.scale.setScalar(p.size * Math.max(0, 1 - progress * 1.25))
       dummy.updateMatrix()
       mesh.setMatrixAt(i, dummy.matrix)
+      _tint
+        .copy(cycle.foamColor)
+        .lerp(algaeUniforms.uAlgaeGlow.value, algaeAt(dummy.position.x, dummy.position.z))
+      mesh.setColorAt(i, _tint)
       dirty = true
     }
 
-    if (dirty) mesh.instanceMatrix.needsUpdate = true
-    material.color.copy(cycle.foamColor)
+    if (dirty) {
+      mesh.instanceMatrix.needsUpdate = true
+      if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true
+    }
   })
 
   function spawnGroup(

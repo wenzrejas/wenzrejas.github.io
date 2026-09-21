@@ -93,6 +93,16 @@ export interface DayCycleControls {
 
 export interface CameraControls {
   orbitCamera: boolean
+  topView: boolean
+}
+
+export interface WildlifeControls {
+  birdDelayMin: number
+  birdDelayMax: number
+  fishDelayMin: number
+  fishDelayMax: number
+  dolphinChance: number
+  dolphinInterval: number
 }
 
 export interface RevealControls {
