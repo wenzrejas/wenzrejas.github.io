@@ -98,6 +98,7 @@ export default function WeatherSystem({ shipRef }: Props) {
         flashPhase.current = 1
         flashTimer.current = 0
         w.lightningFlash = 1.0
+        w.lightningStrikes += 1
       } else if (phase === 1) {
         flashTimer.current += dt
         w.lightningFlash = Math.max(0, 1.0 - flashTimer.current * 8)

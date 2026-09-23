@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { DEFAULT_MUSIC } from '../audio/constants'
 import type {
   OceanControls,
   ShipControls,
@@ -11,6 +12,7 @@ import type {
   CameraControls,
   RevealControls,
   WildlifeControls,
+  MusicControls,
 } from '../components/Debug/types'
 import { OCEAN_DEFAULTS } from '../components/World/Ocean/constants'
 import {
@@ -67,6 +69,14 @@ import {
   CHECK_INTERVAL as DOLPHIN_INTERVAL,
   SPAWN_CHANCE as DOLPHIN_CHANCE,
 } from '../components/World/Dolphins/constants'
+import {
+  CHECK_INTERVAL as TURTLE_INTERVAL,
+  SPAWN_CHANCE as TURTLE_CHANCE,
+} from '../components/World/Turtles/constants'
+import {
+  CHECK_INTERVAL as WHALE_INTERVAL,
+  SPAWN_CHANCE as WHALE_CHANCE,
+} from '../components/World/Whale/constants'
 
 export interface DebugState {
   ocean: OceanControls
@@ -80,6 +90,7 @@ export interface DebugState {
   camera: CameraControls
   reveal: RevealControls
   wildlife: WildlifeControls
+  music: MusicControls
 }
 
 export const useDebugStore = create<DebugState>(() => ({
@@ -149,5 +160,13 @@ export const useDebugStore = create<DebugState>(() => ({
     fishDelayMax: FISH_DELAY_MAX,
     dolphinChance: DOLPHIN_CHANCE,
     dolphinInterval: DOLPHIN_INTERVAL,
+    turtleChance: TURTLE_CHANCE,
+    turtleInterval: TURTLE_INTERVAL,
+    whaleChance: WHALE_CHANCE,
+    whaleInterval: WHALE_INTERVAL,
+  },
+  music: {
+    enabled: true,
+    track: DEFAULT_MUSIC,
   },
 }))

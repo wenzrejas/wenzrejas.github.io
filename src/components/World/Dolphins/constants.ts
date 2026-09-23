@@ -29,6 +29,7 @@ export const LEAVE_DRIFT = 15
 export const SEPARATION_RADIUS = 18
 export const SEPARATION_STRENGTH = 20
 export const SHIP_CLEARANCE = 24
+export const WHALE_CLEARANCE = 32
 
 // ── Swimming ──────────────────────────────────────────────────────────────────
 export const DOLPHIN_LENGTH = 14

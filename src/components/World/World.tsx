@@ -17,6 +17,8 @@ import Birds from './Birds/Birds'
 import Fish from './Fish/Fish'
 import Dolphins from './Dolphins/Dolphins'
 import Algae from './Algae/Algae'
+import Turtles from './Turtles/Turtles'
+import Whale from './Whale/Whale'
 
 interface WorldProps {
   onIslandSelect: (key: IslandKey) => void
@@ -49,6 +51,8 @@ const World = forwardRef<THREE.Group, WorldProps>(({ onIslandSelect }, forwarded
       <Fish />
       <Dolphins />
       <Algae />
+      <Turtles />
+      <Whale />
     </>
   )
 })

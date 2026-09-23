@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import { useShipStore } from '../../../store/shipStore'
+import { useWhaleStore } from '../../../store/whaleStore'
 import { mix, rand, wrapAngle } from '../../../utils/math'
 import {
   ACCEL,
@@ -42,6 +43,7 @@ import {
   SURFACE_LIFT,
   TURN_GAIN,
   TURN_SLOWDOWN,
+  WHALE_CLEARANCE,
   YAW_SMOOTH,
 } from './constants'
 
@@ -164,6 +166,8 @@ export function swim(dolphin: Dolphin, pod: Pod, ship: ShipMotion, dt: number): 
     if (other !== dolphin) addRepulsion(dolphin, other.x, other.z, SEPARATION_RADIUS)
   }
   addRepulsion(dolphin, ship.x, ship.z, SHIP_CLEARANCE)
+  const whale = useWhaleStore.getState()
+  if (whale.active) addRepulsion(dolphin, whale.x, whale.z, whale.radius + WHALE_CLEARANCE)
 
   const desiredX = ship.vx + (targetX - dolphin.x) * FOLLOW_GAIN + _push.x
   const desiredZ = ship.vz + (targetZ - dolphin.z) * FOLLOW_GAIN + _push.y

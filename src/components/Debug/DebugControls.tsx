@@ -10,6 +10,7 @@ import { useDayCycleControls } from './panels/dayCycle'
 import { useCameraControls } from './panels/camera'
 import { useRevealControls } from './panels/reveal'
 import { useWildlifeControls } from './panels/wildlife'
+import { useMusicControls } from './panels/music'
 
 export function DebugSync() {
   const ocean = useOceanControls()
@@ -23,6 +24,7 @@ export function DebugSync() {
   const camera = useCameraControls()
   const reveal = useRevealControls()
   const wildlife = useWildlifeControls()
+  const music = useMusicControls()
 
   useDebugStore.setState({
     ocean,
@@ -36,6 +38,7 @@ export function DebugSync() {
     camera,
     reveal,
     wildlife,
+    music,
   })
 
   return null

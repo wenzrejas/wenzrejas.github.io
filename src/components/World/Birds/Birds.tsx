@@ -11,6 +11,7 @@ import { isOnScreen } from '../../../utils/screen'
 import { buildBirdGeometry, createBirdMaterial, createShadowMaterial } from './birdModel'
 import {
   BANK_FACTOR,
+  BANK_LIMIT,
   BOB_AMP,
   FIRST_SPAWN_DELAY,
   FLIGHT_RADIUS,
@@ -20,7 +21,10 @@ import {
   SHADOW_Y,
   VIEW_MARGIN,
 } from './constants'
-import { createFlight, updateWings, type Flight } from './flight'
+import { createFlight, steerFlight, updateWings, type Flight } from './flight'
+import type { SoundHandle } from '../../../audio/audioManager'
+import { SEAGULL_FADE_OUT } from '../../../audio/constants'
+import { maybeSeagullCall } from '../../../audio/wildlifeSounds'
 
 const _dummy = new THREE.Object3D()
 
@@ -42,6 +46,15 @@ export default function Birds() {
 
   const flights = useRef<Flight[]>([])
   const spawnTimer = useRef(FIRST_SPAWN_DELAY)
+  const calls = useRef(new Map<Flight, SoundHandle>())
+
+  useEffect(() => {
+    const activeCalls = calls.current
+    return () => {
+      for (const call of activeCalls.values()) call.stop()
+      activeCalls.clear()
+    }
+  }, [])
 
   useFrame(({ clock, camera }, delta) => {
     const mesh = meshRef.current
@@ -62,18 +75,19 @@ export default function Birds() {
       const active = flights.current.reduce((sum, flight) => sum + flight.birds.length, 0)
       const calm = useCycleStore.getState().nightFactor < NIGHT_CUTOFF && !isRaining()
       if (calm && active < MAX_BIRDS) {
-        flights.current.push(createFlight(shipX, shipZ, MAX_BIRDS - active))
+        const flight = createFlight(shipX, shipZ, MAX_BIRDS - active)
+        flights.current.push(flight)
+        const call = maybeSeagullCall(time)
+        if (call) calls.current.set(flight, call)
       }
     }
 
     let index = 0
     retain(flights.current, (flight) => {
-      flight.heading += flight.turn * dt
+      steerFlight(flight, time, dt)
       const dirX = Math.sin(flight.heading)
       const dirZ = Math.cos(flight.heading)
-      flight.x += dirX * flight.speed * dt
-      flight.z += dirZ * flight.speed * dt
-      flight.travelled += flight.speed * dt
+      const bank = THREE.MathUtils.clamp(-flight.turn * BANK_FACTOR, -BANK_LIMIT, BANK_LIMIT)
 
       const firstIndex = index
       let onScreen = false
@@ -86,7 +100,7 @@ export default function Birds() {
           flight.y + bird.offsetY + Math.sin(time * 0.7 + bird.bobPhase) * BOB_AMP,
           flight.z - dirX * bird.offsetX + dirZ * bird.offsetZ
         )
-        _dummy.rotation.set(0, flight.heading, -flight.turn * BANK_FACTOR)
+        _dummy.rotation.set(0, flight.heading, bank)
         _dummy.scale.setScalar(bird.size)
         _dummy.updateMatrix()
         mesh.setMatrixAt(index, _dummy.matrix)
@@ -107,6 +121,8 @@ export default function Birds() {
       }
 
       if (flight.travelled > FLIGHT_RADIUS && !onScreen) {
+        calls.current.get(flight)?.stop(SEAGULL_FADE_OUT)
+        calls.current.delete(flight)
         index = firstIndex
         return false
       }

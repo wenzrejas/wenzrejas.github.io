@@ -2,6 +2,7 @@ import type { PhaseName } from '../World/DayNightCycle/dayNightKeyframes'
 import type { IslandKey } from '../World/Islands/constants'
 import type { IslandModelTuning } from '../World/Islands/islandSpec'
 import type { WeatherType } from '../../store/weatherStore'
+import type { MusicTrack } from '../../audio/sounds'
 
 export interface OceanControls {
   waveAmp: number
@@ -103,6 +104,15 @@ export interface WildlifeControls {
   fishDelayMax: number
   dolphinChance: number
   dolphinInterval: number
+  turtleChance: number
+  turtleInterval: number
+  whaleChance: number
+  whaleInterval: number
+}
+
+export interface MusicControls {
+  enabled: boolean
+  track: MusicTrack
 }
 
 export interface RevealControls {
