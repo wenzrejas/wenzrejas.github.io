@@ -7,6 +7,7 @@ import { useShipStore } from '../../../store/shipStore'
 import { isRaining } from '../../../store/weatherStore'
 import { wrapAngle } from '../../../utils/math'
 import { ParticlePool, updateDrops, updateFoam } from '../Effects/particlePool'
+import { depthFade } from '../Effects/wildlifeMaterial'
 import { isOpenWater } from '../Islands/islandZones'
 import { buildDolphinGeometry, createDolphinMaterial } from './dolphinModel'
 import { emitFinWake, emitSplash } from './spray'
@@ -34,9 +35,10 @@ import {
   SPLASH_EXIT_DROPS,
 } from './constants'
 import { createPod, pose, swim, timeOfDayChance, updateAction, type Pod } from './pod'
+import { updateDolphinCalls } from '../../../audio/wildlifeSounds'
 
 const _dummy = new THREE.Object3D()
-const { clamp, smoothstep } = THREE.MathUtils
+const { clamp } = THREE.MathUtils
 
 export default function Dolphins() {
   const bodyRef = useRef<THREE.InstancedMesh>(null)
@@ -169,12 +171,18 @@ export default function Dolphins() {
         body.setMatrixAt(count, _dummy.matrix)
         phaseAttr.setX(count, dolphin.phase)
         archAttr.setX(count, arch)
-        fadeAttr.setX(count, 1 - smoothstep(dolphin.depth, FADE_START_DEPTH, HIDDEN_DEPTH))
+        fadeAttr.setX(count, depthFade(dolphin.depth, FADE_START_DEPTH, HIDDEN_DEPTH))
         count++
       }
 
       if (current.leaving && submerged) pod.current = null
     }
+
+    const present =
+      !!pod.current &&
+      !pod.current.leaving &&
+      pod.current.dolphins.some((dolphin) => dolphin.depth < FADE_START_DEPTH)
+    updateDolphinCalls(present, dt)
 
     body.count = count
     body.visible = count > 0

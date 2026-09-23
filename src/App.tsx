@@ -6,6 +6,7 @@ import { ISLAND_INTERACTION } from './components/World/Islands/constants'
 import { DebugSync } from './components/Debug/DebugControls'
 import { IS_DEBUG } from './components/Experience/constants'
 import { useUIStore } from './store/uiStore'
+import Soundscape from './components/Audio/Soundscape'
 
 export default function App() {
   const selectedIsland = useUIStore((s) => s.selectedIsland)
@@ -14,6 +15,7 @@ export default function App() {
   return (
     <>
       <DebugSync />
+      <Soundscape />
       <Leva hidden={!IS_DEBUG} collapsed />
       <Experience />
       <IslandTitle />

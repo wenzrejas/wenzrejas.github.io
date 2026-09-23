@@ -7,6 +7,7 @@ import { useShipStore } from '../../../store/shipStore'
 import { retain } from '../../../utils/array'
 import { rand } from '../../../utils/math'
 import { isOnScreen } from '../../../utils/screen'
+import { depthFade } from '../Effects/wildlifeMaterial'
 import { buildFishGeometry, createFishMaterial } from './fishModel'
 import { spawnChance } from './habitat'
 import {
@@ -14,11 +15,9 @@ import {
   DESPAWN_VIEW_MARGIN,
   FADE_START_DEPTH,
   FIRST_SPAWN_DELAY,
-  FISH_SHADE,
   HIDDEN_DEPTH,
   MAX_FISH,
   NIGHT_CUTOFF,
-  SCATTER_RADIUS,
   SPAWN_DISTANCE_MAX,
   SPAWN_DISTANCE_MIN,
   SPAWN_VIEW_MARGIN,
@@ -27,7 +26,7 @@ import {
   createSchool,
   leave,
   regroup,
-  scatter,
+  scatterFromThreats,
   steerSchool,
   updateFish,
   type School,
@@ -61,10 +60,6 @@ export default function Fish() {
     const fadeAttr = geometry.getAttribute('aFade') as THREE.InstancedBufferAttribute
     const phaseAttr = geometry.getAttribute('aPhase') as THREE.InstancedBufferAttribute
 
-    material.uniforms.uColor.value
-      .copy(useCycleStore.getState().oceanDeep)
-      .multiplyScalar(FISH_SHADE)
-
     const { fishDelayMin, fishDelayMax } = useDebugStore.getState().wildlife
     spawnTimer.current = Math.min(spawnTimer.current, fishDelayMax) - dt
     if (spawnTimer.current <= 0) {
@@ -91,15 +86,10 @@ export default function Fish() {
       if (!school.leaving && school.age > school.lifetime) leave(school)
       if (school.fleeTimer > 0) {
         school.fleeTimer -= dt
-        if (school.fleeTimer <= 0) regroup(school, shipX, shipZ)
+        if (school.fleeTimer <= 0) regroup(school)
       } else {
         steerSchool(school, time, dt)
-        const shipNear = school.fish.some(
-          (member) =>
-            member.depth < HIDDEN_DEPTH &&
-            Math.hypot(member.x - shipX, member.z - shipZ) < SCATTER_RADIUS
-        )
-        if (shipNear) scatter(school, shipX, shipZ)
+        scatterFromThreats(school, shipX, shipZ)
       }
 
       const firstIndex = index
@@ -115,10 +105,7 @@ export default function Fish() {
         _dummy.scale.setScalar(fish.size)
         _dummy.updateMatrix()
         mesh.setMatrixAt(index, _dummy.matrix)
-        fadeAttr.setX(
-          index,
-          1 - THREE.MathUtils.smoothstep(fish.depth, FADE_START_DEPTH, HIDDEN_DEPTH)
-        )
+        fadeAttr.setX(index, depthFade(fish.depth, FADE_START_DEPTH, HIDDEN_DEPTH))
         phaseAttr.setX(index, fish.phase)
         onScreen ||= isOnScreen(_dummy.position, camera, DESPAWN_VIEW_MARGIN)
         index++
@@ -144,7 +131,6 @@ export default function Fish() {
       args={[geometry, material, MAX_FISH]}
       frustumCulled={false}
       visible={false}
-      renderOrder={2.5}
     />
   )
 }

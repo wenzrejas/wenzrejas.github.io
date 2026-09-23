@@ -6,6 +6,8 @@ import {
   HABITAT_ISLANDS,
   HABITAT_NEAR,
   OPEN_WATER_CHANCE,
+  RUN_CHANCE,
+  RUN_SHORE_CHANCE,
   SHORE_GAP,
 } from './constants'
 
@@ -19,4 +21,13 @@ export function spawnChance(x: number, z: number): number {
     }
   }
   return mix(OPEN_WATER_CHANCE, 1, habitat)
+}
+
+export function runChance(x: number, z: number): number {
+  let shore = 0
+  for (const zone of ISLAND_ZONES) {
+    const gap = shoreGap(zone, x, z)
+    shore = Math.max(shore, 1 - THREE.MathUtils.smoothstep(gap, HABITAT_NEAR, HABITAT_FAR))
+  }
+  return mix(RUN_CHANCE, RUN_SHORE_CHANCE, shore)
 }

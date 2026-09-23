@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { addInstancedFloats, createWildlifeMaterial } from '../Effects/wildlifeMaterial'
 import { POD_MAX } from './constants'
 import BODY_VERT_GLSL from './shaders/dolphinBody.vert.glsl'
 import BODY_FRAG_GLSL from './shaders/dolphinBody.frag.glsl'
@@ -23,9 +24,6 @@ const PROFILE: [number, number][] = [
   [-0.34, 0.04],
   [-0.44, 0.02],
 ]
-
-const instanceAttribute = () =>
-  new THREE.InstancedBufferAttribute(new Float32Array(POD_MAX), 1).setUsage(THREE.DynamicDrawUsage)
 
 // ── Geometry ──────────────────────────────────────────────────────────────────
 
@@ -73,9 +71,7 @@ export function buildDolphinGeometry(): THREE.BufferGeometry {
   const geo = new THREE.BufferGeometry()
   geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
   geo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3))
-  geo.setAttribute('aPhase', instanceAttribute())
-  geo.setAttribute('aArch', instanceAttribute())
-  geo.setAttribute('aFade', instanceAttribute())
+  addInstancedFloats(geo, ['aPhase', 'aArch', 'aFade'], POD_MAX)
   geo.computeVertexNormals()
   return geo
 }
@@ -83,27 +79,9 @@ export function buildDolphinGeometry(): THREE.BufferGeometry {
 // ── Materials ─────────────────────────────────────────────────────────────────
 
 export function createDolphinMaterial(): THREE.MeshLambertMaterial {
-  const mat = new THREE.MeshLambertMaterial({
-    vertexColors: true,
-    flatShading: true,
-    side: THREE.DoubleSide,
-    alphaHash: true,
+  return createWildlifeMaterial({
+    vertexGlsl: BODY_VERT_GLSL,
+    fragmentGlsl: BODY_FRAG_GLSL,
+    deform: 'deformDolphin',
   })
-
-  mat.onBeforeCompile = (shader) => {
-    shader.vertexShader = shader.vertexShader
-      .replace('#include <common>', `#include <common>\n${BODY_VERT_GLSL}`)
-      .replace(
-        '#include <begin_vertex>',
-        '#include <begin_vertex>\ntransformed = deformDolphin(transformed);\nvFade = aFade;'
-      )
-    shader.fragmentShader = shader.fragmentShader
-      .replace('#include <common>', `#include <common>\n${BODY_FRAG_GLSL}`)
-      .replace(
-        '#include <alphahash_fragment>',
-        'diffuseColor.a *= vFade;\n#include <alphahash_fragment>'
-      )
-  }
-
-  return mat
 }

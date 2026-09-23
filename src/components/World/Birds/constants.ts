@@ -5,9 +5,9 @@ export const BIRD_SIZE_JITTER = 0.15
 
 // ── Spawning ──────────────────────────────────────────────────────────────────
 export const FIRST_SPAWN_DELAY = 6
-export const SPAWN_DELAY_MIN = 12
-export const SPAWN_DELAY_MAX = 28
-export const FLOCK_CHANCE = 0.35
+export const SPAWN_DELAY_MIN = 16
+export const SPAWN_DELAY_MAX = 34
+export const FLOCK_CHANCE = 0.2
 export const FLOCK_MIN = 5
 export const FLOCK_MAX = 9
 export const FLOCK_SPACING = 7
@@ -21,8 +21,12 @@ export const FLIGHT_SPEED = 24
 export const FLIGHT_SPEED_JITTER = 4
 export const ALTITUDE_MIN = 100
 export const ALTITUDE_MAX = 130
-export const TURN_RATE = 0.03
-export const BANK_FACTOR = 6
+export const TURN_RATE = 0.13
+export const TURN_BIAS = 0.045
+export const TURN_FREQ_MIN = 0.06
+export const TURN_FREQ_MAX = 0.14
+export const BANK_FACTOR = 2.6
+export const BANK_LIMIT = 0.6
 export const BOB_AMP = 1.2
 
 // ── Shadow ────────────────────────────────────────────────────────────────────

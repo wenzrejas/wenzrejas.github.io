@@ -22,6 +22,9 @@ import {
   GLIDE_LIFT,
   GLIDE_TIME_MAX,
   GLIDE_TIME_MIN,
+  TURN_BIAS,
+  TURN_FREQ_MAX,
+  TURN_FREQ_MIN,
   TURN_RATE,
 } from './constants'
 
@@ -44,6 +47,10 @@ export interface Flight {
   y: number
   heading: number
   turn: number
+  turnBias: number
+  turnWander: number
+  turnFreq: number
+  turnPhase: number
   speed: number
   travelled: number
   birds: Bird[]
@@ -101,11 +108,24 @@ export function createFlight(originX: number, originZ: number, freeSlots: number
     z: centerZ - dirZ * FLIGHT_RADIUS - dirX * lane,
     y: altitude,
     heading,
-    turn: rand(-TURN_RATE, TURN_RATE),
+    turn: 0,
+    turnBias: rand(-TURN_BIAS, TURN_BIAS),
+    turnWander: TURN_RATE * rand(0.5, 1),
+    turnFreq: rand(TURN_FREQ_MIN, TURN_FREQ_MAX),
+    turnPhase: Math.random() * Math.PI * 2,
     speed: FLIGHT_SPEED + rand(-FLIGHT_SPEED_JITTER, FLIGHT_SPEED_JITTER),
     travelled: 0,
     birds: createFormation(freeSlots),
   }
+}
+
+export function steerFlight(flight: Flight, time: number, dt: number): void {
+  const wander = Math.sin(time * flight.turnFreq * Math.PI * 2 + flight.turnPhase)
+  flight.turn = flight.turnBias + flight.turnWander * wander
+  flight.heading += flight.turn * dt
+  flight.x += Math.sin(flight.heading) * flight.speed * dt
+  flight.z += Math.cos(flight.heading) * flight.speed * dt
+  flight.travelled += flight.speed * dt
 }
 
 export function updateWings(bird: Bird, dt: number): number {
