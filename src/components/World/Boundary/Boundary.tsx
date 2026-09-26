@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { IS_DEBUG } from '../../Experience/constants'
@@ -8,6 +8,7 @@ import VERT from './shaders/boundary.vert.glsl'
 import FRAG from './shaders/boundary.frag.glsl'
 
 function BoundaryFog() {
+  const meshRef = useRef<THREE.Mesh>(null)
   const material = useMemo(
     () =>
       new THREE.ShaderMaterial({
@@ -29,16 +30,26 @@ function BoundaryFog() {
   useEffect(() => () => material.dispose(), [material])
 
   useFrame(({ clock }) => {
+    const mesh = meshRef.current
+    if (!mesh) return
+
     const boundary = useDebugStore.getState().boundary
     const cycle = useCycleStore.getState()
-    material.uniforms.uTime.value = clock.getElapsedTime()
-    material.uniforms.uRadius.value = boundary.radius
-    material.uniforms.uFalloff.value = boundary.falloff
-    material.uniforms.uColor.value.copy(cycle.fogColor)
+    const { uniforms } = mesh.material as THREE.ShaderMaterial
+    uniforms.uTime.value = clock.getElapsedTime()
+    uniforms.uRadius.value = boundary.radius
+    uniforms.uFalloff.value = boundary.falloff
+    uniforms.uColor.value.copy(cycle.fogColor)
   })
 
   return (
-    <mesh rotation-x={-Math.PI / 2} position-y={8} frustumCulled={false} renderOrder={10}>
+    <mesh
+      ref={meshRef}
+      rotation-x={-Math.PI / 2}
+      position-y={8}
+      frustumCulled={false}
+      renderOrder={10}
+    >
       <circleGeometry args={[1500, 256]} />
       <primitive object={material} attach="material" />
     </mesh>

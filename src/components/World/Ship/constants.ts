@@ -12,6 +12,17 @@ export const TURN_SPEED = 0.6
 export const TILT_MAX = 0.12
 export const TILT_SPEED = 6
 
+// ── Hull collision ────────────────────────────────────────────────────────────
+export const HULL_CIRCLES = [
+  { ahead: 17, radius: 2.5 },
+  { ahead: 8, radius: 5 },
+  { ahead: 0, radius: 8.5 },
+  { ahead: -7, radius: 8.5 },
+  { ahead: -13, radius: 8.5 },
+]
+export const HULL_SHORE_GAP = 0.5
+export const HULL_COLLISION_PASSES = 2
+
 // ── Hull foam geometry ────────────────────────────────────────────────────────
 export const FOAM_PLANE_SIZE = 50
 export const HULL_BEAM_RATIO = 0.45

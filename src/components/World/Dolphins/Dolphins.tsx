@@ -34,7 +34,15 @@ import {
   SPLASH_ENTRY_DROPS,
   SPLASH_EXIT_DROPS,
 } from './constants'
-import { createPod, pose, swim, timeOfDayChance, updateAction, type Pod } from './pod'
+import {
+  createPod,
+  pose,
+  swim,
+  timeOfDayChance,
+  updateAction,
+  updateRoaming,
+  type Pod,
+} from './pod'
 import { updateDolphinCalls } from '../../../audio/wildlifeSounds'
 
 const _dummy = new THREE.Object3D()
@@ -118,6 +126,7 @@ export default function Dolphins() {
       const idle = 1 - clamp(motion.speed / IDLE_SHIP_SPEED, 0, 1)
       current.orbit = wrapAngle(current.orbit) + ORBIT_RATE * idle * dt
       current.orbit *= Math.exp(-ORBIT_SETTLE * (1 - idle) * dt)
+      updateRoaming(current, motion, dt)
 
       let submerged = true
       for (const dolphin of current.dolphins) {

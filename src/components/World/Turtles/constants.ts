@@ -25,6 +25,7 @@ export const SPEED_RATE = 0.8
 export const WANDER_RATE = 0.25
 export const SHORE_AVOID_DISTANCE = 30
 export const SHORE_AVOID_RATE = 0.8
+export const SHORE_GAP = 5
 export const STROKE_FREQ = 0.7
 export const GLIDE_FREQ = 0.12
 export const PITCH_LIMIT = 0.6

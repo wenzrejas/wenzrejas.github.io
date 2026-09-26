@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { useWhaleStore } from '../../../store/whaleStore'
 import { mix, rand, turnToward, wrapAngle } from '../../../utils/math'
-import { ISLAND_ZONES, shoreGap } from '../Islands/islandZones'
+import { keepOffShore, nearestShore } from '../Shore/nearestShore'
 import {
   BANK_FACTOR,
   BREATH_DELAY_MAX,
@@ -25,6 +25,7 @@ import {
   SEPARATION_TURN_RATE,
   SHORE_AVOID_DISTANCE,
   SHORE_AVOID_RATE,
+  SHORE_GAP,
   SHY_DEPTH,
   SHY_RADIUS,
   SHY_SPEED_BOOST,
@@ -63,6 +64,7 @@ export interface Turtle {
 }
 
 const { clamp, smoothstep } = THREE.MathUtils
+const _awayFromShore = new THREE.Vector2()
 
 export function createTurtle(x: number, z: number, heading: number): Turtle {
   const cruiseSpeed = rand(CRUISE_SPEED_MIN, CRUISE_SPEED_MAX)
@@ -113,13 +115,6 @@ export function steer(
   const previousHeading = turtle.heading
   turtle.heading += Math.sin(time * 0.2 + turtle.seed) * WANDER_RATE * dt
 
-  for (const zone of ISLAND_ZONES) {
-    if (shoreGap(zone, turtle.x, turtle.z) < SHORE_AVOID_DISTANCE) {
-      const away = Math.atan2(turtle.x - zone.x, turtle.z - zone.z)
-      turtle.heading = turnToward(turtle.heading, away, SHORE_AVOID_RATE * dt)
-    }
-  }
-
   startle(turtle, shipX, shipZ, SHY_RADIUS)
   const whale = useWhaleStore.getState()
   if (whale.active) startle(turtle, whale.x, whale.z, whale.radius + WHALE_SHY_MARGIN)
@@ -129,10 +124,16 @@ export function steer(
     turtle.heading = turnToward(turtle.heading, away, SHY_TURN_RATE * dt)
   }
 
+  if (nearestShore(turtle.x, turtle.z, _awayFromShore) < SHORE_AVOID_DISTANCE) {
+    const away = Math.atan2(_awayFromShore.x, _awayFromShore.y)
+    turtle.heading = turnToward(turtle.heading, away, SHORE_AVOID_RATE * dt)
+  }
+
   const targetSpeed = turtle.cruiseSpeed + (turtle.shyTimer > 0 ? SHY_SPEED_BOOST : 0)
   turtle.speed += (targetSpeed - turtle.speed) * Math.min(1, SPEED_RATE * dt)
   turtle.x += Math.sin(turtle.heading) * turtle.speed * dt
   turtle.z += Math.cos(turtle.heading) * turtle.speed * dt
+  keepOffShore(turtle, SHORE_GAP)
 
   const yawRate = dt > 0 ? wrapAngle(turtle.heading - previousHeading) / dt : 0
   turtle.bank += (clamp(-yawRate * BANK_FACTOR, -0.4, 0.4) - turtle.bank) * Math.min(1, 3 * dt)

@@ -10,8 +10,20 @@ const PITCH_AMP = 0.02
 const ROLL_RATE = 0.8
 const PITCH_RATE = 0.55
 
+interface BoatRest {
+  y: number
+  rx: number
+  rz: number
+}
+
+function bobBoat(boat: THREE.Object3D, base: BoatRest, time: number, swell: number) {
+  boat.position.y = base.y + Math.sin(time * BOB_SPEED) * BOB_AMP * swell
+  boat.rotation.z = base.rz + Math.sin(time * BOB_SPEED * ROLL_RATE) * ROLL_AMP * swell
+  boat.rotation.x = base.rx + Math.cos(time * BOB_SPEED * PITCH_RATE) * PITCH_AMP * swell
+}
+
 export function useBoatBob(boat: THREE.Object3D | null) {
-  const rest = useRef<{ y: number; rx: number; rz: number } | null>(null)
+  const rest = useRef<BoatRest | null>(null)
 
   useFrame(({ clock }) => {
     if (!boat) return
@@ -19,12 +31,6 @@ export function useBoatBob(boat: THREE.Object3D | null) {
       rest.current = { y: boat.position.y, rx: boat.rotation.x, rz: boat.rotation.z }
     }
 
-    const time = clock.getElapsedTime()
-    const swell = useWeatherStore.getState().waveAmpMult
-    const base = rest.current
-
-    boat.position.y = base.y + Math.sin(time * BOB_SPEED) * BOB_AMP * swell
-    boat.rotation.z = base.rz + Math.sin(time * BOB_SPEED * ROLL_RATE) * ROLL_AMP * swell
-    boat.rotation.x = base.rx + Math.cos(time * BOB_SPEED * PITCH_RATE) * PITCH_AMP * swell
+    bobBoat(boat, rest.current, clock.getElapsedTime(), useWeatherStore.getState().waveAmpMult)
   })
 }

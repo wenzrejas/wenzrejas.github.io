@@ -14,16 +14,19 @@ interface Props {
 }
 
 const DRIFT_SPEED = 0.006
+const STARTING_WEATHER: WeatherType = 'sunny'
+
+const firstLightningDelay = () => 6 + Math.random() * 10
 
 export default function WeatherSystem({ shipRef }: Props) {
-  const currentType = useRef<WeatherType>('sunny')
-  const nextType = useRef<WeatherType>(pickOther(currentType.current))
+  const currentType = useRef<WeatherType>(STARTING_WEATHER)
+  const nextType = useRef<WeatherType>(pickOther(STARTING_WEATHER))
   const transitionT = useRef(0)
   const isBlending = useRef(false)
   const stableTimer = useRef(STABLE_MIN)
 
   // Lightning state
-  const nextLightning = useRef(6 + Math.random() * 10)
+  const nextLightning = useRef(firstLightningDelay())
   const flashPhase = useRef(0) // 0=idle 1=main 2=gap 3=secondary
   const flashTimer = useRef(0)
 

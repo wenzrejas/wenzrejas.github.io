@@ -31,6 +31,12 @@ export const SEPARATION_STRENGTH = 20
 export const SHIP_CLEARANCE = 24
 export const WHALE_CLEARANCE = 32
 
+// ── Roaming near islands ──────────────────────────────────────────────────────
+export const ROAM_START_GAP = 110
+export const ROAM_END_GAP = 140
+export const ROAM_ANCHOR_GAP = 110
+export const ROAM_RATE = 0.25
+
 // ── Swimming ──────────────────────────────────────────────────────────────────
 export const DOLPHIN_LENGTH = 14
 export const FOLLOW_GAIN = 1.2

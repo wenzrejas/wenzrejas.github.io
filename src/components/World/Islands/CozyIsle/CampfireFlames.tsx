@@ -48,9 +48,10 @@ export default function CampfireFlames({ base, height, islandScale }: CampfireFl
     mesh.visible = intensity > 0.001
     if (!mesh.visible) return
 
-    material.uniforms.uTime.value = clock.getElapsedTime()
-    material.uniforms.uIntensity.value = intensity
-    material.uniforms.uSize.value = height * islandScale * FLAME_SCALE
+    const { uniforms } = mesh.material as THREE.ShaderMaterial
+    uniforms.uTime.value = clock.getElapsedTime()
+    uniforms.uIntensity.value = intensity
+    uniforms.uSize.value = height * islandScale * FLAME_SCALE
   })
 
   return (

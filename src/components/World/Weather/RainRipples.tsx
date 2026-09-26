@@ -12,8 +12,8 @@ const RIPPLE_LIFETIME = 1.8 // seconds per ring
 const SPAWN_RATE = 80 // ripples/second at full rain intensity
 
 export default function RainRipples({ shipRef }: { shipRef: React.RefObject<THREE.Group | null> }) {
+  const meshRef = useRef<THREE.Mesh>(null)
   const progress = useRef(new Float32Array(MAX_RIPPLES).fill(1))
-  const centers = useRef(new Float32Array(MAX_RIPPLES * 2))
   const spawnAcc = useRef(0)
   const nextSlot = useRef(0)
   const activeCount = useRef(0) // ripples with progress < 1
@@ -57,17 +57,19 @@ export default function RainRipples({ shipRef }: { shipRef: React.RefObject<THRE
   )
 
   useFrame(({ camera }, delta) => {
+    const mesh = meshRef.current
+    if (!mesh) return
+
     const intensity = useWeatherStore.getState().rainIntensity
-    mat.uniforms.uIntensity.value = intensity
+    ;(mesh.material as THREE.ShaderMaterial).uniforms.uIntensity.value = intensity
 
     // Skip all work when no rain and all ripples have already faded out
     if (intensity <= 0.01 && activeCount.current === 0) return
 
     const dt = Math.min(delta, 0.05)
-    const aProgress = geo.attributes.aProgress as THREE.InstancedBufferAttribute
-    const aCenter = geo.attributes.aCenter as THREE.InstancedBufferAttribute
+    const aProgress = mesh.geometry.attributes.aProgress as THREE.InstancedBufferAttribute
+    const aCenter = mesh.geometry.attributes.aCenter as THREE.InstancedBufferAttribute
     const prog = progress.current
-    const ctr = centers.current
 
     let progDirty = false
 
@@ -110,8 +112,6 @@ export default function RainRipples({ shipRef }: { shipRef: React.RefObject<THRE
         const rx = cx + r * 0.7071 + d * -0.7071
         const rz = cz + r * -0.7071 + d * -0.7071
 
-        ctr[slot * 2] = rx
-        ctr[slot * 2 + 1] = rz
         aCenter.array[slot * 2] = rx
         aCenter.array[slot * 2 + 1] = rz
         centerDirty = true
@@ -123,5 +123,5 @@ export default function RainRipples({ shipRef }: { shipRef: React.RefObject<THRE
     if (centerDirty) aCenter.needsUpdate = true
   })
 
-  return <mesh geometry={geo} material={mat} frustumCulled={false} renderOrder={7} />
+  return <mesh ref={meshRef} geometry={geo} material={mat} frustumCulled={false} renderOrder={7} />
 }

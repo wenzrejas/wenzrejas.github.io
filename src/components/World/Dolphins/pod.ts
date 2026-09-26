@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import { useShipStore } from '../../../store/shipStore'
 import { useWhaleStore } from '../../../store/whaleStore'
 import { mix, rand, wrapAngle } from '../../../utils/math'
+import { ISLAND_ZONES, isOpenWater, shoreGap } from '../Islands/islandZones'
 import {
   ACCEL,
   ACTION_DELAY_MAX,
@@ -30,6 +31,10 @@ import {
   POD_MAX,
   POD_MIN,
   RISE_RATE,
+  ROAM_ANCHOR_GAP,
+  ROAM_END_GAP,
+  ROAM_RATE,
+  ROAM_START_GAP,
   SEPARATION_RADIUS,
   SEPARATION_STRENGTH,
   SHIP_CLEARANCE,
@@ -60,6 +65,7 @@ interface Dolphin {
   targetDepth: number
   slotAngle: number
   slotRadius: number
+  roamPhase: number
   phase: number
   action: Action
   actionTimer: number
@@ -77,6 +83,10 @@ export interface Pod {
   followTime: number
   leaving: boolean
   orbit: number
+  roaming: boolean
+  roamX: number
+  roamZ: number
+  roamAngle: number
   dolphins: Dolphin[]
 }
 
@@ -120,6 +130,7 @@ export function createPod(ship: ShipMotion): Pod {
       targetDepth: rand(CRUISE_DEPTH_MIN, CRUISE_DEPTH_MAX),
       slotAngle,
       slotRadius,
+      roamPhase: (i / count) * Math.PI * 2,
       phase: Math.random() * Math.PI * 2,
       action: 'cruise',
       actionTimer: rand(ACTION_DELAY_MIN, ACTION_DELAY_MAX),
@@ -137,7 +148,41 @@ export function createPod(ship: ShipMotion): Pod {
     followTime: rand(FOLLOW_TIME_MIN, FOLLOW_TIME_MAX),
     leaving: false,
     orbit: 0,
+    roaming: false,
+    roamX: 0,
+    roamZ: 0,
+    roamAngle: 0,
     dolphins,
+  }
+}
+
+// ── Roaming ───────────────────────────────────────────────────────────────────
+
+function anchorInOpenWater(pod: Pod): void {
+  let x = 0
+  let z = 0
+  for (const dolphin of pod.dolphins) {
+    x += dolphin.x / pod.dolphins.length
+    z += dolphin.z / pod.dolphins.length
+  }
+  for (const zone of ISLAND_ZONES) {
+    const gap = shoreGap(zone, x, z)
+    if (gap >= ROAM_ANCHOR_GAP) continue
+    const push = (ROAM_ANCHOR_GAP - gap) / Math.max(Math.hypot(x - zone.x, z - zone.z), 1)
+    x += (x - zone.x) * push
+    z += (z - zone.z) * push
+  }
+  pod.roamX = x
+  pod.roamZ = z
+}
+
+export function updateRoaming(pod: Pod, ship: ShipMotion, dt: number): void {
+  if (pod.roaming) {
+    pod.roamAngle += ROAM_RATE * dt
+    if (isOpenWater(ship.x, ship.z, ROAM_END_GAP)) pod.roaming = false
+  } else if (!isOpenWater(ship.x, ship.z, ROAM_START_GAP)) {
+    pod.roaming = true
+    anchorInOpenWater(pod)
   }
 }
 
@@ -158,9 +203,16 @@ function addRepulsion(dolphin: Dolphin, x: number, z: number, radius: number): v
 export function swim(dolphin: Dolphin, pod: Pod, ship: ShipMotion, dt: number): void {
   if (pod.leaving) dolphin.slotRadius += LEAVE_DRIFT * dt
 
-  const angle = ship.heading + dolphin.slotAngle + pod.orbit
-  const targetX = ship.x + Math.sin(angle) * dolphin.slotRadius
-  const targetZ = ship.z + Math.cos(angle) * dolphin.slotRadius
+  const angle = pod.roaming
+    ? pod.roamAngle + dolphin.roamPhase
+    : ship.heading + dolphin.slotAngle + pod.orbit
+  const centerX = pod.roaming ? pod.roamX : ship.x
+  const centerZ = pod.roaming ? pod.roamZ : ship.z
+  const targetX = centerX + Math.sin(angle) * dolphin.slotRadius
+  const targetZ = centerZ + Math.cos(angle) * dolphin.slotRadius
+  const leadX = pod.roaming ? Math.cos(angle) * ROAM_RATE * dolphin.slotRadius : ship.vx
+  const leadZ = pod.roaming ? -Math.sin(angle) * ROAM_RATE * dolphin.slotRadius : ship.vz
+
   _push.set(0, 0)
   for (const other of pod.dolphins) {
     if (other !== dolphin) addRepulsion(dolphin, other.x, other.z, SEPARATION_RADIUS)
@@ -169,8 +221,8 @@ export function swim(dolphin: Dolphin, pod: Pod, ship: ShipMotion, dt: number): 
   const whale = useWhaleStore.getState()
   if (whale.active) addRepulsion(dolphin, whale.x, whale.z, whale.radius + WHALE_CLEARANCE)
 
-  const desiredX = ship.vx + (targetX - dolphin.x) * FOLLOW_GAIN + _push.x
-  const desiredZ = ship.vz + (targetZ - dolphin.z) * FOLLOW_GAIN + _push.y
+  const desiredX = leadX + (targetX - dolphin.x) * FOLLOW_GAIN + _push.x
+  const desiredZ = leadZ + (targetZ - dolphin.z) * FOLLOW_GAIN + _push.y
   const desiredSpeed = Math.min(Math.hypot(desiredX, desiredZ), MAX_SPEED)
 
   const turn = wrapAngle(Math.atan2(desiredX, desiredZ) - dolphin.heading)

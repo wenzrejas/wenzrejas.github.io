@@ -1,5 +1,6 @@
 export const OCEAN_PLANE_SIZE = 2600
 export const OCEAN_SEGMENTS = 128
+export const OCEAN_Y = -0.1
 
 // ── Shoreline ─────────────────────────────────────────────────────────────────
 export const MAX_SHORE_ISLANDS = 8

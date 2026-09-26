@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useWeatherStore } from '../../../store/weatherStore'
@@ -18,6 +18,7 @@ const MAX_OPACITY = 0.5
 const SHADOW_COLOR = '#0a2233'
 
 export default function CloudShadows() {
+  const meshRef = useRef<THREE.Mesh>(null)
   const material = useMemo(() => {
     const repeat = CLOUD_PLANE_SIZE / CLOUD_TILE
     return new THREE.ShaderMaterial({
@@ -47,6 +48,9 @@ export default function CloudShadows() {
   }, [material])
 
   useFrame((_, delta) => {
+    const mesh = meshRef.current
+    if (!mesh) return
+
     const weather = useWeatherStore.getState()
     const wind = useWindStore.getState()
 
@@ -55,10 +59,11 @@ export default function CloudShadows() {
     const offsetU = cloudScroll.x / CLOUD_TILE
     const offsetV = cloudScroll.z / CLOUD_TILE
 
-    material.uniforms.uOpacity.value = strength * MAX_OPACITY
-    material.uniforms.uGain.value = gain
-    material.uniforms.uBias.value = bias
-    material.uniforms.uOffset.value.set(offsetU, offsetV)
+    const { uniforms } = mesh.material as THREE.ShaderMaterial
+    uniforms.uOpacity.value = strength * MAX_OPACITY
+    uniforms.uGain.value = gain
+    uniforms.uBias.value = bias
+    uniforms.uOffset.value.set(offsetU, offsetV)
 
     cloudShadowUniforms.uCloudStrength.value = strength
     cloudShadowUniforms.uCloudGain.value = gain
@@ -68,6 +73,7 @@ export default function CloudShadows() {
 
   return (
     <mesh
+      ref={meshRef}
       rotation-x={-Math.PI / 2}
       position-y={PLANE_Y}
       material={material}

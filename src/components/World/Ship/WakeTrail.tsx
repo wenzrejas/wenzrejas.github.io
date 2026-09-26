@@ -14,6 +14,7 @@ interface TrailPoint {
 }
 
 export default function WakeTrail({ shipRef }: { shipRef: React.RefObject<THREE.Group | null> }) {
+  const meshRef = useRef<THREE.Mesh>(null)
   const trailPoints = useRef<TrailPoint[]>(
     Array.from({ length: WAKE_TRAIL_LENGTH }, () => ({ x: 0, z: 0 }))
   )
@@ -107,15 +108,17 @@ export default function WakeTrail({ shipRef }: { shipRef: React.RefObject<THREE.
 
   useFrame(({ clock }, delta) => {
     const ship = shipRef.current
-    if (!ship) return
+    const mesh = meshRef.current
+    if (!ship || !mesh) return
 
+    const trail = mesh.geometry
+    const { uniforms } = mesh.material as THREE.ShaderMaterial
     const dt = isFinite(delta) && delta > 0 ? Math.min(delta, 0.05) : 0.016
     const wake = useDebugStore.getState().wake
     const cycle = useCycleStore.getState()
-    material.uniforms.uTime.value = clock.getElapsedTime()
-    material.uniforms.uColor.value.copy(cycle.foamColor)
-    material.uniforms.uInvActiveMax.value =
-      (WAKE_TRAIL_LENGTH - 1) / Math.max(1, activeCount.current - 1)
+    uniforms.uTime.value = clock.getElapsedTime()
+    uniforms.uColor.value.copy(cycle.foamColor)
+    uniforms.uInvActiveMax.value = (WAKE_TRAIL_LENGTH - 1) / Math.max(1, activeCount.current - 1)
 
     const shipX = ship.position.x
     const shipZ = ship.position.z
@@ -139,7 +142,7 @@ export default function WakeTrail({ shipRef }: { shipRef: React.RefObject<THREE.
           const keep =
             Math.max(0, Math.floor((1.0 - fadeProgress.current) * (WAKE_TRAIL_LENGTH - 1))) + 1
           activeCount.current = Math.min(activeCount.current, keep)
-          geometry.setDrawRange(0, Math.max(0, activeCount.current - 1) * 12)
+          trail.setDrawRange(0, Math.max(0, activeCount.current - 1) * 12)
         } else {
           fadeProgress.current = 0.0
         }
@@ -150,18 +153,18 @@ export default function WakeTrail({ shipRef }: { shipRef: React.RefObject<THREE.
       wasStationary.current = true
       fadeProgress.current = Math.min(1.1, fadeProgress.current + dt * 0.7)
     }
-    material.uniforms.uFadeProgress.value = fadeProgress.current
+    uniforms.uFadeProgress.value = fadeProgress.current
 
     if (fadeProgress.current >= 1.1 && activeCount.current > 0) {
       activeCount.current = 0
       isDirty.current = false
-      geometry.setDrawRange(0, 0)
+      trail.setDrawRange(0, 0)
     }
 
     if (!isDirty.current || activeCount.current < 2) return
     isDirty.current = false
 
-    const positionArray = geometry.attributes.position.array as Float32Array
+    const positionArray = trail.attributes.position.array as Float32Array
     const count = activeCount.current
 
     for (let i = 0; i < count; i++) {
@@ -205,9 +208,17 @@ export default function WakeTrail({ shipRef }: { shipRef: React.RefObject<THREE.
       positionArray[outerRightOffset + 2] = point.z - perpZ * outerHalfWidth
     }
 
-    geometry.setDrawRange(0, (count - 1) * 12)
-    geometry.attributes.position.needsUpdate = true
+    trail.setDrawRange(0, (count - 1) * 12)
+    trail.attributes.position.needsUpdate = true
   })
 
-  return <mesh geometry={geometry} material={material} frustumCulled={false} renderOrder={3} />
+  return (
+    <mesh
+      ref={meshRef}
+      geometry={geometry}
+      material={material}
+      frustumCulled={false}
+      renderOrder={3}
+    />
+  )
 }
