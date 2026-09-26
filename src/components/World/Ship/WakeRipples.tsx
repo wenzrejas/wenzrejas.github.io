@@ -7,6 +7,7 @@ import { useCycleStore } from '../../../store/cycleStore'
 import { algaeAt, algaeUniforms } from '../Algae/algaeField'
 
 const _tint = new THREE.Color()
+const _dummy = new THREE.Object3D()
 
 interface RippleSprite {
   alive: boolean
@@ -26,7 +27,6 @@ interface SpawnPoint {
 
 export default function WakeRipples({ shipRef }: { shipRef: React.RefObject<THREE.Group | null> }) {
   const rippleInstancesRef = useRef<THREE.InstancedMesh>(null)
-  const dummyObject = useMemo(() => new THREE.Object3D(), [])
   const rippleGroupIndex = useRef(0)
   const lastSpawnPoint = useRef<SpawnPoint | null>(null)
 
@@ -63,17 +63,16 @@ export default function WakeRipples({ shipRef }: { shipRef: React.RefObject<THRE
   useEffect(() => {
     const rippleInstances = rippleInstancesRef.current
     if (rippleInstances) {
-      dummyObject.scale.setScalar(0)
-      dummyObject.updateMatrix()
-      for (let i = 0; i < TOTAL_RIPPLE_SPRITES; i++)
-        rippleInstances.setMatrixAt(i, dummyObject.matrix)
+      _dummy.scale.setScalar(0)
+      _dummy.updateMatrix()
+      for (let i = 0; i < TOTAL_RIPPLE_SPRITES; i++) rippleInstances.setMatrixAt(i, _dummy.matrix)
       rippleInstances.instanceMatrix.needsUpdate = true
     }
     return () => {
       spriteGeometry.dispose()
       spriteMaterial.dispose()
     }
-  }, [])
+  }, [spriteGeometry, spriteMaterial])
 
   useFrame(({ clock }) => {
     const ship = shipRef.current
@@ -136,10 +135,10 @@ export default function WakeRipples({ shipRef }: { shipRef: React.RefObject<THRE
       if (!sprite.alive) {
         if (!sprite.written) {
           sprite.written = true
-          dummyObject.scale.setScalar(0)
-          dummyObject.position.y = -9999
-          dummyObject.updateMatrix()
-          rippleInstances.setMatrixAt(i, dummyObject.matrix)
+          _dummy.scale.setScalar(0)
+          _dummy.position.y = -9999
+          _dummy.updateMatrix()
+          rippleInstances.setMatrixAt(i, _dummy.matrix)
           matrixDirty = true
         }
         continue
@@ -153,20 +152,17 @@ export default function WakeRipples({ shipRef }: { shipRef: React.RefObject<THRE
       }
 
       const progress = age / wake.rippleLifetime
-      dummyObject.position.set(
+      _dummy.position.set(
         sprite.x + sprite.velocityX * age * wake.expandSpeed,
         0.4,
         sprite.z + sprite.velocityZ * age * wake.expandSpeed
       )
-      dummyObject.scale.setScalar(sprite.size * Math.max(0, 1 - progress * 1.25))
-      dummyObject.updateMatrix()
-      rippleInstances.setMatrixAt(i, dummyObject.matrix)
+      _dummy.scale.setScalar(sprite.size * Math.max(0, 1 - progress * 1.25))
+      _dummy.updateMatrix()
+      rippleInstances.setMatrixAt(i, _dummy.matrix)
       _tint
         .copy(cycle.foamColor)
-        .lerp(
-          algaeUniforms.uAlgaeGlow.value,
-          algaeAt(dummyObject.position.x, dummyObject.position.z)
-        )
+        .lerp(algaeUniforms.uAlgaeGlow.value, algaeAt(_dummy.position.x, _dummy.position.z))
       rippleInstances.setColorAt(i, _tint)
       matrixDirty = true
     }

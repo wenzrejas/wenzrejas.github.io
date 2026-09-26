@@ -27,8 +27,13 @@ interface LuminaBeamProps {
   headRest: number
 }
 
+function aimHead(head: THREE.Object3D | null, yaw: number) {
+  if (head) head.rotation.y = yaw
+}
+
 export default function LuminaBeam({ origin, head, headRest }: LuminaBeamProps) {
   const groupRef = useRef<THREE.Group>(null)
+  const beamRef = useRef<THREE.Mesh>(null)
   const sweep = useRef(0)
 
   const { geometry, material } = useMemo(() => {
@@ -62,7 +67,8 @@ export default function LuminaBeam({ origin, head, headRest }: LuminaBeamProps) 
 
   useFrame((_, delta) => {
     const group = groupRef.current
-    if (!group) return
+    const beam = beamRef.current
+    if (!group || !beam) return
 
     const sun = useCycleStore.getState().oceanSunDir.y
     const level = (1 - THREE.MathUtils.smoothstep(sun, BEAM_SUN_FULL, BEAM_SUN_ON)) * BEAM_STRENGTH
@@ -71,14 +77,16 @@ export default function LuminaBeam({ origin, head, headRest }: LuminaBeamProps) 
 
     sweep.current += Math.min(delta, MAX_DT) * BEAM_SPEED
     group.rotation.y = sweep.current
-    if (head) head.rotation.y = headRest + sweep.current
+    aimHead(head, headRest + sweep.current)
 
-    material.uniforms.uIntensity.value = level
+    const { uniforms } = beam.material as THREE.ShaderMaterial
+    uniforms.uIntensity.value = level
   })
 
   return (
     <group ref={groupRef} position={origin}>
       <mesh
+        ref={beamRef}
         geometry={geometry}
         material={material}
         scale={BEAM_LENGTH}

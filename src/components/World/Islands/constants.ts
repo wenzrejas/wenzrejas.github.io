@@ -2,7 +2,7 @@
   timewell: {
     label: 'Timewell Depth',
     description: 'Experience & Journey',
-    position: [-150, 0, 800] as [number, number, number],
+    position: [-180, 0, 950] as [number, number, number],
     radius: 70,
     color: '#4a90d9',
   },
@@ -16,7 +16,7 @@
   lumina: {
     label: 'Lumina Point',
     description: 'Contact & Connect',
-    position: [650, 0, 400] as [number, number, number],
+    position: [700, 0, 450] as [number, number, number],
     radius: 45,
     color: '#e07b39',
   },
@@ -30,7 +30,7 @@
   tech: {
     label: 'Tech Grove',
     description: 'Skills & Technologies',
-    position: [730, 0, -450] as [number, number, number],
+    position: [730, 0, -500] as [number, number, number],
     radius: 30,
     color: '#f0a500',
   },

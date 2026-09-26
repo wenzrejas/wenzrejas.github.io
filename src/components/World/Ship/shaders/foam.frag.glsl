@@ -1,4 +1,5 @@
 #include "../../../../utils/noise.glsl"
+#include "../../../../utils/foam.glsl"
 
 uniform float uTime;
 uniform float uFoamBound;
@@ -30,10 +31,8 @@ void main() {
   float bowBlend = clamp(ny * 2.0, 0.0, 1.0);
   float hullDist = mix(sternDist, bowDist, bowBlend);
 
-  float n  = noise(c * 11.0 + vec2(uTime * 0.11, -uTime * 0.09));
-  float nq = floor(n * 6.0) / 6.0;
-  float jag = hullDist + (nq - 0.40) * 0.20;
+  float jag = hullDist + foamJag(c * 11.0, uTime) * 0.20;
 
   if (jag > 1.0) discard;
-  gl_FragColor = vec4(uColor, 0.70);
+  gl_FragColor = vec4(uColor, FOAM_OPACITY);
 }

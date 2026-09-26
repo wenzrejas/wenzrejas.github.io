@@ -54,10 +54,11 @@ export function useHullFoam(
     mesh.position.set(group.position.x, foamY, group.position.z)
     mesh.rotation.set(-Math.PI / 2, headingRef.current, 0, 'YXZ')
 
-    material.uniforms.uTime.value = time
-    material.uniforms.uFoamBound.value = bound - Math.sin(time * bobSpeed) * BOB_PULSE
-    material.uniforms.uHullAspect.value = modelSize / (2 * bound * FOAM_PLANE_SIZE)
-    material.uniforms.uColor.value
+    const { uniforms } = mesh.material as THREE.ShaderMaterial
+    uniforms.uTime.value = time
+    uniforms.uFoamBound.value = bound - Math.sin(time * bobSpeed) * BOB_PULSE
+    uniforms.uHullAspect.value = modelSize / (2 * bound * FOAM_PLANE_SIZE)
+    uniforms.uColor.value
       .copy(cycle.foamColor)
       .lerp(algaeUniforms.uAlgaeGlow.value, algaeAt(group.position.x, group.position.z))
   })

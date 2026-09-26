@@ -12,6 +12,8 @@ import { useWindStore } from '../../../store/windStore'
 import { useWeatherStore } from '../../../store/weatherStore'
 import { useRevealStore } from '../../../store/revealStore'
 import { useShipStore } from '../../../store/shipStore'
+import { useCoastStore } from '../../../store/coastStore'
+import { keepHullOffCoasts } from './hullCollision'
 import { mix } from '../../../utils/math'
 import { MAX_DT } from '../../../utils/time'
 
@@ -37,7 +39,7 @@ export function useShipMovement(groupRef: RefObject<THREE.Group | null>) {
     const dt = isFinite(delta) && delta > 0 ? Math.min(delta, MAX_DT) : 0.016
     const time = clock.getElapsedTime()
     const keys = pressedKeys.current
-    const { moveSpeed, turnSpeed, tiltMax, tiltSpeed, baseY, bobAmp, bobSpeed } =
+    const { moveSpeed, turnSpeed, tiltMax, tiltSpeed, baseY, bobAmp, bobSpeed, modelSize } =
       useDebugStore.getState().ship
     const wind = useWindStore.getState()
     const weather = useWeatherStore.getState()
@@ -96,6 +98,8 @@ export function useShipMovement(groupRef: RefObject<THREE.Group | null>) {
         }
       }
     }
+    const { collisions } = useCoastStore.getState()
+    keepHullOffCoasts(group.position, heading.current, modelSize, collisions)
 
     // ── Tilt and bob ──────────────────────────────────────────────────────
     const tiltTarget = keys.left ? tiltMax : keys.right ? -tiltMax : 0

@@ -3,7 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import VERT from './shaders/ocean.vert.glsl'
 import FRAG from './shaders/ocean.frag.glsl'
-import { OCEAN_DEFAULTS, OCEAN_PLANE_SIZE, OCEAN_SEGMENTS, RAIN_DARKEN } from './constants'
+import { OCEAN_DEFAULTS, OCEAN_PLANE_SIZE, OCEAN_SEGMENTS, OCEAN_Y, RAIN_DARKEN } from './constants'
 import { waveUniforms } from './waveUniforms'
 import { useDebugStore } from '../../../store/debugStore'
 import { useCycleStore } from '../../../store/cycleStore'
@@ -62,12 +62,15 @@ export default function Ocean() {
   useEffect(() => () => material.dispose(), [material])
 
   useFrame(({ clock }, delta) => {
+    const mesh = meshRef.current
+    if (!mesh) return
+
     const ocean = useDebugStore.getState().ocean
     const cycle = useCycleStore.getState()
     const wind = useWindStore.getState()
     const weather = useWeatherStore.getState()
 
-    const uniforms = material.uniforms
+    const { uniforms } = mesh.material as THREE.ShaderMaterial
     uniforms.uTime.value = clock.getElapsedTime()
     uniforms.uWaveAmp.value = ocean.waveAmp
     uniforms.uWaveSpeed.value = ocean.waveSpeed
@@ -108,7 +111,7 @@ export default function Ocean() {
     <mesh
       ref={meshRef}
       rotation-x={-Math.PI / 2}
-      position={[0, -0.1, 0]}
+      position={[0, OCEAN_Y, 0]}
       frustumCulled={false}
       renderOrder={2}
     >

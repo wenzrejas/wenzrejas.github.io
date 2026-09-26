@@ -13,9 +13,10 @@ export interface GlowTarget {
 export const nightGlow = () =>
   THREE.MathUtils.smoothstep(useCycleStore.getState().nightFactor, GLOW_START, GLOW_FULL)
 
+export function lightGlows(glows: GlowTarget[], level: number) {
+  for (const { mat, base } of glows) mat.emissiveIntensity = base * level
+}
+
 export function useNightGlow(glows: GlowTarget[]) {
-  useFrame(() => {
-    const level = nightGlow()
-    for (const { mat, base } of glows) mat.emissiveIntensity = base * level
-  })
+  useFrame(() => lightGlows(glows, nightGlow()))
 }
