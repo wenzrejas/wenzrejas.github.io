@@ -9,7 +9,7 @@
   cozy: {
     label: 'Cozy Isle',
     description: 'Coffee & Support',
-    position: [-788, 0, 265] as [number, number, number],
+    position: [-800, 0, 265] as [number, number, number],
     radius: 55,
     color: '#5aab61',
   },

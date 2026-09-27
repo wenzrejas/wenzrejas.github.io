@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useCycleStore } from '../../../../store/cycleStore'
-import { isRaining } from '../../../../store/weatherStore'
+import { advanceFairWeatherPresence, createFairWeatherPresence } from '../fairWeatherPresence'
 import {
   FIREFLY_BOB,
   FIREFLY_PRESENCE_RATE,
@@ -15,8 +15,7 @@ import { nightPresence } from './fireflyPresence'
 
 export default function Fireflies({ islets, center, islandScale, offsetY }: FireflyField) {
   const pointsRef = useRef<THREE.Points>(null)
-  const presence = useRef(0)
-  const dryness = useRef(1)
+  const presence = useRef(createFairWeatherPresence())
 
   const geometry = useMemo(
     () => buildFireflyGeometry({ islets, center, islandScale, offsetY }),
@@ -36,14 +35,15 @@ export default function Fireflies({ islets, center, islandScale, offsetY }: Fire
     const points = pointsRef.current
     if (!points) return
 
-    const dt = Math.min(delta, 0.05)
-    const dry = isRaining() ? 0 : 1
-    dryness.current += (dry - dryness.current) * Math.min(1, FIREFLY_RAIN_RATE * dt)
+    const level = advanceFairWeatherPresence(
+      presence.current,
+      nightPresence(useCycleStore.getState().timeOfDay),
+      delta,
+      FIREFLY_PRESENCE_RATE,
+      FIREFLY_RAIN_RATE
+    )
 
-    const target = nightPresence(useCycleStore.getState().timeOfDay) * dryness.current
-    presence.current += (target - presence.current) * Math.min(1, FIREFLY_PRESENCE_RATE * dt)
-
-    points.visible = presence.current > 0.001
+    points.visible = level > 0.001
     if (!points.visible) return
 
     const { uniforms } = points.material as THREE.ShaderMaterial
@@ -52,7 +52,7 @@ export default function Fireflies({ islets, center, islandScale, offsetY }: Fire
     uniforms.uSize.value = FIREFLY_SIZE * zoom * gl.getPixelRatio()
     uniforms.uWander.value = FIREFLY_WANDER / islandScale
     uniforms.uBob.value = FIREFLY_BOB / islandScale
-    uniforms.uPresence.value = presence.current
+    uniforms.uPresence.value = level
   })
 
   return (
