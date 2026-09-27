@@ -1,36 +1,48 @@
 import { WORLD_LOCATIONS } from '../constants'
 import { BASE_TUNING, modelUnits, type ContactBlob, type IslandSpec } from '../islandSpec'
-import { COZY_FOOTPRINT, COZY_MODEL_TOP, COZY_SHORE_PEAK, COZY_SHORE_PROFILE } from './shoreProfile'
-import { SHORE_LONG_LINES } from '../../Shore/constants'
+import { COZY_FOOTPRINT, COZY_MODEL_TOP } from './shoreProfile'
 
 export const COZY_MODEL_URL = '/models/islands/cozy_isle_web_draco.glb'
 
-const COZY_COLLISION_RADIUS = WORLD_LOCATIONS.cozy.radius + 25
-
 // ── Island spec ───────────────────────────────────────────────────────────────
 export const COZY_SPEC: IslandSpec = {
-  tuning: { ...BASE_TUNING, rotation: -8 },
+  tuning: { ...BASE_TUNING, scale: 1.05, rotation: 85, offsetY: 0.5, brightness: 1.15 },
   footprint: COZY_FOOTPRINT,
   height: COZY_MODEL_TOP,
-  collision: [
-    {
-      x: 0,
-      z: 0,
-      radius: modelUnits(COZY_COLLISION_RADIUS, WORLD_LOCATIONS.cozy.radius, COZY_FOOTPRINT),
-    },
-  ],
-  shore: [{ x: 0, z: 0, radius: COZY_SHORE_PEAK, profile: COZY_SHORE_PROFILE }],
+  collision: [],
+  shore: [],
   calm: {
     inner: modelUnits(40, WORLD_LOCATIONS.cozy.radius, COZY_FOOTPRINT),
     outer: modelUnits(43, WORLD_LOCATIONS.cozy.radius, COZY_FOOTPRINT),
   },
-  shoreOptions: SHORE_LONG_LINES,
 }
 
 // ── Model nodes ───────────────────────────────────────────────────────────────
 export const BODY_NODE = 'CozyIsle_Static'
 export const BOAT_NODE = 'Boat'
-export const FIRE_NODES = ['Emissive_FireFlame', 'Emissive_FireCore']
+export const FIRE_ANCHOR_NODE = 'Campfire_FireAnchor'
+
+// ── Campfire ──────────────────────────────────────────────────────────────────
+export const FIRE_WIDTH = 0.456
+export const FIRE_HEIGHT = 0.518
+
+// ── Chimney smoke ─────────────────────────────────────────────────────────────
+export const SMOKE_PUFF_COUNT = 16
+export const SMOKE_LIFETIME = 7
+export const SMOKE_PUFF_SIZE = 0.3
+export const SMOKE_PUFF_SIZE_VARIANCE = 0.2
+export const SMOKE_PUFF_GROWTH = 3.2
+export const SMOKE_RISE = 2.6
+export const SMOKE_SPREAD = 0.35
+export const SMOKE_SWAY = 0.12
+export const SMOKE_DRIFT = 0.9
+export const SMOKE_OPACITY = 0.75
+export const SMOKE_SHADE = 0.9
+export const SMOKE_COLOR = '#fbfaf8'
+export const SMOKE_LIGHT_TINT = 0.5
+export const SMOKE_FADE_CYCLES = 0.04
+export const SMOKE_PRESENCE_RATE = 1.5
+export const SMOKE_RAIN_RATE = 0.3
 
 // ── Contact blob ──────────────────────────────────────────────────────────────
 export const COZY_BLOB: ContactBlob = {
