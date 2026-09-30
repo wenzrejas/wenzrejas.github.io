@@ -5,6 +5,7 @@ import { useIslandModel } from '../islandModel'
 import { placeIsland } from '../islandTransform'
 import IslandShadow from '../IslandShadow'
 import Coast from '../../Shore/Coast'
+import { useCoastFields } from '../../Shore/useCoastFields'
 import { BODY_NODE, TECH_BLOB, TECH_MODEL_URL } from './constants'
 import { TECH_ISLETS } from './shoreProfile'
 import { useSanctuaryGlow } from './sanctuaryGlow'
@@ -23,6 +24,7 @@ export default function TechGrove({ islandKey, config, hovered }: IslandBodyProp
   useGemSpin(shrines.gems)
 
   const placement = placeIsland(config.radius, tuning, island.footprint, island.center)
+  const coast = useCoastFields(island.model, placement.scale, tuning.offsetY)
 
   return (
     <>
@@ -30,12 +32,14 @@ export default function TechGrove({ islandKey, config, hovered }: IslandBodyProp
       <group {...placement}>
         {hovered && island.outline && <primitive object={island.outline} />}
         <primitive object={island.model} />
-        <Coast
-          islandKey={islandKey}
-          model={island.model}
-          islandScale={placement.scale}
-          offsetY={tuning.offsetY}
-        />
+        {coast && (
+          <Coast
+            islandKey={islandKey}
+            fields={coast}
+            islandScale={placement.scale}
+            offsetY={tuning.offsetY}
+          />
+        )}
         <Fireflies
           islets={TECH_ISLETS}
           center={island.center}

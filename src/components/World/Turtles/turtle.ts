@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { useWhaleStore } from '../../../store/whaleStore'
 import { mix, rand, turnToward, wrapAngle } from '../../../utils/math'
+import { headingFromWhirlpool, whirlpoolGap } from '../Islands/islandZones'
 import { keepOffShore, nearestShore } from '../Shore/nearestShore'
 import {
   BANK_FACTOR,
@@ -126,6 +127,10 @@ export function steer(
 
   if (nearestShore(turtle.x, turtle.z, _awayFromShore) < SHORE_AVOID_DISTANCE) {
     const away = Math.atan2(_awayFromShore.x, _awayFromShore.y)
+    turtle.heading = turnToward(turtle.heading, away, SHORE_AVOID_RATE * dt)
+  }
+  if (whirlpoolGap(turtle.x, turtle.z) < SHORE_AVOID_DISTANCE) {
+    const away = headingFromWhirlpool(turtle.x, turtle.z)
     turtle.heading = turnToward(turtle.heading, away, SHORE_AVOID_RATE * dt)
   }
 

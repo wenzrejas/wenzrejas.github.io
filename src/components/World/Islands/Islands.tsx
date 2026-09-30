@@ -7,9 +7,11 @@ import CozyIsle from './CozyIsle/CozyIsle'
 import LuminaPoint from './LuminaPoint/LuminaPoint'
 import PlaceholderIsland from './PlaceholderIsland/PlaceholderIsland'
 import TechGrove from './TechGrove/TechGrove'
+import TimewellDepth from './TimewellDepth/TimewellDepth'
 import { useNearViewport } from './useNearViewport'
 
 const ISLAND_BODIES: Partial<Record<IslandKey, ComponentType<IslandBodyProps>>> = {
+  timewell: TimewellDepth,
   cozy: CozyIsle,
   lumina: LuminaPoint,
   tech: TechGrove,

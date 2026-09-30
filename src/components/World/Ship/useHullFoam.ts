@@ -7,8 +7,12 @@ import { FOAM_PLANE_SIZE, hullFoamBound } from './constants'
 import { useDebugStore } from '../../../store/debugStore'
 import { useCycleStore } from '../../../store/cycleStore'
 import { algaeAt, algaeUniforms } from '../Algae/algaeField'
+import { whirlpoolDip } from '../../../utils/whirlpoolFunnel'
 
 const BOB_PULSE = 0.008
+const LYING_FLAT = new THREE.Quaternion().setFromEuler(new THREE.Euler(-Math.PI / 2, 0, 0))
+
+const _tilt = new THREE.Euler()
 
 /**
  * Owns the foam plane's material and drives it from the ship's transform.
@@ -17,7 +21,8 @@ const BOB_PULSE = 0.008
  */
 export function useHullFoam(
   groupRef: RefObject<THREE.Group | null>,
-  headingRef: RefObject<number>
+  headingRef: RefObject<number>,
+  leanRef: RefObject<THREE.Vector2>
 ) {
   const meshRef = useRef<THREE.Mesh>(null)
 
@@ -51,8 +56,12 @@ export function useHullFoam(
     const cycle = useCycleStore.getState()
     const bound = hullFoamBound(modelSize, foamWidth)
 
-    mesh.position.set(group.position.x, foamY, group.position.z)
-    mesh.rotation.set(-Math.PI / 2, headingRef.current, 0, 'YXZ')
+    const { x, z } = group.position
+    const lean = leanRef.current
+    mesh.position.set(x, foamY - whirlpoolDip(x, z), z)
+    mesh.quaternion
+      .setFromEuler(_tilt.set(lean.x, headingRef.current, lean.y, 'YXZ'))
+      .multiply(LYING_FLAT)
 
     const { uniforms } = mesh.material as THREE.ShaderMaterial
     uniforms.uTime.value = time

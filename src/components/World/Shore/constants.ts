@@ -17,15 +17,6 @@ export const SHORE_DEFAULTS = {
   wobble: 0.8,
 }
 
-export const SHORE_LONG_LINES: Partial<ShoreTuning> = {
-  segments: 14,
-  dashMin: 0.34,
-  dashMax: 0.54,
-  dashBias: 0.5,
-  width: 1.0,
-  wobble: 0.4,
-}
-
 // ── Shoreline ─────────────────────────────────────────────────────────────────
 export const SHORELINE_RESOLUTION = 256
 

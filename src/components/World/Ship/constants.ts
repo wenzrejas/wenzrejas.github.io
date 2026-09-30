@@ -12,6 +12,15 @@ export const TURN_SPEED = 0.6
 export const TILT_MAX = 0.12
 export const TILT_SPEED = 6
 
+// ── Whirlpool drift ───────────────────────────────────────────────────────────
+export const WHIRLPOOL_SWIRL_SPEED = 14
+export const WHIRLPOOL_PULL_SPEED = 8
+export const WHIRLPOOL_PULL_REACH_SHARE = 1.6
+export const WHIRLPOOL_FULL_GRIP_SHARE = 0.4
+export const WHIRLPOOL_EYE_CALM_SHARE = 0.08
+export const WHIRLPOOL_LEAN = 0.8
+export const WHIRLPOOL_LEAN_RATE = 3
+
 // ── Hull collision ────────────────────────────────────────────────────────────
 export const HULL_CIRCLES = [
   { ahead: 17, radius: 2.5 },

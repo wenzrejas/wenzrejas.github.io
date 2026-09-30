@@ -1,4 +1,5 @@
 import { BASE_TUNING, type ContactBlob, type IslandSpec } from '../islandSpec'
+import type { GroundGlowTuning } from '../GroundGlow/glowSites'
 import { TECH_CLUSTER_RADIUS, TECH_FOOTPRINT, TECH_MODEL_TOP } from './shoreProfile'
 
 export const TECH_MODEL_URL = '/models/islands/tech_grove_web_draco.glb'
@@ -42,23 +43,24 @@ export const FIREFLY_RAIN_RATE = 0.12
 export const GLOW_DAY_SHARE = 0.25
 export const GLOW_EMISSIVE_GAIN = 1.8
 
-export const BASE_HALO_SPREAD = 1.55
-export const BASE_HALO_FILL = 0.35
-export const BASE_HALO_STRENGTH = 0.55
-export const BASE_HALO_LIFT = 0.3
-
 export const GEM_HALO_SPREAD = 1.8
 export const GEM_HALO_STRENGTH = 0.5
 
-// ── Base motes ────────────────────────────────────────────────────────────────
-export const MOTES_PER_BASE = 16
-export const MOTE_SIZE = 2
-export const MOTE_RISE = 13
-export const MOTE_LIFETIME = 4.5
-export const MOTE_SWIRL = 0.9
-export const MOTE_SPREAD = 0.6
-export const MOTE_INNER_SHARE = 0.35
-export const MOTE_STRENGTH = 1.7
+// ── Shrine ground glow ────────────────────────────────────────────────────────
+export const SHRINE_GROUND_GLOW: GroundGlowTuning = {
+  haloSpread: 1.55,
+  haloFill: 0.35,
+  haloStrength: 0.55,
+  haloLift: 0.3,
+  motesPerSite: 16,
+  moteSize: 2,
+  moteRise: 13,
+  moteLifetime: 4.5,
+  moteSwirl: 0.9,
+  moteSpread: 0.6,
+  moteInnerShare: 0.35,
+  moteStrength: 1.7,
+}
 
 // ── Gems ──────────────────────────────────────────────────────────────────────
 export const GEM_SPIN_RATE = 0.4

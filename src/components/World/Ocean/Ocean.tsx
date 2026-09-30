@@ -3,8 +3,18 @@ import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import VERT from './shaders/ocean.vert.glsl'
 import FRAG from './shaders/ocean.frag.glsl'
-import { OCEAN_DEFAULTS, OCEAN_PLANE_SIZE, OCEAN_SEGMENTS, OCEAN_Y, RAIN_DARKEN } from './constants'
+import {
+  OCEAN_DEFAULTS,
+  OCEAN_FUNNEL_OVERSHOOT,
+  OCEAN_PLANE_SIZE,
+  OCEAN_SEGMENTS,
+  OCEAN_Y,
+  RAIN_DARKEN,
+} from './constants'
 import { waveUniforms } from './waveUniforms'
+import { oceanSurfaceUniforms } from './oceanSurfaceUniforms'
+import { floatDefines } from '../../../utils/glsl'
+import { whirlpoolFunnelUniforms } from '../../../utils/whirlpoolFunnel'
 import { useDebugStore } from '../../../store/debugStore'
 import { useCycleStore } from '../../../store/cycleStore'
 import { useWindStore } from '../../../store/windStore'
@@ -24,36 +34,20 @@ export default function Ocean() {
         side: THREE.FrontSide,
         vertexShader: VERT,
         fragmentShader: FRAG,
+        defines: floatDefines({ FUNNEL_OVERSHOOT: OCEAN_FUNNEL_OVERSHOOT }),
         uniforms: {
           ...waveUniforms,
+          ...oceanSurfaceUniforms,
+          ...whirlpoolFunnelUniforms,
           uScale: { value: OCEAN_DEFAULTS.waterScale },
-          uSmoothness: { value: OCEAN_DEFAULTS.cellSmoothness },
-          uEdgeThreshold: { value: OCEAN_DEFAULTS.edgeThreshold },
-          uEdgeSoftness: { value: OCEAN_DEFAULTS.edgeSoftness },
           uFlowX: { value: OCEAN_DEFAULTS.flowX },
           uFlowZ: { value: OCEAN_DEFAULTS.flowZ },
-          uCellSpeed: { value: OCEAN_DEFAULTS.cellSpeed },
           uNoiseScale: { value: OCEAN_DEFAULTS.noiseScale },
           uNoiseFlowSpeed: { value: OCEAN_DEFAULTS.noiseFlowSpeed },
           uDistortAmount: { value: OCEAN_DEFAULTS.distortAmount },
-          uDeepColor: { value: new THREE.Color(OCEAN_DEFAULTS.deepColor) },
-          uMidColor: { value: new THREE.Color(OCEAN_DEFAULTS.midColor) },
-          uMidPos: { value: OCEAN_DEFAULTS.midPos },
-          uHighlight: { value: new THREE.Color(OCEAN_DEFAULTS.highlightColor) },
           uFoamColor: { value: new THREE.Color(1, 1, 1) },
-          uOpacity: { value: OCEAN_DEFAULTS.opacity },
-          uDeepOpacity: { value: OCEAN_DEFAULTS.deepOpacity },
-          uFresnelPower: { value: OCEAN_DEFAULTS.fresnelPower },
-          uFresnelStrength: { value: OCEAN_DEFAULTS.fresnelStrength },
           uFoamAmount: { value: OCEAN_DEFAULTS.foamAmount },
-          uSpecularStrength: { value: OCEAN_DEFAULTS.specularStrength },
-          uSpecularPower: { value: OCEAN_DEFAULTS.specularPower },
           uCrestStrength: { value: OCEAN_DEFAULTS.crestStrength },
-          uSunDir: {
-            value: new THREE.Vector3(OCEAN_DEFAULTS.sunX, OCEAN_DEFAULTS.sunY, OCEAN_DEFAULTS.sunZ),
-          },
-          uMoonDir: { value: new THREE.Vector3(5, 80, 5).normalize() },
-          uMoonIntensity: { value: 0 },
         },
       }),
     []

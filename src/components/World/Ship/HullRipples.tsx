@@ -5,6 +5,7 @@ import { useDebugStore } from '../../../store/debugStore'
 import { useCycleStore } from '../../../store/cycleStore'
 import { FOAM_PLANE_SIZE, hullFoamBound } from './constants'
 import { algaeAt, algaeUniforms } from '../Algae/algaeField'
+import { whirlpoolDip } from '../../../utils/whirlpoolFunnel'
 
 const _tint = new THREE.Color()
 const _dummy = new THREE.Object3D()
@@ -179,11 +180,9 @@ export default function HullRipples({ shipRef }: { shipRef: React.RefObject<THRE
       }
 
       const progress = age / s.partLife
-      _dummy.position.set(
-        p.x + p.velocityX * age * s.partSpeed,
-        0.6,
-        p.z + p.velocityZ * age * s.partSpeed
-      )
+      const rippleX = p.x + p.velocityX * age * s.partSpeed
+      const rippleZ = p.z + p.velocityZ * age * s.partSpeed
+      _dummy.position.set(rippleX, 0.6 - whirlpoolDip(rippleX, rippleZ), rippleZ)
       _dummy.scale.setScalar(p.size * Math.max(0, 1 - progress * 1.25))
       _dummy.updateMatrix()
       mesh.setMatrixAt(i, _dummy.matrix)

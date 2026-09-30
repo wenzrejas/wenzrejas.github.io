@@ -13,7 +13,7 @@ export interface ShoreField extends DistanceField {
   smoothedDistances: Float32Array
 }
 
-interface CoastFields {
+export interface CoastFields {
   shoreline: ShoreField
   collision: DistanceField
 }

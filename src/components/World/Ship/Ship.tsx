@@ -11,8 +11,8 @@ const Ship = forwardRef<THREE.Group>((_props, ref) => {
   const { clonedScene, footprint } = useShipModel()
 
   const groupRef = useRef<THREE.Group>(null)
-  const heading = useShipMovement(groupRef)
-  const { meshRef: foamMeshRef, material: foamMaterial } = useHullFoam(groupRef, heading)
+  const { heading, lean } = useShipMovement(groupRef)
+  const { meshRef: foamMeshRef, material: foamMaterial } = useHullFoam(groupRef, heading, lean)
 
   return (
     <>

@@ -3,10 +3,11 @@ import type { IslandModelTuning, IslandSpec } from './islandSpec'
 import { COZY_SPEC } from './CozyIsle/constants'
 import { LUMINA_SPEC } from './LuminaPoint/constants'
 import { TECH_SPEC } from './TechGrove/constants'
+import { TIMEWELL_SPEC } from './TimewellDepth/constants'
 import { placeholderSpec } from './PlaceholderIsland/constants'
 
 export const ISLAND_SPECS: Record<IslandKey, IslandSpec> = {
-  timewell: placeholderSpec(),
+  timewell: TIMEWELL_SPEC,
   cozy: COZY_SPEC,
   lumina: LUMINA_SPEC,
   buildshore: placeholderSpec(),

@@ -1,30 +1,17 @@
+#include "./oceanSurface.glsl"
+
 uniform float uTime;
 uniform float uScale;
 uniform float uSmoothness;
-uniform float uEdgeThreshold;
-uniform float uEdgeSoftness;
 uniform float uFlowX;
 uniform float uFlowZ;
 uniform float uCellSpeed;
 uniform float uNoiseScale;
 uniform float uNoiseFlowSpeed;
 uniform float uDistortAmount;
-uniform vec3  uDeepColor;
-uniform vec3  uMidColor;
-uniform float uMidPos;
-uniform vec3  uHighlight;
 uniform vec3  uFoamColor;
-uniform float uOpacity;
-uniform float uDeepOpacity;
-uniform float uFresnelPower;
-uniform float uFresnelStrength;
 uniform float uFoamAmount;
-uniform float uSpecularStrength;
-uniform float uSpecularPower;
 uniform float uCrestStrength;
-uniform vec3  uSunDir;
-uniform vec3  uMoonDir;
-uniform float uMoonIntensity;
 
 varying vec2  vWorldPos;
 varying vec3  vPos;
@@ -91,43 +78,14 @@ void main() {
   vec2  vor  = voronoiEdge(uv);
   float edge = vor.x - vor.y;
 
-  float t = smoothstep(
-    uEdgeThreshold - uEdgeSoftness,
-    uEdgeThreshold + uEdgeSoftness,
-    edge
-  );
-
-  float safeMP = max(uMidPos, 1e-4);
-  float seg0   = clamp(t / safeMP, 0.0, 1.0);
-  float seg1   = clamp((t - safeMP) / max(1.0 - safeMP, 1e-4), 0.0, 1.0);
-  float inSeg1 = step(safeMP, t);
-  vec3 color   = mix(
-    mix(uDeepColor, uMidColor, seg0),
-    mix(uMidColor,  uHighlight, seg1),
-    inSeg1
-  );
-
-  vec3 N       = normalize(vNormal);
-  vec3 viewDir = normalize(cameraPosition - vPos);
-
-  float nDotV  = clamp(dot(N, viewDir), 0.0, 1.0);
-  float fresnel = pow(1.0 - nDotV, uFresnelPower) * uFresnelStrength;
-  color = mix(color, uHighlight, fresnel);
-
-  vec3  sunDir = normalize(uSunDir);
-  vec3  H      = normalize(sunDir + viewDir);
-  float spec   = pow(max(dot(N, H), 0.0), uSpecularPower) * uSpecularStrength;
-  color = mix(color, uHighlight, spec);
-
-  vec3  moonDir = normalize(uMoonDir);
-  vec3  Hm      = normalize(moonDir + viewDir);
-  float moonSpec = pow(max(dot(N, Hm), 0.0), 64.0) * uMoonIntensity * 0.45;
-  color = mix(color, vec3(0.72, 0.82, 1.0), clamp(moonSpec, 0.0, 1.0));
+  float t = oceanTone(edge);
+  vec4 surface = oceanSurface(t, vNormal, vPos);
+  vec3 color = surface.rgb;
 
   float crestFactor = smoothstep(0.1, 0.72, vWaveHeight);
   color = mix(color, uFoamColor, crestFactor * uCrestStrength);
 
-  float alpha = mix(uDeepOpacity, 1.0, max(t, fresnel)) * uOpacity;
+  float alpha = surface.a;
 
   vec2  foamUV    = vWorldPos * uNoiseScale * 2.1 + vec2(uFlowX, uFlowZ) * uTime * 0.4 + vec2(4.7, 2.1);
   float foamNoise = fbm(foamUV);

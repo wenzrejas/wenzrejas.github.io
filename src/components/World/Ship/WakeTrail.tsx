@@ -7,10 +7,30 @@ import { WAKE_TRAIL_LENGTH, WAKE_TOTAL_VERTS } from './constants'
 import { useDebugStore } from '../../../store/debugStore'
 import { useCycleStore } from '../../../store/cycleStore'
 import { algaeDefines, algaeUniforms } from '../Algae/algaeField'
+import { whirlpoolDip } from '../../../utils/whirlpoolFunnel'
+import { whirlpoolCurrent } from './whirlpoolDrift'
 
 interface TrailPoint {
   x: number
   z: number
+}
+
+const TRAIL_Y = 0.3
+
+const _current = new THREE.Vector2()
+
+function writeDraped(positions: Float32Array, offset: number, x: number, z: number): void {
+  positions[offset] = x
+  positions[offset + 1] = TRAIL_Y - whirlpoolDip(x, z)
+  positions[offset + 2] = z
+}
+
+function carryByWhirlpool(point: TrailPoint, dt: number): boolean {
+  whirlpoolCurrent(point.x, point.z, _current)
+  if (_current.x === 0 && _current.y === 0) return false
+  point.x += _current.x * dt
+  point.z += _current.y * dt
+  return true
 }
 
 export default function WakeTrail({ shipRef }: { shipRef: React.RefObject<THREE.Group | null> }) {
@@ -124,6 +144,12 @@ export default function WakeTrail({ shipRef }: { shipRef: React.RefObject<THREE.
     const shipZ = ship.position.z
     const sampled = lastSampledPoint.current
 
+    for (let i = 0; i < activeCount.current; i++) {
+      const point = trailPoints.current[(headIndex.current + i) % WAKE_TRAIL_LENGTH]
+      if (carryByWhirlpool(point, dt)) isDirty.current = true
+    }
+    if (isFinite(sampled.x)) carryByWhirlpool(sampled, dt)
+
     let moved = false
     if (Math.hypot(shipX - sampled.x, shipZ - sampled.z) > wake.minSampleDist) {
       headIndex.current = (headIndex.current - 1 + WAKE_TRAIL_LENGTH) % WAKE_TRAIL_LENGTH
@@ -191,21 +217,30 @@ export default function WakeTrail({ shipRef }: { shipRef: React.RefObject<THREE.
       const outerHalfWidth = armWidth + wake.armHalfWidth * taper
       const innerHalfWidth = Math.max(0.01, armWidth - wake.armHalfWidth * taper)
 
-      positionArray[outerLeftOffset] = point.x + perpX * outerHalfWidth
-      positionArray[outerLeftOffset + 1] = 0.3
-      positionArray[outerLeftOffset + 2] = point.z + perpZ * outerHalfWidth
-
-      positionArray[innerLeftOffset] = point.x + perpX * innerHalfWidth
-      positionArray[innerLeftOffset + 1] = 0.3
-      positionArray[innerLeftOffset + 2] = point.z + perpZ * innerHalfWidth
-
-      positionArray[innerRightOffset] = point.x - perpX * innerHalfWidth
-      positionArray[innerRightOffset + 1] = 0.3
-      positionArray[innerRightOffset + 2] = point.z - perpZ * innerHalfWidth
-
-      positionArray[outerRightOffset] = point.x - perpX * outerHalfWidth
-      positionArray[outerRightOffset + 1] = 0.3
-      positionArray[outerRightOffset + 2] = point.z - perpZ * outerHalfWidth
+      writeDraped(
+        positionArray,
+        outerLeftOffset,
+        point.x + perpX * outerHalfWidth,
+        point.z + perpZ * outerHalfWidth
+      )
+      writeDraped(
+        positionArray,
+        innerLeftOffset,
+        point.x + perpX * innerHalfWidth,
+        point.z + perpZ * innerHalfWidth
+      )
+      writeDraped(
+        positionArray,
+        innerRightOffset,
+        point.x - perpX * innerHalfWidth,
+        point.z - perpZ * innerHalfWidth
+      )
+      writeDraped(
+        positionArray,
+        outerRightOffset,
+        point.x - perpX * outerHalfWidth,
+        point.z - perpZ * outerHalfWidth
+      )
     }
 
     trail.setDrawRange(0, (count - 1) * 12)

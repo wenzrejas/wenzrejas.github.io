@@ -95,11 +95,14 @@ export function updateFoam(pool: ParticlePool, mesh: THREE.InstancedMesh, dt: nu
   commit(mesh, count)
 }
 
+const onFlatWater = () => 0
+
 export function updateDrops(
   pool: ParticlePool,
   mesh: THREE.InstancedMesh,
   dt: number,
-  gravity: number
+  gravity: number,
+  surfaceAt: (x: number, z: number) => number = onFlatWater
 ): void {
   let count = 0
   for (const particle of pool.particles) {
@@ -109,7 +112,7 @@ export function updateDrops(
     particle.x += particle.vx * dt
     particle.y += particle.vy * dt
     particle.z += particle.vz * dt
-    if (particle.y < 0) {
+    if (particle.y < surfaceAt(particle.x, particle.z)) {
       particle.age = particle.life
       continue
     }

@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { mix } from '../../../utils/math'
-import { ISLAND_ZONES, shoreGap } from '../Islands/islandZones'
+import { ISLAND_ZONES, shoreGap, whirlpoolGap } from '../Islands/islandZones'
 import {
   HABITAT_FAR,
   HABITAT_ISLANDS,
@@ -12,6 +12,7 @@ import {
 } from './constants'
 
 export function spawnChance(x: number, z: number): number {
+  if (whirlpoolGap(x, z) < SHORE_GAP) return 0
   let habitat = 0
   for (const zone of ISLAND_ZONES) {
     const gap = shoreGap(zone, x, z)

@@ -7,6 +7,7 @@ import { placeIsland } from '../islandTransform'
 import { useNightGlow } from '../nightGlow'
 import IslandShadow from '../IslandShadow'
 import Coast from '../../Shore/Coast'
+import { useCoastFields } from '../../Shore/useCoastFields'
 import {
   BOAT_NODE,
   BODY_NODE,
@@ -51,6 +52,7 @@ export default function CozyIsle({ islandKey, config, hovered }: IslandBodyProps
   useNightGlow(island.glows)
 
   const placement = placeIsland(config.radius, tuning, island.footprint, island.center)
+  const coast = useCoastFields(island.model, placement.scale, tuning.offsetY)
 
   return (
     <>
@@ -58,12 +60,14 @@ export default function CozyIsle({ islandKey, config, hovered }: IslandBodyProps
       <group {...placement}>
         {hovered && island.outline && <primitive object={island.outline} />}
         <primitive object={island.model} />
-        <Coast
-          islandKey={islandKey}
-          model={island.model}
-          islandScale={placement.scale}
-          offsetY={tuning.offsetY}
-        />
+        {coast && (
+          <Coast
+            islandKey={islandKey}
+            fields={coast}
+            islandScale={placement.scale}
+            offsetY={tuning.offsetY}
+          />
+        )}
         {fire && (
           <>
             <CampfireFlames base={fire.base} height={FIRE_HEIGHT} islandScale={placement.scale} />

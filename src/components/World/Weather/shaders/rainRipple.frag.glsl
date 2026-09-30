@@ -3,6 +3,7 @@ uniform vec3  uColor;
 
 varying float vProgress;
 varying vec2  vUV;
+varying float vSwallowed;
 
 void main() {
   if (uIntensity < 0.01) discard;
@@ -13,7 +14,7 @@ void main() {
   float ring = smoothstep(0.38, 0.44, dist) * smoothstep(0.52, 0.45, dist);
   float fade = 1.0 - smoothstep(0.0, 1.0, vProgress);
 
-  float alpha = ring * fade * uIntensity * 0.55;
+  float alpha = ring * fade * uIntensity * 0.55 * (1.0 - vSwallowed);
 
   float dither = fract(52.9829189 * fract(dot(gl_FragCoord.xy, vec2(0.06711056, 0.00583715))));
   alpha *= mix(0.68, 1.0, dither);

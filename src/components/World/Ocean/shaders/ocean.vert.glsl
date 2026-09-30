@@ -1,4 +1,5 @@
 #include "./waves.glsl"
+#include "../../../../utils/whirlpoolFunnel.glsl"
 
 varying vec2 vWorldPos;
 varying vec3 vPos;
@@ -14,6 +15,7 @@ void main() {
 
   vWaveHeight = wave.x * calm;
   worldPos.y += wave.x * amp;
+  worldPos.y -= whirlpoolDip(worldPos.xz) * FUNNEL_OVERSHOOT;
 
   vNormal   = normalize(vec3(-wave.y * amp, 1.0, -wave.z * amp));
   vWorldPos = worldPos.xz;
