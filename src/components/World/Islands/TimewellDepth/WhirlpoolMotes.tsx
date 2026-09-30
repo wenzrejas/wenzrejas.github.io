@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import type * as THREE from 'three'
-import { mix } from '../../../../utils/math'
-import { nightGlow } from '../nightGlow'
+import { dayNightGlow } from '../nightGlow'
 import {
   WHIRLPOOL_MOTE_DAY_SHARE,
   WHIRLPOOL_MOTE_ORIGIN_X,
@@ -19,7 +18,7 @@ interface WhirlpoolMotesProps {
 
 export default function WhirlpoolMotes({ islandScale }: WhirlpoolMotesProps) {
   const pointsRef = useRef<THREE.Points>(null)
-  const geometry = useMemo(() => buildMoteGeometry(), [])
+  const geometry = useMemo(() => buildMoteGeometry(islandScale), [islandScale])
   const material = useMemo(() => createMoteMaterial(), [])
 
   useEffect(
@@ -37,7 +36,7 @@ export default function WhirlpoolMotes({ islandScale }: WhirlpoolMotesProps) {
     const { uniforms } = points.material as THREE.ShaderMaterial
     const zoom = (camera as THREE.OrthographicCamera).zoom
     uniforms.uTime.value = clock.getElapsedTime()
-    uniforms.uMagic.value = mix(WHIRLPOOL_MOTE_DAY_SHARE, 1, nightGlow())
+    uniforms.uMagic.value = dayNightGlow(WHIRLPOOL_MOTE_DAY_SHARE)
     uniforms.uSize.value = WHIRLPOOL_MOTE_SIZE * zoom * gl.getPixelRatio()
     uniforms.uRise.value = WHIRLPOOL_MOTE_RISE / (WHIRLPOOL_RADIUS * islandScale)
   })
@@ -48,7 +47,6 @@ export default function WhirlpoolMotes({ islandScale }: WhirlpoolMotesProps) {
       geometry={geometry}
       material={material}
       position={[WHIRLPOOL_MOTE_ORIGIN_X, 0, WHIRLPOOL_MOTE_ORIGIN_Z]}
-      frustumCulled={false}
       renderOrder={5}
     />
   )

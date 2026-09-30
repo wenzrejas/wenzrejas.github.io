@@ -27,7 +27,6 @@ export const FOAM_JAG = 1.6
 export const FOAM_GRAIN = 0.22
 export const FOAM_TUCK = 1.5
 
-export const WAVE_LAYERS = 1
 export const WAVE_REACH = 4.5
 export const WAVE_INSET = FOAM_EXPANDED_WIDTH
 export const WAVE_WIDTH = 0.28

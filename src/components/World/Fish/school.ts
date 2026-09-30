@@ -1,12 +1,7 @@
 import * as THREE from 'three'
 import { useWhaleStore } from '../../../store/whaleStore'
 import { rand, turnToward } from '../../../utils/math'
-import {
-  headingFromWhirlpool,
-  ISLAND_ZONES,
-  shoreGap,
-  whirlpoolGap,
-} from '../Islands/islandZones'
+import { headingFromWhirlpool, ISLAND_ZONES, shoreGap, whirlpoolGap } from '../Islands/islandZones'
 import { runChance } from './habitat'
 import {
   BOOST_DECAY,

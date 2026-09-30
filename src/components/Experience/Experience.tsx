@@ -11,10 +11,10 @@ import {
   IS_DEBUG,
 } from './constants'
 import TopView from './TopView'
+import InteractionLayer from '../Interaction/InteractionLayer'
 import World from '../World/World'
 import DayNightCycle from '../World/DayNightCycle/DayNightCycle'
 import { useDebugStore } from '../../store/debugStore'
-import { useUIStore } from '../../store/uiStore'
 import { useRevealStore } from '../../store/revealStore'
 import { REVEAL_PAN, REVEAL_ZOOM } from '../World/Islands/constants'
 import { mix } from '../../utils/math'
@@ -50,7 +50,6 @@ export default function Experience() {
   const shipRef = useRef<THREE.Group>(null)
   const orbitCamera = useDebugStore((s) => s.camera.orbitCamera)
   const topView = useDebugStore((s) => s.camera.topView)
-  const selectIsland = useUIStore((s) => s.selectIsland)
 
   return (
     <Canvas
@@ -68,7 +67,8 @@ export default function Experience() {
       <color attach="background" args={['#1a7fa8']} />
       {IS_DEBUG && <Perf position="top-left" />}
       <DayNightCycle />
-      <World ref={shipRef} onIslandSelect={selectIsland} />
+      <InteractionLayer />
+      <World ref={shipRef} />
       {topView ? (
         <TopView />
       ) : orbitCamera ? (

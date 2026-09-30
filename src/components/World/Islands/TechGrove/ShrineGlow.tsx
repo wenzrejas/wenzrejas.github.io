@@ -48,7 +48,6 @@ export default function ShrineGlow({ shrines, islandScale }: ShrineGlowProps) {
         ref={gemHaloRef}
         geometry={gemHaloGeometry}
         material={gemHaloMaterial}
-        frustumCulled={false}
         renderOrder={5}
       />
     </>

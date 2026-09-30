@@ -36,8 +36,6 @@
   },
 } as const
 
-export const ISLAND_INTERACTION = false
-
 export const VIEW_MARGIN = 80
 
 // ── First-approach reveal ─────────────────────────────────────────────────────

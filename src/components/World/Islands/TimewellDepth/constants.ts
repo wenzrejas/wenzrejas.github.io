@@ -3,14 +3,11 @@ import { TIMEWELL_BASIN, TIMEWELL_FOOTPRINT, TIMEWELL_MODEL_TOP } from './shoreP
 
 export const TIMEWELL_MODEL_URL = '/models/islands/timewell_depth_web_draco.glb'
 
-// ── Model nodes ───────────────────────────────────────────────────────────────
-export const BODY_NODE = 'Whirlpool'
-
 // ── Island spec ───────────────────────────────────────────────────────────────
 const MODEL_RADIUS = TIMEWELL_FOOTPRINT / 2
 
 export const TIMEWELL_SPEC: IslandSpec = {
-  tuning: { ...BASE_TUNING, scale: 1.20, rotation: 180, offsetY: -3, brightness: 1.30 },
+  tuning: { ...BASE_TUNING, scale: 1.2, rotation: 180, offsetY: -3, brightness: 1.3 },
   footprint: TIMEWELL_FOOTPRINT,
   height: TIMEWELL_MODEL_TOP,
   collision: [],

@@ -60,7 +60,6 @@ export default function Fireflies({ islets, center, islandScale, offsetY }: Fire
       ref={pointsRef}
       geometry={geometry}
       material={material}
-      frustumCulled={false}
       visible={false}
       renderOrder={5}
     />

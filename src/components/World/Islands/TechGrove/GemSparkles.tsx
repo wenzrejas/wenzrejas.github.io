@@ -30,13 +30,7 @@ export default function GemSparkles({ gem }: { gem: ShrineGem }) {
   })
 
   return createPortal(
-    <points
-      ref={pointsRef}
-      geometry={geometry}
-      material={material}
-      frustumCulled={false}
-      renderOrder={5}
-    />,
+    <points ref={pointsRef} geometry={geometry} material={material} renderOrder={5} />,
     gem.node
   )
 }

@@ -68,7 +68,6 @@ export default function ChimneySmoke({ islandScale }: { islandScale: number }) {
       geometry={geometry}
       material={material}
       position={[COZY_CHIMNEY_TOP.x, COZY_CHIMNEY_TOP.y, COZY_CHIMNEY_TOP.z]}
-      frustumCulled={false}
       visible={false}
       renderOrder={5}
     />

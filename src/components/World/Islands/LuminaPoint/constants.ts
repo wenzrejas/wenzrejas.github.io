@@ -1,11 +1,9 @@
+import { SOCIAL_LINKS } from '../../../../data/socialLinks'
 import { BASE_TUNING, type ContactBlob, type IslandSpec } from '../islandSpec'
 import type { GroundGlowTuning } from '../GroundGlow/glowSites'
 import { LUMINA_FOOTPRINT, LUMINA_MAIN_SHORE_RADIUS, LUMINA_MODEL_TOP } from './shoreProfile'
 
 export const LUMINA_MODEL_URL = '/models/islands/lumina_point_web_draco.glb'
-
-// ── Model nodes ───────────────────────────────────────────────────────────────
-export const BODY_NODE = 'Beacon_Static'
 
 // ── Island spec ───────────────────────────────────────────────────────────────
 export const LUMINA_SPEC: IslandSpec = {
@@ -33,10 +31,19 @@ export const BEAM_SUN_FULL = 0.05
 
 // ── Lights ────────────────────────────────────────────────────────────────────
 export const LIGHT_COLOR = '#ffd27a'
-export const LIGHT_NODES = ['Glow_TowerWindows', 'Glow_BeaconLens', 'Glow_SummitRing']
+export const SUMMIT_RING_NODE = 'Glow_SummitRing'
+export const LIGHT_NODES = ['Glow_TowerWindows', 'Glow_BeaconLens', SUMMIT_RING_NODE]
 
 // ── Monoliths ─────────────────────────────────────────────────────────────────
-export const MONOLITH_NAMES = ['Document', 'Email', 'GitHub', 'LinkedIn']
+export const MONOLITH_NAMES = ['Document', 'Email', 'GitHub', 'LinkedIn'] as const
+export type MonolithName = (typeof MONOLITH_NAMES)[number]
+
+export const MONOLITH_LINKS: Record<MonolithName, string> = {
+  Document: SOCIAL_LINKS.resume,
+  Email: SOCIAL_LINKS.email,
+  GitHub: SOCIAL_LINKS.github,
+  LinkedIn: SOCIAL_LINKS.linkedin,
+}
 
 // ── Hologram ──────────────────────────────────────────────────────────────────
 export const HOLOGRAM_SCAN_DENSITY = 0.75
@@ -83,6 +90,44 @@ export const LOGO_SWAY_RATE = 0.7
 export const LOGO_BOB_HEIGHT = 0.1
 export const LOGO_BOB_RATE_MIN = 0.9
 export const LOGO_BOB_RATE_MAX = 1.8
+
+// ── Hover ─────────────────────────────────────────────────────────────────────
+export const HIT_AREA_WIDTH = 1.4
+export const HOVER_EASE_RATE = 6
+export const HOVER_SNAP_GAP = 0.001
+export const HOVER_GLOW_GAIN = 2.2
+export const LOGO_HOVER_RISE = 0.35
+
+// ── Main island ───────────────────────────────────────────────────────────────
+export const MAIN_ISLAND_NODE = 'MainIsland'
+export const MAIN_ISLAND_BODY_NODE = 'Static_MainIsland'
+export const LIGHTHOUSE_NODE = 'Lighthouse_Root'
+export const BODY_HIT_SPREAD = 0.75
+export const HIGHLIGHT_DAY_SHARE = 0.7
+
+export const SUMMIT_GLOW: GroundGlowTuning = {
+  haloSpread: 1.8,
+  haloFill: 0,
+  haloStrength: 0.5,
+  haloLift: 0.1,
+  motesPerSite: 40,
+  moteSize: 1.8,
+  moteRise: 22,
+  moteLifetime: 3.4,
+  moteSwirl: 1.4,
+  moteSpread: 0.9,
+  moteInnerShare: 0.9,
+  moteStrength: 1.3,
+}
+
+export const RISING_GLOW_HEIGHT = 1.8
+export const RISING_GLOW_SPREAD = 1.03
+export const RISING_GLOW_SEGMENTS = 48
+export const RISING_GLOW_STRENGTH = 0.4
+export const RISING_GLOW_FALLOFF = 1.8
+export const RISING_GLOW_FLOW_DENSITY = 3
+export const RISING_GLOW_FLOW_SPEED = 0.35
+export const RISING_GLOW_FLOW_DEPTH = 0.4
 
 // ── Contact blob ──────────────────────────────────────────────────────────────
 export const LUMINA_BLOB: ContactBlob = {

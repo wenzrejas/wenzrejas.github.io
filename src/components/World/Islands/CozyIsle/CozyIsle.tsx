@@ -10,7 +10,6 @@ import Coast from '../../Shore/Coast'
 import { useCoastFields } from '../../Shore/useCoastFields'
 import {
   BOAT_NODE,
-  BODY_NODE,
   COZY_BLOB,
   COZY_MODEL_URL,
   FIRE_ANCHOR_NODE,
@@ -36,9 +35,9 @@ function findFire(model: THREE.Object3D): FireSpot | null {
   return { origin: new THREE.Vector3(base.x, base.y + FIRE_HEIGHT, base.z), base }
 }
 
-export default function CozyIsle({ islandKey, config, hovered }: IslandBodyProps) {
+export default function CozyIsle({ islandKey, config }: IslandBodyProps) {
   const tuning = useDebugStore((s) => s.islands.cozy)
-  const island = useIslandModel(COZY_MODEL_URL, BODY_NODE, tuning.brightness)
+  const island = useIslandModel(COZY_MODEL_URL, tuning.brightness)
 
   const { boat, fire } = useMemo(
     () => ({
@@ -58,7 +57,6 @@ export default function CozyIsle({ islandKey, config, hovered }: IslandBodyProps
     <>
       <IslandShadow radius={config.radius} tuning={tuning} blob={COZY_BLOB} />
       <group {...placement}>
-        {hovered && island.outline && <primitive object={island.outline} />}
         <primitive object={island.model} />
         {coast && (
           <Coast

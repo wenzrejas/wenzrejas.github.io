@@ -13,7 +13,7 @@ interface GroundGlowProps {
   sites: GlowSite[]
   tuning: GroundGlowTuning
   islandScale: number
-  level: () => number
+  level: (site: number) => number
 }
 
 const uniformsOf = (object: THREE.Mesh | THREE.Points) =>
@@ -27,9 +27,18 @@ export default function GroundGlow({ sites, tuning, islandScale, level }: Ground
     () => buildHaloGeometry(sites, tuning, islandScale),
     [sites, tuning, islandScale]
   )
-  const moteGeometry = useMemo(() => buildMoteGeometry(sites, tuning), [sites, tuning])
-  const haloMaterial = useMemo(() => createHaloMaterial(tuning), [tuning])
-  const moteMaterial = useMemo(() => createMoteMaterial(tuning), [tuning])
+  const moteGeometry = useMemo(
+    () => buildMoteGeometry(sites, tuning, islandScale),
+    [sites, tuning, islandScale]
+  )
+  const haloMaterial = useMemo(
+    () => createHaloMaterial(tuning, sites.length),
+    [tuning, sites.length]
+  )
+  const moteMaterial = useMemo(
+    () => createMoteMaterial(tuning, sites.length),
+    [tuning, sites.length]
+  )
 
   useEffect(
     () => () => {
@@ -45,13 +54,16 @@ export default function GroundGlow({ sites, tuning, islandScale, level }: Ground
     const motes = motesRef.current
     if (!halo || !motes) return
 
-    const glow = level()
     const zoom = (camera as THREE.OrthographicCamera).zoom
-
-    uniformsOf(halo).uGlow.value = glow
-
+    const haloUniforms = uniformsOf(halo)
     const moteUniforms = uniformsOf(motes)
-    moteUniforms.uGlow.value = glow
+
+    for (let site = 0; site < sites.length; site++) {
+      const glow = level(site)
+      haloUniforms.uGlow.value[site] = glow
+      moteUniforms.uGlow.value[site] = glow
+    }
+
     moteUniforms.uTime.value = clock.getElapsedTime()
     moteUniforms.uSize.value = tuning.moteSize * zoom * gl.getPixelRatio()
     moteUniforms.uRise.value = tuning.moteRise / islandScale
@@ -60,13 +72,7 @@ export default function GroundGlow({ sites, tuning, islandScale, level }: Ground
   return (
     <>
       <mesh ref={haloRef} geometry={haloGeometry} material={haloMaterial} renderOrder={5} />
-      <points
-        ref={motesRef}
-        geometry={moteGeometry}
-        material={moteMaterial}
-        frustumCulled={false}
-        renderOrder={5}
-      />
+      <points ref={motesRef} geometry={moteGeometry} material={moteMaterial} renderOrder={5} />
     </>
   )
 }

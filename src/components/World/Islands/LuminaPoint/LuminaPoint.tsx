@@ -17,11 +17,13 @@ import {
   BEAM_ANCHOR_NODE,
   BEAM_HEAD_NODE,
   BEAM_LENS_NODE,
-  BODY_NODE,
 } from './constants'
 import Holograms from './Holograms'
 import LuminaBeam from './LuminaBeam'
+import MainIslandInteraction from './MainIslandInteraction'
+import MonolithLinks from './MonolithLinks'
 import { tintLights } from './lights'
+import { findMainIsland } from './mainIsland'
 import { findMonoliths } from './monoliths'
 import { useLogoFloat } from './useLogoFloat'
 
@@ -49,17 +51,21 @@ function rigBeam(model: THREE.Object3D) {
   }
 }
 
-export default function LuminaPoint({ islandKey, config, hovered }: IslandBodyProps) {
+export default function LuminaPoint({ islandKey, config }: IslandBodyProps) {
   const root = useThree((s) => s.scene)
   const tuning = useDebugStore((s) => s.islands.lumina)
-  const island = useIslandModel(LUMINA_MODEL_URL, BODY_NODE, tuning.brightness)
-  const { beam, monoliths } = useMemo(() => {
+  const island = useIslandModel(LUMINA_MODEL_URL, tuning.brightness)
+  const { beam, monoliths, mainIsland } = useMemo(() => {
     tintLights(island)
-    return { beam: rigBeam(island.model), monoliths: findMonoliths(island.model) }
+    return {
+      beam: rigBeam(island.model),
+      monoliths: findMonoliths(island.model),
+      mainIsland: findMainIsland(island.model),
+    }
   }, [island])
 
   useNightGlow(island.glows)
-  useLogoFloat(monoliths.logos)
+  useLogoFloat(monoliths)
 
   const placement = placeIsland(config.radius, tuning, island.footprint, island.center)
   const coast = useCoastFields(island.model, placement.scale, tuning.offsetY)
@@ -68,7 +74,6 @@ export default function LuminaPoint({ islandKey, config, hovered }: IslandBodyPr
     <>
       <IslandShadow radius={config.radius} tuning={tuning} blob={LUMINA_BLOB} />
       <group {...placement}>
-        {hovered && island.outline && <primitive object={island.outline} />}
         <primitive object={island.model} />
         {coast && (
           <Coast
@@ -79,6 +84,10 @@ export default function LuminaPoint({ islandKey, config, hovered }: IslandBodyPr
           />
         )}
         <Holograms monoliths={monoliths} islandScale={placement.scale} />
+        <MonolithLinks monoliths={monoliths} />
+        {mainIsland && (
+          <MainIslandInteraction mainIsland={mainIsland} islandScale={placement.scale} />
+        )}
       </group>
       {beam &&
         createPortal(

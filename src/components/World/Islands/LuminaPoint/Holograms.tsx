@@ -2,29 +2,31 @@ import { useEffect, useLayoutEffect, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
 import GroundGlow from '../GroundGlow/GroundGlow'
 import { INLET_GLOW } from './constants'
-import { lightHolograms, projectorGlow } from './hologramGlow'
+import { inletGlow, lightHolograms } from './hologramGlow'
 import {
   buildProjectionGeometry,
   createHologramUniforms,
   createProjectionMaterial,
   dressLogos,
 } from './hologramModel'
-import type { Monoliths } from './monoliths'
+import type { Monolith } from './monoliths'
 
 interface HologramsProps {
-  monoliths: Monoliths
+  monoliths: Monolith[]
   islandScale: number
 }
 
 export default function Holograms({ monoliths, islandScale }: HologramsProps) {
   const shared = useMemo(() => createHologramUniforms(), [])
+  const inlets = useMemo(() => monoliths.map(({ inlet }) => inlet), [monoliths])
+  const logos = useMemo(() => monoliths.map(({ logo }) => logo), [monoliths])
   const projectionGeometries = useMemo(
-    () => monoliths.projections.map(buildProjectionGeometry),
+    () => monoliths.map(({ projection }) => buildProjectionGeometry(projection)),
     [monoliths]
   )
   const projectionMaterial = useMemo(() => createProjectionMaterial(shared), [shared])
 
-  useLayoutEffect(() => dressLogos(monoliths.logos, shared), [monoliths, shared])
+  useLayoutEffect(() => dressLogos(logos, shared), [logos, shared])
 
   useEffect(
     () => () => {
@@ -39,10 +41,10 @@ export default function Holograms({ monoliths, islandScale }: HologramsProps) {
   return (
     <>
       <GroundGlow
-        sites={monoliths.inlets}
+        sites={inlets}
         tuning={INLET_GLOW}
         islandScale={islandScale}
-        level={projectorGlow}
+        level={(site) => inletGlow(monoliths[site])}
       />
       {projectionGeometries.map((geometry, i) => (
         <mesh key={i} geometry={geometry} material={projectionMaterial} renderOrder={5} />

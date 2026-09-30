@@ -1,11 +1,15 @@
 import { mix } from '../../../../utils/math'
-import { nightGlow } from '../nightGlow'
-import { LOGO_DAY_SHARE, PROJECTOR_DAY_SHARE } from './constants'
+import { dayNightGlow } from '../nightGlow'
+import { HOVER_GLOW_GAIN, LOGO_DAY_SHARE, PROJECTOR_DAY_SHARE } from './constants'
 import type { HologramUniforms } from './hologramModel'
+import type { Monolith } from './monoliths'
 
-export const projectorGlow = () => mix(PROJECTOR_DAY_SHARE, 1, nightGlow())
+const projectorGlow = () => dayNightGlow(PROJECTOR_DAY_SHARE)
 
-const logoGlow = () => mix(LOGO_DAY_SHARE, 1, nightGlow())
+export const inletGlow = ({ hoverBlend }: Monolith) =>
+  projectorGlow() * mix(1, HOVER_GLOW_GAIN, hoverBlend)
+
+const logoGlow = () => dayNightGlow(LOGO_DAY_SHARE)
 
 export function lightHolograms(uniforms: HologramUniforms, time: number) {
   uniforms.uTime.value = time
