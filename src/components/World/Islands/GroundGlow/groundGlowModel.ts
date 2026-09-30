@@ -24,6 +24,7 @@ export function buildHaloGeometry(
   const positions = new Float32Array(sites.length * 4 * 3)
   const haloUvs = new Float32Array(sites.length * 4 * 2)
   const colors = new Float32Array(sites.length * 4 * 3)
+  const siteIndices = new Float32Array(sites.length * 4)
   const indices: number[] = []
 
   sites.forEach((site, i) => {
@@ -40,6 +41,7 @@ export function buildHaloGeometry(
       )
       haloUvs.set([across * tuning.haloSpread, along * tuning.haloSpread], vertex * 2)
       colors.set([site.color.r, site.color.g, site.color.b], vertex * 3)
+      siteIndices[vertex] = i
     })
     indices.push(i * 4, i * 4 + 1, i * 4 + 2, i * 4, i * 4 + 2, i * 4 + 3)
   })
@@ -48,19 +50,33 @@ export function buildHaloGeometry(
   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
   geometry.setAttribute('aHaloUv', new THREE.BufferAttribute(haloUvs, 2))
   geometry.setAttribute('aColor', new THREE.BufferAttribute(colors, 3))
+  geometry.setAttribute('aSite', new THREE.BufferAttribute(siteIndices, 1))
   geometry.setIndex(indices)
   return geometry
 }
 
+function moteReach(sites: GlowSite[], tuning: GroundGlowTuning, islandScale: number): THREE.Sphere {
+  const reach = new THREE.Box3()
+  const rise = tuning.moteRise / islandScale
+  for (const { center, radius } of sites) {
+    const spread = radius * (1 + tuning.moteSpread)
+    reach.expandByPoint(new THREE.Vector3(center.x - spread, center.y, center.z - spread))
+    reach.expandByPoint(new THREE.Vector3(center.x + spread, center.y + rise, center.z + spread))
+  }
+  return reach.getBoundingSphere(new THREE.Sphere())
+}
+
 export function buildMoteGeometry(
   sites: GlowSite[],
-  tuning: GroundGlowTuning
+  tuning: GroundGlowTuning,
+  islandScale: number
 ): THREE.BufferGeometry {
   const count = sites.length * tuning.motesPerSite
   const positions = new Float32Array(count * 3)
   const seeds = new Float32Array(count * 4)
   const radii = new Float32Array(count)
   const colors = new Float32Array(count * 3)
+  const siteIndices = new Float32Array(count)
 
   sites.forEach((site, siteIndex) => {
     for (let i = 0; i < tuning.motesPerSite; i++) {
@@ -77,6 +93,7 @@ export function buildMoteGeometry(
       )
       radii[mote] = site.radius
       colors.set([site.color.r, site.color.g, site.color.b], mote * 3)
+      siteIndices[mote] = siteIndex
     }
   })
 
@@ -85,6 +102,8 @@ export function buildMoteGeometry(
   geometry.setAttribute('aSeed', new THREE.BufferAttribute(seeds, 4))
   geometry.setAttribute('aRadius', new THREE.BufferAttribute(radii, 1))
   geometry.setAttribute('aColor', new THREE.BufferAttribute(colors, 3))
+  geometry.setAttribute('aSite', new THREE.BufferAttribute(siteIndices, 1))
+  geometry.boundingSphere = moteReach(sites, tuning, islandScale)
   return geometry
 }
 
@@ -107,27 +126,39 @@ export function createAdditiveGlowMaterial(
   })
 }
 
-export const createHaloMaterial = (tuning: GroundGlowTuning) =>
-  createAdditiveGlowMaterial(
-    GROUND_HALO_VERT,
-    GROUND_HALO_FRAG,
-    {
-      HALO_SPREAD: tuning.haloSpread,
-      HALO_FILL: tuning.haloFill,
-      HALO_STRENGTH: tuning.haloStrength,
-    },
-    {}
+function splitGlowBySite(material: THREE.ShaderMaterial, siteCount: number): THREE.ShaderMaterial {
+  material.uniforms.uGlow.value = new Array<number>(siteCount).fill(0)
+  material.defines.SITE_COUNT = siteCount
+  return material
+}
+
+export const createHaloMaterial = (tuning: GroundGlowTuning, siteCount: number) =>
+  splitGlowBySite(
+    createAdditiveGlowMaterial(
+      GROUND_HALO_VERT,
+      GROUND_HALO_FRAG,
+      {
+        HALO_SPREAD: tuning.haloSpread,
+        HALO_FILL: tuning.haloFill,
+        HALO_STRENGTH: tuning.haloStrength,
+      },
+      {}
+    ),
+    siteCount
   )
 
-export const createMoteMaterial = (tuning: GroundGlowTuning) =>
-  createAdditiveGlowMaterial(
-    GROUND_MOTES_VERT,
-    GROUND_MOTES_FRAG,
-    {
-      LIFETIME: tuning.moteLifetime,
-      SWIRL: tuning.moteSwirl,
-      SPREAD: tuning.moteSpread,
-      STRENGTH: tuning.moteStrength,
-    },
-    { uTime: { value: 0 }, uSize: { value: 1 }, uRise: { value: 0 } }
+export const createMoteMaterial = (tuning: GroundGlowTuning, siteCount: number) =>
+  splitGlowBySite(
+    createAdditiveGlowMaterial(
+      GROUND_MOTES_VERT,
+      GROUND_MOTES_FRAG,
+      {
+        LIFETIME: tuning.moteLifetime,
+        SWIRL: tuning.moteSwirl,
+        SPREAD: tuning.moteSpread,
+        STRENGTH: tuning.moteStrength,
+      },
+      { uTime: { value: 0 }, uSize: { value: 1 }, uRise: { value: 0 } }
+    ),
+    siteCount
   )

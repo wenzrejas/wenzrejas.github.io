@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { columnBoundingSphere } from '../../../../utils/bounds'
 import { floatDefines } from '../../../../utils/glsl'
 import { rand } from '../../../../utils/math'
 import { oceanSurfaceUniforms } from '../../Ocean/oceanSurfaceUniforms'
@@ -52,6 +53,7 @@ import {
   WHIRLPOOL_MOTE_CENTER_BIAS,
   WHIRLPOOL_MOTE_LIFETIME,
   WHIRLPOOL_MOTE_REACH,
+  WHIRLPOOL_MOTE_RISE,
   WHIRLPOOL_MOTE_STRENGTH,
   WHIRLPOOL_MOTES,
   WHIRLPOOL_PATCH_CELLS,
@@ -90,7 +92,7 @@ export function buildWhirlpoolGeometry(): THREE.BufferGeometry {
   return geometry
 }
 
-export function buildMoteGeometry(): THREE.BufferGeometry {
+export function buildMoteGeometry(islandScale: number): THREE.BufferGeometry {
   const seeds = new Float32Array(WHIRLPOOL_MOTES * 4)
   for (let i = 0; i < WHIRLPOOL_MOTES; i++) {
     seeds.set(
@@ -110,6 +112,13 @@ export function buildMoteGeometry(): THREE.BufferGeometry {
     new THREE.BufferAttribute(new Float32Array(WHIRLPOOL_MOTES * 3), 3)
   )
   geometry.setAttribute('aSeed', new THREE.BufferAttribute(seeds, 4))
+
+  const rise = WHIRLPOOL_MOTE_RISE / (WHIRLPOOL_RADIUS * islandScale)
+  geometry.boundingSphere = columnBoundingSphere(
+    WHIRLPOOL_MOTE_REACH,
+    -WHIRLPOOL_FUNNEL_DEPTH,
+    rise
+  )
   return geometry
 }
 

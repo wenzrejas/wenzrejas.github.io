@@ -1,6 +1,5 @@
 import { useRef, forwardRef } from 'react'
 import * as THREE from 'three'
-import type { IslandKey } from './Islands/constants'
 import Boundary from './Boundary/Boundary'
 import Islands from './Islands/Islands'
 import IslandReveal from './Islands/IslandReveal'
@@ -20,17 +19,13 @@ import Algae from './Algae/Algae'
 import Turtles from './Turtles/Turtles'
 import Whale from './Whale/Whale'
 
-interface WorldProps {
-  onIslandSelect: (key: IslandKey) => void
-}
-
-const World = forwardRef<THREE.Group, WorldProps>(({ onIslandSelect }, forwardedRef) => {
+const World = forwardRef<THREE.Group>((_props, forwardedRef) => {
   const shipRef = useRef<THREE.Group>(null)
 
   return (
     <>
       <Boundary />
-      <Islands onSelect={onIslandSelect} />
+      <Islands />
       <Ocean />
       <ShoreRipples />
       <Ship

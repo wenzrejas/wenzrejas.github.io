@@ -2,10 +2,7 @@ import { useLayoutEffect, useMemo } from 'react'
 import { useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
 import { applyCloudShadow } from '../../../utils/cloudShadow'
-import { OUTLINE_MAT } from './outlineMaterial'
 import type { GlowTarget } from './nightGlow'
-
-const OUTLINE_GROWTH = 1.03
 
 interface TintTarget {
   mat: THREE.MeshStandardMaterial
@@ -14,27 +11,13 @@ interface TintTarget {
 
 export interface IslandModel {
   model: THREE.Object3D
-  outline: THREE.Object3D | null
   footprint: number
   center: THREE.Vector3
   tints: TintTarget[]
   glows: GlowTarget[]
 }
 
-function buildOutline(model: THREE.Object3D, bodyNode: string): THREE.Object3D | null {
-  const body = model.getObjectByName(bodyNode)
-  if (!body) return null
-
-  const outline = body.clone(true)
-  outline.scale.multiplyScalar(OUTLINE_GROWTH)
-  outline.traverse((obj) => {
-    const mesh = obj as THREE.Mesh
-    if (mesh.isMesh) mesh.material = OUTLINE_MAT
-  })
-  return outline
-}
-
-function prepareIslandModel(scene: THREE.Object3D, bodyNode: string): IslandModel {
+function prepareIslandModel(scene: THREE.Object3D): IslandModel {
   const model = scene.clone(true)
   const box = new THREE.Box3().setFromObject(model)
   const size = box.getSize(new THREE.Vector3())
@@ -69,7 +52,6 @@ function prepareIslandModel(scene: THREE.Object3D, bodyNode: string): IslandMode
 
   return {
     model,
-    outline: buildOutline(model, bodyNode),
     footprint: Math.max(size.x, size.z),
     center: box.getCenter(new THREE.Vector3()),
     tints,
@@ -77,9 +59,9 @@ function prepareIslandModel(scene: THREE.Object3D, bodyNode: string): IslandMode
   }
 }
 
-export function useIslandModel(url: string, bodyNode: string, brightness: number): IslandModel {
+export function useIslandModel(url: string, brightness: number): IslandModel {
   const { scene } = useGLTF(url)
-  const island = useMemo(() => prepareIslandModel(scene, bodyNode), [scene, bodyNode])
+  const island = useMemo(() => prepareIslandModel(scene), [scene])
 
   useLayoutEffect(() => {
     for (const { mat, base } of island.tints) mat.color.copy(base).multiplyScalar(brightness)

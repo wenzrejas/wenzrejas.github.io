@@ -1,7 +1,6 @@
-import { useRef, useState, type ComponentType } from 'react'
+import { useRef, type ComponentType } from 'react'
 import type * as THREE from 'three'
-import type { ThreeEvent } from '@react-three/fiber'
-import { ISLAND_INTERACTION, WORLD_LOCATIONS, type IslandConfig, type IslandKey } from './constants'
+import { WORLD_LOCATIONS, type IslandConfig, type IslandKey } from './constants'
 import type { IslandBodyProps } from './types'
 import CozyIsle from './CozyIsle/CozyIsle'
 import LuminaPoint from './LuminaPoint/LuminaPoint'
@@ -20,51 +19,27 @@ const ISLAND_BODIES: Partial<Record<IslandKey, ComponentType<IslandBodyProps>>> 
 interface IslandProps {
   islandKey: IslandKey
   config: IslandConfig
-  onSelect: (key: IslandKey) => void
 }
 
-function Island({ islandKey, config, onSelect }: IslandProps) {
-  const [hovered, setHovered] = useState(false)
+function Island({ islandKey, config }: IslandProps) {
   const [x, , z] = config.position
   const Body = ISLAND_BODIES[islandKey] ?? PlaceholderIsland
 
   const groupRef = useRef<THREE.Group>(null)
   useNearViewport(groupRef, islandKey)
 
-  const interaction = ISLAND_INTERACTION
-    ? {
-        onPointerOver: (e: ThreeEvent<PointerEvent>) => {
-          e.stopPropagation()
-          setHovered(true)
-          document.body.style.cursor = 'pointer'
-        },
-        onPointerOut: () => {
-          setHovered(false)
-          document.body.style.cursor = ''
-        },
-        onClick: (e: ThreeEvent<MouseEvent>) => {
-          e.stopPropagation()
-          onSelect(islandKey)
-        },
-      }
-    : {}
-
   return (
-    <group ref={groupRef} position={[x, 0, z]} {...interaction}>
-      <Body islandKey={islandKey} config={config} hovered={hovered} />
+    <group ref={groupRef} position={[x, 0, z]}>
+      <Body islandKey={islandKey} config={config} />
     </group>
   )
 }
 
-interface IslandsProps {
-  onSelect: (key: IslandKey) => void
-}
-
-export default function Islands({ onSelect }: IslandsProps) {
+export default function Islands() {
   return (
     <>
       {(Object.entries(WORLD_LOCATIONS) as [IslandKey, IslandConfig][]).map(([key, config]) => (
-        <Island key={key} islandKey={key} config={config} onSelect={onSelect} />
+        <Island key={key} islandKey={key} config={config} />
       ))}
     </>
   )

@@ -1,17 +1,11 @@
 import { Leva } from 'leva'
 import Experience from './components/Experience/Experience'
-import IslandPanel from './components/World/Islands/IslandPanel'
 import IslandTitle from './components/World/Islands/IslandTitle'
-import { ISLAND_INTERACTION } from './components/World/Islands/constants'
 import { DebugSync } from './components/Debug/DebugControls'
 import { IS_DEBUG } from './components/Experience/constants'
-import { useUIStore } from './store/uiStore'
 import Soundscape from './components/Audio/Soundscape'
 
 export default function App() {
-  const selectedIsland = useUIStore((s) => s.selectedIsland)
-  const clearIsland = useUIStore((s) => s.clearIsland)
-
   return (
     <>
       <DebugSync />
@@ -19,7 +13,6 @@ export default function App() {
       <Leva hidden={!IS_DEBUG} collapsed />
       <Experience />
       <IslandTitle />
-      {ISLAND_INTERACTION && <IslandPanel selectedKey={selectedIsland} onClose={clearIsland} />}
     </>
   )
 }

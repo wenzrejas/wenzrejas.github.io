@@ -6,7 +6,7 @@ import { placeIsland } from '../islandTransform'
 import IslandShadow from '../IslandShadow'
 import Coast from '../../Shore/Coast'
 import { useCoastFields } from '../../Shore/useCoastFields'
-import { BODY_NODE, TECH_BLOB, TECH_MODEL_URL } from './constants'
+import { TECH_BLOB, TECH_MODEL_URL } from './constants'
 import { TECH_ISLETS } from './shoreProfile'
 import { useSanctuaryGlow } from './sanctuaryGlow'
 import { findShrines } from './shrines'
@@ -15,9 +15,9 @@ import Fireflies from './Fireflies'
 import GemSparkles from './GemSparkles'
 import ShrineGlow from './ShrineGlow'
 
-export default function TechGrove({ islandKey, config, hovered }: IslandBodyProps) {
+export default function TechGrove({ islandKey, config }: IslandBodyProps) {
   const tuning = useDebugStore((s) => s.islands.tech)
-  const island = useIslandModel(TECH_MODEL_URL, BODY_NODE, tuning.brightness)
+  const island = useIslandModel(TECH_MODEL_URL, tuning.brightness)
   const shrines = useMemo(() => findShrines(island.model), [island])
 
   useSanctuaryGlow(island.glows)
@@ -30,7 +30,6 @@ export default function TechGrove({ islandKey, config, hovered }: IslandBodyProp
     <>
       <IslandShadow radius={config.radius} tuning={tuning} blob={TECH_BLOB} />
       <group {...placement}>
-        {hovered && island.outline && <primitive object={island.outline} />}
         <primitive object={island.model} />
         {coast && (
           <Coast

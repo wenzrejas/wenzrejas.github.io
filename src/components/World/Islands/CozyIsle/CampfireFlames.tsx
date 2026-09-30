@@ -15,8 +15,15 @@ interface CampfireFlamesProps {
   islandScale: number
 }
 
+function buildFlameGeometry(size: number): THREE.PlaneGeometry {
+  const geometry = new THREE.PlaneGeometry(1, 1)
+  geometry.boundingSphere = new THREE.Sphere(new THREE.Vector3(0, size / 2, 0), size * Math.SQRT1_2)
+  return geometry
+}
+
 export default function CampfireFlames({ base, height, islandScale }: CampfireFlamesProps) {
   const meshRef = useRef<THREE.Mesh>(null)
+  const geometry = useMemo(() => buildFlameGeometry(height * FLAME_SCALE), [height])
 
   const material = useMemo(
     () =>
@@ -38,7 +45,13 @@ export default function CampfireFlames({ base, height, islandScale }: CampfireFl
     []
   )
 
-  useEffect(() => () => material.dispose(), [material])
+  useEffect(
+    () => () => {
+      geometry.dispose()
+      material.dispose()
+    },
+    [geometry, material]
+  )
 
   useFrame(({ clock }) => {
     const mesh = meshRef.current
@@ -55,8 +68,6 @@ export default function CampfireFlames({ base, height, islandScale }: CampfireFl
   })
 
   return (
-    <mesh ref={meshRef} material={material} position={base} renderOrder={4} frustumCulled={false}>
-      <planeGeometry args={[1, 1]} />
-    </mesh>
+    <mesh ref={meshRef} geometry={geometry} material={material} position={base} renderOrder={4} />
   )
 }

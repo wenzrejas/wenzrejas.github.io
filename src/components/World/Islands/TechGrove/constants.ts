@@ -5,7 +5,6 @@ import { TECH_CLUSTER_RADIUS, TECH_FOOTPRINT, TECH_MODEL_TOP } from './shoreProf
 export const TECH_MODEL_URL = '/models/islands/tech_grove_web_draco.glb'
 
 // ── Model nodes ───────────────────────────────────────────────────────────────
-export const BODY_NODE = 'Sanctuary'
 export const BASE_RIM_NODES = [
   'Glow_Creative_Rim',
   'Glow_Design_Rim',
@@ -18,7 +17,7 @@ export const TUMBLING_GEM_NODES = ['Gem_WebGL']
 
 // ── Island spec ───────────────────────────────────────────────────────────────
 export const TECH_SPEC: IslandSpec = {
-  tuning: { ...BASE_TUNING, scale: 3.8, rotation: 30, offsetY: 0, brightness: 1.20 },
+  tuning: { ...BASE_TUNING, scale: 3.8, rotation: 30, offsetY: 0, brightness: 1.2 },
   footprint: TECH_FOOTPRINT,
   height: TECH_MODEL_TOP,
   collision: [],

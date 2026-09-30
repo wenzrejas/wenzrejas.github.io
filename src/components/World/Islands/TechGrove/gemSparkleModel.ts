@@ -54,6 +54,11 @@ export function buildSparkleGeometry({ edges }: ShrineGem): THREE.BufferGeometry
   geometry.setAttribute('position', new THREE.BufferAttribute(starts, 3))
   geometry.setAttribute('aEnd', new THREE.BufferAttribute(ends, 3))
   geometry.setAttribute('aSeed', new THREE.BufferAttribute(seeds, 3))
+
+  const reach = new THREE.Box3().setFromArray(edges)
+  reach.min.multiplyScalar(SPARKLE_LIFT)
+  reach.max.multiplyScalar(SPARKLE_LIFT)
+  geometry.boundingSphere = reach.getBoundingSphere(new THREE.Sphere())
   return geometry
 }
 

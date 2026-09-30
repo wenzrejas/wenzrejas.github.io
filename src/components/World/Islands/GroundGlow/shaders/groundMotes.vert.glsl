@@ -1,11 +1,12 @@
 uniform float uTime;
 uniform float uSize;
 uniform float uRise;
-uniform float uGlow;
+uniform float uGlow[SITE_COUNT];
 
 attribute vec4 aSeed;
 attribute float aRadius;
 attribute vec3 aColor;
+attribute float aSite;
 
 varying float vAlpha;
 varying vec3 vColor;
@@ -21,7 +22,7 @@ void main() {
   pos.z += sin(angle) * radius;
   pos.y += pow(life, 1.4) * uRise;
 
-  vAlpha = smoothstep(0.0, 0.12, life) * (1.0 - smoothstep(0.5, 1.0, life)) * uGlow * STRENGTH;
+  vAlpha = smoothstep(0.0, 0.12, life) * (1.0 - smoothstep(0.5, 1.0, life)) * uGlow[int(aSite)] * STRENGTH;
   vColor = aColor;
 
   gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);

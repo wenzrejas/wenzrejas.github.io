@@ -9,8 +9,11 @@ import {
   LOGO_EDGE_OPACITY,
   LOGO_SPIN_RATE_MAX,
   LOGO_SPIN_RATE_MIN,
+  MONOLITH_LINKS,
   MONOLITH_NAMES,
+  type MonolithName,
 } from './constants'
+import { easeHover } from './hover'
 
 const EDGE_SUFFIX = '_Edge'
 
@@ -38,13 +41,12 @@ export interface FloatingLogo {
   surfaces: LogoSurface[]
 }
 
-export interface Monoliths {
-  inlets: GlowSite[]
-  projections: Projection[]
-  logos: FloatingLogo[]
-}
-
-interface Monolith {
+export interface Monolith {
+  link: string
+  origin: THREE.Vector3
+  hitHeight: number
+  isHovered: boolean
+  hoverBlend: number
   inlet: GlowSite
   projection: Projection
   logo: FloatingLogo
@@ -66,10 +68,11 @@ function findLogo(logo: THREE.Object3D): FloatingLogo {
   }
 }
 
-function findMonolith(model: THREE.Object3D, name: string): Monolith | null {
+function findMonolith(model: THREE.Object3D, name: MonolithName): Monolith | null {
+  const station = model.getObjectByName(`Monolith_${name}`)
   const inlet = model.getObjectByName(`Glow_Monolith_${name}${EDGE_SUFFIX}`)
   const logo = model.getObjectByName(`Logo_${name}`)
-  if (!inlet || !logo) return null
+  if (!station || !inlet || !logo) return null
 
   const inletMeshes = meshesOf(inlet)
   const inletBounds = boundsIn(model, inletMeshes)
@@ -80,8 +83,14 @@ function findMonolith(model: THREE.Object3D, name: string): Monolith | null {
   const base = inletBounds.getCenter(new THREE.Vector3()).setY(inletBounds.max.y)
   const radius = Math.max(inletSize.x, inletSize.z) / 2
   const color = displayColor(inletMeshes[0])
+  const origin = model.worldToLocal(station.getWorldPosition(new THREE.Vector3()))
 
   return {
+    link: MONOLITH_LINKS[name],
+    origin,
+    hitHeight: logoBounds.max.y,
+    isHovered: false,
+    hoverBlend: 0,
     inlet: { center: base, radius, color },
     projection: {
       base,
@@ -94,14 +103,13 @@ function findMonolith(model: THREE.Object3D, name: string): Monolith | null {
   }
 }
 
-export function findMonoliths(model: THREE.Object3D): Monoliths {
+export function findMonoliths(model: THREE.Object3D): Monolith[] {
   model.updateMatrixWorld(true)
-  const monoliths = MONOLITH_NAMES.map((name) => findMonolith(model, name)).filter(
+  return MONOLITH_NAMES.map((name) => findMonolith(model, name)).filter(
     (monolith) => monolith !== null
   )
-  return {
-    inlets: monoliths.map(({ inlet }) => inlet),
-    projections: monoliths.map(({ projection }) => projection),
-    logos: monoliths.map(({ logo }) => logo),
-  }
+}
+
+export function easeHovers(monoliths: Monolith[], delta: number) {
+  for (const monolith of monoliths) easeHover(monolith, monolith.isHovered, delta)
 }

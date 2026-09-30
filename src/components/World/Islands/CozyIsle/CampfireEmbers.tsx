@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
+import { columnBoundingSphere } from '../../../../utils/bounds'
 import { floatDefines } from '../../../../utils/glsl'
 import { fireGlow } from './fireGlow'
 import EMBERS_VERT from './shaders/campfireEmbers.vert.glsl'
@@ -22,7 +23,7 @@ interface CampfireEmbersProps {
   islandScale: number
 }
 
-function buildEmberGeometry(): THREE.BufferGeometry {
+function buildEmberGeometry(width: number, height: number): THREE.BufferGeometry {
   const geo = new THREE.BufferGeometry()
   const positions = new Float32Array(EMBER_COUNT * 3)
   const seeds = new Float32Array(EMBER_COUNT * 3)
@@ -35,6 +36,9 @@ function buildEmberGeometry(): THREE.BufferGeometry {
 
   geo.setAttribute('position', new THREE.BufferAttribute(positions, 3))
   geo.setAttribute('aSeed', new THREE.BufferAttribute(seeds, 3))
+
+  const reach = width * (SPREAD + DRIFT + SWAY * Math.SQRT2)
+  geo.boundingSphere = columnBoundingSphere(reach, 0, height * RISE)
   return geo
 }
 
@@ -66,7 +70,7 @@ export default function CampfireEmbers({
 }: CampfireEmbersProps) {
   const pointsRef = useRef<THREE.Points>(null)
 
-  const geometry = useMemo(() => buildEmberGeometry(), [])
+  const geometry = useMemo(() => buildEmberGeometry(width, height), [width, height])
   const material = useMemo(() => createEmberMaterial(), [])
 
   useEffect(
@@ -103,7 +107,6 @@ export default function CampfireEmbers({
       geometry={geometry}
       material={material}
       position={origin}
-      frustumCulled={false}
       renderOrder={5}
     />
   )

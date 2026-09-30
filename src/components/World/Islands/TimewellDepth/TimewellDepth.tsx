@@ -4,14 +4,14 @@ import { useIslandModel } from '../islandModel'
 import { placeIsland } from '../islandTransform'
 import Coast from '../../Shore/Coast'
 import { useCoastFields } from '../../Shore/useCoastFields'
-import { BODY_NODE, TIMEWELL_MODEL_URL } from './constants'
+import { TIMEWELL_MODEL_URL } from './constants'
 import { useRuneGlow } from './runeGlow'
 import Whirlpool from './Whirlpool'
 import WhirlpoolSpray from './WhirlpoolSpray'
 
-export default function TimewellDepth({ islandKey, config, hovered }: IslandBodyProps) {
+export default function TimewellDepth({ islandKey, config }: IslandBodyProps) {
   const tuning = useDebugStore((s) => s.islands.timewell)
-  const island = useIslandModel(TIMEWELL_MODEL_URL, BODY_NODE, tuning.brightness)
+  const island = useIslandModel(TIMEWELL_MODEL_URL, tuning.brightness)
   useRuneGlow(island)
 
   const placement = placeIsland(config.radius, tuning, island.footprint, island.center)
@@ -20,7 +20,6 @@ export default function TimewellDepth({ islandKey, config, hovered }: IslandBody
   return (
     <>
       <group {...placement}>
-        {hovered && island.outline && <primitive object={island.outline} />}
         <primitive object={island.model} />
         {coast && (
           <>

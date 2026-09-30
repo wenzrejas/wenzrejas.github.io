@@ -1,14 +1,13 @@
 import { useMemo } from 'react'
 import * as THREE from 'three'
 import { useDebugStore } from '../../../../store/debugStore'
-import { OUTLINE_MAT } from '../outlineMaterial'
 import type { IslandBodyProps } from '../types'
 
 const SINK_Y = -3
 const SAND = '#c8a870'
 const GRASS = '#5a9e4a'
 
-export default function PlaceholderIsland({ islandKey, config, hovered }: IslandBodyProps) {
+export default function PlaceholderIsland({ islandKey, config }: IslandBodyProps) {
   const { radius, color } = config
   const { scale, rotation, offsetX, offsetY, offsetZ, brightness } = useDebugStore(
     (s) => s.islands[islandKey]
@@ -31,17 +30,6 @@ export default function PlaceholderIsland({ islandKey, config, hovered }: Island
       rotation-y={THREE.MathUtils.degToRad(rotation)}
       scale={scale}
     >
-      {hovered && (
-        <>
-          <mesh scale={1.06} material={OUTLINE_MAT}>
-            <cylinderGeometry args={[radius, radius * 1.15, 6, 32]} />
-          </mesh>
-          <mesh position={[0, 3.5, 0]} scale={1.1} material={OUTLINE_MAT}>
-            <cylinderGeometry args={[radius * 0.75, radius * 0.9, 1.5, 32]} />
-          </mesh>
-        </>
-      )}
-
       <mesh>
         <cylinderGeometry args={[radius, radius * 1.15, 6, 32]} />
         <meshStandardMaterial color={sand} />

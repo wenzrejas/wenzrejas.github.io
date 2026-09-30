@@ -1,11 +1,15 @@
 import * as THREE from 'three'
+import { columnBoundingSphere } from '../../../../utils/bounds'
 import { floatDefines } from '../../../../utils/glsl'
 import { rand } from '../../../../utils/math'
+import { PARAMS } from '../../Weather/weatherParams'
 import {
+  SMOKE_DRIFT,
   SMOKE_LIFETIME,
   SMOKE_OPACITY,
   SMOKE_PUFF_COUNT,
   SMOKE_PUFF_GROWTH,
+  SMOKE_PUFF_SIZE,
   SMOKE_PUFF_SIZE_VARIANCE,
   SMOKE_RISE,
   SMOKE_SHADE,
@@ -15,7 +19,15 @@ import {
 import SMOKE_VERT from './shaders/chimneySmoke.vert.glsl'
 import SMOKE_FRAG from './shaders/chimneySmoke.frag.glsl'
 
+const STRONGEST_WIND = Math.max(...Object.values(PARAMS).map(({ windMult }) => windMult))
+
 // ── Geometry ──────────────────────────────────────────────────────────────────
+
+function smokeReach(): THREE.Sphere {
+  const puffRadius = (SMOKE_PUFF_SIZE * (1 + SMOKE_PUFF_SIZE_VARIANCE) * SMOKE_PUFF_GROWTH) / 2
+  const spread = SMOKE_SPREAD + SMOKE_SWAY * Math.SQRT2 + SMOKE_DRIFT * STRONGEST_WIND + puffRadius
+  return columnBoundingSphere(spread, -puffRadius, SMOKE_RISE + puffRadius)
+}
 
 export function buildSmokeGeometry(): THREE.BufferGeometry {
   const positions = new Float32Array(SMOKE_PUFF_COUNT * 3)
@@ -30,6 +42,7 @@ export function buildSmokeGeometry(): THREE.BufferGeometry {
   const geometry = new THREE.BufferGeometry()
   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
   geometry.setAttribute('aSeed', new THREE.BufferAttribute(seeds, 3))
+  geometry.boundingSphere = smokeReach()
   return geometry
 }
 

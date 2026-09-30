@@ -21,6 +21,13 @@ export function buildGemHaloGeometry(gems: ShrineGem[]): THREE.BufferGeometry {
     'aColor',
     new THREE.BufferAttribute(new Float32Array(gems.flatMap((gem) => gem.color.toArray())), 3)
   )
+
+  const reach = new THREE.Box3()
+  for (const { center, radius } of gems) {
+    const haloSize = new THREE.Vector3().setScalar(radius * GEM_HALO_SPREAD * 2)
+    reach.union(new THREE.Box3().setFromCenterAndSize(center, haloSize))
+  }
+  geometry.boundingSphere = reach.getBoundingSphere(new THREE.Sphere())
   return geometry
 }
 

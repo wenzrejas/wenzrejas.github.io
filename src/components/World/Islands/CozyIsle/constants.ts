@@ -18,7 +18,6 @@ export const COZY_SPEC: IslandSpec = {
 }
 
 // ── Model nodes ───────────────────────────────────────────────────────────────
-export const BODY_NODE = 'CozyIsle_Static'
 export const BOAT_NODE = 'Boat'
 export const FIRE_ANCHOR_NODE = 'Campfire_FireAnchor'
 

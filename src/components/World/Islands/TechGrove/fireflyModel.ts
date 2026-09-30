@@ -2,12 +2,14 @@ import * as THREE from 'three'
 import { floatDefines } from '../../../../utils/glsl'
 import { rand } from '../../../../utils/math'
 import {
+  FIREFLY_BOB,
   FIREFLY_COLOR,
   FIREFLY_COUNT,
   FIREFLY_FADE_BAND,
   FIREFLY_HEIGHT_MAX,
   FIREFLY_HEIGHT_MIN,
   FIREFLY_SPREAD,
+  FIREFLY_WANDER,
 } from './constants'
 import FIREFLIES_VERT from './shaders/fireflies.vert.glsl'
 import FIREFLIES_FRAG from './shaders/fireflies.frag.glsl'
@@ -55,6 +57,13 @@ export function buildFireflyGeometry({
   const geo = new THREE.BufferGeometry()
   geo.setAttribute('position', new THREE.BufferAttribute(positions, 3))
   geo.setAttribute('aSeed', new THREE.BufferAttribute(seeds, 4))
+
+  const wander = FIREFLY_WANDER / islandScale
+  const bob = FIREFLY_BOB / islandScale
+  geo.boundingSphere = new THREE.Box3()
+    .setFromArray(positions)
+    .expandByVector(new THREE.Vector3(wander, bob, wander))
+    .getBoundingSphere(new THREE.Sphere())
   return geo
 }
 
