@@ -1,81 +1,88 @@
 import { BASE_TUNING, type ContactBlob, type IslandSpec } from '../islandSpec'
-import { SHORE_LONG_LINES } from '../../Shore/constants'
-import {
-  LUMINA_FOOTPRINT,
-  LUMINA_LAND_CENTER,
-  LUMINA_MODEL_TOP,
-  LUMINA_MONOLITHS,
-  LUMINA_MONOLITH_RADIUS,
-  LUMINA_ROCKS,
-  LUMINA_SHORE_PEAK,
-  LUMINA_SHORE_PROFILE,
-} from './shoreProfile'
+import type { GroundGlowTuning } from '../GroundGlow/glowSites'
+import { LUMINA_FOOTPRINT, LUMINA_MAIN_SHORE_RADIUS, LUMINA_MODEL_TOP } from './shoreProfile'
 
-export const LUMINA_MODEL_URL = '/models/islands/beacon_web_draco.glb'
+export const LUMINA_MODEL_URL = '/models/islands/lumina_point_web_draco.glb'
 
 // ── Model nodes ───────────────────────────────────────────────────────────────
 export const BODY_NODE = 'Beacon_Static'
 
 // ── Island spec ───────────────────────────────────────────────────────────────
-const MAIN_COLLISION = 13.0
-const MONOLITH_COLLISION = 3.2
-
-const ROCK_RIPPLE_MIN = 0.6
-
-const MAIN_SHORE = { reach: 16 }
-const MONOLITH_SHORE = {
-  rim: 0,
-  reach: 4.4,
-  segments: 5,
-  dashMin: 0.2,
-  dashMax: 0.38,
-  width: 0.65,
-}
-const ROCK_SHORE = { rim: 0, reach: 4, segments: 6 }
-
 export const LUMINA_SPEC: IslandSpec = {
-  tuning: { ...BASE_TUNING, scale: 3.3, rotation: -80, offsetY: 3.2, brightness: 1.5 },
+  tuning: { ...BASE_TUNING, scale: 2.5, rotation: 45, offsetY: 0.5, brightness: 1.3 },
   footprint: LUMINA_FOOTPRINT,
   height: LUMINA_MODEL_TOP,
-  collision: [
-    { ...LUMINA_LAND_CENTER, radius: MAIN_COLLISION },
-    ...LUMINA_MONOLITHS.map(({ x, z }) => ({ x, z, radius: MONOLITH_COLLISION })),
-  ],
-  shore: [
-    {
-      ...LUMINA_LAND_CENTER,
-      radius: LUMINA_SHORE_PEAK,
-      profile: LUMINA_SHORE_PROFILE,
-      options: MAIN_SHORE,
-    },
-    ...LUMINA_MONOLITHS.map(({ x, z }) => ({
-      x,
-      z,
-      radius: LUMINA_MONOLITH_RADIUS,
-      options: MONOLITH_SHORE,
-    })),
-    ...LUMINA_ROCKS.filter((r) => r.radius >= ROCK_RIPPLE_MIN).map((r) => ({
-      ...r,
-      options: ROCK_SHORE,
-    })),
-  ],
-  calm: { inner: 8.0, outer: 10.7 },
-  shoreOptions: SHORE_LONG_LINES,
+  collision: [],
+  shore: [],
+  calm: { inner: LUMINA_MAIN_SHORE_RADIUS, outer: LUMINA_MAIN_SHORE_RADIUS },
 }
 
 // ── Lighthouse beam ───────────────────────────────────────────────────────────
-export const BEAM_ANCHOR_NODE = 'Beam_Anchor_Lantern'
-export const BEAM_HEAD_NODE = 'Beacon_Head'
-export const BEAM_HALO_NODE = 'Head_Halo'
-export const BEAM_LENGTH = 55
+export const BEAM_ANCHOR_NODE = 'Anchor_BeaconCone'
+export const BEAM_ANCHOR_FORWARD = [0, -1, 0] as const
+export const BEAM_HEAD_NODE = 'Lighthouse_Lantern_Rotor'
+export const BEAM_LENS_NODE = 'Glow_BeaconLens'
+export const BEAM_LENGTH = 21
 export const BEAM_SPREAD_DEG = 16
-export const BEAM_YAW_DEG = 22.5
 export const BEAM_TILT_DEG = 6
 export const BEAM_SPEED = 0.35
 export const BEAM_STRENGTH = 0.4
 export const BEAM_COLOR = '#f4f0e2'
 export const BEAM_SUN_ON = 0.4
 export const BEAM_SUN_FULL = 0.05
+
+// ── Lights ────────────────────────────────────────────────────────────────────
+export const LIGHT_COLOR = '#ffd27a'
+export const LIGHT_NODES = ['Glow_TowerWindows', 'Glow_BeaconLens', 'Glow_SummitRing']
+
+// ── Monoliths ─────────────────────────────────────────────────────────────────
+export const MONOLITH_NAMES = ['Document', 'Email', 'GitHub', 'LinkedIn']
+
+// ── Hologram ──────────────────────────────────────────────────────────────────
+export const HOLOGRAM_SCAN_DENSITY = 0.75
+export const HOLOGRAM_SCAN_SPEED = 0.8
+export const HOLOGRAM_RENDER_ORDER = 5
+
+export const PROJECTOR_DAY_SHARE = 0.4
+
+export const INLET_GLOW: GroundGlowTuning = {
+  haloSpread: 2.4,
+  haloFill: 0.9,
+  haloStrength: 0.8,
+  haloLift: 0.15,
+  motesPerSite: 14,
+  moteSize: 1.6,
+  moteRise: 13,
+  moteLifetime: 3.2,
+  moteSwirl: 1.2,
+  moteSpread: 2.4,
+  moteInnerShare: 0.2,
+  moteStrength: 1.6,
+}
+
+export const PROJECTION_FLARE = 1
+export const PROJECTION_SEGMENTS = 24
+export const PROJECTION_STRENGTH = 0.3
+export const PROJECTION_SCAN_DEPTH = 0.45
+
+// ── Logos ─────────────────────────────────────────────────────────────────────
+export const LOGO_DAY_SHARE = 0.9
+export const LOGO_BODY_OPACITY = 0.8
+export const LOGO_EDGE_OPACITY = 1
+export const LOGO_SCAN_DEPTH = 0.3
+export const LOGO_RIM_GAIN = 0.6
+export const LOGO_RIM_POWER = 2
+export const LOGO_FLICKER_RATE = 14
+export const LOGO_FLICKER_CHANCE = 0.06
+export const LOGO_FLICKER_DEPTH = 0.55
+
+export const LOGO_SPIN_RATE_MIN = 0.25
+export const LOGO_SPIN_RATE_MAX = 0.8
+export const LOGO_SWAY = 0.5
+export const LOGO_SWAY_RATE = 0.7
+export const LOGO_BOB_HEIGHT = 0.1
+export const LOGO_BOB_RATE_MIN = 0.9
+export const LOGO_BOB_RATE_MAX = 1.8
 
 // ── Contact blob ──────────────────────────────────────────────────────────────
 export const LUMINA_BLOB: ContactBlob = {

@@ -1,5 +1,6 @@
 import * as THREE from 'three'
-import { meshesOf } from '../../../../utils/meshes'
+import { boundsIn, displayColor, meshesOf } from '../../../../utils/meshes'
+import type { GlowSite } from '../GroundGlow/glowSites'
 import {
   BASE_RIM_NODES,
   GEM_NODES,
@@ -7,12 +8,6 @@ import {
   SPINNING_GEM_NODES,
   TUMBLING_GEM_NODES,
 } from './constants'
-
-export interface ShrineBase {
-  center: THREE.Vector3
-  radius: number
-  color: THREE.Color
-}
 
 export interface ShrineGem {
   node: THREE.Object3D
@@ -25,32 +20,13 @@ export interface ShrineGem {
 }
 
 export interface Shrines {
-  bases: ShrineBase[]
+  bases: GlowSite[]
   gems: ShrineGem[]
 }
 
 const _toFrame = new THREE.Matrix4()
 const _meshToFrame = new THREE.Matrix4()
-const _meshBounds = new THREE.Box3()
 const _point = new THREE.Vector3()
-
-function boundsIn(frame: THREE.Object3D, meshes: THREE.Mesh[]): THREE.Box3 {
-  _toFrame.copy(frame.matrixWorld).invert()
-  const bounds = new THREE.Box3()
-  for (const mesh of meshes) {
-    mesh.geometry.computeBoundingBox()
-    _meshToFrame.multiplyMatrices(_toFrame, mesh.matrixWorld)
-    bounds.union(_meshBounds.copy(mesh.geometry.boundingBox!).applyMatrix4(_meshToFrame))
-  }
-  return bounds
-}
-
-function displayColor(mesh: THREE.Mesh): THREE.Color {
-  const material = (
-    Array.isArray(mesh.material) ? mesh.material[0] : mesh.material
-  ) as THREE.MeshStandardMaterial
-  return material.color.clone().convertLinearToSRGB()
-}
 
 function hardEdgesIn(gem: THREE.Object3D, meshes: THREE.Mesh[]): Float32Array {
   _toFrame.copy(gem.matrixWorld).invert()
@@ -68,7 +44,7 @@ function hardEdgesIn(gem: THREE.Object3D, meshes: THREE.Mesh[]): Float32Array {
   return new Float32Array(segments)
 }
 
-function findBase(model: THREE.Object3D, rimNode: string): ShrineBase | null {
+function findBase(model: THREE.Object3D, rimNode: string): GlowSite | null {
   const rim = model.getObjectByName(rimNode)
   if (!rim) return null
   const meshes = meshesOf(rim)

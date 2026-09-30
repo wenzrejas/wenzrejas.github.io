@@ -2,21 +2,21 @@
   timewell: {
     label: 'Timewell Depth',
     description: 'Experience & Journey',
-    position: [-180, 0, 950] as [number, number, number],
+    position: [-200, 0, 900] as [number, number, number],
     radius: 70,
     color: '#4a90d9',
   },
   cozy: {
     label: 'Cozy Isle',
     description: 'Coffee & Support',
-    position: [-800, 0, 265] as [number, number, number],
+    position: [-850, 0, 300] as [number, number, number],
     radius: 55,
     color: '#5aab61',
   },
   lumina: {
     label: 'Lumina Point',
     description: 'Contact & Connect',
-    position: [700, 0, 450] as [number, number, number],
+    position: [680, 0, 500] as [number, number, number],
     radius: 45,
     color: '#e07b39',
   },
@@ -30,7 +30,7 @@
   tech: {
     label: 'Tech Grove',
     description: 'Skills & Technologies',
-    position: [730, 0, -500] as [number, number, number],
+    position: [750, 0, -450] as [number, number, number],
     radius: 30,
     color: '#f0a500',
   },

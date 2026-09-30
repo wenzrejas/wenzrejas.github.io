@@ -2,7 +2,7 @@ import { useRef, type RefObject } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useKeyboardInput } from '../../../hooks/useKeyboardInput'
-import { INITIAL_HEADING } from './constants'
+import { INITIAL_HEADING, WHIRLPOOL_LEAN_RATE } from './constants'
 import { BOUNDARY_RADIUS } from '../Boundary/constants'
 import { REVEAL_SPEED } from '../Islands/constants'
 import { ISLAND_KEYS, ISLAND_SPECS } from '../Islands/islandSpecs'
@@ -14,7 +14,9 @@ import { useRevealStore } from '../../../store/revealStore'
 import { useShipStore } from '../../../store/shipStore'
 import { useCoastStore } from '../../../store/coastStore'
 import { keepHullOffCoasts } from './hullCollision'
+import { whirlpoolCurrent, whirlpoolLean } from './whirlpoolDrift'
 import { mix } from '../../../utils/math'
+import { whirlpoolDip } from '../../../utils/whirlpoolFunnel'
 import { MAX_DT } from '../../../utils/time'
 
 const VELOCITY_LERP = 6
@@ -25,11 +27,14 @@ const BLOCKERS = ISLAND_KEYS.filter((key) => ISLAND_SPECS[key].collision.length 
 
 const _transform = createIslandTransform()
 const _centre = new THREE.Vector2()
+const _current = new THREE.Vector2()
+const _leanTarget = new THREE.Vector2()
 
 export function useShipMovement(groupRef: RefObject<THREE.Group | null>) {
   const pressedKeys = useKeyboardInput()
   const heading = useRef(INITIAL_HEADING)
   const tilt = useRef(0)
+  const lean = useRef(new THREE.Vector2())
   const velocity = useRef({ x: 0, z: 0 })
 
   useFrame(({ clock }, delta) => {
@@ -68,8 +73,9 @@ export function useShipMovement(groupRef: RefObject<THREE.Group | null>) {
     const lerp = Math.min(1, VELOCITY_LERP * dt)
     velocity.current.x += (targetVelX - velocity.current.x) * lerp
     velocity.current.z += (targetVelZ - velocity.current.z) * lerp
-    group.position.x += velocity.current.x * dt
-    group.position.z += velocity.current.z * dt
+    whirlpoolCurrent(group.position.x, group.position.z, _current)
+    group.position.x += (velocity.current.x + _current.x) * dt
+    group.position.z += (velocity.current.z + _current.y) * dt
 
     // ── Boundary clamp ────────────────────────────────────────────────────
     const dist = Math.sqrt(group.position.x ** 2 + group.position.z ** 2)
@@ -105,8 +111,9 @@ export function useShipMovement(groupRef: RefObject<THREE.Group | null>) {
     const tiltTarget = keys.left ? tiltMax : keys.right ? -tiltMax : 0
     tilt.current += (tiltTarget - tilt.current) * Math.min(1, tiltSpeed * dt)
 
-    group.rotation.y = heading.current
-    group.rotation.z = tilt.current
+    whirlpoolLean(group.position.x, group.position.z, heading.current, _leanTarget)
+    lean.current.lerp(_leanTarget, Math.min(1, WHIRLPOOL_LEAN_RATE * dt))
+    group.rotation.set(lean.current.x, heading.current, tilt.current + lean.current.y, 'YXZ')
 
     const motion = useShipStore.getState()
     motion.x = group.position.x
@@ -115,8 +122,11 @@ export function useShipMovement(groupRef: RefObject<THREE.Group | null>) {
     motion.vz = velocity.current.z
     motion.speed = Math.hypot(velocity.current.x, velocity.current.z)
     motion.heading = heading.current + Math.PI
-    group.position.y = baseY + Math.sin(time * bobSpeed) * bobAmp * weather.waveAmpMult
+    group.position.y =
+      baseY +
+      Math.sin(time * bobSpeed) * bobAmp * weather.waveAmpMult -
+      whirlpoolDip(group.position.x, group.position.z)
   })
 
-  return heading
+  return { heading, lean }
 }

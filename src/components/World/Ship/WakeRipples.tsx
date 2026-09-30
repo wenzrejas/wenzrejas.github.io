@@ -5,6 +5,7 @@ import { RIPPLE_MAX_GROUPS, RIPPLE_SPRITES_PER_GROUP, TOTAL_RIPPLE_SPRITES } fro
 import { useDebugStore } from '../../../store/debugStore'
 import { useCycleStore } from '../../../store/cycleStore'
 import { algaeAt, algaeUniforms } from '../Algae/algaeField'
+import { whirlpoolDip } from '../../../utils/whirlpoolFunnel'
 
 const _tint = new THREE.Color()
 const _dummy = new THREE.Object3D()
@@ -152,11 +153,9 @@ export default function WakeRipples({ shipRef }: { shipRef: React.RefObject<THRE
       }
 
       const progress = age / wake.rippleLifetime
-      _dummy.position.set(
-        sprite.x + sprite.velocityX * age * wake.expandSpeed,
-        0.4,
-        sprite.z + sprite.velocityZ * age * wake.expandSpeed
-      )
+      const rippleX = sprite.x + sprite.velocityX * age * wake.expandSpeed
+      const rippleZ = sprite.z + sprite.velocityZ * age * wake.expandSpeed
+      _dummy.position.set(rippleX, 0.4 - whirlpoolDip(rippleX, rippleZ), rippleZ)
       _dummy.scale.setScalar(sprite.size * Math.max(0, 1 - progress * 1.25))
       _dummy.updateMatrix()
       rippleInstances.setMatrixAt(i, _dummy.matrix)

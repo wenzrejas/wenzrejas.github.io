@@ -12,32 +12,48 @@ import {
   BEAM_SUN_FULL,
   BEAM_SUN_ON,
   BEAM_TILT_DEG,
-  BEAM_YAW_DEG,
 } from './constants'
 import BEAM_VERT from './shaders/luminaBeam.vert.glsl'
 import BEAM_FRAG from './shaders/luminaBeam.frag.glsl'
 
 const HALF_SPREAD = THREE.MathUtils.degToRad(BEAM_SPREAD_DEG) / 2
 const TILT = THREE.MathUtils.degToRad(BEAM_TILT_DEG)
-const YAW = THREE.MathUtils.degToRad(BEAM_YAW_DEG)
 
 interface LuminaBeamProps {
-  origin: THREE.Vector3
-  head: THREE.Object3D | null
+  pivot: THREE.Vector3
+  lensOffset: THREE.Vector3
+  lensRadius: number
+  restYaw: number
+  head: THREE.Object3D
   headRest: number
 }
 
-function aimHead(head: THREE.Object3D | null, yaw: number) {
-  if (head) head.rotation.y = yaw
+function aimHead(head: THREE.Object3D, yaw: number) {
+  head.rotation.y = yaw
 }
 
-export default function LuminaBeam({ origin, head, headRest }: LuminaBeamProps) {
+export default function LuminaBeam({
+  pivot,
+  lensOffset,
+  lensRadius,
+  restYaw,
+  head,
+  headRest,
+}: LuminaBeamProps) {
   const groupRef = useRef<THREE.Group>(null)
   const beamRef = useRef<THREE.Mesh>(null)
   const sweep = useRef(0)
 
   const { geometry, material } = useMemo(() => {
-    const geometry = new THREE.ConeGeometry(Math.tan(HALF_SPREAD), 1, 32, 1, true)
+    const startRadius = lensRadius / BEAM_LENGTH
+    const geometry = new THREE.CylinderGeometry(
+      startRadius,
+      startRadius + Math.tan(HALF_SPREAD),
+      1,
+      32,
+      1,
+      true
+    )
     geometry.rotateZ(Math.PI / 2)
     geometry.translate(0.5, 0, 0)
 
@@ -55,7 +71,7 @@ export default function LuminaBeam({ origin, head, headRest }: LuminaBeamProps) 
     })
 
     return { geometry, material }
-  }, [])
+  }, [lensRadius])
 
   useEffect(
     () => () => {
@@ -84,13 +100,14 @@ export default function LuminaBeam({ origin, head, headRest }: LuminaBeamProps) 
   })
 
   return (
-    <group ref={groupRef} position={origin}>
+    <group ref={groupRef} position={pivot}>
       <mesh
         ref={beamRef}
         geometry={geometry}
         material={material}
+        position={lensOffset}
         scale={BEAM_LENGTH}
-        rotation={[0, YAW, -TILT]}
+        rotation={[0, restYaw, -TILT]}
         renderOrder={4}
       />
     </group>

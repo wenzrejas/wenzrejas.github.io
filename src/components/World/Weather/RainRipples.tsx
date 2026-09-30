@@ -3,6 +3,9 @@ import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useWeatherStore } from '../../../store/weatherStore'
 import { useCycleStore } from '../../../store/cycleStore'
+import { useWhirlpoolStore } from '../../../store/whirlpoolStore'
+import { floatDefines } from '../../../utils/glsl'
+import { whirlpoolFunnelUniforms } from '../../../utils/whirlpoolFunnel'
 import { algaeAt, queueRainHit } from '../Algae/algaeField'
 import RIPPLE_VERT from './shaders/rainRipple.vert.glsl'
 import RIPPLE_FRAG from './shaders/rainRipple.frag.glsl'
@@ -10,6 +13,9 @@ import RIPPLE_FRAG from './shaders/rainRipple.frag.glsl'
 const MAX_RIPPLES = 250
 const RIPPLE_LIFETIME = 1.8 // seconds per ring
 const SPAWN_RATE = 80 // ripples/second at full rain intensity
+const RIPPLE_SEGMENTS = 4
+const WHIRLPOOL_EYE_SHARE = 0.05
+const WHIRLPOOL_SWALLOW_SHARE = 0.2
 
 export default function RainRipples({ shipRef }: { shipRef: React.RefObject<THREE.Group | null> }) {
   const meshRef = useRef<THREE.Mesh>(null)
@@ -19,12 +25,13 @@ export default function RainRipples({ shipRef }: { shipRef: React.RefObject<THRE
   const activeCount = useRef(0) // ripples with progress < 1
 
   const { geo, mat } = useMemo(() => {
-    const positions = new Float32Array([-1, 0, -1, 1, 0, -1, 1, 0, 1, -1, 0, 1])
-    const idxData = new Uint16Array([0, 2, 1, 0, 3, 2])
+    const quad = new THREE.PlaneGeometry(2, 2, RIPPLE_SEGMENTS, RIPPLE_SEGMENTS).rotateX(
+      -Math.PI / 2
+    )
 
     const g = new THREE.InstancedBufferGeometry()
-    g.setAttribute('position', new THREE.BufferAttribute(positions, 3))
-    g.setIndex(new THREE.BufferAttribute(idxData, 1))
+    g.setAttribute('position', quad.getAttribute('position'))
+    g.setIndex(quad.getIndex())
     g.instanceCount = MAX_RIPPLES
     g.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 1e6)
 
@@ -36,12 +43,15 @@ export default function RainRipples({ shipRef }: { shipRef: React.RefObject<THRE
     const m = new THREE.ShaderMaterial({
       vertexShader: RIPPLE_VERT,
       fragmentShader: RIPPLE_FRAG,
+      defines: floatDefines({ RIPPLE_LIFETIME, WHIRLPOOL_EYE_SHARE, WHIRLPOOL_SWALLOW_SHARE }),
       transparent: true,
       depthWrite: false,
       side: THREE.DoubleSide,
       uniforms: {
         uIntensity: { value: 0 },
         uColor: { value: useCycleStore.getState().foamColor },
+        ...whirlpoolFunnelUniforms,
+        uWhirlpoolDrain: { value: 0 },
       },
     })
 
@@ -61,10 +71,15 @@ export default function RainRipples({ shipRef }: { shipRef: React.RefObject<THRE
     if (!mesh) return
 
     const intensity = useWeatherStore.getState().rainIntensity
-    ;(mesh.material as THREE.ShaderMaterial).uniforms.uIntensity.value = intensity
+    const { uniforms } = mesh.material as THREE.ShaderMaterial
+    uniforms.uIntensity.value = intensity
 
+    const whirlpool = useWhirlpoolStore.getState()
+    uniforms.uWhirlpoolDrain.value = whirlpool.active ? whirlpool.drainRate : 0
+
+    mesh.visible = intensity > 0.01 || activeCount.current > 0
     // Skip all work when no rain and all ripples have already faded out
-    if (intensity <= 0.01 && activeCount.current === 0) return
+    if (!mesh.visible) return
 
     const dt = Math.min(delta, 0.05)
     const aProgress = mesh.geometry.attributes.aProgress as THREE.InstancedBufferAttribute

@@ -1,7 +1,12 @@
 import * as THREE from 'three'
 import { useWhaleStore } from '../../../store/whaleStore'
 import { rand, turnToward } from '../../../utils/math'
-import { ISLAND_ZONES, shoreGap } from '../Islands/islandZones'
+import {
+  headingFromWhirlpool,
+  ISLAND_ZONES,
+  shoreGap,
+  whirlpoolGap,
+} from '../Islands/islandZones'
 import { runChance } from './habitat'
 import {
   BOOST_DECAY,
@@ -245,6 +250,10 @@ export function steerSchool(school: School, time: number, dt: number): void {
       const away = Math.atan2(school.x - zone.x, school.z - zone.z)
       school.heading = turnToward(school.heading, away, SHORE_AVOID_RATE * dt)
     }
+  }
+  if (whirlpoolGap(school.x, school.z) < SHORE_AVOID_DISTANCE) {
+    const away = headingFromWhirlpool(school.x, school.z)
+    school.heading = turnToward(school.heading, away, SHORE_AVOID_RATE * dt)
   }
   school.boost *= Math.exp(-BOOST_DECAY * dt)
   school.x += Math.sin(school.heading) * schoolSpeed(school) * dt
