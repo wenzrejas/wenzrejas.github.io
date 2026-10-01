@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import type * as THREE from 'three'
+import { uniformsOf } from '../../../../utils/meshes'
 import type { GlowSite, GroundGlowTuning } from './glowSites'
 import {
   buildHaloGeometry,
@@ -15,9 +16,6 @@ interface GroundGlowProps {
   islandScale: number
   level: (site: number) => number
 }
-
-const uniformsOf = (object: THREE.Mesh | THREE.Points) =>
-  (object.material as THREE.ShaderMaterial).uniforms
 
 export default function GroundGlow({ sites, tuning, islandScale, level }: GroundGlowProps) {
   const haloRef = useRef<THREE.Mesh>(null)

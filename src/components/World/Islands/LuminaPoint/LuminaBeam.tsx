@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useCycleStore } from '../../../../store/cycleStore'
+import { useSkyBeamStore } from '../../../../store/skyBeamStore'
 import { MAX_DT } from '../../../../utils/time'
 import {
   BEAM_COLOR,
@@ -86,8 +87,12 @@ export default function LuminaBeam({
     const beam = beamRef.current
     if (!group || !beam) return
 
-    const sun = useCycleStore.getState().oceanSunDir.y
-    const level = (1 - THREE.MathUtils.smoothstep(sun, BEAM_SUN_FULL, BEAM_SUN_ON)) * BEAM_STRENGTH
+    const sun = useCycleStore.getState().clockSunHeight
+    const skyBeamPresence = useSkyBeamStore.getState().presence
+    const level =
+      (1 - THREE.MathUtils.smoothstep(sun, BEAM_SUN_FULL, BEAM_SUN_ON)) *
+      (1 - skyBeamPresence) *
+      BEAM_STRENGTH
     group.visible = level > 0.002
     if (!group.visible) return
 

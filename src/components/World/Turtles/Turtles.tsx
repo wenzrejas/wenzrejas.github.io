@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
+import { eventDelta } from '../../../store/cinematicStore'
 import { useCycleStore } from '../../../store/cycleStore'
 import { useDebugStore } from '../../../store/debugStore'
 import { useShipStore } from '../../../store/shipStore'
@@ -102,7 +103,7 @@ export default function Turtles() {
     rippleMaterial.color.copy(cycle.foamColor)
 
     const { turtleChance, turtleInterval } = useDebugStore.getState().wildlife
-    checkTimer.current = Math.min(checkTimer.current, turtleInterval) - dt
+    checkTimer.current = Math.min(checkTimer.current, turtleInterval) - eventDelta(dt)
     if (checkTimer.current <= 0) {
       checkTimer.current = turtleInterval
       const angle = Math.random() * Math.PI * 2

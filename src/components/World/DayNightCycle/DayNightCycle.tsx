@@ -4,7 +4,9 @@ import * as THREE from 'three'
 import { useCycleStore } from '../../../store/cycleStore'
 import { useWeatherStore } from '../../../store/weatherStore'
 import { useDebugStore } from '../../../store/debugStore'
-import { PHASES, sampleKeyframes } from './dayNightKeyframes'
+import { useSkyBeamStore } from '../../../store/skyBeamStore'
+import { BRIGHTEST_MOON, PHASES, sampleKeyframes } from './dayNightKeyframes'
+import { darkenSky } from './skyDarkening'
 import { mix, lerpColor, lerpVec3 } from '../../../utils/math'
 
 export const CYCLE_DURATION = 480
@@ -23,8 +25,11 @@ export default function DayNightCycle() {
 
   useFrame((_, delta) => {
     const { dayCycle } = useDebugStore.getState()
+    const { isActive: isSkyBeamActive, darkness } = useSkyBeamStore.getState()
     if (dayCycle.timeOfDay === 'auto') {
-      timeRef.current = (timeRef.current + (delta * dayCycle.cycleSpeed) / CYCLE_DURATION) % 1
+      if (!isSkyBeamActive) {
+        timeRef.current = (timeRef.current + (delta * dayCycle.cycleSpeed) / CYCLE_DURATION) % 1
+      }
     } else {
       timeRef.current = PHASES[dayCycle.timeOfDay]
     }
@@ -34,7 +39,7 @@ export default function DayNightCycle() {
     const weather = useWeatherStore.getState()
 
     // ── Cycle-store colors (read by Ocean, Boundary, Ship each frame) ─────
-    cycle.nightFactor = mix(lo.moonInt, hi.moonInt, a) / 1.2
+    cycle.nightFactor = mix(lo.moonInt, hi.moonInt, a) / BRIGHTEST_MOON
     cycle.timeOfDay = timeRef.current
     cycle.fresnel = mix(lo.fresnel, hi.fresnel, a)
     cycle.specular = mix(lo.specular, hi.specular, a)
@@ -51,6 +56,7 @@ export default function DayNightCycle() {
     lerpVec3(lo.moonPos, hi.moonPos, a, _moonPos)
 
     cycle.oceanSunDir.copy(_sunPos).normalize()
+    cycle.clockSunHeight = cycle.oceanSunDir.y
     cycle.oceanMoonDir.copy(_moonPos).normalize()
 
     // ── Scene background ──────────────────────────────────────────────────
@@ -82,6 +88,9 @@ export default function DayNightCycle() {
       moon.intensity = mix(lo.moonInt, hi.moonInt, a) * weather.moonMult
       moon.position.copy(_moonPos)
     }
+
+    // ── Sky beam darkness ─────────────────────────────────────────────────
+    if (darkness > 0) darkenSky(darkness, { background: scene.background, hemi, sun, moon })
 
     // ── Lightning flash ───────────────────────────────────────────────────
     const f = weather.lightningFlash

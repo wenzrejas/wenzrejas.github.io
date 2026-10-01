@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { createPortal, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useDebugStore } from '../../../../store/debugStore'
-import { boundsIn, meshesOf } from '../../../../utils/meshes'
+import { boundsIn, meshesOf, positionIn } from '../../../../utils/meshes'
 import type { IslandBodyProps } from '../types'
 import { useIslandModel } from '../islandModel'
 import { placeIsland } from '../islandTransform'
@@ -22,9 +22,11 @@ import Holograms from './Holograms'
 import LuminaBeam from './LuminaBeam'
 import MainIslandInteraction from './MainIslandInteraction'
 import MonolithLinks from './MonolithLinks'
+import SkyBeam from './SkyBeam'
 import { tintLights } from './lights'
 import { findMainIsland } from './mainIsland'
 import { findMonoliths } from './monoliths'
+import { findSkyBeamAnchor } from './skyBeamSequence'
 import { useLogoFloat } from './useLogoFloat'
 
 function rigBeam(model: THREE.Object3D) {
@@ -34,11 +36,11 @@ function rigBeam(model: THREE.Object3D) {
   if (!anchor || !head || !lens) return null
 
   model.updateMatrixWorld(true)
-  const origin = model.worldToLocal(anchor.getWorldPosition(new THREE.Vector3()))
+  const origin = positionIn(model, anchor)
   const facing = model
     .worldToLocal(anchor.localToWorld(new THREE.Vector3(...BEAM_ANCHOR_FORWARD)))
     .sub(origin)
-  const pivot = model.worldToLocal(head.getWorldPosition(new THREE.Vector3())).setY(origin.y)
+  const pivot = positionIn(model, head).setY(origin.y)
   const lensSize = boundsIn(lens, meshesOf(lens)).getSize(new THREE.Vector3())
 
   return {
@@ -55,10 +57,11 @@ export default function LuminaPoint({ islandKey, config }: IslandBodyProps) {
   const root = useThree((s) => s.scene)
   const tuning = useDebugStore((s) => s.islands.lumina)
   const island = useIslandModel(LUMINA_MODEL_URL, tuning.brightness)
-  const { beam, monoliths, mainIsland } = useMemo(() => {
+  const { beam, skyBeam, monoliths, mainIsland } = useMemo(() => {
     tintLights(island)
     return {
       beam: rigBeam(island.model),
+      skyBeam: findSkyBeamAnchor(island.model),
       monoliths: findMonoliths(island.model),
       mainIsland: findMainIsland(island.model),
     }
@@ -89,11 +92,12 @@ export default function LuminaPoint({ islandKey, config }: IslandBodyProps) {
           <MainIslandInteraction mainIsland={mainIsland} islandScale={placement.scale} />
         )}
       </group>
-      {beam &&
+      {(beam || skyBeam) &&
         createPortal(
           <group position={[config.position[0], 0, config.position[2]]}>
             <group {...placement}>
-              <LuminaBeam {...beam} />
+              {beam && <LuminaBeam {...beam} />}
+              {skyBeam && <SkyBeam {...skyBeam} islandScale={placement.scale} />}
             </group>
           </group>,
           root

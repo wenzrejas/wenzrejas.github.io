@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
+import { eventDelta } from '../../../store/cinematicStore'
 import { useCycleStore } from '../../../store/cycleStore'
 import { useDebugStore } from '../../../store/debugStore'
 import { useShipStore } from '../../../store/shipStore'
@@ -100,7 +101,7 @@ export default function Dolphins() {
     sprayMaterial.color.copy(cycle.foamColor)
 
     const { dolphinChance, dolphinInterval } = useDebugStore.getState().wildlife
-    checkTimer.current = Math.min(checkTimer.current, dolphinInterval) - dt
+    checkTimer.current = Math.min(checkTimer.current, dolphinInterval) - eventDelta(dt)
     if (checkTimer.current <= 0) {
       checkTimer.current = dolphinInterval
       if (

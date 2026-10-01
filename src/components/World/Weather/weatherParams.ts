@@ -64,6 +64,10 @@ export const WEATHERS = Object.keys(PARAMS) as WeatherType[]
 
 export const TRANSITION = 30
 export const STABLE_MIN = CYCLE_DURATION / 2 - TRANSITION
+export const CLEAR_SKIES_TRANSITION = 3
+export const CLEARED_WEATHER: WeatherType = 'sunny'
+
+export const isClearSky = (type: WeatherType) => type === 'sunny' || type === 'moonlit'
 
 export function pickOther(current: WeatherType): WeatherType {
   const others = WEATHERS.filter((w) => w !== current)

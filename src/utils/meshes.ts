@@ -23,6 +23,12 @@ export function boundsIn(frame: THREE.Object3D, meshes: THREE.Mesh[]): THREE.Box
   return bounds
 }
 
+export const positionIn = (frame: THREE.Object3D, node: THREE.Object3D) =>
+  frame.worldToLocal(node.getWorldPosition(new THREE.Vector3()))
+
+export const uniformsOf = (object: THREE.Mesh | THREE.Points) =>
+  (object.material as THREE.ShaderMaterial).uniforms
+
 export function displayColor(mesh: THREE.Mesh): THREE.Color {
   const material = (
     Array.isArray(mesh.material) ? mesh.material[0] : mesh.material

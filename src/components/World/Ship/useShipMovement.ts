@@ -1,12 +1,13 @@
 import { useRef, type RefObject } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
-import { useKeyboardInput } from '../../../hooks/useKeyboardInput'
+import { useKeyboardInput, type Keys } from '../../../hooks/useKeyboardInput'
 import { INITIAL_HEADING, WHIRLPOOL_LEAN_RATE } from './constants'
 import { BOUNDARY_RADIUS } from '../Boundary/constants'
 import { REVEAL_SPEED } from '../Islands/constants'
 import { ISLAND_KEYS, ISLAND_SPECS } from '../Islands/islandSpecs'
 import { createIslandTransform, islandTransform, toWorld } from '../Islands/islandTransform'
+import { isCinematicPlaying } from '../../../store/cinematicStore'
 import { useDebugStore } from '../../../store/debugStore'
 import { useWindStore } from '../../../store/windStore'
 import { useWeatherStore } from '../../../store/weatherStore'
@@ -24,6 +25,7 @@ const WIND_ASSIST = 0.3
 const WIND_ASSIST_CAP = 2.5
 
 const BLOCKERS = ISLAND_KEYS.filter((key) => ISLAND_SPECS[key].collision.length > 0)
+const IDLE_KEYS: Keys = { forward: false, backward: false, left: false, right: false }
 
 const _transform = createIslandTransform()
 const _centre = new THREE.Vector2()
@@ -43,7 +45,7 @@ export function useShipMovement(groupRef: RefObject<THREE.Group | null>) {
 
     const dt = isFinite(delta) && delta > 0 ? Math.min(delta, MAX_DT) : 0.016
     const time = clock.getElapsedTime()
-    const keys = pressedKeys.current
+    const keys = isCinematicPlaying() ? IDLE_KEYS : pressedKeys.current
     const { moveSpeed, turnSpeed, tiltMax, tiltSpeed, baseY, bobAmp, bobSpeed, modelSize } =
       useDebugStore.getState().ship
     const wind = useWindStore.getState()

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
+import { eventDelta } from '../../../store/cinematicStore'
 import { useCycleStore } from '../../../store/cycleStore'
 import { useDebugStore } from '../../../store/debugStore'
 import { useShipStore } from '../../../store/shipStore'
@@ -61,7 +62,7 @@ export default function Fish() {
     const phaseAttr = geometry.getAttribute('aPhase') as THREE.InstancedBufferAttribute
 
     const { fishDelayMin, fishDelayMax } = useDebugStore.getState().wildlife
-    spawnTimer.current = Math.min(spawnTimer.current, fishDelayMax) - dt
+    spawnTimer.current = Math.min(spawnTimer.current, fishDelayMax) - eventDelta(dt)
     if (spawnTimer.current <= 0) {
       spawnTimer.current = rand(fishDelayMin, fishDelayMax)
       const active = schools.current.reduce((sum, school) => sum + school.fish.length, 0)
