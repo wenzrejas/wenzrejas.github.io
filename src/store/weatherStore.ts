@@ -15,6 +15,7 @@ interface WeatherState {
   lightningFlash: number
   lightningStrikes: number
   cloudOffset: THREE.Vector2
+  wantsClearSkies: boolean
 }
 
 const RAIN_CUTOFF = 0.01
@@ -31,7 +32,12 @@ export const useWeatherStore = create<WeatherState>(() => ({
   lightningFlash: 0.0,
   lightningStrikes: 0,
   cloudOffset: new THREE.Vector2(),
+  wantsClearSkies: false,
 }))
+
+export function requestClearSkies() {
+  useWeatherStore.getState().wantsClearSkies = true
+}
 
 export function isRaining(): boolean {
   const { type, rainIntensity } = useWeatherStore.getState()

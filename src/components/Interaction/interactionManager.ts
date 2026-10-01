@@ -15,6 +15,7 @@ class InteractionManager {
   private canvas: HTMLCanvasElement | null = null
   private camera: THREE.Camera | null = null
   private hasPointerMoved = false
+  private isHeld = false
   private hovered: THREE.Object3D | null = null
   private pressed: THREE.Object3D | null = null
 
@@ -51,7 +52,15 @@ class InteractionManager {
     }
   }
 
+  hold(): void {
+    this.isHeld = true
+    this.hasPointerMoved = false
+    this.pressed = null
+    this.hover(null)
+  }
+
   update(camera: THREE.Camera): void {
+    this.isHeld = false
     this.camera = camera
     if (this.hasPointerMoved) this.hover(this.pick())
     else if (this.hovered && this.pick() !== this.hovered) this.hover(null)
@@ -89,11 +98,13 @@ class InteractionManager {
   }
 
   private press = (event: PointerEvent): void => {
+    if (this.isHeld) return
     this.trackPointer(event)
     this.pressed = this.pick()
   }
 
   private activate = (event: MouseEvent): void => {
+    if (this.isHeld) return
     this.locatePointer(event)
     const hitArea = this.pick()
     if (hitArea && hitArea === this.pressed) this.handlers.get(hitArea)?.onActivate?.()

@@ -1,9 +1,19 @@
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
+import { eventDelta } from '../../../store/cinematicStore'
 import { useWeatherStore, type WeatherType } from '../../../store/weatherStore'
 import { useDebugStore } from '../../../store/debugStore'
-import { PARAMS, TRANSITION, STABLE_MIN, pickOther, lerpParam } from './weatherParams'
+import {
+  CLEAR_SKIES_TRANSITION,
+  CLEARED_WEATHER,
+  PARAMS,
+  TRANSITION,
+  STABLE_MIN,
+  isClearSky,
+  pickOther,
+  lerpParam,
+} from './weatherParams'
 import { useWindStore } from '../../../store/windStore'
 import RainRipples from './RainRipples'
 import Rain from './Rain'
@@ -23,7 +33,25 @@ export default function WeatherSystem({ shipRef }: Props) {
   const nextType = useRef<WeatherType>(pickOther(STARTING_WEATHER))
   const transitionT = useRef(0)
   const isBlending = useRef(false)
+  const isClearing = useRef(false)
   const stableTimer = useRef(STABLE_MIN)
+
+  const steerToClearSkies = () => {
+    if (!isBlending.current) {
+      if (isClearSky(currentType.current)) return
+      nextType.current = CLEARED_WEATHER
+      transitionT.current = 0
+      isBlending.current = true
+    } else if (isClearSky(currentType.current) && !isClearSky(nextType.current)) {
+      const clearType = currentType.current
+      currentType.current = nextType.current
+      nextType.current = clearType
+      transitionT.current = 1 - transitionT.current
+    } else if (!isClearSky(nextType.current)) {
+      nextType.current = CLEARED_WEATHER
+    }
+    isClearing.current = true
+  }
 
   // Lightning state
   const nextLightning = useRef(firstLightningDelay())
@@ -35,6 +63,8 @@ export default function WeatherSystem({ shipRef }: Props) {
     const dt = Math.min(delta, 0.05)
     const { weather: ctrl } = useDebugStore.getState()
     const w = useWeatherStore.getState()
+    const wantsClearSkies = w.wantsClearSkies
+    w.wantsClearSkies = false
 
     if (!ctrl.weatherEnabled) {
       w.type = 'sunny'
@@ -56,18 +86,22 @@ export default function WeatherSystem({ shipRef }: Props) {
       w.overcastAmount = p.overcastAmount
       w.cloudShadow = p.cloudShadow
     } else {
+      if (wantsClearSkies) steerToClearSkies()
+
       if (!isBlending.current) {
-        stableTimer.current -= dt
+        stableTimer.current -= eventDelta(dt)
         if (stableTimer.current <= 0) {
           nextType.current = pickOther(currentType.current)
           isBlending.current = true
           transitionT.current = 0
         }
       } else {
-        transitionT.current = Math.min(1, transitionT.current + dt / TRANSITION)
+        const transitionSeconds = isClearing.current ? CLEAR_SKIES_TRANSITION : TRANSITION
+        transitionT.current = Math.min(1, transitionT.current + dt / transitionSeconds)
         if (transitionT.current >= 1) {
           currentType.current = nextType.current
           isBlending.current = false
+          isClearing.current = false
           stableTimer.current = STABLE_MIN
         }
       }
@@ -94,7 +128,7 @@ export default function WeatherSystem({ shipRef }: Props) {
 
     // ── Lightning — always evaluated after weather state is set ─────────
     if (w.type === 'rainy') {
-      nextLightning.current -= dt
+      nextLightning.current -= eventDelta(dt)
       const phase = flashPhase.current
 
       if (phase === 0 && nextLightning.current <= 0) {

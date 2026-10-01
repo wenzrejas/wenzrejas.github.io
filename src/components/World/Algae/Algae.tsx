@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
+import { eventDelta } from '../../../store/cinematicStore'
 import { useCycleStore } from '../../../store/cycleStore'
 import { useShipStore } from '../../../store/shipStore'
 import { isRaining, useWeatherStore } from '../../../store/weatherStore'
@@ -78,7 +79,7 @@ export default function Algae() {
     ambient.value += ((isRaining() ? 0 : 1) - ambient.value) * Math.min(1, AMBIENT_RATE * dt)
     const reach = viewReach(camera, ship.x, ship.z)
 
-    checkTimer.current -= dt
+    checkTimer.current -= eventDelta(dt)
     if (checkTimer.current <= 0) {
       checkTimer.current = CHECK_INTERVAL
       const moonlit = useWeatherStore.getState().type === 'moonlit'

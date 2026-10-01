@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { boundsIn, displayColor, meshesOf } from '../../../../utils/meshes'
+import { boundsIn, displayColor, meshesOf, positionIn } from '../../../../utils/meshes'
 import { rand } from '../../../../utils/math'
 import type { GlowSite } from '../GroundGlow/glowSites'
 import {
@@ -83,7 +83,7 @@ function findMonolith(model: THREE.Object3D, name: MonolithName): Monolith | nul
   const base = inletBounds.getCenter(new THREE.Vector3()).setY(inletBounds.max.y)
   const radius = Math.max(inletSize.x, inletSize.z) / 2
   const color = displayColor(inletMeshes[0])
-  const origin = model.worldToLocal(station.getWorldPosition(new THREE.Vector3()))
+  const origin = positionIn(model, station)
 
   return {
     link: MONOLITH_LINKS[name],

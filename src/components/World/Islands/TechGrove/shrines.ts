@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { boundsIn, displayColor, meshesOf } from '../../../../utils/meshes'
+import { boundsIn, displayColor, meshesOf, positionIn } from '../../../../utils/meshes'
 import type { GlowSite } from '../GroundGlow/glowSites'
 import {
   BASE_RIM_NODES,
@@ -64,7 +64,7 @@ function findGem(model: THREE.Object3D, gemNode: string): ShrineGem | null {
   const meshes = meshesOf(core)
   return {
     node: gem,
-    center: model.worldToLocal(gem.getWorldPosition(new THREE.Vector3())),
+    center: positionIn(model, gem),
     radius: boundsIn(gem, meshes).getSize(new THREE.Vector3()).length() / 2,
     color: displayColor(meshes[0]),
     edges: hardEdgesIn(gem, meshes),

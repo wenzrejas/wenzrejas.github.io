@@ -1,6 +1,8 @@
 export const CAMERA_OFFSET: [number, number, number] = [200, 140, 200]
 export const CAMERA_LOOK_Y_OFFSET = 20
 export const CAMERA_ZOOM = 5
+export const CAMERA_SHAKE_RATE_ACROSS = 47
+export const CAMERA_SHAKE_RATE_UP = 59
 
 export const CAMERA_NEAR = -1000
 export const CAMERA_FAR = 10000

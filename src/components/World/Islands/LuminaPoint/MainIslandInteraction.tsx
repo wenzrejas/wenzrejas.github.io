@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import type * as THREE from 'three'
+import { startSkyBeam, useSkyBeamStore } from '../../../../store/skyBeamStore'
 import ActionTooltip from '../../../Interaction/ActionTooltip'
 import HitArea from '../../../Interaction/HitArea'
 import SendIcon from '../../../Interaction/icons/SendIcon'
@@ -21,7 +22,13 @@ export default function MainIslandInteraction({
 }: MainIslandInteractionProps) {
   const [isIslandHovered, setIslandHovered] = useState(false)
   const [isTooltipHovered, setTooltipHovered] = useState(false)
-  const isHovered = isIslandHovered || isTooltipHovered
+  const isSkyBeamActive = useSkyBeamStore((s) => s.isActive)
+  const isHovered = !isSkyBeamActive && (isIslandHovered || isTooltipHovered)
+
+  const launchSkyBeam = () => {
+    setTooltipHovered(false)
+    startSkyBeam()
+  }
 
   const summitSites = useMemo(() => [mainIsland.summit], [mainIsland])
   const effectsRef = useRef<THREE.Group>(null)
@@ -62,6 +69,7 @@ export default function MainIslandInteraction({
         label="Send a message"
         isShown={isHovered}
         onHover={setTooltipHovered}
+        onActivate={launchSkyBeam}
       />
     </>
   )

@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
+import { isCinematicPlaying } from '../../store/cinematicStore'
 import { HIT_AREAS_VISIBLE, INTERACTION_LAYER } from './constants'
 import { interactions } from './interactionManager'
 
@@ -15,7 +16,10 @@ export default function InteractionLayer() {
     return () => camera.layers.disable(INTERACTION_LAYER)
   }, [get])
 
-  useFrame(({ camera }) => interactions.update(camera))
+  useFrame(({ camera }) => {
+    if (isCinematicPlaying()) interactions.hold()
+    else interactions.update(camera)
+  })
 
   return null
 }

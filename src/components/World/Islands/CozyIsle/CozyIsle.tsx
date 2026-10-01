@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import * as THREE from 'three'
 import { useDebugStore } from '../../../../store/debugStore'
+import { positionIn } from '../../../../utils/meshes'
 import type { IslandBodyProps } from '../types'
 import { useIslandModel } from '../islandModel'
 import { placeIsland } from '../islandTransform'
@@ -31,7 +32,7 @@ function findFire(model: THREE.Object3D): FireSpot | null {
   if (!anchor) return null
 
   anchor.updateWorldMatrix(true, false)
-  const base = model.worldToLocal(anchor.getWorldPosition(new THREE.Vector3()))
+  const base = positionIn(model, anchor)
   return { origin: new THREE.Vector3(base.x, base.y + FIRE_HEIGHT, base.z), base }
 }
 

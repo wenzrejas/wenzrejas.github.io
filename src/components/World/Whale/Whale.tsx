@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
+import { eventDelta } from '../../../store/cinematicStore'
 import { useCycleStore } from '../../../store/cycleStore'
 import { useDebugStore } from '../../../store/debugStore'
 import { useShipStore } from '../../../store/shipStore'
@@ -89,7 +90,7 @@ export default function Whale() {
 
     const ship = useShipStore.getState()
     const { whaleChance, whaleInterval } = useDebugStore.getState().wildlife
-    checkTimer.current = Math.min(checkTimer.current, whaleInterval) - dt
+    checkTimer.current = Math.min(checkTimer.current, whaleInterval) - eventDelta(dt)
     if (checkTimer.current <= 0) {
       checkTimer.current = whaleInterval
       if (!whale.current && isDaylight(cycle.timeOfDay) && Math.random() < whaleChance) {

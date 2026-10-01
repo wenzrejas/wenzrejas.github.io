@@ -11,6 +11,7 @@ interface ActionTooltipProps {
   label: string
   isShown: boolean
   onHover: (isHovered: boolean) => void
+  onActivate: () => void
 }
 
 export default function ActionTooltip({
@@ -19,6 +20,7 @@ export default function ActionTooltip({
   label,
   isShown,
   onHover,
+  onActivate,
 }: ActionTooltipProps) {
   const { scale, opacity } = useSpring({
     scale: isShown ? 1 : TOOLTIP_HIDDEN_SCALE,
@@ -38,6 +40,7 @@ export default function ActionTooltip({
         }}
         onPointerEnter={() => onHover(true)}
         onPointerLeave={() => onHover(false)}
+        onClick={onActivate}
       >
         {icon}
         {label}

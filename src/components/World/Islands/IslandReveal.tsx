@@ -13,6 +13,7 @@ import {
 import { groundReach, sampleGroundFrame } from './viewReach'
 import { islandExtent } from './islandTransform'
 import { useRevealStore } from '../../../store/revealStore'
+import { isCinematicPlaying } from '../../../store/cinematicStore'
 import { useDebugStore } from '../../../store/debugStore'
 import { MAX_DT } from '../../../utils/time'
 
@@ -43,7 +44,7 @@ export default function IslandReveal({ shipRef }: IslandRevealProps) {
     if (!ship) return
 
     if (elapsed.current < 0) {
-      if (useDebugStore.getState().camera.topView) return
+      if (useDebugStore.getState().camera.topView || isCinematicPlaying()) return
       sampleGroundFrame(camera)
       const tuning = useDebugStore.getState().islands
       let started = false

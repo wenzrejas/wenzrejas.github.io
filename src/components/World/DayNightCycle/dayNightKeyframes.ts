@@ -241,6 +241,8 @@ export const KFS: KF[] = [
   },
 ]
 
+export const BRIGHTEST_MOON = 1.2
+
 export const PHASES = {
   'pre-dawn': 0.0,
   'first light': 0.1,

@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { boundsIn, displayColor, meshesOf } from '../../../../utils/meshes'
+import { boundsIn, displayColor, meshesOf, positionIn } from '../../../../utils/meshes'
 import type { GlowSite } from '../GroundGlow/glowSites'
 import { dayNightGlow } from '../nightGlow'
 import {
@@ -56,7 +56,7 @@ export function findMainIsland(model: THREE.Object3D): MainIsland | null {
       color,
     },
     shore: {
-      center: model.worldToLocal(island.getWorldPosition(new THREE.Vector3())),
+      center: positionIn(model, island),
       radius: LUMINA_MAIN_SHORE_RADIUS,
       color,
     },
