@@ -3,7 +3,7 @@ import * as THREE from 'three'
 
 export type WeatherType = 'sunny' | 'cloudy' | 'rainy' | 'windy' | 'moonlit'
 
-interface WeatherState {
+export interface WeatherState {
   type: WeatherType
   lightMult: number
   moonMult: number

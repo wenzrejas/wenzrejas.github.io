@@ -1,1 +1,2 @@
-export const MAX_DT = 0.05
+export const MAX_FRAME_SECONDS = 0.05
+export const FALLBACK_FRAME_SECONDS = 0.016

@@ -1,0 +1,149 @@
+@use '@/styles/glass';
+
+$ring-ink: rgba(255, 255, 255, 0.7);
+$chart-inset: 0.45rem;
+$tick-length: 0.7rem;
+$grid-ink: rgba(255, 255, 255, 0.04);
+$grid-cell: 10%;
+
+.minimap {
+  position: fixed;
+  left: 1.5rem;
+  bottom: 1.5rem;
+  width: 12rem;
+  height: 12rem;
+  z-index: 80;
+  pointer-events: none;
+  border: 1px solid $ring-ink;
+  border-radius: 50%;
+
+  &__chart {
+    position: absolute;
+    inset: $chart-inset;
+    overflow: hidden;
+    border-radius: 50%;
+    background-image:
+      linear-gradient($grid-ink 1px, transparent 1px),
+      linear-gradient(90deg, $grid-ink 1px, transparent 1px),
+      radial-gradient(circle closest-side, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.45));
+    background-size:
+      $grid-cell $grid-cell,
+      $grid-cell $grid-cell,
+      100% 100%;
+    @include glass.glass-backdrop;
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    &::before {
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+    }
+
+    &::after {
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 1px;
+    }
+  }
+
+  &__islands {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    filter: drop-shadow(0 0 3px rgba(120, 220, 255, 0.7));
+  }
+
+  &__land {
+    fill: rgba(226, 206, 150, 0.35);
+    stroke: rgba(255, 255, 255, 0.9);
+    stroke-width: 1px;
+    vector-effect: non-scaling-stroke;
+  }
+
+  &__whirlpool {
+    fill: none;
+    stroke: rgba(210, 245, 255, 0.95);
+    stroke-width: 1.2px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+  }
+
+  &__ship {
+    position: absolute;
+    width: 0.8rem;
+    height: 0.95rem;
+    translate: -50% -50%;
+    filter: drop-shadow(0 0 3px rgba(160, 225, 255, 0.9));
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: #ffffff;
+      clip-path: polygon(50% 0, 100% 100%, 50% 74%, 0 100%);
+    }
+  }
+
+  &__tick {
+    position: absolute;
+    background: $ring-ink;
+
+    &--east,
+    &--west {
+      top: 50%;
+      width: $tick-length;
+      height: 1px;
+      translate: 0 -50%;
+    }
+
+    &--east {
+      right: calc($tick-length / -2);
+    }
+
+    &--west {
+      left: calc($tick-length / -2);
+    }
+
+    &--south {
+      bottom: calc($tick-length / -2);
+      left: 50%;
+      width: 1px;
+      height: $tick-length;
+      translate: -50% 0;
+    }
+  }
+
+  &__needle {
+    position: absolute;
+    top: -0.7rem;
+    left: 50%;
+    width: 0.5rem;
+    height: 1.1rem;
+    translate: -50% 0;
+    background: #ffffff;
+    clip-path: polygon(50% 0, 100% 30%, 100% 100%, 0 100%, 0 30%);
+  }
+
+  &__north {
+    position: absolute;
+    top: 0.75rem;
+    left: 50%;
+    translate: -50% 0;
+    font-family: var(--font-hud);
+    font-size: 0.7rem;
+    font-weight: 600;
+    line-height: 1;
+    color: #ffffff;
+  }
+}

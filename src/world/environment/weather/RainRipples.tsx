@@ -1,0 +1,143 @@
+import { useMemo, useRef, useEffect } from 'react'
+import { useFrame } from '@react-three/fiber'
+import * as THREE from 'three'
+import { useWeatherStore } from '@/store/weatherStore'
+import { useCycleStore } from '@/store/cycleStore'
+import { useWhirlpoolStore } from '@/store/whirlpoolStore'
+import { floatDefines } from '@/utils/glsl'
+import { MAX_FRAME_SECONDS } from '@/utils/time'
+import { whirlpoolFunnelUniforms } from '@/world/islands/timewell-depth/whirlpoolFunnel'
+import { algaeAt, queueRainHit } from '@/world/wildlife/algae/algaeField'
+import RIPPLE_VERT from './shaders/rainRipple.vert.glsl'
+import RIPPLE_FRAG from './shaders/rainRipple.frag.glsl'
+
+const MAX_RIPPLES = 250
+const RIPPLE_LIFETIME = 1.8 // seconds per ring
+const SPAWN_RATE = 80 // ripples/second at full rain intensity
+const RIPPLE_SEGMENTS = 4
+const WHIRLPOOL_EYE_SHARE = 0.05
+const WHIRLPOOL_SWALLOW_SHARE = 0.2
+
+export default function RainRipples({ shipRef }: { shipRef: React.RefObject<THREE.Group | null> }) {
+  const meshRef = useRef<THREE.Mesh>(null)
+  const progress = useRef(new Float32Array(MAX_RIPPLES).fill(1))
+  const spawnAcc = useRef(0)
+  const nextSlot = useRef(0)
+  const activeCount = useRef(0) // ripples with progress < 1
+
+  const { geo, mat } = useMemo(() => {
+    const quad = new THREE.PlaneGeometry(2, 2, RIPPLE_SEGMENTS, RIPPLE_SEGMENTS).rotateX(
+      -Math.PI / 2
+    )
+
+    const g = new THREE.InstancedBufferGeometry()
+    g.setAttribute('position', quad.getAttribute('position'))
+    g.setIndex(quad.getIndex())
+    g.instanceCount = MAX_RIPPLES
+    g.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 1e6)
+
+    const aProgress = new THREE.InstancedBufferAttribute(new Float32Array(MAX_RIPPLES).fill(1), 1)
+    const aCenter = new THREE.InstancedBufferAttribute(new Float32Array(MAX_RIPPLES * 2), 2)
+    g.setAttribute('aProgress', aProgress)
+    g.setAttribute('aCenter', aCenter)
+
+    const m = new THREE.ShaderMaterial({
+      vertexShader: RIPPLE_VERT,
+      fragmentShader: RIPPLE_FRAG,
+      defines: floatDefines({ RIPPLE_LIFETIME, WHIRLPOOL_EYE_SHARE, WHIRLPOOL_SWALLOW_SHARE }),
+      transparent: true,
+      depthWrite: false,
+      side: THREE.DoubleSide,
+      uniforms: {
+        uIntensity: { value: 0 },
+        uColor: { value: useCycleStore.getState().foamColor },
+        ...whirlpoolFunnelUniforms,
+        uWhirlpoolDrain: { value: 0 },
+      },
+    })
+
+    return { geo: g, mat: m }
+  }, [])
+
+  useEffect(
+    () => () => {
+      geo.dispose()
+      mat.dispose()
+    },
+    [geo, mat]
+  )
+
+  useFrame(({ camera }, delta) => {
+    const mesh = meshRef.current
+    if (!mesh) return
+
+    const intensity = useWeatherStore.getState().rainIntensity
+    const { uniforms } = mesh.material as THREE.ShaderMaterial
+    uniforms.uIntensity.value = intensity
+
+    const whirlpool = useWhirlpoolStore.getState()
+    uniforms.uWhirlpoolDrain.value = whirlpool.active ? whirlpool.drainRate : 0
+
+    mesh.visible = intensity > 0.01 || activeCount.current > 0
+    // Skip all work when no rain and all ripples have already faded out
+    if (!mesh.visible) return
+
+    const dt = Math.min(delta, MAX_FRAME_SECONDS)
+    const aProgress = mesh.geometry.attributes.aProgress as THREE.InstancedBufferAttribute
+    const aCenter = mesh.geometry.attributes.aCenter as THREE.InstancedBufferAttribute
+    const prog = progress.current
+
+    let progDirty = false
+
+    // Advance existing ripples
+    for (let i = 0; i < MAX_RIPPLES; i++) {
+      if (prog[i] < 1) {
+        prog[i] = Math.min(1, prog[i] + dt / RIPPLE_LIFETIME)
+        aProgress.array[i] = prog[i]
+        progDirty = true
+        if (prog[i] >= 1) activeCount.current = Math.max(0, activeCount.current - 1)
+      }
+    }
+
+    let centerDirty = false
+
+    if (intensity > 0.01) {
+      spawnAcc.current += SPAWN_RATE * intensity * dt
+      const ship = shipRef.current
+      const cx = ship?.position.x ?? 0
+      const cz = ship?.position.z ?? 0
+
+      // Spawn in camera-aligned XZ so ripples cover the full visible ocean.
+      // Camera right XZ: (0.7071, -0.7071), camera depth XZ: (-0.7071, -0.7071)
+      const cam = camera as THREE.OrthographicCamera
+      const hw = (cam.right / cam.zoom) * 1.15 // slight overflow margin
+
+      while (spawnAcc.current >= 1) {
+        spawnAcc.current -= 1
+        const slot = nextSlot.current % MAX_RIPPLES
+        nextSlot.current++
+
+        if (prog[slot] >= 1) activeCount.current++
+        prog[slot] = 0
+        aProgress.array[slot] = 0
+        progDirty = true
+
+        const r = (Math.random() - 0.5) * hw * 2.0
+        const d = (Math.random() - 0.5) * hw * 2.0
+
+        const rx = cx + r * 0.7071 + d * -0.7071
+        const rz = cz + r * -0.7071 + d * -0.7071
+
+        aCenter.array[slot * 2] = rx
+        aCenter.array[slot * 2 + 1] = rz
+        centerDirty = true
+        if (Math.random() < algaeAt(rx, rz)) queueRainHit(rx, rz)
+      }
+    }
+
+    if (progDirty) aProgress.needsUpdate = true
+    if (centerDirty) aCenter.needsUpdate = true
+  })
+
+  return <mesh ref={meshRef} geometry={geo} material={mat} frustumCulled={false} renderOrder={7} />
+}

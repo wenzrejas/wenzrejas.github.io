@@ -1,0 +1,146 @@
+@use '@/styles/glass';
+
+$panel-height: 3.5rem;
+$dial-width: 2.75rem;
+$separator-width: 2px;
+$ring-ink: rgba(255, 255, 255, 0.3);
+$muted-ink: rgba(228, 232, 240, 0.65);
+
+.weather-panel {
+  position: fixed;
+  top: 1.5rem;
+  left: 1.5rem;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  width: 15rem;
+  height: $panel-height;
+  overflow: hidden;
+  border-radius: 999px;
+  pointer-events: none;
+  @include glass.glass-panel;
+
+  &__icon {
+    flex: none;
+    width: 1.8rem;
+    height: 1.8rem;
+    margin: 0 0.6rem 0 1rem;
+  }
+
+  &__readout {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 0;
+    margin-right: 1rem;
+  }
+
+  &__name {
+    font-family: var(--font-hud);
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1;
+    color: #ffffff;
+  }
+
+  &__wind {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-family: var(--font-hud);
+    font-size: 0.6rem;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    color: $muted-ink;
+  }
+
+  &__wind-icon {
+    flex: none;
+    width: 0.85rem;
+    height: 0.85rem;
+  }
+
+  &__dial {
+    position: relative;
+    flex: none;
+    align-self: stretch;
+    width: $dial-width;
+    border-left: $separator-width solid $ring-ink;
+  }
+
+  &__sky {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: 0 999px 999px 0;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.3);
+    }
+  }
+
+  &__wheel {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: $dial-width * 2;
+    aspect-ratio: 1;
+    translate: -50% -50%;
+    rotate: var(--wheel-turn, 0deg);
+    border-radius: 50%;
+  }
+
+  &__star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    translate: -50% -50%;
+    border-radius: 50%;
+    background: #ffffff;
+  }
+
+  &__sun {
+    position: absolute;
+    width: 0.65rem;
+    height: 0.65rem;
+    translate: -50% -50%;
+    border-radius: 50%;
+    background: #ffae1a;
+    outline: 2px dotted #ffae1a;
+    outline-offset: 2px;
+  }
+
+  &__moon {
+    position: absolute;
+    width: 0.8rem;
+    height: 0.8rem;
+    translate: -50% -50%;
+    rotate: calc(-1 * var(--wheel-turn, 0deg));
+    border-radius: 50%;
+    box-shadow: inset 0.24rem -0.1rem 0 0 #ffffff;
+  }
+
+  &__pointer {
+    position: absolute;
+    top: 50%;
+    left: calc($separator-width / -2);
+    width: 0.6rem;
+    height: 0.7rem;
+    translate: -50% -50%;
+    filter: drop-shadow(0 0 1px rgba(10, 40, 90, 0.8));
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: #ffffff;
+      clip-path: polygon(0 0, 100% 50%, 0 100%);
+    }
+  }
+}

@@ -1,0 +1,104 @@
+$ink: rgba(236, 240, 244, 0.9);
+$line-weight: 1px;
+$tick-width: 2px;
+$end-dot-size: 2px;
+$line-top: 0.5rem;
+$line-end-gap: 0.3rem;
+$tick-height: 0.4rem;
+$label-gap: 0.75rem;
+$pointer-gap: 1.4rem;
+
+.compass {
+  position: fixed;
+  top: 2.5rem;
+  left: 50%;
+  width: min(26rem, 80vw);
+  height: 2rem;
+  translate: -50% 0;
+  z-index: 80;
+  pointer-events: none;
+  filter: drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.45));
+
+  &__window {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000000 12%, #000000 88%, transparent);
+  }
+
+  &__tape {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    will-change: transform;
+  }
+
+  &__mark {
+    position: absolute;
+    top: 0;
+    padding-top: calc($line-top + $line-weight + $label-gap);
+    translate: -50% 0;
+    font-family: var(--font-hud);
+    font-size: 0.6rem;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    color: $ink;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: calc($line-top - $tick-height);
+      left: 50%;
+      width: $tick-width;
+      height: $tick-height;
+      translate: -50% 0;
+      background: $ink;
+    }
+  }
+
+  &__line {
+    position: absolute;
+    top: $line-top;
+    left: $line-end-gap;
+    right: $line-end-gap;
+    height: $line-weight;
+    background: linear-gradient(
+      90deg,
+      $ink calc(50% - $pointer-gap / 2),
+      transparent 0 calc(50% + $pointer-gap / 2),
+      $ink 0
+    );
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: $end-dot-size;
+      height: $end-dot-size;
+      translate: 0 -50%;
+      border-radius: 50%;
+      background: $ink;
+    }
+
+    &::before {
+      left: -$line-end-gap;
+    }
+
+    &::after {
+      right: -$line-end-gap;
+    }
+  }
+
+  &__pointer {
+    position: absolute;
+    top: calc($line-top + $line-weight / 2);
+    left: 50%;
+    width: 0.55rem;
+    height: 0.9rem;
+    translate: -50% -50%;
+    background: #ffffff;
+    clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  }
+}
