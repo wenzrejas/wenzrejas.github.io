@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import * as THREE from 'three'
-import type { IslandKey } from '../components/World/Islands/constants'
+import type { IslandKey } from '../world/islands/shared/constants'
 
 interface RevealState {
   blend: number

@@ -6,6 +6,7 @@ import {
   MUSIC_DUCK,
   MUSIC_DUCK_ATTACK,
   MUSIC_DUCK_RELEASE,
+  MUTE_SMOOTHING,
   SILENCE_THRESHOLD,
 } from './constants'
 import { SOUNDS, type Channel, type SoundDefinition, type SoundName } from './sounds'
@@ -104,12 +105,14 @@ export class SoundHandle {
 
 class AudioManager {
   private context: AudioContext | null = null
+  private master: GainNode | null = null
   private channels: Record<Channel, GainNode> | null = null
   private buffers = new Map<SoundName, Promise<AudioBuffer>>()
   private loopRanges = new WeakMap<AudioBuffer, LoopRange>()
   private pending: (() => void)[] = []
   private unlocked = false
   private ducks = 0
+  private silences = 0
   private music: { name: SoundName; handle: SoundHandle } | null = null
 
   install(): void {
@@ -118,6 +121,7 @@ class AudioManager {
     const master = this.context.createGain()
     master.gain.value = MASTER_VOLUME
     master.connect(this.context.destination)
+    this.master = master
 
     const createChannel = (channel: Channel) => {
       const gain = this.context!.createGain()
@@ -168,6 +172,12 @@ class AudioManager {
     return handle
   }
 
+  preload(name: SoundName): void {
+    const definition: SoundDefinition = SOUNDS[name]
+    if (!this.context || definition.stream) return
+    this.load(name).catch(() => this.buffers.delete(name))
+  }
+
   playMusic(name: SoundName, crossfade = MUSIC_CROSSFADE): void {
     if (this.music?.name === name && this.music.handle.active) return
     this.music?.handle.stop(crossfade)
@@ -181,23 +191,37 @@ class AudioManager {
 
   duck(): () => void {
     this.ducks++
-    this.applyDuck()
+    this.applyMusicLevel(MUSIC_DUCK_ATTACK)
     let released = false
     return () => {
       if (released) return
       released = true
       this.ducks--
-      this.applyDuck()
+      this.applyMusicLevel(MUSIC_DUCK_RELEASE)
     }
   }
 
-  private applyDuck(): void {
-    const ducked = this.ducks > 0
-    this.setChannelVolume(
-      'music',
-      CHANNEL_VOLUMES.music * (ducked ? MUSIC_DUCK : 1),
-      ducked ? MUSIC_DUCK_ATTACK : MUSIC_DUCK_RELEASE
-    )
+  silenceMusic(fadeSeconds: number): (restoreSeconds: number) => void {
+    this.silences++
+    this.applyMusicLevel(fadeSeconds)
+    let released = false
+    return (restoreSeconds) => {
+      if (released) return
+      released = true
+      this.silences--
+      this.applyMusicLevel(restoreSeconds)
+    }
+  }
+
+  private applyMusicLevel(seconds: number): void {
+    const level = this.silences > 0 ? 0 : this.ducks > 0 ? MUSIC_DUCK : 1
+    this.setChannelVolume('music', CHANNEL_VOLUMES.music * level, seconds)
+  }
+
+  setMuted(isMuted: boolean): void {
+    if (!this.context || !this.master) return
+    const volume = isMuted ? 0 : MASTER_VOLUME
+    this.master.gain.setTargetAtTime(volume, this.context.currentTime, MUTE_SMOOTHING)
   }
 
   setChannelVolume(channel: Channel, volume: number, seconds = DEFAULT_FADE): void {

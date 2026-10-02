@@ -1,0 +1,10 @@
+.hud {
+  transition:
+    opacity 0.25s ease,
+    visibility 0.25s;
+
+  &--hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+}

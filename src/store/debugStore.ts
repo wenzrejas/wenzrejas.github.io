@@ -13,8 +13,8 @@ import type {
   RevealControls,
   WildlifeControls,
   MusicControls,
-} from '../components/Debug/types'
-import { OCEAN_DEFAULTS } from '../components/World/Ocean/constants'
+} from '../app/debug/types'
+import { OCEAN_DEFAULTS } from '../world/environment/ocean/constants'
 import {
   MODEL_TARGET_SIZE,
   BASE_Y,
@@ -37,14 +37,14 @@ import {
   RIPPLE_SPAWN_DIST,
   RIPPLE_HALF_SPREAD,
   RIPPLE_DEPTH,
-} from '../components/World/Ship/constants'
+} from '../world/ship/constants'
 import {
   BOUNDARY_RADIUS,
   BOUNDARY_FALLOFF,
   BOUNDARY_FOG_COLOR,
-} from '../components/World/Boundary/constants'
-import type { IslandKey } from '../components/World/Islands/constants'
-import { ISLAND_MODEL_DEFAULTS } from '../components/World/Islands/islandSpecs'
+} from '../world/environment/boundary/constants'
+import type { IslandKey } from '../world/islands/shared/constants'
+import { ISLAND_MODEL_DEFAULTS } from '../world/islands/shared/islandSpecs'
 import {
   WIND_ENABLED,
   WIND_ANGLE,
@@ -56,27 +56,27 @@ import {
   LINE_WIDTH,
   SPAWN_INTERVAL,
   WIND_OPACITY,
-} from '../components/World/WindLines/constants'
+} from '../world/environment/wind-lines/constants'
 import {
   SPAWN_DELAY_MAX as BIRD_DELAY_MAX,
   SPAWN_DELAY_MIN as BIRD_DELAY_MIN,
-} from '../components/World/Birds/constants'
+} from '../world/wildlife/birds/constants'
 import {
   SPAWN_DELAY_MAX as FISH_DELAY_MAX,
   SPAWN_DELAY_MIN as FISH_DELAY_MIN,
-} from '../components/World/Fish/constants'
+} from '../world/wildlife/fish/constants'
 import {
   CHECK_INTERVAL as DOLPHIN_INTERVAL,
   SPAWN_CHANCE as DOLPHIN_CHANCE,
-} from '../components/World/Dolphins/constants'
+} from '../world/wildlife/dolphins/constants'
 import {
   CHECK_INTERVAL as TURTLE_INTERVAL,
   SPAWN_CHANCE as TURTLE_CHANCE,
-} from '../components/World/Turtles/constants'
+} from '../world/wildlife/turtles/constants'
 import {
   CHECK_INTERVAL as WHALE_INTERVAL,
   SPAWN_CHANCE as WHALE_CHANCE,
-} from '../components/World/Whale/constants'
+} from '../world/wildlife/whale/constants'
 
 export interface DebugState {
   ocean: OceanControls

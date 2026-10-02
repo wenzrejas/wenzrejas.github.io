@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { CoastCollision } from '../components/World/Shore/coastCollision'
+import type { CoastCollision } from '../world/shore/coastCollision'
 
 interface CoastState {
   collisions: CoastCollision[]

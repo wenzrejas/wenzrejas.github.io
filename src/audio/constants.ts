@@ -1,8 +1,8 @@
-import { PHASES } from '../components/World/DayNightCycle/dayNightKeyframes'
+import { PHASES } from '../world/environment/day-night-cycle/dayNightKeyframes'
 import type { MusicTrack } from './sounds'
 
 // ── Mix ───────────────────────────────────────────────────────────────────────
-export const MASTER_VOLUME = 1
+export const MASTER_VOLUME = 2
 export const CHANNEL_VOLUMES = {
   music: 0.6,
   ambience: 1,
@@ -26,6 +26,7 @@ export const MUSIC_DUCK = 0.45
 export const MUSIC_DUCK_ATTACK = 0.2
 export const MUSIC_DUCK_RELEASE = 1.5
 export const AMBIENCE_FADE_IN = 3
+export const MUTE_SMOOTHING = 0.08
 export const SILENCE_THRESHOLD = 0.002
 
 // ── Weather ───────────────────────────────────────────────────────────────────

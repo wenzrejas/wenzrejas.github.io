@@ -1,4 +1,4 @@
-import type { IslandKey } from '../components/World/Islands/constants'
+import type { IslandKey } from '../world/islands/shared/constants'
 
 export type Channel = 'music' | 'ambience' | 'sfx'
 
@@ -41,6 +41,18 @@ export const SOUNDS = {
     fallback: '/audio/sfx/thunder.mp3',
     channel: 'sfx',
     volume: 0.25,
+  },
+  skyBeamCharge: {
+    url: '/audio/sfx/skybeam-charge.webm',
+    fallback: '/audio/sfx/skybeam-charge.mp3',
+    channel: 'sfx',
+    volume: 0.08,
+  },
+  skyBeamShoot: {
+    url: '/audio/sfx/skybeam-shoot.webm',
+    fallback: '/audio/sfx/skybeam-shoot.mp3',
+    channel: 'sfx',
+    volume: 0.12,
   },
   pacificTune: {
     url: '/audio/bgm/pacific-tune.webm',
@@ -88,7 +100,7 @@ export const SOUNDS = {
     url: '/audio/bgm/buildshore.webm',
     fallback: '/audio/bgm/buildshore.mp3',
     channel: 'music',
-    volume: 0.13,
+    volume: 0.2,
     stream: true,
   },
   timewell: {

@@ -1,5 +1,5 @@
-import type { IslandKey } from '../components/World/Islands/constants'
-import { ISLAND_ZONES, shoreGap } from '../components/World/Islands/islandZones'
+import type { IslandKey } from '../world/islands/shared/constants'
+import { ISLAND_ZONES, shoreGap } from '../world/islands/shared/islandZones'
 import { useCycleStore } from '../store/cycleStore'
 import { useDebugStore } from '../store/debugStore'
 import { useRevealStore } from '../store/revealStore'

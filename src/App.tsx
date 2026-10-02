@@ -1,18 +1,26 @@
-import { Leva } from 'leva'
-import Experience from './components/Experience/Experience'
-import IslandTitle from './components/World/Islands/IslandTitle'
-import { DebugSync } from './components/Debug/DebugControls'
-import { IS_DEBUG } from './components/Experience/constants'
-import Soundscape from './components/Audio/Soundscape'
+import { lazy, Suspense } from 'react'
+import Experience from './app/experience/Experience'
+import IslandTitle from './world/islands/shared/IslandTitle'
+import { IS_DEBUG } from './app/experience/constants'
+import Soundscape from './audio/Soundscape'
+import Hud from './hud/Hud'
+import HudMenu from './hud/menu/HudMenu'
+
+const DebugTools = lazy(() => import('./app/debug/DebugTools'))
 
 export default function App() {
   return (
     <>
-      <DebugSync />
+      {IS_DEBUG && (
+        <Suspense fallback={null}>
+          <DebugTools />
+        </Suspense>
+      )}
       <Soundscape />
-      <Leva hidden={!IS_DEBUG} collapsed />
       <Experience />
       <IslandTitle />
+      <Hud />
+      <HudMenu />
     </>
   )
 }
