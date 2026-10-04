@@ -5,10 +5,19 @@ import { createMusicDirector } from './musicDirector'
 import { createWeatherSounds } from './weatherSounds'
 import { useDebugStore } from '../store/debugStore'
 import { useHudStore } from '../store/hudStore'
+import { hasPendingTasks, useLoadingStore } from '../store/loadingStore'
 
 export default function Soundscape() {
+  const isLoading = useLoadingStore(hasPendingTasks)
+
   useEffect(() => {
     audio.install()
+    audio.setMuted(true)
+  }, [])
+
+  useEffect(() => {
+    if (isLoading) return
+    audio.setMuted(!useHudStore.getState().isSoundOn)
     const waves = audio.play('oceanWaves', { loop: true, fadeIn: AMBIENCE_FADE_IN })
     const weatherSounds = createWeatherSounds()
     const music = createMusicDirector()
@@ -35,7 +44,7 @@ export default function Soundscape() {
       waves.stop(DEFAULT_FADE)
       audio.stopMusic(DEFAULT_FADE)
     }
-  }, [])
+  }, [isLoading])
 
   return null
 }

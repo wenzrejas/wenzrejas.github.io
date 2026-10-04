@@ -1,0 +1,20 @@
+$backdrop: #1a7fa8;
+
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: $backdrop;
+  color: #ffffff;
+  font-family: var(--font-hud);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  transition: opacity 0.4s ease;
+
+  &--done {
+    opacity: 0;
+    pointer-events: none;
+  }
+}

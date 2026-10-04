@@ -25,11 +25,8 @@ import {
   buildChargeMoteGeometry,
   buildOrbGeometry,
   buildRisingMoteGeometry,
-  createArcMaterial,
-  createBeamMaterial,
-  createChargeMoteMaterial,
-  createOrbMaterial,
-  createRisingMoteMaterial,
+  createSkyBeamMaterials,
+  type SkyBeamMaterials,
 } from './skyBeamModel'
 import { strikeArcs } from './sparkArcs'
 
@@ -37,12 +34,33 @@ interface SkyBeamProps extends SkyBeamAnchor {
   islandScale: number
 }
 
-export default function SkyBeam(props: SkyBeamProps) {
-  const isActive = useSkyBeamStore((s) => s.isActive)
-  return isActive ? <ActiveSkyBeam {...props} /> : null
+interface SkyBeamPartsProps extends SkyBeamProps {
+  materials: SkyBeamMaterials
+  isActive: boolean
 }
 
-function ActiveSkyBeam({ anchor, origin, islandScale }: SkyBeamProps) {
+export default function SkyBeam(props: SkyBeamProps) {
+  const isActive = useSkyBeamStore((s) => s.isActive)
+  const materials = useMemo(() => createSkyBeamMaterials(), [])
+
+  useEffect(
+    () => () => {
+      for (const material of Object.values(materials)) material.dispose()
+    },
+    [materials]
+  )
+
+  return (
+    <SkyBeamParts
+      key={isActive ? 'active' : 'idle'}
+      {...props}
+      materials={materials}
+      isActive={isActive}
+    />
+  )
+}
+
+function SkyBeamParts({ anchor, origin, islandScale, materials, isActive }: SkyBeamPartsProps) {
   const run = useRef(createSkyBeamRun())
   const arcsRef = useRef<THREE.Mesh>(null)
   const chargeMotesRef = useRef<THREE.Points>(null)
@@ -55,47 +73,27 @@ function ActiveSkyBeam({ anchor, origin, islandScale }: SkyBeamProps) {
   const risingMoteGeometry = useMemo(() => buildRisingMoteGeometry(islandScale), [islandScale])
   const orbGeometry = useMemo(() => buildOrbGeometry(), [])
   const beamGeometry = useMemo(() => buildBeamGeometry(), [])
-  const arcMaterial = useMemo(() => createArcMaterial(), [])
-  const chargeMoteMaterial = useMemo(() => createChargeMoteMaterial(), [])
-  const risingMoteMaterial = useMemo(() => createRisingMoteMaterial(), [])
-  const orbMaterial = useMemo(() => createOrbMaterial(), [])
-  const beamMaterial = useMemo(() => createBeamMaterial(), [])
 
   useEffect(() => {
+    if (!isActive) return
     const current = run.current
     beginSkyBeam(current, anchor)
     return () => releaseWorld(current)
-  }, [anchor])
+  }, [isActive, anchor])
 
   useEffect(
     () => () => {
-      for (const resource of [
+      for (const geometry of [
         arcGeometry,
         chargeMoteGeometry,
         risingMoteGeometry,
         orbGeometry,
         beamGeometry,
-        arcMaterial,
-        chargeMoteMaterial,
-        risingMoteMaterial,
-        orbMaterial,
-        beamMaterial,
       ]) {
-        resource.dispose()
+        geometry.dispose()
       }
     },
-    [
-      arcGeometry,
-      chargeMoteGeometry,
-      risingMoteGeometry,
-      orbGeometry,
-      beamGeometry,
-      arcMaterial,
-      chargeMoteMaterial,
-      risingMoteMaterial,
-      orbMaterial,
-      beamMaterial,
-    ]
+    [arcGeometry, chargeMoteGeometry, risingMoteGeometry, orbGeometry, beamGeometry]
   )
 
   useFrame(({ camera, gl }, delta) => {
@@ -104,7 +102,7 @@ function ActiveSkyBeam({ anchor, origin, islandScale }: SkyBeamProps) {
     const risingMotes = risingMotesRef.current
     const orb = orbRef.current
     const beam = beamRef.current
-    if (!arcs || !chargeMotes || !risingMotes || !orb || !beam) return
+    if (!isActive || !arcs || !chargeMotes || !risingMotes || !orb || !beam) return
 
     const isStrikeDue = advanceSkyBeam(run.current, delta)
     const { elapsed, stage } = run.current
@@ -152,35 +150,35 @@ function ActiveSkyBeam({ anchor, origin, islandScale }: SkyBeamProps) {
       <mesh
         ref={beamRef}
         geometry={beamGeometry}
-        material={beamMaterial}
+        material={materials.beam}
         visible={false}
         renderOrder={5}
       />
       <mesh
         ref={arcsRef}
         geometry={arcGeometry}
-        material={arcMaterial}
+        material={materials.arcs}
         visible={false}
         renderOrder={5}
       />
       <points
         ref={chargeMotesRef}
         geometry={chargeMoteGeometry}
-        material={chargeMoteMaterial}
+        material={materials.chargeMotes}
         visible={false}
         renderOrder={5}
       />
       <points
         ref={risingMotesRef}
         geometry={risingMoteGeometry}
-        material={risingMoteMaterial}
+        material={materials.risingMotes}
         visible={false}
         renderOrder={5}
       />
       <mesh
         ref={orbRef}
         geometry={orbGeometry}
-        material={orbMaterial}
+        material={materials.orb}
         visible={false}
         renderOrder={6}
       />

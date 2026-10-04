@@ -1,0 +1,238 @@
+@use '@/styles/parchment' as *;
+
+$ornament: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M5 1 L9 5 L5 9 L1 5 Z' fill='%23ead4ab' stroke='%235a4535' stroke-width='1'/%3E%3C/svg%3E";
+$close-size: 2.75rem;
+$wash-size: 2rem;
+$wash-reach: 7.5rem;
+$wash-ramp: 4;
+
+$viewport-top-share: 0.0615;
+$viewport-right-share: 0.0294;
+$viewport-bottom-share: 0.0375;
+$viewport-left-share: 0.0316;
+$content-right-share: 0.0166;
+$content-left-share: 0.0264;
+$art-reach-share: 0.014;
+$title-share: 0.06;
+$compass-size-share: 0.28;
+$compass-center-left-share: 0.011;
+$compass-center-top-share: 0.036;
+$compass-opacity: 0.3;
+$close-center-top-share: 0.0638;
+$close-center-right-share: 0.0695;
+
+@each $name in hidden-above, hidden-below, top-wash, bottom-wash {
+  @property --#{$name} {
+    syntax: '<length>';
+    inherits: false;
+    initial-value: 0px;
+  }
+}
+
+.island-panel {
+  --sheet-width: min(800px, calc(100vw - 3rem));
+
+  position: fixed;
+  top: 6.25rem;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  z-index: 85;
+  width: var(--sheet-width);
+  pointer-events: none;
+
+  &__sheet {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    max-height: 100%;
+    color: $ink;
+    pointer-events: auto;
+    transform-origin: 50% 0;
+    will-change: transform, opacity;
+  }
+
+  &__viewport {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    margin: calc(var(--sheet-width) * $viewport-top-share)
+      calc(var(--sheet-width) * $viewport-right-share)
+      calc(var(--sheet-width) * $viewport-bottom-share)
+      calc(var(--sheet-width) * $viewport-left-share);
+  }
+
+  &__content {
+    --top-wash: min(var(--hidden-above, 0px) * #{$wash-ramp}, #{$wash-reach});
+    --bottom-wash: min(var(--hidden-below, 0px) * #{$wash-ramp}, #{$wash-reach});
+
+    position: relative;
+    min-height: 0;
+    overflow-y: auto;
+    padding: $wash-size calc(var(--sheet-width) * $content-right-share) $wash-size
+      calc(var(--sheet-width) * $content-left-share);
+    scrollbar-width: none;
+    mask-image:
+      var(--mist-top), var(--mist-bottom),
+      linear-gradient(
+        transparent var(--top-wash),
+        #000000 var(--top-wash),
+        #000000 calc(100% - var(--bottom-wash)),
+        transparent calc(100% - var(--bottom-wash))
+      );
+    mask-size:
+      100% $wash-reach,
+      100% $wash-reach,
+      100% 100%;
+    mask-position:
+      0 calc(var(--top-wash) - #{$wash-reach}),
+      0 calc(100% + #{$wash-reach} - var(--bottom-wash)),
+      0 0;
+    mask-repeat: no-repeat;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  &__close {
+    position: absolute;
+    top: calc(var(--sheet-width) * $close-center-top-share - $close-size / 2);
+    right: calc(var(--sheet-width) * $close-center-right-share - $close-size / 2);
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: $close-size;
+    height: $close-size;
+    padding: 0;
+    border: 2px solid $seal-rim;
+    border-radius: 50%;
+    background: $seal;
+    color: $seal-ink;
+    font-size: 1.45rem;
+    cursor: pointer;
+    box-shadow:
+      inset 0 0 0 2px rgba($seal-ink, 0.12),
+      0 2px 4px rgba(40, 24, 10, 0.35);
+    transition:
+      background-color 0.15s ease,
+      transform 0.15s ease;
+
+    &:hover {
+      background: $seal-hover;
+      transform: scale(1.05);
+    }
+
+    &:focus-visible {
+      outline: 2px solid $ink;
+      outline-offset: 3px;
+    }
+  }
+
+  &__compass {
+    position: absolute;
+    top: calc(var(--sheet-width) * ($compass-center-top-share - $compass-size-share / 2));
+    left: calc(var(--sheet-width) * ($compass-center-left-share - $compass-size-share / 2));
+    z-index: -1;
+    width: calc(var(--sheet-width) * $compass-size-share);
+    height: calc(var(--sheet-width) * $compass-size-share);
+    opacity: $compass-opacity;
+    pointer-events: none;
+  }
+
+  &__top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: 1.25rem;
+    align-items: start;
+  }
+
+  &__titles {
+    display: inline-flex;
+    flex-direction: column;
+  }
+
+  &__title {
+    @include handwritten;
+    font-size: clamp(2rem, calc(var(--sheet-width) * $title-share), 3rem);
+    font-weight: 700;
+    line-height: 1.15;
+    white-space: nowrap;
+    color: $ink;
+  }
+
+  &__underline {
+    display: block;
+    width: 104%;
+    height: 0.8rem;
+    margin: -0.1rem 0 0 -2%;
+    fill: $ink;
+  }
+
+  &__subtitle {
+    margin-top: 0.55rem;
+    font-family: var(--font-secondary);
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: $ink-soft;
+  }
+
+  &__lead {
+    max-width: 25rem;
+    margin-top: 1.4rem;
+    font-family: var(--font-secondary);
+    font-size: 1rem;
+    line-height: 1.5;
+    color: $ink;
+
+    @media (max-height: $short-screen) {
+      margin-top: 1rem;
+    }
+  }
+
+  &__section {
+    margin-top: 1.6rem;
+
+    @media (max-height: $short-screen) {
+      margin-top: 1.1rem;
+    }
+  }
+
+  &__heading {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    margin-bottom: 0.9rem;
+    font-family: var(--font-secondary);
+    font-size: 0.74rem;
+    font-weight: 600;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: $ink-soft;
+
+    &::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: $ink-faint;
+    }
+
+    &--ornate::after {
+      height: 9px;
+      background-color: transparent;
+      background-image: url($ornament), linear-gradient($ink-faint, $ink-faint);
+      background-position: center;
+      background-size:
+        9px 9px,
+        100% 1px;
+      background-repeat: no-repeat;
+    }
+  }
+
+  &__art {
+    margin: -0.4rem calc(var(--sheet-width) * -1 * $art-reach-share) 0 0;
+  }
+}

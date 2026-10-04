@@ -13,3 +13,5 @@ export const useRevealStore = create<RevealState>(() => ({
   target: new THREE.Vector3(),
   activeKey: null,
 }))
+
+export const isRevealPlaying = () => useRevealStore.getState().activeKey !== null

@@ -18,7 +18,7 @@ export interface PlayOptions {
   fadeIn?: number
 }
 
-interface LoopRange {
+interface AudibleRange {
   start: number
   end: number
 }
@@ -41,6 +41,16 @@ function playable(url: string): boolean {
 
 function preferredSource(definition: SoundDefinition): string {
   return definition.fallback && !playable(definition.url) ? definition.fallback : definition.url
+}
+
+function isStreamed(name: SoundName): boolean {
+  const definition: SoundDefinition = SOUNDS[name]
+  return definition.stream === true
+}
+
+async function download(url: string): Promise<void> {
+  const response = await fetch(url)
+  await response.arrayBuffer()
 }
 
 // ── Handle ────────────────────────────────────────────────────────────────────
@@ -108,7 +118,7 @@ class AudioManager {
   private master: GainNode | null = null
   private channels: Record<Channel, GainNode> | null = null
   private buffers = new Map<SoundName, Promise<AudioBuffer>>()
-  private loopRanges = new WeakMap<AudioBuffer, LoopRange>()
+  private audibleRanges = new WeakMap<AudioBuffer, AudibleRange>()
   private pending: (() => void)[] = []
   private unlocked = false
   private ducks = 0
@@ -172,10 +182,19 @@ class AudioManager {
     return handle
   }
 
-  preload(name: SoundName): void {
+  async preload(name: SoundName): Promise<void> {
     const definition: SoundDefinition = SOUNDS[name]
-    if (!this.context || definition.stream) return
-    this.load(name).catch(() => this.buffers.delete(name))
+    try {
+      if (definition.stream) await download(preferredSource(definition))
+      else if (this.context) await this.load(name)
+    } catch {
+      this.buffers.delete(name)
+    }
+  }
+
+  async preloadBuffers(): Promise<void> {
+    const names = (Object.keys(SOUNDS) as SoundName[]).filter((name) => !isStreamed(name))
+    await Promise.all(names.map((name) => this.preload(name)))
   }
 
   playMusic(name: SoundName, crossfade = MUSIC_CROSSFADE): void {
@@ -235,14 +254,14 @@ class AudioManager {
 
   private start(handle: SoundHandle, name: SoundName, buffer: AudioBuffer, options: PlayOptions) {
     if (!handle.active || !this.context || !this.channels) return
-    const definition = SOUNDS[name]
+    const definition: SoundDefinition = SOUNDS[name]
     const source = this.context.createBufferSource()
     source.buffer = buffer
     source.playbackRate.value = options.rate ?? 1
 
-    let offset = 0
+    let offset = definition.hasLeadIn ? this.audibleRange(buffer).start : 0
     if (options.loop) {
-      const range = this.loopRange(buffer)
+      const range = this.audibleRange(buffer)
       source.loop = true
       source.loopStart = range.start
       source.loopEnd = range.end
@@ -341,8 +360,8 @@ class AudioManager {
       .then((data) => this.context!.decodeAudioData(data))
   }
 
-  private loopRange(buffer: AudioBuffer): LoopRange {
-    const cached = this.loopRanges.get(buffer)
+  private audibleRange(buffer: AudioBuffer): AudibleRange {
+    const cached = this.audibleRanges.get(buffer)
     if (cached) return cached
 
     const samples = buffer.getChannelData(0)
@@ -352,7 +371,7 @@ class AudioManager {
     while (last > first && Math.abs(samples[last]) < SILENCE_THRESHOLD) last--
 
     const range = { start: first / buffer.sampleRate, end: (last + 1) / buffer.sampleRate }
-    this.loopRanges.set(buffer, range)
+    this.audibleRanges.set(buffer, range)
     return range
   }
 

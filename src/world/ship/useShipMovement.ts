@@ -9,6 +9,8 @@ import { ISLAND_KEYS, ISLAND_SPECS } from '../islands/shared/islandSpecs'
 import { createIslandTransform, islandTransform, toWorld } from '../islands/shared/islandTransform'
 import { isCinematicPlaying } from '@/store/cinematicStore'
 import { useDebugStore } from '@/store/debugStore'
+import { isLoading } from '@/store/loadingStore'
+import { isPanelOpen } from '@/store/panelStore'
 import { useWindStore } from '@/store/windStore'
 import { useWeatherStore } from '@/store/weatherStore'
 import { useRevealStore } from '@/store/revealStore'
@@ -46,7 +48,8 @@ export function useShipMovement(groupRef: RefObject<THREE.Group | null>) {
     const dt =
       isFinite(delta) && delta > 0 ? Math.min(delta, MAX_FRAME_SECONDS) : FALLBACK_FRAME_SECONDS
     const time = clock.getElapsedTime()
-    const keys = isCinematicPlaying() ? IDLE_KEYS : pressedKeys.current
+    const keys =
+      isLoading() || isCinematicPlaying() || isPanelOpen() ? IDLE_KEYS : pressedKeys.current
     const { moveSpeed, turnSpeed, tiltMax, tiltSpeed, baseY, bobAmp, bobSpeed, modelSize } =
       useDebugStore.getState().ship
     const wind = useWindStore.getState()

@@ -1,0 +1,36 @@
+$ink: #3a291d;
+$ink-soft: #5a4535;
+$ink-faint: rgba(90, 69, 53, 0.32);
+$error-ink: #a3361f;
+
+$seal: #3b2b21;
+$seal-hover: #4a3729;
+$seal-rim: #261a12;
+$seal-ink: #f3e4c6;
+
+$frame-fill-opacity: 0.4;
+$frame-hover-fill-opacity: 0.62;
+$frame-fill: rgba(255, 246, 228, $frame-fill-opacity);
+$frame-hover-fill: rgba(255, 246, 228, $frame-hover-fill-opacity);
+$frame-edge: rgba(140, 90, 48, 0.6);
+
+$frame-slice: 10;
+$frame-width: 8px;
+$frame-path: 'M9 3.5H39A5.5 5.5 0 0 0 44.5 9V39A5.5 5.5 0 0 0 39 44.5H9A5.5 5.5 0 0 0 3.5 39V9A5.5 5.5 0 0 0 9 3.5Z';
+
+$short-screen: 820px;
+$state-change: 0.18s ease;
+
+@function card-frame-image($fill-opacity, $fill: 'fff6e4', $edge: '8c5a30', $edge-opacity: 0.6) {
+  @return url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E" + "%3Cpath d='#{$frame-path}' fill='%23#{$fill}' fill-opacity='#{$fill-opacity}'/%3E" + "%3Cpath d='#{$frame-path}' transform='translate(1 1.2)' fill='none' stroke='%23784824' stroke-opacity='.22' stroke-width='1.4'/%3E" + "%3Cpath d='#{$frame-path}' fill='none' stroke='%23#{$edge}' stroke-opacity='#{$edge-opacity}' stroke-width='1.2'/%3E" + '%3C/svg%3E');
+}
+
+@mixin card-frame {
+  border: $frame-width solid transparent;
+  border-image: card-frame-image($frame-fill-opacity) $frame-slice fill / $frame-width stretch;
+}
+
+@mixin handwritten {
+  font-family: var(--font-handwritten);
+  font-style: italic;
+}

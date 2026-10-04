@@ -5,6 +5,8 @@ import { IS_DEBUG } from './app/experience/constants'
 import Soundscape from './audio/Soundscape'
 import Hud from './hud/Hud'
 import HudMenu from './hud/menu/HudMenu'
+import LoadingScreen from './loading/LoadingScreen'
+import Panels from './panels/Panels'
 
 const DebugTools = lazy(() => import('./app/debug/DebugTools'))
 
@@ -21,6 +23,8 @@ export default function App() {
       <IslandTitle />
       <Hud />
       <HudMenu />
+      <Panels />
+      <LoadingScreen />
     </>
   )
 }

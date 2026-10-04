@@ -32,5 +32,7 @@ export const MARKER_PULSE_WIDTH = 0.08
 export const MARKER_PULSE_OPACITY = 0.9
 export const MARKER_PULSE_SWELL = 0.1
 
+export const MARKER_FADE_RATE = 12
+
 export const MARKER_LABEL_SLIDE = 10
 export const MARKER_LABEL_SPRING: SpringConfig = { tension: 700, friction: 30, clamp: false }

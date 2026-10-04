@@ -52,6 +52,14 @@ import CHARGE_MOTES_FRAG from './shaders/chargeMotes.frag.glsl'
 import SKY_BEAM_VERT from './shaders/skyBeam.vert.glsl'
 import SKY_BEAM_FRAG from './shaders/skyBeam.frag.glsl'
 
+export interface SkyBeamMaterials {
+  arcs: THREE.ShaderMaterial
+  chargeMotes: THREE.ShaderMaterial
+  risingMotes: THREE.ShaderMaterial
+  orb: THREE.ShaderMaterial
+  beam: THREE.ShaderMaterial
+}
+
 const BEAM_TINT = new THREE.Color(SKY_BEAM_COLOR)
 
 const dynamicAttribute = (length: number, itemSize: number) =>
@@ -84,7 +92,7 @@ export function buildArcGeometry(): THREE.BufferGeometry {
   return geometry
 }
 
-export function createArcMaterial(): THREE.ShaderMaterial {
+function createArcMaterial(): THREE.ShaderMaterial {
   const material = createAdditiveGlowMaterial(
     SPARK_ARC_VERT,
     SPARK_ARC_FRAG,
@@ -106,7 +114,7 @@ export function buildOrbGeometry(): THREE.PlaneGeometry {
   return geometry
 }
 
-export function createOrbMaterial(): THREE.ShaderMaterial {
+function createOrbMaterial(): THREE.ShaderMaterial {
   const material = createAdditiveGlowMaterial(
     CHARGE_ORB_VERT,
     CHARGE_ORB_FRAG,
@@ -139,7 +147,7 @@ export function buildChargeMoteGeometry(): THREE.BufferGeometry {
   return geometry
 }
 
-export const createChargeMoteMaterial = () =>
+const createChargeMoteMaterial = () =>
   createAdditiveGlowMaterial(
     CHARGE_MOTES_VERT,
     CHARGE_MOTES_FRAG,
@@ -167,7 +175,7 @@ const beamBase = (): GlowSite => ({
 export const buildRisingMoteGeometry = (islandScale: number) =>
   buildGroundMoteGeometry([beamBase()], RISING_MOTES, islandScale)
 
-export const createRisingMoteMaterial = () => createGroundMoteMaterial(RISING_MOTES, 1)
+const createRisingMoteMaterial = () => createGroundMoteMaterial(RISING_MOTES, 1)
 
 // ── Beam column ───────────────────────────────────────────────────────────────
 
@@ -182,7 +190,7 @@ export function buildBeamGeometry(): THREE.LatheGeometry {
   return new THREE.LatheGeometry(profile, SKY_BEAM_SEGMENTS)
 }
 
-export const createBeamMaterial = () =>
+const createBeamMaterial = () =>
   createAdditiveGlowMaterial(
     SKY_BEAM_VERT,
     SKY_BEAM_FRAG,
@@ -203,3 +211,13 @@ export const createBeamMaterial = () =>
       uLength: { value: 0 },
     }
   )
+
+// ── Materials ─────────────────────────────────────────────────────────────────
+
+export const createSkyBeamMaterials = (): SkyBeamMaterials => ({
+  arcs: createArcMaterial(),
+  chargeMotes: createChargeMoteMaterial(),
+  risingMotes: createRisingMoteMaterial(),
+  orb: createOrbMaterial(),
+  beam: createBeamMaterial(),
+})

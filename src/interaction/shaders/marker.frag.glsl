@@ -2,6 +2,7 @@ uniform vec3 uColor;
 uniform vec3 uOutlineColor;
 uniform float uHover;
 uniform float uPulse;
+uniform float uOpacity;
 
 varying vec2 vLocal;
 
@@ -35,7 +36,7 @@ void main() {
     max(coverage(core - OUTLINE), coverage(ring - OUTLINE) * ringShow),
     coverage(ripple - OUTLINE) * rippleShow
   );
-  float alpha = max(fill, outline * OUTLINE_OPACITY);
+  float alpha = max(fill, outline * OUTLINE_OPACITY) * uOpacity;
   if (alpha <= 0.003) discard;
   gl_FragColor = vec4(mix(uOutlineColor, uColor, fill), alpha);
 }

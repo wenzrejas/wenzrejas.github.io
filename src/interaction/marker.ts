@@ -2,11 +2,17 @@ import * as THREE from 'three'
 import { mix } from '../utils/math'
 import { boundsIn, meshesOf } from '../utils/meshes'
 import { MAX_FRAME_SECONDS } from '../utils/time'
-import { MARKER_SPRING_DAMPING, MARKER_SPRING_STIFFNESS } from './constants'
+import {
+  HOVER_SNAP_GAP,
+  MARKER_FADE_RATE,
+  MARKER_SPRING_DAMPING,
+  MARKER_SPRING_STIFFNESS,
+} from './constants'
 
 export interface MarkerMotion {
   hover: number
   velocity: number
+  presence: number
 }
 
 const _parentRotation = new THREE.Quaternion()
@@ -27,6 +33,13 @@ export function springHover(motion: MarkerMotion, isHovered: boolean, delta: num
   const pull = ((isHovered ? 1 : 0) - motion.hover) * MARKER_SPRING_STIFFNESS
   motion.velocity += (pull - motion.velocity * MARKER_SPRING_DAMPING) * dt
   motion.hover += motion.velocity * dt
+}
+
+export function fadeMarker(motion: MarkerMotion, isShown: boolean, delta: number) {
+  const target = isShown ? 1 : 0
+  const step = 1 - Math.exp(-MARKER_FADE_RATE * Math.min(delta, MAX_FRAME_SECONDS))
+  motion.presence += (target - motion.presence) * step
+  if (Math.abs(target - motion.presence) < HOVER_SNAP_GAP) motion.presence = target
 }
 
 export function markerPositionOn(frame: THREE.Object3D, node: THREE.Object3D, heightShare: number) {

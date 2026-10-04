@@ -54,6 +54,7 @@ export const createMarkerMaterial = () =>
       uOutlineColor: { value: new THREE.Color(MARKER_OUTLINE_COLOR) },
       uHover: { value: 0 },
       uPulse: { value: 0 },
+      uOpacity: { value: 1 },
     },
     transparent: true,
     depthTest: false,

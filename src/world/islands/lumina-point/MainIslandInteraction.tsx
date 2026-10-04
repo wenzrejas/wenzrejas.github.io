@@ -1,7 +1,8 @@
 import { useMemo, useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import type * as THREE from 'three'
-import { startSkyBeam, useSkyBeamStore } from '@/store/skyBeamStore'
+import { openPanel } from '@/store/panelStore'
+import { useSkyBeamStore } from '@/store/skyBeamStore'
 import InteractionMarker from '@/interaction/InteractionMarker'
 import { easeHover } from '@/interaction/hover'
 import GroundGlow from '../shared/ground-glow/GroundGlow'
@@ -43,7 +44,7 @@ export default function MainIslandInteraction({
           position={mainIsland.marker}
           label="Send A Message"
           onHover={setHovered}
-          onActivate={startSkyBeam}
+          onActivate={(markerSpot) => openPanel('contact', markerSpot)}
         />
       )}
     </>
