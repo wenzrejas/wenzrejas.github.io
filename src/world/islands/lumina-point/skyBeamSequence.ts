@@ -160,6 +160,7 @@ export function beginSkyBeam(run: SkyBeamRun, anchor: THREE.Object3D) {
   const cinematic = useCinematicStore.getState()
   anchor.getWorldPosition(cinematic.focus)
   cinematic.focusZoom = FOCUS_ZOOM
+  cinematic.isPlaying = true
   requestClearSkies()
   audio.preload('skyBeamCharge')
   audio.preload('skyBeamShoot')

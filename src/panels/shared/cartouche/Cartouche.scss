@@ -1,0 +1,70 @@
+@use '@/styles/parchment' as *;
+
+.cartouche {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  &__canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    filter: var(--cartouche-glow, none);
+    transition: filter $state-change;
+  }
+
+  &__elevation {
+    opacity: var(--cartouche-elevation, 1);
+    transition: opacity 0.08s ease;
+  }
+
+  &__shadow {
+    fill: #3c200c;
+  }
+
+  &__face {
+    fill: var(--cartouche-face, $frame-fill);
+    transition: fill $state-change;
+  }
+
+  &__aging {
+    fill: none;
+    stroke: var(--cartouche-aging, rgba(110, 70, 40, 0.2));
+    stroke-width: 7;
+    transition: stroke $state-change;
+  }
+
+  &__band-top {
+    stop-color: var(--cartouche-band-top, #a07a5c);
+    transition: stop-color $state-change;
+  }
+
+  &__band-bottom {
+    stop-color: var(--cartouche-band-bottom, #5a4031);
+    transition: stop-color $state-change;
+  }
+
+  &__sheen {
+    fill: none;
+    stroke: var(--cartouche-sheen, rgba(255, 226, 190, 0.35));
+    stroke-width: 0.8;
+    transition: stroke $state-change;
+  }
+
+  &__edge {
+    fill: none;
+    stroke: var(--cartouche-edge, $frame-edge);
+    stroke-width: 1;
+    transition: stroke $state-change;
+  }
+
+  &__line {
+    fill: none;
+    stroke: var(--cartouche-line, $frame-edge);
+    stroke-width: 0.9;
+    stroke-linecap: round;
+    transition: stroke $state-change;
+  }
+}

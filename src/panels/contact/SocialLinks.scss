@@ -1,0 +1,124 @@
+@use '@/styles/parchment' as *;
+
+$badge-size: 2.25rem;
+$splash-spill: 0.2rem;
+$glyph-size: 1.5rem;
+$arrow-nudge: 2px;
+
+$glyph-paper: #fbe7c8;
+$email-ink: #ab4e3b;
+$linkedin-ink: #2f72a4;
+$github-ink: #2a1d17;
+$resume-ink: #a06738;
+
+.social-links {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+  list-style: none;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.05rem 0.2rem 0.05rem 0.3rem;
+  @include card-frame;
+  color: $ink;
+  text-decoration: none;
+  transition: translate 0.15s ease;
+
+  &:hover {
+    border-image-source: card-frame-image($frame-hover-fill-opacity);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $ink;
+    outline-offset: 2px;
+  }
+
+  &__badge {
+    position: relative;
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: $badge-size;
+    height: $badge-size;
+  }
+
+  &__splash {
+    position: absolute;
+    inset: calc(-1 * $splash-spill);
+    background: var(--splash-color);
+    mask-image: var(--splash);
+    mask-size: 100% 100%;
+  }
+
+  &__glyph {
+    position: relative;
+    width: $glyph-size;
+    height: $glyph-size;
+  }
+
+  &__label {
+    flex: 1;
+    min-width: 0;
+    font-family: var(--font-secondary);
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+
+  &__arrow {
+    flex: none;
+    font-size: 1.1rem;
+    color: $ink-soft;
+    transition: translate 0.15s ease;
+  }
+
+  &:hover &__arrow {
+    translate: $arrow-nudge (-$arrow-nudge);
+  }
+
+  &--email {
+    --splash-color: rgba(236, 154, 134, 0.52);
+
+    .social-link__glyph {
+      color: $email-ink;
+    }
+  }
+
+  &--linkedin {
+    --splash-color: rgba(150, 178, 200, 0.68);
+
+    .social-link__glyph {
+      color: $linkedin-ink;
+    }
+  }
+
+  &--github {
+    --splash-color: rgba(170, 146, 126, 0.62);
+
+    .social-link__glyph {
+      color: $github-ink;
+    }
+  }
+
+  &--resume {
+    --splash-color: rgba(224, 167, 106, 0.58);
+
+    .social-link__glyph {
+      color: $resume-ink;
+    }
+  }
+}
+
+.social-glyph {
+  &__paper {
+    fill: $glyph-paper;
+  }
+
+  &__lines {
+    fill: none;
+    stroke: $glyph-paper;
+  }
+}

@@ -6,6 +6,7 @@ import { CAMERA_FAR, CAMERA_NEAR, CAMERA_OFFSET, CAMERA_ZOOM, IS_DEBUG } from '.
 import CameraRig from './CameraRig'
 import TopView from './TopView'
 import InteractionLayer from '@/interaction/InteractionLayer'
+import SceneWarmup from '@/loading/SceneWarmup'
 import World from '@/world/World'
 import DayNightCycle from '@/world/environment/day-night-cycle/DayNightCycle'
 import { useDebugStore } from '@/store/debugStore'
@@ -30,22 +31,25 @@ export default function Experience() {
       gl={{ antialias: true }}
       dpr={[1, 1.5]}
     >
-      <color attach="background" args={['#1a7fa8']} />
-      {IS_DEBUG && (
-        <Suspense fallback={null}>
-          <Perf position="bottom-right" />
-        </Suspense>
-      )}
-      <DayNightCycle />
-      <InteractionLayer />
-      <World ref={shipRef} />
-      {topView ? (
-        <TopView />
-      ) : orbitCamera ? (
-        <OrbitControls makeDefault />
-      ) : (
-        <CameraRig shipRef={shipRef} />
-      )}
+      <Suspense fallback={null}>
+        <color attach="background" args={['#1a7fa8']} />
+        {IS_DEBUG && (
+          <Suspense fallback={null}>
+            <Perf position="bottom-right" />
+          </Suspense>
+        )}
+        <DayNightCycle />
+        <InteractionLayer />
+        <World ref={shipRef} />
+        {topView ? (
+          <TopView />
+        ) : orbitCamera ? (
+          <OrbitControls makeDefault />
+        ) : (
+          <CameraRig shipRef={shipRef} />
+        )}
+        <SceneWarmup />
+      </Suspense>
     </Canvas>
   )
 }

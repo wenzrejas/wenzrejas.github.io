@@ -1,0 +1,29 @@
+@use '@/styles/parchment' as *;
+
+.compass-rose {
+  &__ink {
+    fill: none;
+    stroke: $ink-soft;
+    stroke-width: 1.3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  &__dashed {
+    stroke-dasharray: 3 3.5;
+  }
+
+  &__shade {
+    fill: rgba($ink-soft, 0.55);
+    stroke: none;
+  }
+
+  &__letter {
+    fill: $ink-soft;
+    stroke: none;
+    @include handwritten;
+    font-size: 12px;
+    text-anchor: middle;
+    dominant-baseline: central;
+  }
+}

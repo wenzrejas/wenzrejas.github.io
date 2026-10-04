@@ -8,6 +8,7 @@ export interface SoundDefinition {
   channel: Channel
   volume: number
   stream?: boolean
+  hasLeadIn?: boolean
 }
 
 export const SOUNDS = {
@@ -53,6 +54,13 @@ export const SOUNDS = {
     fallback: '/audio/sfx/skybeam-shoot.mp3',
     channel: 'sfx',
     volume: 0.12,
+  },
+  paperPanel: {
+    url: '/audio/sfx/paper-panel.webm',
+    fallback: '/audio/sfx/paper-panel.mp3',
+    channel: 'sfx',
+    volume: 0.15,
+    hasLeadIn: true,
   },
   pacificTune: {
     url: '/audio/bgm/pacific-tune.webm',

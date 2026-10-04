@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { useCinematicStore } from './cinematicStore'
 
 interface SkyBeamState {
   isActive: boolean
@@ -13,7 +14,9 @@ export const useSkyBeamStore = create<SkyBeamState>(() => ({
 }))
 
 export function startSkyBeam() {
-  if (!useSkyBeamStore.getState().isActive) useSkyBeamStore.setState({ isActive: true })
+  if (useSkyBeamStore.getState().isActive) return
+  useCinematicStore.getState().isPlaying = true
+  useSkyBeamStore.setState({ isActive: true })
 }
 
 export const endSkyBeam = () => useSkyBeamStore.setState({ isActive: false })

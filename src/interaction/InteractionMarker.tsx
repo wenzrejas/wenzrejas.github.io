@@ -2,7 +2,8 @@ import { useEffect, useEffectEvent, useMemo, useRef, useState, type CSSPropertie
 import { useFrame, type Vector3 } from '@react-three/fiber'
 import { Html } from '@react-three/drei'
 import { animated, useSpring } from '@react-spring/web'
-import type * as THREE from 'three'
+import * as THREE from 'three'
+import { isPanelOpen } from '../store/panelStore'
 import { uniformsOf } from '../utils/meshes'
 import {
   INTERACTION_LAYER,
@@ -14,7 +15,7 @@ import {
   MARKER_RING_OUTER,
 } from './constants'
 import { interactions } from './interactionManager'
-import { pinToScreen, springHover, type MarkerMotion } from './marker'
+import { fadeMarker, pinToScreen, springHover, type MarkerMotion } from './marker'
 import { buildMarkerGeometry, createMarkerMaterial } from './markerModel'
 import './InteractionMarker.scss'
 
@@ -22,7 +23,7 @@ interface InteractionMarkerProps {
   position: Vector3
   label: string
   onHover?: (isHovered: boolean) => void
-  onActivate?: () => void
+  onActivate?: (markerSpot: THREE.Vector3) => void
   shipReach?: number
   baseGap?: (x: number, z: number) => number
 }
@@ -38,14 +39,17 @@ export default function InteractionMarker({
   baseGap,
 }: InteractionMarkerProps) {
   const meshRef = useRef<THREE.Mesh>(null)
-  const motion = useRef<MarkerMotion>({ hover: 0, velocity: 0 })
+  const motion = useRef<MarkerMotion>({ hover: 0, velocity: 0, presence: 1 })
   const [pulseOffset] = useState(Math.random)
   const [isHovered, setHovered] = useState(false)
   const reportHover = useEffectEvent((next: boolean) => {
     setHovered(next)
     onHover?.(next)
   })
-  const activate = useEffectEvent(() => onActivate?.())
+  const activate = useEffectEvent(() => {
+    const mesh = meshRef.current
+    if (mesh) onActivate?.(mesh.getWorldPosition(new THREE.Vector3()))
+  })
 
   const geometry = useMemo(() => buildMarkerGeometry(), [])
   const material = useMemo(() => createMarkerMaterial(), [])
@@ -78,9 +82,13 @@ export default function InteractionMarker({
   useFrame(({ camera, clock }, delta) => {
     const mesh = meshRef.current
     if (!mesh) return
+    fadeMarker(motion.current, !isPanelOpen(), delta)
+    mesh.visible = motion.current.presence > 0
+    if (!mesh.visible) return
     pinToScreen(mesh, camera, MARKER_PIXELS)
     springHover(motion.current, isHovered, delta)
     const uniforms = uniformsOf(mesh)
+    uniforms.uOpacity.value = motion.current.presence
     uniforms.uHover.value = Math.max(0, motion.current.hover)
     uniforms.uPulse.value = (clock.getElapsedTime() / MARKER_PULSE_SECONDS + pulseOffset) % 1
   })
