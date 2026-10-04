@@ -1,0 +1,84 @@
+@use '@/styles/parchment' as *;
+
+$columns: 5;
+$card-fill: 'f5dcbb';
+$badge-size: 3.4rem;
+$logo-size: 2.3rem;
+$wide-logo-width: $logo-size * 1.4;
+$splash-spill: 0.35rem;
+$splash-strength: 20%;
+$logo-shadow: 0 1.5px 1.5px rgba(58, 41, 29, 0.35);
+$corner-size: 6px;
+$corner-inset: 4px;
+$rule-ornament-size: 7px;
+
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat($columns, minmax(0, 1fr));
+  gap: 0.75rem;
+  list-style: none;
+}
+
+.tool-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  padding: 0.4rem;
+  @include card-frame;
+  border-image-source: card-frame-image(1, $card-fill);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: $corner-inset;
+    background-image:
+      url($diamond-ornament), url($diamond-ornament), url($diamond-ornament), url($diamond-ornament);
+    background-position:
+      left top,
+      right top,
+      left bottom,
+      right bottom;
+    background-size: $corner-size $corner-size;
+    background-repeat: no-repeat;
+    pointer-events: none;
+  }
+
+  &__badge {
+    @include splash-badge($badge-size);
+  }
+
+  &__splash {
+    @include splash-wash($splash-spill);
+    background: color-mix(in srgb, var(--tint) $splash-strength, transparent);
+  }
+
+  &__logo {
+    position: relative;
+    width: $logo-size;
+    height: $logo-size;
+    filter: drop-shadow($logo-shadow);
+
+    &--wide {
+      width: $wide-logo-width;
+    }
+  }
+
+  &__name {
+    margin-top: 0.6rem;
+    font-family: var(--font-secondary);
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+    color: $ink;
+  }
+
+  &__rule {
+    width: 70%;
+    margin-top: 0.45rem;
+    @include diamond-rule($rule-ornament-size);
+  }
+}

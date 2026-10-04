@@ -10,9 +10,16 @@ import {
   SHEET_TILT_DEGREES,
 } from './constants'
 import type { PanelBodyProps } from './shared/island-panel/IslandPanel'
+import SupportPanel from './support/SupportPanel'
+import ToolkitPanel from './toolkit/ToolkitPanel'
 
 const PANEL_BODIES: Record<PanelKey, ComponentType<PanelBodyProps>> = {
   contact: ContactPanel,
+  support: SupportPanel,
+  frontend: (props) => <ToolkitPanel grove="frontend" {...props} />,
+  creative: (props) => <ToolkitPanel grove="creative" {...props} />,
+  visuals: (props) => <ToolkitPanel grove="visuals" {...props} />,
+  design: (props) => <ToolkitPanel grove="design" {...props} />,
 }
 
 const HIDDEN_SHEET = { opacity: 0, x: SHEET_SLIDE_PIXELS, rotate: SHEET_TILT_DEGREES }

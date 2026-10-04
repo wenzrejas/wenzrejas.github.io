@@ -1,9 +1,13 @@
 import * as THREE from 'three'
 import { floatDefines } from '../utils/glsl'
 import {
+  MARKER_CENTER_COLOR,
+  MARKER_CENTER_SHARE,
   MARKER_COLOR,
   MARKER_EXTENT,
   MARKER_GAP,
+  MARKER_GLOW_OPACITY,
+  MARKER_GLOW_REACH,
   MARKER_HOVER_CORE,
   MARKER_IDLE_CORE,
   MARKER_OUTLINE,
@@ -48,10 +52,14 @@ export const createMarkerMaterial = () =>
       PULSE_WIDTH: MARKER_PULSE_WIDTH,
       PULSE_OPACITY: MARKER_PULSE_OPACITY,
       PULSE_SWELL: MARKER_PULSE_SWELL,
+      CENTER_SHARE: MARKER_CENTER_SHARE,
+      GLOW_REACH: MARKER_GLOW_REACH,
+      GLOW_OPACITY: MARKER_GLOW_OPACITY,
     }),
     uniforms: {
-      uColor: { value: new THREE.Color(MARKER_COLOR) },
-      uOutlineColor: { value: new THREE.Color(MARKER_OUTLINE_COLOR) },
+      uColor: { value: new THREE.Color(MARKER_COLOR).convertLinearToSRGB() },
+      uCenterColor: { value: new THREE.Color(MARKER_CENTER_COLOR).convertLinearToSRGB() },
+      uOutlineColor: { value: new THREE.Color(MARKER_OUTLINE_COLOR).convertLinearToSRGB() },
       uHover: { value: 0 },
       uPulse: { value: 0 },
       uOpacity: { value: 1 },

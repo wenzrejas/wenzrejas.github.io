@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import type * as THREE from 'three'
+import { ISLAND_COPY } from '@/data/islandCopy'
 import { openPanel } from '@/store/panelStore'
 import { useSkyBeamStore } from '@/store/skyBeamStore'
 import InteractionMarker from '@/interaction/InteractionMarker'
@@ -42,7 +43,7 @@ export default function MainIslandInteraction({
       {!isSkyBeamActive && (
         <InteractionMarker
           position={mainIsland.marker}
-          label="Send A Message"
+          label={ISLAND_COPY.lumina.marker}
           onHover={setHovered}
           onActivate={(markerSpot) => openPanel('contact', markerSpot)}
         />

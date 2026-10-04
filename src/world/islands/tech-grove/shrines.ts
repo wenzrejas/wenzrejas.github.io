@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import type { GroveKey } from '@/store/panelStore'
 import { boundsIn, displayColor, meshesOf, positionIn } from '@/utils/meshes'
 import { footprintGap, footprintOf } from '@/interaction/baseFootprint'
 import { markerPositionOn } from '@/interaction/marker'
@@ -8,8 +9,8 @@ import {
   GEM_NODES,
   SPARKLE_EDGE_ANGLE,
   SPINNING_GEM_NODES,
+  STATUE_GROVES,
   STATUE_MARKER_HEIGHT,
-  STATUE_NODES,
   TUMBLING_GEM_NODES,
 } from './constants'
 
@@ -24,6 +25,7 @@ export interface ShrineGem {
 }
 
 export interface StatueMarker {
+  grove: GroveKey
   position: THREE.Vector3
   baseGap: (x: number, z: number) => number
 }
@@ -83,12 +85,17 @@ function findGem(model: THREE.Object3D, gemNode: string): ShrineGem | null {
   }
 }
 
-function findStatueMarker(model: THREE.Object3D, statueNode: string): StatueMarker | null {
+function findStatueMarker(
+  model: THREE.Object3D,
+  statueNode: string,
+  grove: GroveKey
+): StatueMarker | null {
   const statue = model.getObjectByName(statueNode)
   const islet = statue?.parent
   if (!statue || !islet) return null
   const footprint = footprintOf(model, meshesOf(islet), positionIn(model, islet))
   return {
+    grove,
     position: markerPositionOn(model, statue, STATUE_MARKER_HEIGHT),
     baseGap: (x, z) => footprintGap(footprint, model, x, z),
   }
@@ -99,8 +106,8 @@ export function findShrines(model: THREE.Object3D): Shrines {
   return {
     bases: BASE_RIM_NODES.map((node) => findBase(model, node)).filter((base) => base !== null),
     gems: GEM_NODES.map((node) => findGem(model, node)).filter((gem) => gem !== null),
-    markers: STATUE_NODES.map((node) => findStatueMarker(model, node)).filter(
-      (marker) => marker !== null
-    ),
+    markers: Object.entries(STATUE_GROVES)
+      .map(([node, grove]) => findStatueMarker(model, node, grove))
+      .filter((marker) => marker !== null),
   }
 }

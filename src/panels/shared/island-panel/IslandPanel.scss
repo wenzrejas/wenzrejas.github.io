@@ -1,7 +1,7 @@
 @use '@/styles/parchment' as *;
 
-$ornament: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M5 1 L9 5 L5 9 L1 5 Z' fill='%23ead4ab' stroke='%235a4535' stroke-width='1'/%3E%3C/svg%3E";
 $close-size: 2.75rem;
+$heading-ornament-size: 9px;
 $wash-size: 2rem;
 $wash-reach: 7.5rem;
 $wash-ramp: 4;
@@ -221,18 +221,16 @@ $close-center-right-share: 0.0695;
     }
 
     &--ornate::after {
-      height: 9px;
       background-color: transparent;
-      background-image: url($ornament), linear-gradient($ink-faint, $ink-faint);
-      background-position: center;
-      background-size:
-        9px 9px,
-        100% 1px;
-      background-repeat: no-repeat;
+      @include diamond-rule($heading-ornament-size);
     }
   }
 
   &__art {
     margin: -0.4rem calc(var(--sheet-width) * -1 * $art-reach-share) 0 0;
+  }
+
+  &__top--floating-art &__art {
+    height: 0;
   }
 }

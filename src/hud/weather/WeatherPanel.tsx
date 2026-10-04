@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
+import { WEATHER_COPY } from '@/data/hudCopy'
 import { useCycleStore } from '@/store/cycleStore'
-import { WEATHER_LABELS, readWeather, readWindPoint } from './conditions'
+import { readWeather, readWindPoint } from './conditions'
 import {
   DIAL_SKY_GRADIENT,
   MOON_POSITION,
@@ -40,12 +41,12 @@ export default function WeatherPanel() {
         <WeatherIcon weather={weather} />
       </span>
       <div className="weather-panel__readout">
-        <span className="weather-panel__name">{WEATHER_LABELS[weather]}</span>
+        <span className="weather-panel__name">{WEATHER_COPY.names[weather]}</span>
         <span className="weather-panel__wind">
           <span className="weather-panel__wind-icon">
             <WindCurvesIcon />
           </span>
-          WIND: {windPoint}
+          {WEATHER_COPY.wind} {windPoint}
         </span>
       </div>
       <div className="weather-panel__dial">

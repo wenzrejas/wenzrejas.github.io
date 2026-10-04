@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
-import { SOCIAL_LINKS } from '@/data/socialLinks'
+import { ISLAND_COPY } from '@/data/islandCopy'
 import { useDebugStore } from '@/store/debugStore'
-import { openInNewTab } from '@/utils/links'
+import { openPanel } from '@/store/panelStore'
 import InteractionMarker from '@/interaction/InteractionMarker'
 import type { IslandBodyProps } from '../shared/types'
 import { useIslandModel } from '../shared/islandModel'
@@ -65,8 +65,8 @@ export default function CozyIsle({ islandKey, config }: IslandBodyProps) {
         {cafeMarker && (
           <InteractionMarker
             position={cafeMarker.position}
-            label="Buy Me A Coffee"
-            onActivate={() => openInNewTab(SOCIAL_LINKS.kofi)}
+            label={ISLAND_COPY.cozy.marker}
+            onActivate={(markerSpot) => openPanel('support', markerSpot)}
             baseGap={cafeMarker.baseGap}
           />
         )}

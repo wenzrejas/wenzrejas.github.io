@@ -1,3 +1,4 @@
+import type { GroveKey } from '@/store/panelStore'
 import { BASE_TUNING, type ContactBlob, type IslandSpec } from '../shared/islandSpec'
 import type { GroundGlowTuning } from '../shared/ground-glow/glowSites'
 import { TECH_CLUSTER_RADIUS, TECH_FOOTPRINT, TECH_MODEL_TOP } from './shoreProfile'
@@ -14,7 +15,12 @@ export const BASE_RIM_NODES = [
 export const GEM_NODES = ['Gem_Design', 'Gem_Frontend', 'Gem_WebGL']
 export const SPINNING_GEM_NODES = ['Gem_Frontend', 'Gem_WebGL']
 export const TUMBLING_GEM_NODES = ['Gem_WebGL']
-export const STATUE_NODES = ['Statue_Creative', 'Statue_Design', 'Statue_Frontend', 'Statue_WebGL']
+export const STATUE_GROVES: Record<string, GroveKey> = {
+  Statue_Creative: 'creative',
+  Statue_Design: 'design',
+  Statue_Frontend: 'frontend',
+  Statue_WebGL: 'visuals',
+}
 
 // ── Island spec ───────────────────────────────────────────────────────────────
 export const TECH_SPEC: IslandSpec = {

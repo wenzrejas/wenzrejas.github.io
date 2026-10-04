@@ -1,7 +1,8 @@
 import { create } from 'zustand'
 import * as THREE from 'three'
 
-export type PanelKey = 'contact'
+export type GroveKey = 'frontend' | 'creative' | 'visuals' | 'design'
+export type PanelKey = 'contact' | 'support' | GroveKey
 
 interface PanelState {
   activePanel: PanelKey | null

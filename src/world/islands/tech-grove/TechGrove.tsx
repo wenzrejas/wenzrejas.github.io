@@ -1,5 +1,7 @@
 import { useMemo } from 'react'
+import { ISLAND_COPY } from '@/data/islandCopy'
 import { useDebugStore } from '@/store/debugStore'
+import { openPanel } from '@/store/panelStore'
 import InteractionMarker from '@/interaction/InteractionMarker'
 import type { IslandBodyProps } from '../shared/types'
 import { useIslandModel } from '../shared/islandModel'
@@ -50,11 +52,12 @@ export default function TechGrove({ islandKey, config }: IslandBodyProps) {
         {shrines.gems.map((gem) => (
           <GemSparkles key={gem.node.name} gem={gem} />
         ))}
-        {shrines.markers.map((marker, i) => (
+        {shrines.markers.map((marker) => (
           <InteractionMarker
-            key={i}
+            key={marker.grove}
             position={marker.position}
-            label="View Details"
+            label={ISLAND_COPY.tech.marker}
+            onActivate={(markerSpot) => openPanel(marker.grove, markerSpot)}
             baseGap={marker.baseGap}
           />
         ))}

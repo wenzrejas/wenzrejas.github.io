@@ -1,29 +1,11 @@
 import type * as THREE from 'three'
+import { WEATHER_COPY } from '@/data/hudCopy'
 import { useCycleStore } from '@/store/cycleStore'
 import { useWeatherStore, type WeatherType } from '@/store/weatherStore'
 import { useWindStore } from '@/store/windStore'
 import { isClearSky } from '@/world/environment/weather/weatherCycle'
 import { bearingDegrees, nearestPointIndex } from '../north'
 import { DAY_END_TIME, DAY_START_TIME } from './constants'
-
-export const WEATHER_LABELS: Record<WeatherType, string> = {
-  sunny: 'Sunny',
-  moonlit: 'Clear',
-  cloudy: 'Cloudy',
-  rainy: 'Rainy',
-  windy: 'Windy',
-}
-
-const WIND_DIRECTION_NAMES = [
-  'NORTH',
-  'NORTHEAST',
-  'EAST',
-  'SOUTHEAST',
-  'SOUTH',
-  'SOUTHWEST',
-  'WEST',
-  'NORTHWEST',
-]
 
 const isDaytime = (timeOfDay: number) => timeOfDay >= DAY_START_TIME && timeOfDay < DAY_END_TIME
 
@@ -38,7 +20,7 @@ function windOriginBearing(direction: THREE.Vector2): number {
 }
 
 export const windOriginName = (direction: THREE.Vector2) =>
-  WIND_DIRECTION_NAMES[nearestPointIndex(windOriginBearing(direction))]
+  WEATHER_COPY.windDirections[nearestPointIndex(windOriginBearing(direction))]
 
 export const readWeather = () =>
   shownWeather(useWeatherStore.getState().type, useCycleStore.getState().timeOfDay)
