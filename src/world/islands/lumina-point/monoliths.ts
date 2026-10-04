@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import { boundsIn, displayColor, meshesOf, positionIn } from '@/utils/meshes'
 import { mix, rand } from '@/utils/math'
 import { easeHover } from '@/interaction/hover'
+import { MONOLITH_COPY } from '@/data/islandCopy'
 import type { GlowSite } from '../shared/ground-glow/glowSites'
 import {
   LOGO_BOB_RATE_MAX,
@@ -10,7 +11,6 @@ import {
   LOGO_EDGE_OPACITY,
   LOGO_SPIN_RATE_MAX,
   LOGO_SPIN_RATE_MIN,
-  MONOLITH_LABELS,
   MONOLITH_LINKS,
   MONOLITH_MARKER_HEIGHT,
   MONOLITH_NAMES,
@@ -90,7 +90,7 @@ function findMonolith(model: THREE.Object3D, name: MonolithName): Monolith | nul
 
   return {
     link: MONOLITH_LINKS[name],
-    label: MONOLITH_LABELS[name],
+    label: MONOLITH_COPY[name],
     marker,
     isHovered: false,
     hoverBlend: 0,

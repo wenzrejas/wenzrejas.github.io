@@ -1,4 +1,5 @@
 uniform vec3 uColor;
+uniform vec3 uCenterColor;
 uniform vec3 uOutlineColor;
 uniform float uHover;
 uniform float uPulse;
@@ -13,6 +14,15 @@ float diamond(float tip) {
 float coverage(float distance) {
   float edge = fwidth(distance);
   return 1.0 - smoothstep(-edge, edge, distance);
+}
+
+float glowAround(float distance) {
+  float falloff = 1.0 - clamp(distance / GLOW_REACH, 0.0, 1.0);
+  return falloff * falloff * GLOW_OPACITY;
+}
+
+vec4 over(vec4 below, vec3 color, float alpha) {
+  return vec4(color * alpha, alpha) + below * (1.0 - alpha);
 }
 
 void main() {
@@ -36,7 +46,13 @@ void main() {
     max(coverage(core - OUTLINE), coverage(ring - OUTLINE) * ringShow),
     coverage(ripple - OUTLINE) * rippleShow
   );
-  float alpha = max(fill, outline * OUTLINE_OPACITY) * uOpacity;
+  float center = coverage(diamond(coreTip * CENTER_SHARE));
+
+  vec4 paint = over(vec4(0.0), uColor, glowAround(core));
+  paint = over(paint, uOutlineColor, outline * OUTLINE_OPACITY);
+  paint = over(paint, uColor, fill);
+  paint = over(paint, uCenterColor, center);
+  float alpha = paint.a * uOpacity;
   if (alpha <= 0.003) discard;
-  gl_FragColor = vec4(mix(uOutlineColor, uColor, fill), alpha);
+  gl_FragColor = vec4(paint.rgb / paint.a, alpha);
 }

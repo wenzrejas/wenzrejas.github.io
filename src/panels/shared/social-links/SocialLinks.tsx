@@ -1,30 +1,25 @@
 import type { CSSProperties } from 'react'
-import { CONTACT_COPY } from '@/data/panelCopy'
-import { SOCIAL_LINKS } from '@/data/socialLinks'
-import PanelIcon from '../shared/PanelIcon'
-import { splashMasks } from '../shared/splash/splashModel'
+import PanelIcon from '../PanelIcon'
+import { splashMasks } from '../splash/splashModel'
 import SocialGlyph, { type SocialGlyphName } from './SocialGlyph'
 import './SocialLinks.scss'
 
-interface SocialLink {
+export interface SocialLink {
   label: string
   href: string
   glyph: SocialGlyphName
 }
 
-const LINKS: SocialLink[] = [
-  { label: CONTACT_COPY.links.email, href: SOCIAL_LINKS.email, glyph: 'email' },
-  { label: CONTACT_COPY.links.linkedin, href: SOCIAL_LINKS.linkedin, glyph: 'linkedin' },
-  { label: CONTACT_COPY.links.github, href: SOCIAL_LINKS.github, glyph: 'github' },
-  { label: CONTACT_COPY.links.resume, href: SOCIAL_LINKS.resume, glyph: 'resume' },
-]
+interface SocialLinksProps {
+  links: SocialLink[]
+}
 
-export default function SocialLinks() {
+export default function SocialLinks({ links }: SocialLinksProps) {
   const masks = splashMasks()
 
   return (
     <ul className="social-links">
-      {LINKS.map(({ label, href, glyph }, i) => (
+      {links.map(({ label, href, glyph }, i) => (
         <li key={label}>
           <a
             className={`social-link social-link--${glyph}`}

@@ -1,5 +1,6 @@
 import { useControls, folder } from 'leva'
-import { WORLD_LOCATIONS, type IslandKey } from '@/world/islands/shared/constants'
+import { ISLAND_COPY } from '@/data/islandCopy'
+import type { IslandKey } from '@/world/islands/shared/constants'
 import { ISLAND_MODEL_DEFAULTS } from '@/world/islands/shared/islandSpecs'
 import type { IslandControls } from '../types'
 
@@ -17,7 +18,7 @@ const schema = (key: IslandKey) => {
   }
 }
 
-const panel = (key: IslandKey) => `Islands / ${WORLD_LOCATIONS[key].label}`
+const panel = (key: IslandKey) => `Islands / ${ISLAND_COPY[key].label}`
 const opts = { collapsed: true }
 
 export function useIslandControls(): Record<IslandKey, IslandControls> {

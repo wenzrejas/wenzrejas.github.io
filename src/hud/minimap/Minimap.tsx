@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
+import { MINIMAP_COPY } from '@/data/hudCopy'
 import { useShipStore } from '@/store/shipStore'
 import { bearingDegrees } from '../north'
 import { ISLAND_SHAPES, chartPercent } from './chart'
@@ -42,7 +43,7 @@ export default function Minimap() {
       <span className="minimap__tick minimap__tick--south" />
       <span className="minimap__tick minimap__tick--west" />
       <span className="minimap__needle" />
-      <span className="minimap__north">N</span>
+      <span className="minimap__north">{MINIMAP_COPY.north}</span>
     </div>
   )
 }

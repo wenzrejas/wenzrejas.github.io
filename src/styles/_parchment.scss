@@ -18,6 +18,8 @@ $frame-slice: 10;
 $frame-width: 8px;
 $frame-path: 'M9 3.5H39A5.5 5.5 0 0 0 44.5 9V39A5.5 5.5 0 0 0 39 44.5H9A5.5 5.5 0 0 0 3.5 39V9A5.5 5.5 0 0 0 9 3.5Z';
 
+$diamond-ornament: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M5 1 L9 5 L5 9 L1 5 Z' fill='%23ead4ab' stroke='%235a4535' stroke-width='1'/%3E%3C/svg%3E";
+
 $short-screen: 820px;
 $state-change: 0.18s ease;
 
@@ -28,6 +30,32 @@ $state-change: 0.18s ease;
 @mixin card-frame {
   border: $frame-width solid transparent;
   border-image: card-frame-image($frame-fill-opacity) $frame-slice fill / $frame-width stretch;
+}
+
+@mixin diamond-rule($ornament-size) {
+  height: $ornament-size;
+  background-image: url($diamond-ornament), linear-gradient($ink-faint, $ink-faint);
+  background-position: center;
+  background-size:
+    $ornament-size $ornament-size,
+    100% 1px;
+  background-repeat: no-repeat;
+}
+
+@mixin splash-badge($size) {
+  position: relative;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: $size;
+  height: $size;
+}
+
+@mixin splash-wash($spill) {
+  position: absolute;
+  inset: calc(-1 * $spill);
+  mask-image: var(--splash);
+  mask-size: 100% 100%;
 }
 
 @mixin handwritten {

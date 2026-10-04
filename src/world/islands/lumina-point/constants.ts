@@ -47,13 +47,6 @@ export const MONOLITH_LINKS: Record<MonolithName, string> = {
   LinkedIn: SOCIAL_LINKS.linkedin,
 }
 
-export const MONOLITH_LABELS: Record<MonolithName, string> = {
-  Document: 'Resume',
-  Email: 'Email',
-  GitHub: 'GitHub',
-  LinkedIn: 'LinkedIn',
-}
-
 export const MONOLITH_MARKER_HEIGHT = 0.12
 export const MONOLITH_SHIP_REACH = 36
 

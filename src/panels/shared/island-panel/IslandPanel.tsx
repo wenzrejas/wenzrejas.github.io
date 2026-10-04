@@ -11,7 +11,6 @@ import { animated, type SpringValues } from '@react-spring/web'
 import { useScrollOverflowVariables } from '@/hooks/useScrollOverflowVariables'
 import { PANEL_COPY } from '@/data/panelCopy'
 import { centerFocusLeftOf, closePanel } from '@/store/panelStore'
-import { WORLD_LOCATIONS, type IslandKey } from '@/world/islands/shared/constants'
 import CompassRose from '../compass-rose/CompassRose'
 import PanelArt from '../panel-art/PanelArt'
 import PanelIcon from '../PanelIcon'
@@ -31,23 +30,26 @@ export interface PanelBodyProps {
 }
 
 interface IslandPanelProps extends PanelBodyProps {
-  island: IslandKey
+  title: string
+  subtitle: string
   paintingUrl: string
   intro: ReactNode
-  children: ReactNode
+  children?: ReactNode
+  hasFloatingArt?: boolean
 }
 
 export default function IslandPanel({
-  island,
+  title,
+  subtitle,
   paintingUrl,
   intro,
   children,
+  hasFloatingArt = false,
   motion,
 }: IslandPanelProps) {
   const layoutRef = useRef<HTMLElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
   const titleId = useId()
-  const { label, description } = WORLD_LOCATIONS[island]
   const mistStyle = useMemo(() => {
     const { top, bottom } = mistMasks()
     return { '--mist-top': top, '--mist-bottom': bottom } as CSSProperties
@@ -86,12 +88,18 @@ export default function IslandPanel({
         <div className="island-panel__viewport">
           <div ref={contentRef} className="island-panel__content" style={mistStyle}>
             <CompassRose className="island-panel__compass" />
-            <div className="island-panel__top">
+            <div
+              className={
+                hasFloatingArt
+                  ? 'island-panel__top island-panel__top--floating-art'
+                  : 'island-panel__top'
+              }
+            >
               <div className="island-panel__intro">
                 <header>
                   <div className="island-panel__titles">
                     <h2 id={titleId} className="island-panel__title">
-                      {label}
+                      {title}
                     </h2>
                     <svg
                       className="island-panel__underline"
@@ -101,7 +109,7 @@ export default function IslandPanel({
                     >
                       <path d={TITLE_UNDERLINE} />
                     </svg>
-                    <p className="island-panel__subtitle">{description}</p>
+                    <p className="island-panel__subtitle">{subtitle}</p>
                   </div>
                 </header>
                 {intro}

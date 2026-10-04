@@ -9,7 +9,7 @@ export const HOVER_EASE_RATE = 6
 export const HOVER_SNAP_GAP = 0.001
 
 // ── Marker ────────────────────────────────────────────────────────────────────
-export const MARKER_PIXELS = 30
+export const MARKER_PIXELS = 34
 export const MARKER_EXTENT = 1.12
 export const MARKER_IDLE_CORE = 0.4
 export const MARKER_HOVER_CORE = 0.46
@@ -19,7 +19,11 @@ export const MARKER_RING_START = 0.7
 export const MARKER_GAP = 0.1
 export const MARKER_OUTLINE = 0.1
 export const MARKER_OUTLINE_OPACITY = 0.8
-export const MARKER_COLOR = '#ffffff'
+export const MARKER_CENTER_SHARE = 0.4
+export const MARKER_GLOW_REACH = 0.4
+export const MARKER_GLOW_OPACITY = 0.55
+export const MARKER_COLOR = '#33e6cc'
+export const MARKER_CENTER_COLOR = '#ffffff'
 export const MARKER_OUTLINE_COLOR = '#14182a'
 export const MARKER_RENDER_ORDER = 20
 

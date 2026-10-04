@@ -1,6 +1,6 @@
 import * as THREE from 'three'
+import { PANEL_COPY } from '@/data/panelCopy'
 import {
-  COMPASS_LETTERS,
   COMPASS_RADIUS,
   COMPASS_TILT_DEGREES,
   INNER_RING,
@@ -57,7 +57,7 @@ function buildCompassRose(radius: number, tiltDegrees: number) {
       )
       .join(' '),
     letters: quarters.map((angle, i) => ({
-      label: COMPASS_LETTERS[i],
+      label: PANEL_COPY.compassLetters[i],
       ...polar(angle, radius * LETTER_REACH),
     })),
   }

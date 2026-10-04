@@ -1,5 +1,6 @@
 import * as THREE from 'three'
-import { bearingDegrees, POINT_NAMES, POINT_STEP_DEGREES } from '../north'
+import { COMPASS_COPY } from '@/data/hudCopy'
+import { bearingDegrees, POINT_STEP_DEGREES } from '../north'
 import { PX_PER_DEGREE, TAPE_END_DEGREES, TAPE_START_DEGREES, TICK_STEP_DEGREES } from './constants'
 
 export interface TapeMark {
@@ -17,7 +18,7 @@ function createTapeMark(degrees: number): TapeMark {
 
   return {
     x: degrees * PX_PER_DEGREE,
-    label: isPoint ? POINT_NAMES[turnDegrees / POINT_STEP_DEGREES] : null,
+    label: isPoint ? COMPASS_COPY.points[turnDegrees / POINT_STEP_DEGREES] : null,
   }
 }
 

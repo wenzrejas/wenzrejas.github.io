@@ -2,7 +2,6 @@
 export const COMPASS_RADIUS = 50
 export const COMPASS_VIEW_REACH = 70
 export const COMPASS_TILT_DEGREES = -14
-export const COMPASS_LETTERS = ['N', 'E', 'S', 'W']
 
 // ── Compass rose (shares of the radius) ───────────────────────────────────────
 export const MAJOR_POINT_WIDTH = 0.13

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { REVEAL_TITLE_IN, WORLD_LOCATIONS } from './constants'
+import { ISLAND_COPY } from '@/data/islandCopy'
 import { useRevealStore } from '@/store/revealStore'
 import { useDebugStore } from '@/store/debugStore'
 import './IslandTitle.scss'
@@ -36,16 +37,16 @@ export default function IslandTitle() {
   }, [key, pinned])
 
   if (!key) return null
-  const island = WORLD_LOCATIONS[key]
+  const { label, description } = ISLAND_COPY[key]
 
   return (
     <div
       className="island-title"
       ref={cardRef}
-      style={{ '--island-color': island.color } as React.CSSProperties}
+      style={{ '--island-color': WORLD_LOCATIONS[key].color } as React.CSSProperties}
     >
-      <span className="island-title__tag">{island.description}</span>
-      <h2 className="island-title__name">{island.label}</h2>
+      <span className="island-title__tag">{description}</span>
+      <h2 className="island-title__name">{label}</h2>
     </div>
   )
 }
