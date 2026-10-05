@@ -3,10 +3,12 @@ import Experience from './app/experience/Experience'
 import IslandTitle from './world/islands/shared/IslandTitle'
 import { IS_DEBUG } from './app/experience/constants'
 import Soundscape from './audio/Soundscape'
+import DepthsPlaceholder from './depths/DepthsPlaceholder'
 import Hud from './hud/Hud'
 import HudMenu from './hud/menu/HudMenu'
 import LoadingScreen from './loading/LoadingScreen'
 import Panels from './panels/Panels'
+import WorldMap from './world-map/WorldMap'
 
 const DebugTools = lazy(() => import('./app/debug/DebugTools'))
 
@@ -20,10 +22,12 @@ export default function App() {
       )}
       <Soundscape />
       <Experience />
+      <DepthsPlaceholder />
       <IslandTitle />
       <Hud />
       <HudMenu />
       <Panels />
+      <WorldMap />
       <LoadingScreen />
     </>
   )

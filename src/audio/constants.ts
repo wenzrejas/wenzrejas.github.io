@@ -15,6 +15,7 @@ export const RAIN_MUSIC = 'rainMelody' satisfies MusicTrack
 export const NIGHT_MUSIC = 'nightTune' satisfies MusicTrack
 export const NIGHT_MUSIC_FROM = PHASES.dusk
 export const NIGHT_MUSIC_UNTIL = PHASES.sunrise
+export const DEPTHS_MUSIC: MusicTrack = 'timewell'
 export const ISLAND_MUSIC_RANGE = 150
 export const ISLAND_MUSIC_RELEASE = 400
 export const WEATHER_MUSIC_CROSSFADE = 4

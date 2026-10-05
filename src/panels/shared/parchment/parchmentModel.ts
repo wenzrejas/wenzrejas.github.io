@@ -1,5 +1,5 @@
 import { mix } from '@/utils/math'
-import { seededRandom, type Random } from '../procedural/valueNoise'
+import { seededRandom, type Random } from '@/utils/random'
 import {
   BACK_STRIP_EDGE_TINTS,
   BACK_STRIP_LIT,

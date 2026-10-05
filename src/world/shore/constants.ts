@@ -45,3 +45,11 @@ export const SHORELINE_MARGIN = WAVE_REACH + WAVE_WIDTH + WAVE_SMOOTHING * 2
 // ── Coast collision ───────────────────────────────────────────────────────────
 export const COLLISION_REACH = 12
 export const COLLISION_RESOLUTION = 256
+
+// ── Coastline chart ───────────────────────────────────────────────────────────
+export const COASTLINE_TOLERANCE = 1
+export const COASTLINE_OFFSET = 6
+export const COASTLINE_CLOSING = 22
+export const COASTLINE_OPENING = 11
+export const COASTLINE_PIECE_MIN_AREA = 200
+export const COASTLINE_BRIDGE_WIDTH_SHARE = 1

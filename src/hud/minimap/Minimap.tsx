@@ -1,15 +1,18 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
 import { MINIMAP_COPY } from '@/data/hudCopy'
+import { useCoastStore } from '@/store/coastStore'
 import { useShipStore } from '@/store/shipStore'
 import { bearingDegrees } from '../north'
-import { ISLAND_SHAPES, chartPercent } from './chart'
+import { chartIslands, chartPercent } from './chart'
 import './Minimap.scss'
 
 const _shipPercent = new THREE.Vector2()
 
 export default function Minimap() {
   const shipRef = useRef<HTMLSpanElement>(null)
+  const coastlines = useCoastStore((state) => state.coastlines)
+  const islands = useMemo(() => chartIslands(coastlines), [coastlines])
 
   useEffect(() => {
     const ship = shipRef.current
@@ -33,8 +36,8 @@ export default function Minimap() {
     <div className="minimap">
       <div className="minimap__chart">
         <svg className="minimap__islands" viewBox="0 0 100 100">
-          {ISLAND_SHAPES.map(({ key, kind, path }) => (
-            <path key={key} className={`minimap__${kind}`} d={path} />
+          {islands.map(({ key, path }) => (
+            <path key={key} className="minimap__land" d={path} />
           ))}
         </svg>
         <span className="minimap__ship" ref={shipRef} />

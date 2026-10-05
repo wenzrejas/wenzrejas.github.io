@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { seededRandom, type Random } from '../procedural/valueNoise'
+import { seededRandom, type Random } from '@/utils/random'
 import {
   BRUSH_BASELINE,
   BRUSH_BODY_THINNING,

@@ -1,0 +1,79 @@
+@use '@/styles/glass';
+@use '@/styles/typography';
+
+$screen-gutter: 1.5rem;
+$island-list-width: min(20rem, 40vw);
+
+.world-map {
+  position: fixed;
+  inset: 0;
+  z-index: 95;
+  display: flex;
+  gap: $screen-gutter;
+  padding: $screen-gutter;
+  background: #0d2b3e;
+  color: #ffffff;
+
+  &__illustration {
+    position: relative;
+    display: grid;
+    flex: 1;
+    place-items: center;
+    border: 1px dashed rgba(255, 255, 255, 0.3);
+    border-radius: 1rem;
+  }
+
+  &__back {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    @include glass.glass-button;
+  }
+
+  &__title {
+    @include typography.display-title;
+    opacity: 0.6;
+  }
+
+  &__islands {
+    flex: none;
+    width: $island-list-width;
+    padding: $screen-gutter;
+    overflow-y: auto;
+    border-radius: 1rem;
+    @include glass.glass-panel;
+  }
+
+  &__heading {
+    margin-bottom: 1.25rem;
+    font-family: var(--font-hud);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    list-style: none;
+  }
+
+  &__island {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  &__name {
+    font-family: var(--font-accent);
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  &__tagline {
+    @include typography.spaced-caps;
+    opacity: 0.7;
+  }
+}

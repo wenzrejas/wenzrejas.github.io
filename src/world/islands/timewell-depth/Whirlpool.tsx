@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { ISLAND_COPY } from '@/data/islandCopy'
 import { useCycleStore } from '@/store/cycleStore'
+import { enterDepths } from '@/store/viewStore'
 import { useWhirlpoolStore } from '@/store/whirlpoolStore'
 import { mix } from '@/utils/math'
 import { syncWhirlpoolFunnel } from './whirlpoolFunnel'
@@ -112,6 +113,7 @@ export default function Whirlpool({ shoreline, center, islandScale, offsetY }: W
       <InteractionMarker
         position={[WHIRLPOOL_EYE_X, WHIRLPOOL_MARKER_LIFT, WHIRLPOOL_EYE_Z]}
         label={ISLAND_COPY.timewell.marker}
+        onActivate={enterDepths}
         baseGap={eyeGap}
       />
     </mesh>
