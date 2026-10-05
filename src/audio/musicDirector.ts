@@ -4,10 +4,12 @@ import { useCycleStore } from '../store/cycleStore'
 import { useDebugStore } from '../store/debugStore'
 import { useRevealStore } from '../store/revealStore'
 import { useShipStore } from '../store/shipStore'
+import { isInDepths } from '../store/viewStore'
 import { isRaining } from '../store/weatherStore'
 import { audio } from './audioManager'
 import {
   CHANNEL_VOLUMES,
+  DEPTHS_MUSIC,
   ISLAND_MUSIC_RANGE,
   ISLAND_MUSIC_RELEASE,
   MUSIC_CROSSFADE,
@@ -46,6 +48,8 @@ function chooseMusic(currentIsland: IslandKey | null) {
   const night = timeOfDay >= NIGHT_MUSIC_FROM || timeOfDay < NIGHT_MUSIC_UNTIL
   const island = islandInRange(currentIsland)
   const islandTune = island ? ISLAND_TUNES[island] : undefined
+
+  if (isInDepths()) return { island, track: DEPTHS_MUSIC, context: 'depths' }
 
   return {
     island,

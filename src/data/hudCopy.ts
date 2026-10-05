@@ -35,5 +35,6 @@ export const MENU_COPY = {
   unmute: 'Unmute sound',
   hideHud: 'Hide HUD',
   showHud: 'Show HUD',
+  worldMap: 'World map',
   settings: 'Settings',
 }

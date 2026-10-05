@@ -7,3 +7,27 @@
   background: rgba(0, 0, 0, 0.35);
   @include glass-backdrop;
 }
+
+@mixin glass-button {
+  @include glass-panel;
+  height: 3.5rem;
+  padding: 0 1.5rem;
+  border-radius: 999px;
+  color: #ffffff;
+  font-family: var(--font-hud);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.18);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+  }
+}

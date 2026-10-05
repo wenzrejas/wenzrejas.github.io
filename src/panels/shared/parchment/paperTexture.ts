@@ -1,5 +1,6 @@
 import { mix } from '@/utils/math'
-import { addNoiseOctaves, noiseGrid, type Random } from '../procedural/valueNoise'
+import type { Random } from '@/utils/random'
+import { addNoiseOctaves, noiseGrid } from '../procedural/valueNoise'
 import {
   BROAD_MOTTLING_OCTAVES,
   BROAD_MOTTLING_PIXEL,

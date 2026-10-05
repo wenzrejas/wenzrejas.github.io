@@ -11,6 +11,7 @@ import { animated, type SpringValues } from '@react-spring/web'
 import { useScrollOverflowVariables } from '@/hooks/useScrollOverflowVariables'
 import { PANEL_COPY } from '@/data/panelCopy'
 import { centerFocusLeftOf, closePanel } from '@/store/panelStore'
+import { isWorldInView } from '@/store/viewStore'
 import CompassRose from '../compass-rose/CompassRose'
 import PanelArt from '../panel-art/PanelArt'
 import PanelIcon from '../PanelIcon'
@@ -67,7 +68,7 @@ export default function IslandPanel({
 
   useEffect(() => {
     const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') closePanel()
+      if (event.key === 'Escape' && isWorldInView()) closePanel()
     }
     window.addEventListener('keydown', closeOnEscape)
     return () => window.removeEventListener('keydown', closeOnEscape)

@@ -1,11 +1,6 @@
 import * as THREE from 'three'
-import {
-  addNoiseOctaves,
-  noiseGrid,
-  seededRandom,
-  type NoiseOctave,
-  type Random,
-} from '../procedural/valueNoise'
+import { seededRandom, type Random } from '@/utils/random'
+import { addNoiseOctaves, noiseGrid, type NoiseOctave } from '../procedural/valueNoise'
 import {
   SPLASH_BODY,
   SPLASH_EDGE_SOFTNESS,

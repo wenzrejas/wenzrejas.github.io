@@ -1,9 +1,11 @@
 import { MENU_COPY } from '@/data/hudCopy'
 import { toggleHud, toggleSound, useHudStore } from '@/store/hudStore'
+import { openWorldMap, useViewStore } from '@/store/viewStore'
 import MenuIcon from './MenuIcon'
 import './HudMenu.scss'
 
 export default function HudMenu() {
+  const activeScene = useViewStore((state) => state.activeScene)
   const isSoundOn = useHudStore((state) => state.isSoundOn)
   const isHudVisible = useHudStore((state) => state.isHudVisible)
 
@@ -17,13 +19,23 @@ export default function HudMenu() {
       >
         <MenuIcon icon="music" isSlashed={!isSoundOn} />
       </button>
+      {activeScene === 'world' && (
+        <button
+          type="button"
+          className="hud-menu__button"
+          aria-label={isHudVisible ? MENU_COPY.hideHud : MENU_COPY.showHud}
+          onClick={toggleHud}
+        >
+          <MenuIcon icon="eye" isSlashed={isHudVisible} />
+        </button>
+      )}
       <button
         type="button"
         className="hud-menu__button"
-        aria-label={isHudVisible ? MENU_COPY.hideHud : MENU_COPY.showHud}
-        onClick={toggleHud}
+        aria-label={MENU_COPY.worldMap}
+        onClick={openWorldMap}
       >
-        <MenuIcon icon="eye" isSlashed={isHudVisible} />
+        <MenuIcon icon="map" />
       </button>
       <button type="button" className="hud-menu__button" aria-label={MENU_COPY.settings}>
         <MenuIcon icon="gear" />

@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { mix } from '@/utils/math'
-import type { Random } from '../procedural/valueNoise'
+import type { Random } from '@/utils/random'
 import {
   BAND_REACH,
   BAND_SAMPLE_STEP,

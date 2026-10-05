@@ -243,7 +243,7 @@ function edgeCells(outline: Uint8Array, resolution: number): number[] {
   return points
 }
 
-function floodOpenWater(outline: Uint8Array, resolution: number): Uint8Array {
+export function floodOpenWater(outline: Uint8Array, resolution: number): Uint8Array {
   const water = new Uint8Array(outline.length)
   const queue = new Int32Array(outline.length)
   let head = 0

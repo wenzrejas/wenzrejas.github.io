@@ -1,0 +1,14 @@
+@mixin display-title {
+  font-family: var(--font-accent);
+  font-size: clamp(1.75rem, 4.8vw, 2.5rem);
+  font-weight: 600;
+  letter-spacing: 2px;
+}
+
+@mixin spaced-caps {
+  font-family: var(--font-primary);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}

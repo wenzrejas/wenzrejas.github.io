@@ -1,5 +1,6 @@
 import * as THREE from 'three'
-import { addNoiseOctaves, noiseGrid, seededRandom } from '../procedural/valueNoise'
+import { seededRandom } from '@/utils/random'
+import { addNoiseOctaves, noiseGrid } from '../procedural/valueNoise'
 import {
   MIST_EDGE,
   MIST_HEIGHT,

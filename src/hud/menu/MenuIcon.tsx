@@ -1,6 +1,6 @@
 import { useId, type ReactNode } from 'react'
 
-export type MenuIconName = 'music' | 'eye' | 'gear'
+export type MenuIconName = 'music' | 'eye' | 'map' | 'gear'
 
 const SLASH = 'M4 4 L20 20'
 
@@ -27,6 +27,9 @@ const ICON_SHAPES: Record<MenuIconName, ReactNode> = {
       />
       <circle cx={12} cy={12} r={1.8} />
     </>
+  ),
+  map: (
+    <path d="M2.5 6 L8 4.25 V18.25 L2.5 20 Z M9.6 4.25 L14.4 5.75 V19.75 L9.6 18.25 Z M16 5.75 L21.5 4 V18 L16 19.75 Z" />
   ),
   gear: (
     <>

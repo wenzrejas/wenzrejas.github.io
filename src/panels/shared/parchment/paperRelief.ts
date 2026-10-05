@@ -1,10 +1,5 @@
-import {
-  addNoiseOctaves,
-  noiseGrid,
-  seededRandom,
-  type NoiseGrid,
-  type Random,
-} from '../procedural/valueNoise'
+import { seededRandom, type Random } from '@/utils/random'
+import { addNoiseOctaves, noiseGrid, type NoiseGrid } from '../procedural/valueNoise'
 import { RELIEF_GRAIN, RELIEF_OCTAVES, RELIEF_SEED, RELIEF_TILE_PIXELS } from './constants'
 
 export function greyShades({ values }: NoiseGrid, grain: number, random: Random) {

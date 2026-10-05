@@ -6,9 +6,11 @@ import { createWeatherSounds } from './weatherSounds'
 import { useDebugStore } from '../store/debugStore'
 import { useHudStore } from '../store/hudStore'
 import { hasPendingTasks, useLoadingStore } from '../store/loadingStore'
+import { isDepthsScene, useViewStore } from '../store/viewStore'
 
 export default function Soundscape() {
   const isLoading = useLoadingStore(hasPendingTasks)
+  const isInDepths = useViewStore(isDepthsScene)
 
   useEffect(() => {
     audio.install()
@@ -18,15 +20,10 @@ export default function Soundscape() {
   useEffect(() => {
     if (isLoading) return
     audio.setMuted(!useHudStore.getState().isSoundOn)
-    const waves = audio.play('oceanWaves', { loop: true, fadeIn: AMBIENCE_FADE_IN })
-    const weatherSounds = createWeatherSounds()
     const music = createMusicDirector()
     music.update()
 
-    const weatherTimer = window.setInterval(() => {
-      weatherSounds.update()
-      music.update()
-    }, WEATHER_POLL_MS)
+    const musicTimer = window.setInterval(() => music.update(), WEATHER_POLL_MS)
 
     const unsubscribe = useDebugStore.subscribe((state, previous) => {
       const { enabled, track } = state.music
@@ -39,12 +36,23 @@ export default function Soundscape() {
     return () => {
       unsubscribe()
       unsubscribeMute()
-      window.clearInterval(weatherTimer)
-      weatherSounds.dispose()
-      waves.stop(DEFAULT_FADE)
+      window.clearInterval(musicTimer)
       audio.stopMusic(DEFAULT_FADE)
     }
   }, [isLoading])
+
+  useEffect(() => {
+    if (isLoading || isInDepths) return
+    const waves = audio.play('oceanWaves', { loop: true, fadeIn: AMBIENCE_FADE_IN })
+    const weatherSounds = createWeatherSounds()
+    const weatherTimer = window.setInterval(() => weatherSounds.update(), WEATHER_POLL_MS)
+
+    return () => {
+      window.clearInterval(weatherTimer)
+      weatherSounds.dispose()
+      waves.stop(DEFAULT_FADE)
+    }
+  }, [isLoading, isInDepths])
 
   return null
 }
