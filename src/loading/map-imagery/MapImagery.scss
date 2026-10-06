@@ -1,0 +1,27 @@
+$mist-faintness: 0.2;
+
+.map-imagery {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  &__piece {
+    --reveal: clamp(0, (var(--progress, 0) * 100 - var(--from)) / var(--span), 1);
+    --mist-size: calc(var(--reveal) * var(--reach));
+
+    position: absolute;
+    background-image: var(--atlas);
+    background-repeat: no-repeat;
+    opacity: calc(#{$mist-faintness} + #{1 - $mist-faintness} * var(--reveal));
+    mask-image: var(--mist);
+    mask-repeat: no-repeat;
+    mask-size: var(--mist-size) var(--mist-size);
+    mask-position: calc(var(--origin-x) - var(--mist-size) / 2)
+      calc(var(--origin-y) - var(--mist-size) / 2);
+  }
+
+  &--charted &__piece {
+    opacity: 1;
+    mask-image: none;
+  }
+}

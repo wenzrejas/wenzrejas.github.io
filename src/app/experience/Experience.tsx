@@ -7,10 +7,13 @@ import CameraRig from './CameraRig'
 import TopView from './TopView'
 import WorldRenderer from './WorldRenderer'
 import InteractionLayer from '@/interaction/InteractionLayer'
+import CloudDeck from '@/loading/cloud-descent/CloudDeck'
+import MistDissolve from '@/loading/mist-dissolve/MistDissolve'
 import SceneWarmup from '@/loading/SceneWarmup'
 import World from '@/world/World'
 import DayNightCycle from '@/world/environment/day-night-cycle/DayNightCycle'
 import { useDebugStore } from '@/store/debugStore'
+import { useLoadingStore } from '@/store/loadingStore'
 
 const Perf = lazy(() => import('r3f-perf').then((module) => ({ default: module.Perf })))
 
@@ -18,6 +21,7 @@ export default function Experience() {
   const shipRef = useRef<THREE.Group>(null)
   const orbitCamera = useDebugStore((s) => s.camera.orbitCamera)
   const topView = useDebugStore((s) => s.camera.topView)
+  const isLoaderGone = useLoadingStore((state) => state.isLoaderGone)
 
   return (
     <Canvas
@@ -49,6 +53,12 @@ export default function Experience() {
           <OrbitControls makeDefault />
         ) : (
           <CameraRig shipRef={shipRef} />
+        )}
+        {!isLoaderGone && (
+          <>
+            <CloudDeck />
+            <MistDissolve />
+          </>
         )}
         <SceneWarmup />
       </Suspense>
