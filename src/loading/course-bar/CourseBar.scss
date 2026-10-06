@@ -1,0 +1,68 @@
+$course-sea: #4a7393;
+$course-ahead: rgba(157, 113, 70, 0.85);
+$course-ink: #4a2e1b;
+$course-dashes: 12 8;
+$course-width: 26rem;
+
+.course-bar {
+  display: block;
+  width: $course-width;
+  height: auto;
+  overflow: visible;
+  transition: opacity 0.6s ease;
+
+  &--hidden {
+    opacity: 0;
+  }
+
+  &__track,
+  &__wake {
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-dasharray: $course-dashes;
+  }
+
+  &__track {
+    stroke: $course-ahead;
+  }
+
+  &__wake {
+    stroke: $course-sea;
+  }
+
+  &__sailed {
+    transform: scaleX(var(--progress, 0));
+    transform-box: fill-box;
+    transform-origin: left center;
+  }
+
+  &__head {
+    fill: none;
+    stroke: $course-sea;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    translate: calc(var(--progress, 0) * var(--track-length)) 0;
+  }
+
+  &__harbor {
+    fill: none;
+    stroke: $course-ink;
+    stroke-width: 2.4;
+  }
+
+  &__wheel {
+    fill: none;
+    stroke: $course-sea;
+    stroke-width: 3.2;
+    stroke-linecap: round;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: turn-wheel 7s linear infinite;
+  }
+}
+
+@keyframes turn-wheel {
+  to {
+    rotate: 1turn;
+  }
+}

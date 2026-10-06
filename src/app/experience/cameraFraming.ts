@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { arrivalZoom } from '@/loading/cloud-descent/descent'
 import { useCinematicStore } from '@/store/cinematicStore'
 import { useDebugStore } from '@/store/debugStore'
 import { usePanelStore } from '@/store/panelStore'
@@ -86,7 +87,8 @@ export function frameShip(
   shakeCamera(camera, shake, time)
 
   const panelZoom = mix(1, PANEL_FRAMING_ZOOM, panelBlend)
-  const zoom = CAMERA_ZOOM * mix(1, REVEAL_ZOOM, blend) * mix(panelZoom, focusZoom, focusBlend)
+  const zoom =
+    CAMERA_ZOOM * arrivalZoom() * mix(1, REVEAL_ZOOM, blend) * mix(panelZoom, focusZoom, focusBlend)
   if (camera.zoom !== zoom) {
     camera.zoom = zoom
     camera.updateProjectionMatrix()

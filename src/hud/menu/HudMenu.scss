@@ -16,6 +16,14 @@ $button-size: 2.3rem;
   padding: 0 $menu-padding;
   border-radius: 999px;
   @include glass.glass-panel;
+  transition:
+    opacity 0.25s ease,
+    visibility 0.25s;
+
+  &--hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
 
   &__button {
     display: grid;

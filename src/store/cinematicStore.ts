@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import * as THREE from 'three'
+import { isLoaderShowing } from './loadingStore'
 
 interface CinematicState {
   isPlaying: boolean
@@ -19,4 +20,4 @@ export const useCinematicStore = create<CinematicState>(() => ({
 
 export const isCinematicPlaying = () => useCinematicStore.getState().isPlaying
 
-export const eventDelta = (dt: number) => (isCinematicPlaying() ? 0 : dt)
+export const eventDelta = (dt: number) => (isCinematicPlaying() || isLoaderShowing() ? 0 : dt)

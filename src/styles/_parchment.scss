@@ -23,6 +23,9 @@ $diamond-ornament: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'
 $short-screen: 820px;
 $state-change: 0.18s ease;
 
+$cartouche-hover-ink: #5a3c24;
+$cartouche-pressed-ink: #ecd3b4;
+
 @function card-frame-image($fill-opacity, $fill: 'fff6e4', $edge: '8c5a30', $edge-opacity: 0.6) {
   @return url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E" + "%3Cpath d='#{$frame-path}' fill='%23#{$fill}' fill-opacity='#{$fill-opacity}'/%3E" + "%3Cpath d='#{$frame-path}' transform='translate(1 1.2)' fill='none' stroke='%23784824' stroke-opacity='.22' stroke-width='1.4'/%3E" + "%3Cpath d='#{$frame-path}' fill='none' stroke='%23#{$edge}' stroke-opacity='#{$edge-opacity}' stroke-width='1.2'/%3E" + '%3C/svg%3E');
 }
@@ -30,6 +33,39 @@ $state-change: 0.18s ease;
 @mixin card-frame {
   border: $frame-width solid transparent;
   border-image: card-frame-image($frame-fill-opacity) $frame-slice fill / $frame-width stretch;
+}
+
+@mixin cartouche-button {
+  &:hover:not(:disabled),
+  &:focus-visible {
+    --cartouche-face: #{$frame-hover-fill};
+    --cartouche-band-top: #f0b46c;
+    --cartouche-band-bottom: #b8743a;
+    --cartouche-edge: rgba(140, 90, 48, 0.85);
+    --cartouche-line: rgba(160, 100, 50, 0.75);
+    --cartouche-sheen: rgba(255, 246, 214, 0.85);
+    --cartouche-aging: rgba(226, 156, 84, 0.18);
+    --cartouche-glow: drop-shadow(0 0 3px rgba(255, 186, 96, 0.9))
+      drop-shadow(0 0 10px rgba(255, 156, 60, 0.45));
+
+    outline: none;
+    color: $cartouche-hover-ink;
+  }
+
+  &:active:not(:disabled) {
+    --cartouche-face: #3a3533;
+    --cartouche-band-top: #9a8270;
+    --cartouche-band-bottom: #5e4a3e;
+    --cartouche-edge: #241c19;
+    --cartouche-line: rgba(196, 168, 140, 0.7);
+    --cartouche-sheen: rgba(226, 196, 166, 0.3);
+    --cartouche-aging: rgba(0, 0, 0, 0.28);
+    --cartouche-glow: none;
+    --cartouche-elevation: 0.35;
+
+    color: $cartouche-pressed-ink;
+    translate: 0 1px;
+  }
 }
 
 @mixin diamond-rule($ornament-size) {

@@ -1,20 +1,111 @@
-$backdrop: #1a7fa8;
+@use '@/styles/parchment' as *;
+
+$ship-width: 204px;
+$ship-shift-x: -3px;
+$ship-shift-y: 17px;
+$caption-drop: 116px;
+$course-drop: 158px;
+$set-sail-height: 3rem;
 
 .loading-screen {
   position: fixed;
   inset: 0;
   z-index: 100;
-  display: grid;
-  place-items: center;
-  background: $backdrop;
-  color: #ffffff;
-  font-family: var(--font-hud);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  transition: opacity 0.4s ease;
+  overflow: hidden;
 
-  &--done {
-    opacity: 0;
+  &__map {
+    position: absolute;
+    inset: 0;
+  }
+
+  &__ship {
+    position: absolute;
+    top: calc(50% + #{$ship-shift-y});
+    left: calc(50% + #{$ship-shift-x});
+    width: $ship-width;
+    translate: -50% -50%;
     pointer-events: none;
+    user-select: none;
+  }
+
+  &__caption,
+  &__course {
+    position: absolute;
+    left: 50%;
+    translate: -50% 0;
+  }
+
+  &__caption,
+  &__course,
+  &__sound {
+    transition: opacity 0.4s ease;
+  }
+
+  &__sound {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.5rem;
+  }
+
+  &__caption {
+    top: calc(50% + #{$caption-drop});
+  }
+
+  &__course {
+    top: calc(50% + #{$course-drop});
+    display: grid;
+    place-items: center;
+
+    > * {
+      grid-area: 1 / 1;
+    }
+  }
+
+  &__set-sail {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    height: $set-sail-height;
+    padding: 0 1.6rem;
+    border: none;
+    background: none;
+    color: $ink;
+    cursor: pointer;
+    animation: raise-set-sail 0.7s ease backwards;
+    transition:
+      color $state-change,
+      translate 0.08s ease;
+
+    @include cartouche-button;
+  }
+
+  &__set-sail-label {
+    position: relative;
+    font-family: var(--font-accent);
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  &--dissolving {
+    pointer-events: none;
+  }
+
+  &--dissolving &__map {
+    visibility: hidden;
+  }
+
+  &--dissolving &__caption,
+  &--dissolving &__course,
+  &--dissolving &__sound {
+    opacity: 0;
+  }
+}
+
+@keyframes raise-set-sail {
+  from {
+    opacity: 0;
+    scale: 0.96;
   }
 }

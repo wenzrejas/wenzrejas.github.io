@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import type * as THREE from 'three'
 import { isCinematicPlaying } from '@/store/cinematicStore'
 import { useDebugStore } from '@/store/debugStore'
+import { isLoaderShowing } from '@/store/loadingStore'
 import { useRevealStore } from '@/store/revealStore'
 import { MAX_FRAME_SECONDS } from '@/utils/time'
 import type { IslandKey } from './constants'
@@ -23,7 +24,8 @@ export default function IslandReveal({ shipRef }: IslandRevealProps) {
     if (!ship) return
 
     if (elapsed.current < 0) {
-      if (useDebugStore.getState().camera.topView || isCinematicPlaying()) return
+      if (useDebugStore.getState().camera.topView || isCinematicPlaying() || isLoaderShowing())
+        return
       sampleGroundFrame(camera)
       const trigger = enterReachedIsland(
         seen.current,

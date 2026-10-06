@@ -1,0 +1,30 @@
+@use '@/styles/parchment' as *;
+
+.sound-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.5rem;
+  border: none;
+  background: none;
+  color: $ink-soft;
+  @include handwritten;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: color $state-change;
+
+  svg {
+    flex: none;
+    font-size: 1.25rem;
+  }
+
+  &:hover,
+  &:focus-visible {
+    color: $ink;
+    outline: none;
+  }
+
+  &:focus-visible &__label {
+    text-decoration: underline;
+  }
+}
