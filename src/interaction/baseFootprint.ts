@@ -11,7 +11,7 @@ const _toFrame = new THREE.Matrix4()
 const _meshToFrame = new THREE.Matrix4()
 const _vertex = new THREE.Vector3()
 const _point = new THREE.Vector3()
-const _frameScale = new THREE.Vector3()
+const _frameAxis = new THREE.Vector3()
 
 const sectorOf = (dx: number, dz: number) =>
   Math.floor(((Math.atan2(dz, dx) / (Math.PI * 2) + 1) % 1) * BASE_FOOTPRINT_SECTORS) %
@@ -47,9 +47,9 @@ export function footprintGap(
   x: number,
   z: number
 ): number {
-  frame.worldToLocal(_point.set(x, 0, z))
+  _point.set(x, 0, z).applyMatrix4(_toFrame.copy(frame.matrixWorld).invert())
   const dx = _point.x - centerX
   const dz = _point.z - centerZ
   const gap = Math.hypot(dx, dz) - radii[sectorOf(dx, dz)]
-  return gap * frame.getWorldScale(_frameScale).x
+  return gap * _frameAxis.setFromMatrixColumn(frame.matrixWorld, 0).length()
 }

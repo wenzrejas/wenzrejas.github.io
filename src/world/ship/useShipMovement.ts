@@ -2,7 +2,13 @@ import { useRef, type RefObject } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useKeyboardInput, type Keys } from '@/hooks/useKeyboardInput'
-import { INITIAL_HEADING, WHIRLPOOL_LEAN_RATE } from './constants'
+import {
+  INITIAL_HEADING,
+  TAILWIND_ALIGN_FULL,
+  TAILWIND_ALIGN_START,
+  TAILWIND_RATE,
+  WHIRLPOOL_LEAN_RATE,
+} from './constants'
 import { BOUNDARY_RADIUS } from '../environment/boundary/constants'
 import { REVEAL_SPEED } from '../islands/shared/constants'
 import { ISLAND_KEYS, ISLAND_SPECS } from '../islands/shared/islandSpecs'
@@ -39,6 +45,8 @@ export function useShipMovement(groupRef: RefObject<THREE.Group | null>) {
   const pressedKeys = useKeyboardInput()
   const heading = useRef(INITIAL_HEADING)
   const tilt = useRef(0)
+  const steering = useRef(0)
+  const tailwind = useRef(0)
   const lean = useRef(new THREE.Vector2())
   const velocity = useRef({ x: 0, z: 0 })
 
@@ -66,12 +74,12 @@ export function useShipMovement(groupRef: RefObject<THREE.Group | null>) {
     // ── Velocity with wind assist ─────────────────────────────────────────
     const fwdX = -Math.sin(heading.current)
     const fwdZ = -Math.cos(heading.current)
+    const alignment = fwdX * wind.dir.x + fwdZ * wind.dir.y
 
     let targetVelX = 0
     let targetVelZ = 0
     if (keys.forward || keys.backward) {
       const direction = keys.forward ? 1 : -1
-      const alignment = fwdX * wind.dir.x + fwdZ * wind.dir.y
       const windMult =
         1 + Math.max(0, alignment) * WIND_ASSIST * Math.min(weather.windMult, WIND_ASSIST_CAP)
       const speed = moveSpeed * mix(1, REVEAL_SPEED, reveal.blend)
@@ -85,6 +93,14 @@ export function useShipMovement(groupRef: RefObject<THREE.Group | null>) {
     whirlpoolCurrent(group.position.x, group.position.z, _current)
     group.position.x += (velocity.current.x + _current.x) * dt
     group.position.z += (velocity.current.z + _current.y) * dt
+
+    // ── Tailwind ──────────────────────────────────────────────────────────
+    const forwardSpeed = velocity.current.x * fwdX + velocity.current.z * fwdZ
+    const forwardShare = THREE.MathUtils.clamp(forwardSpeed / Math.max(moveSpeed, 1), 0, 1)
+    const tailwindTarget =
+      THREE.MathUtils.smoothstep(alignment, TAILWIND_ALIGN_START, TAILWIND_ALIGN_FULL) *
+      forwardShare
+    tailwind.current += (tailwindTarget - tailwind.current) * Math.min(1, TAILWIND_RATE * dt)
 
     // ── Boundary clamp ────────────────────────────────────────────────────
     const dist = Math.sqrt(group.position.x ** 2 + group.position.z ** 2)
@@ -117,7 +133,8 @@ export function useShipMovement(groupRef: RefObject<THREE.Group | null>) {
     keepHullOffCoasts(group.position, heading.current, modelSize, collisions)
 
     // ── Tilt and bob ──────────────────────────────────────────────────────
-    const tiltTarget = keys.left ? tiltMax : keys.right ? -tiltMax : 0
+    steering.current = keys.left ? 1 : keys.right ? -1 : 0
+    const tiltTarget = steering.current * tiltMax
     tilt.current += (tiltTarget - tilt.current) * Math.min(1, tiltSpeed * dt)
 
     whirlpoolLean(group.position.x, group.position.z, heading.current, _leanTarget)
@@ -137,5 +154,5 @@ export function useShipMovement(groupRef: RefObject<THREE.Group | null>) {
       whirlpoolDip(group.position.x, group.position.z)
   })
 
-  return { heading, lean }
+  return { heading, lean, steering, tailwind }
 }

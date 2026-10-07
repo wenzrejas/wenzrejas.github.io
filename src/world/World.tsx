@@ -7,6 +7,7 @@ import Ocean from './environment/ocean/Ocean'
 import ShoreRipples from './shore/ShoreRipples'
 import Ship from './ship/Ship'
 import HullRipples from './ship/HullRipples'
+import type { HullOutline } from './ship/hullOutline'
 import WakeTrail from './ship/WakeTrail'
 import WakeRipples from './ship/WakeRipples'
 import WindLines from './environment/wind-lines/WindLines'
@@ -21,6 +22,7 @@ import Whale from './wildlife/whale/Whale'
 
 const World = forwardRef<THREE.Group>((_props, forwardedRef) => {
   const shipRef = useRef<THREE.Group>(null)
+  const hullOutlineRef = useRef<HullOutline | null>(null)
 
   return (
     <>
@@ -34,9 +36,10 @@ const World = forwardRef<THREE.Group>((_props, forwardedRef) => {
           if (typeof forwardedRef === 'function') forwardedRef(el)
           else if (forwardedRef) forwardedRef.current = el
         }}
+        hullOutlineRef={hullOutlineRef}
       />
       <IslandReveal shipRef={shipRef} />
-      <HullRipples shipRef={shipRef} />
+      <HullRipples shipRef={shipRef} hullOutlineRef={hullOutlineRef} />
       <WakeTrail shipRef={shipRef} />
       <WakeRipples shipRef={shipRef} />
       <WindLines shipRef={shipRef} />

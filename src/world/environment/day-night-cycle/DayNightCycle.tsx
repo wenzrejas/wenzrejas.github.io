@@ -9,6 +9,7 @@ import { useSkyBeamStore } from '@/store/skyBeamStore'
 import { CYCLE_DURATION, DAY_CYCLE_FRAME_PRIORITY } from './constants'
 import { BRIGHTEST_MOON, PHASES, sampleKeyframes } from './dayNightKeyframes'
 import { darkenSky } from './skyDarkening'
+import { flashSky } from './skyFlash'
 import { mix, lerpColor, lerpVec3 } from '@/utils/math'
 
 const _sunPos = new THREE.Vector3()
@@ -25,7 +26,7 @@ export default function DayNightCycle() {
 
   useFrame((_, delta) => {
     const { dayCycle } = useDebugStore.getState()
-    const { isActive: isSkyBeamActive, darkness } = useSkyBeamStore.getState()
+    const { isActive: isSkyBeamActive, darkness, flash } = useSkyBeamStore.getState()
     if (dayCycle.timeOfDay === 'auto') {
       if (!isSkyBeamActive && !isLoaderShowing()) {
         timeRef.current = (timeRef.current + (delta * dayCycle.cycleSpeed) / CYCLE_DURATION) % 1
@@ -91,6 +92,7 @@ export default function DayNightCycle() {
 
     // ── Sky beam darkness ─────────────────────────────────────────────────
     if (darkness > 0) darkenSky(darkness, { background: scene.background, hemi, sun, moon })
+    if (flash > 0) flashSky(flash, { background: scene.background, hemi, sun, moon })
 
     // ── Lightning flash ───────────────────────────────────────────────────
     const f = weather.lightningFlash

@@ -1,6 +1,7 @@
 import { SOCIAL_LINKS } from '@/data/socialLinks'
 import { BASE_TUNING, type ContactBlob, type IslandSpec } from '../shared/islandSpec'
 import type { GroundGlowTuning } from '../shared/ground-glow/glowSites'
+import type { SurfTuning } from '../shared/rock-surf/surfSplash'
 import { LUMINA_FOOTPRINT, LUMINA_MAIN_SHORE_RADIUS, LUMINA_MODEL_TOP } from './shoreProfile'
 
 export const LUMINA_MODEL_URL = '/models/islands/lumina_point_web_draco.glb'
@@ -101,8 +102,11 @@ export const HOVER_GLOW_GAIN = 2.2
 export const LOGO_HOVER_RISE = 0.35
 
 // ── Main island ───────────────────────────────────────────────────────────────
+export const MAIN_ISLAND_NODE = 'MainIsland'
+export const MAIN_ISLAND_TERRAIN_NODES = ['Static_MainIsland']
 export const LIGHTHOUSE_NODE = 'Lighthouse_Root'
 export const LIGHTHOUSE_MARKER_HEIGHT = 0.3
+export const MAIN_ISLAND_TOUCH_REACH = 2
 export const HIGHLIGHT_DAY_SHARE = 0.7
 
 export const SUMMIT_GLOW: GroundGlowTuning = {
@@ -119,6 +123,46 @@ export const SUMMIT_GLOW: GroundGlowTuning = {
   moteInnerShare: 0.9,
   moteStrength: 1.3,
 }
+
+// ── Seabed circuit ────────────────────────────────────────────────────────────
+export const CIRCUIT_GLOW_SECONDS = 0.3
+export const CIRCUIT_TRAVEL_DELAY = 0.15
+export const CIRCUIT_TRAVEL_SECONDS = 0.5
+export const CIRCUIT_RELEASE_RATE = 2
+export const MONOLITH_GLOW_SECONDS = 0.25
+export const CIRCUIT_SHIMMER_GRAIN = 0.08
+export const CIRCUIT_SHIMMER_SWAY = 2.5
+export const CIRCUIT_SHIMMER_RATE = 0.4
+export const CIRCUIT_REFRACTION_GRAIN = 0.25
+
+export const SEABED_GLOW_REACH = 0.9
+export const SEABED_GLOW_INSET = 0.15
+export const SEABED_GLOW_MARGIN = 3.5
+export const SEABED_GLOW_RESOLUTION = 192
+export const SEABED_GLOW_STRENGTH = 0.75
+export const SEABED_OUTLINE_GAP = 0.35
+export const SEABED_OUTLINE_WIDTH = 0.3
+export const SEABED_OUTLINE_STRENGTH = 0.55
+export const SEABED_OUTLINE_REFRACTION = 0.2
+export const SEABED_PULSE_RATE = 2.2
+export const SEABED_PULSE_DEPTH = 0.2
+
+export const CONDUIT_SHORE_CLEARANCE = 0.15
+export const CONDUIT_SHORE_OVERLAP = 0.6
+export const CONDUIT_WIDTH = 1.3
+export const CONDUIT_END_FLARE = 1.5
+export const CONDUIT_FLARE_LENGTH = 1.6
+export const CONDUIT_SEGMENTS = 64
+export const CONDUIT_SHARPNESS = 3.5
+export const CONDUIT_EDGE_FADE = 0.25
+export const CONDUIT_END_FADE = 0.08
+export const CONDUIT_FEATHER = 0.05
+export const CONDUIT_HEAD_SPREAD = 0.06
+export const CONDUIT_HEAD_GLOW = 1.4
+export const CONDUIT_BODY_GLOW = 0.55
+export const CONDUIT_PULSES = 3
+export const CONDUIT_FLOW_RATE = 0.9
+export const CONDUIT_REFRACTION = 0.35
 
 // ── Sky beam ──────────────────────────────────────────────────────────────────
 export const SKY_BEAM_ANCHOR_NODE = 'Anchor_SkyBeam'
@@ -143,6 +187,16 @@ export const SKY_DARKNESS = 0.85
 export const FOCUS_ZOOM = 1.08
 export const SHAKE_STRENGTH = 1.2
 export const SHAKE_SECONDS = 0.8
+export const SKY_FLASH_SECONDS = 1.1
+
+// ── Sky beam shockwave ────────────────────────────────────────────────────────
+export const SHOCK_COLOR = '#c6f1ff'
+export const SHOCK_RING_SECONDS = 0.8
+export const SHOCK_RING_START = 0.8
+export const SHOCK_RING_REACH = 24
+export const SHOCK_RING_GLOW = 0.2
+export const SHOCK_RING_EDGE = 0.02
+export const SHOCK_RING_WAKE = 0.3
 
 // ── Sky beam sparks ───────────────────────────────────────────────────────────
 export const SPARK_ARCS = 12
@@ -216,6 +270,18 @@ export const RISING_MOTES: GroundGlowTuning = {
   moteSpread: 0.3,
   moteInnerShare: 0.3,
   moteStrength: 1.5,
+}
+
+// ── Rock surf ─────────────────────────────────────────────────────────────────
+export const LUMINA_SURF: SurfTuning = {
+  intervalMin: 0.15,
+  intervalMax: 0.5,
+  drops: 12,
+  dropSize: 0.9,
+  rise: 20,
+  recoil: 3.5,
+  foamBlobs: 5,
+  foamSize: 2,
 }
 
 // ── Contact blob ──────────────────────────────────────────────────────────────

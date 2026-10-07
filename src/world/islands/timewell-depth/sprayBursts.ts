@@ -4,8 +4,9 @@ import { rand } from '@/utils/math'
 import { isSphereInView } from '@/utils/screen'
 import type { ParticlePool } from '@/world/effects/particlePool'
 import { SHORE_Y } from '@/world/shore/constants'
-import type { ShoreField } from '@/world/shore/shoreField'
+import { outwardAt, type ShoreField } from '@/world/shore/shoreField'
 import { nightGlow } from '../shared/nightGlow'
+import { placeOnIsland, scanShore, turnToIsland, type SiteFrame } from '../shared/shoreSites'
 import {
   WHIRLPOOL_FADE_START,
   WHIRLPOOL_GLOW_COLOR,
@@ -38,13 +39,6 @@ import {
 import { funnelDip, whirlpoolDip } from './whirlpoolFunnel'
 import { TIMEWELL_BASIN } from './shoreProfile'
 
-export interface SiteFrame {
-  originX: number
-  originZ: number
-  facing: number
-  scale: number
-}
-
 export interface SplashSite {
   x: number
   z: number
@@ -63,6 +57,8 @@ export interface SpraySite {
   flowZ: number
 }
 
+const _away = new THREE.Vector2()
+
 // ── Frame ─────────────────────────────────────────────────────────────────────
 
 const eyeOf = (center: THREE.Vector3): [number, number] => [
@@ -77,34 +73,6 @@ function swirlFlow(offsetX: number, offsetZ: number): [number, number] {
   return [x / length, z / length]
 }
 
-function turnToIsland(frame: SiteFrame, x: number, z: number): [number, number] {
-  const cos = Math.cos(frame.facing)
-  const sin = Math.sin(frame.facing)
-  return [x * cos + z * sin, z * cos - x * sin]
-}
-
-function placeOnIsland(frame: SiteFrame, x: number, z: number): [number, number] {
-  const [turnedX, turnedZ] = turnToIsland(frame, x, z)
-  return [frame.originX + turnedX * frame.scale, frame.originZ + turnedZ * frame.scale]
-}
-
-function scanShore(
-  shoreline: ShoreField,
-  step: number,
-  visit: (x: number, z: number, cell: number) => void
-): void {
-  const { resolution, size, centerX, centerZ } = shoreline
-  for (let row = 1; row < resolution - 1; row += step) {
-    for (let column = 1; column < resolution - 1; column += step) {
-      visit(
-        centerX + ((column + 0.5) / resolution - 0.5) * size,
-        centerZ + ((row + 0.5) / resolution - 0.5) * size,
-        row * resolution + column
-      )
-    }
-  }
-}
-
 // ── Sites ─────────────────────────────────────────────────────────────────────
 
 export function findSplashSites(
@@ -112,7 +80,7 @@ export function findSplashSites(
   center: THREE.Vector3,
   frame: SiteFrame
 ): SplashSite[] {
-  const { distances, resolution } = shoreline
+  const { distances } = shoreline
   const band = WHIRLPOOL_SPLASH_SITE_BAND / frame.scale
   const reach = WHIRLPOOL_RADIUS * WHIRLPOOL_FADE_START
   const [eyeX, eyeZ] = eyeOf(center)
@@ -122,19 +90,15 @@ export function findSplashSites(
     if (distances[cell] < 0 || distances[cell] > band) return
     if (Math.hypot(x - eyeX, z - eyeZ) > reach) return
 
-    const slopeX = distances[cell + 1] - distances[cell - 1]
-    const slopeZ = distances[cell + resolution] - distances[cell - resolution]
-    const steepness = Math.hypot(slopeX, slopeZ)
-    if (steepness === 0) return
+    const away = outwardAt(shoreline, cell, _away)
+    if (away.lengthSq() === 0) return
 
-    const awayX = slopeX / steepness
-    const awayZ = slopeZ / steepness
     const [flowX, flowZ] = swirlFlow(x - eyeX, z - eyeZ)
-    const impact = -(flowX * awayX + flowZ * awayZ)
+    const impact = -(flowX * away.x + flowZ * away.y)
     if (impact < WHIRLPOOL_SPLASH_MIN_IMPACT) return
 
     const [siteX, siteZ] = placeOnIsland(frame, x, z)
-    const [awayOnIslandX, awayOnIslandZ] = turnToIsland(frame, awayX, awayZ)
+    const [awayOnIslandX, awayOnIslandZ] = turnToIsland(frame, away.x, away.y)
     const [flowOnIslandX, flowOnIslandZ] = turnToIsland(frame, flowX, flowZ)
     sites.push({
       x: siteX,
@@ -178,16 +142,6 @@ export function findSpraySites(
 }
 
 // ── Bursts ────────────────────────────────────────────────────────────────────
-
-export function burstsDue(clock: { wait: number }, dt: number, min: number, max: number): number {
-  clock.wait -= dt
-  let bursts = 0
-  while (clock.wait <= 0) {
-    clock.wait += rand(min, max)
-    bursts++
-  }
-  return bursts
-}
 
 export function emitRockSplash(foam: ParticlePool, drops: ParticlePool, site: SplashSite): void {
   const strength = (0.6 + 0.4 * site.impact) * rand(0.8, 1.2)
@@ -260,7 +214,6 @@ const _sprayReach = new THREE.Sphere()
 export const MAGIC_SPRAY = new THREE.Color(WHIRLPOOL_GLOW_COLOR)
 export const magicSprayAt = () => nightGlow() * WHIRLPOOL_SPRAY_NIGHT_TINT
 export const funnelSurfaceAt = (x: number, z: number) => SHORE_Y - whirlpoolDip(x, z)
-export const pickSite = <T>(sites: T[]) => sites[Math.floor(Math.random() * sites.length)]
 
 export function isSprayInView(camera: THREE.Camera): boolean {
   const whirlpool = useWhirlpoolStore.getState()

@@ -1,6 +1,7 @@
 import type { GroveKey } from '@/store/panelStore'
 import { BASE_TUNING, type ContactBlob, type IslandSpec } from '../shared/islandSpec'
 import type { GroundGlowTuning } from '../shared/ground-glow/glowSites'
+import type { SurfTuning } from '../shared/rock-surf/surfSplash'
 import { TECH_CLUSTER_RADIUS, TECH_FOOTPRINT, TECH_MODEL_TOP } from './shoreProfile'
 
 export const TECH_MODEL_URL = '/models/islands/tech_grove_web_draco.glb'
@@ -15,6 +16,13 @@ export const BASE_RIM_NODES = [
 export const GEM_NODES = ['Gem_Design', 'Gem_Frontend', 'Gem_WebGL']
 export const SPINNING_GEM_NODES = ['Gem_Frontend', 'Gem_WebGL']
 export const TUMBLING_GEM_NODES = ['Gem_WebGL']
+export const TERRAIN_NODES = [
+  'Static_Creative',
+  'Static_Design',
+  'Static_Frontend',
+  'Static_WebGL',
+  'Static_Surrounding_Rocks',
+]
 export const STATUE_GROVES: Record<string, GroveKey> = {
   Statue_Creative: 'creative',
   Statue_Design: 'design',
@@ -85,6 +93,18 @@ export const SPARKLE_TINT = 0.35
 
 // ── Statues ───────────────────────────────────────────────────────────────────
 export const STATUE_MARKER_HEIGHT = 0.2
+
+// ── Rock surf ─────────────────────────────────────────────────────────────────
+export const TECH_SURF: SurfTuning = {
+  intervalMin: 0.6,
+  intervalMax: 1.6,
+  drops: 6,
+  dropSize: 0.5,
+  rise: 9,
+  recoil: 2,
+  foamBlobs: 3,
+  foamSize: 1.2,
+}
 
 // ── Contact blob ──────────────────────────────────────────────────────────────
 export const TECH_BLOB: ContactBlob = {

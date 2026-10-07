@@ -20,7 +20,7 @@ const DARK = {
   moonPosition: new THREE.Vector3(...NIGHT.moonPos),
 }
 
-interface SkyLights {
+export interface SkyLights {
   background: unknown
   hemi: THREE.HemisphereLight | null
   sun: THREE.DirectionalLight | null

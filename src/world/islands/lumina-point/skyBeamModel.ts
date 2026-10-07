@@ -20,6 +20,9 @@ import {
   ORB_RADIUS,
   RISING_MOTE_RADIUS,
   RISING_MOTES,
+  SHOCK_COLOR,
+  SHOCK_RING_EDGE,
+  SHOCK_RING_WAKE,
   SKY_BEAM_BODY_SHARPNESS,
   SKY_BEAM_BODY_STRENGTH,
   SKY_BEAM_COLOR,
@@ -51,6 +54,8 @@ import CHARGE_MOTES_VERT from './shaders/chargeMotes.vert.glsl'
 import CHARGE_MOTES_FRAG from './shaders/chargeMotes.frag.glsl'
 import SKY_BEAM_VERT from './shaders/skyBeam.vert.glsl'
 import SKY_BEAM_FRAG from './shaders/skyBeam.frag.glsl'
+import SHOCK_RING_VERT from './shaders/shockRing.vert.glsl'
+import SHOCK_RING_FRAG from './shaders/shockRing.frag.glsl'
 
 export interface SkyBeamMaterials {
   arcs: THREE.ShaderMaterial
@@ -58,9 +63,11 @@ export interface SkyBeamMaterials {
   risingMotes: THREE.ShaderMaterial
   orb: THREE.ShaderMaterial
   beam: THREE.ShaderMaterial
+  shockRing: THREE.ShaderMaterial
 }
 
 const BEAM_TINT = new THREE.Color(SKY_BEAM_COLOR)
+const SHOCK_TINT = new THREE.Color(SHOCK_COLOR)
 
 const dynamicAttribute = (length: number, itemSize: number) =>
   new THREE.BufferAttribute(new Float32Array(length * itemSize), itemSize).setUsage(
@@ -212,6 +219,16 @@ const createBeamMaterial = () =>
     }
   )
 
+// ── Shockwave ─────────────────────────────────────────────────────────────────
+
+const createShockRingMaterial = () =>
+  createAdditiveGlowMaterial(
+    SHOCK_RING_VERT,
+    SHOCK_RING_FRAG,
+    { RING_EDGE: SHOCK_RING_EDGE, RING_WAKE: SHOCK_RING_WAKE },
+    { uColor: { value: SHOCK_TINT } }
+  )
+
 // ── Materials ─────────────────────────────────────────────────────────────────
 
 export const createSkyBeamMaterials = (): SkyBeamMaterials => ({
@@ -220,4 +237,5 @@ export const createSkyBeamMaterials = (): SkyBeamMaterials => ({
   risingMotes: createRisingMoteMaterial(),
   orb: createOrbMaterial(),
   beam: createBeamMaterial(),
+  shockRing: createShockRingMaterial(),
 })

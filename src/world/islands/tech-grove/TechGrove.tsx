@@ -9,7 +9,8 @@ import { placeIsland } from '../shared/islandTransform'
 import IslandShadow from '../shared/IslandShadow'
 import Coast from '@/world/shore/Coast'
 import { useCoastFields } from '@/world/shore/useCoastFields'
-import { TECH_BLOB, TECH_MODEL_URL } from './constants'
+import RockSurf from '../shared/rock-surf/RockSurf'
+import { TECH_BLOB, TECH_MODEL_URL, TECH_SURF, TERRAIN_NODES } from './constants'
 import { TECH_ISLETS } from './shoreProfile'
 import { useSanctuaryGlow } from './sanctuaryGlow'
 import { findShrines } from './shrines'
@@ -62,6 +63,17 @@ export default function TechGrove({ islandKey, config }: IslandBodyProps) {
           />
         ))}
       </group>
+      {coast && (
+        <RockSurf
+          model={island.model}
+          terrainNodes={TERRAIN_NODES}
+          shoreline={coast.shoreline}
+          placement={placement}
+          offsetY={tuning.offsetY}
+          config={config}
+          tuning={TECH_SURF}
+        />
+      )}
     </>
   )
 }

@@ -3,8 +3,9 @@ import {
   BASE_Y,
   BOB_AMP,
   BOB_SPEED,
-  FOAM_WIDTH_TRIM,
+  FOAM_REACH,
   FOAM_Y,
+  MODEL_BRIGHTNESS,
   MODEL_TARGET_SIZE,
   MOVE_SPEED,
   PARTICLE_LIFETIME,
@@ -21,6 +22,7 @@ export function useShipControls() {
     {
       Model: folder({
         modelSize: { value: MODEL_TARGET_SIZE, min: 5, max: 150, step: 0.5, label: 'size' },
+        brightness: { value: MODEL_BRIGHTNESS, min: 0.2, max: 1.5, step: 0.01 },
       }),
       Movement: folder({
         moveSpeed: { value: MOVE_SPEED, min: 0, max: 150, step: 1 },
@@ -40,7 +42,7 @@ export function useShipControls() {
         partSpeed: { value: PARTICLE_SPEED, min: 0, max: 30, step: 1 },
       }),
       Foam: folder({
-        foamWidth: { value: FOAM_WIDTH_TRIM, min: 0.3, max: 2, step: 0.01, label: 'width x hull' },
+        foamReach: { value: FOAM_REACH, min: 0.5, max: 5, step: 0.1, label: 'reach' },
         foamY: { value: FOAM_Y, min: -3, max: 3, step: 0.05, label: 'Y position' },
       }),
     },

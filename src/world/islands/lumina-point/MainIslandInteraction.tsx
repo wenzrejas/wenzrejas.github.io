@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import type * as THREE from 'three'
 import { ISLAND_COPY } from '@/data/islandCopy'
@@ -7,8 +7,13 @@ import { useSkyBeamStore } from '@/store/skyBeamStore'
 import InteractionMarker from '@/interaction/InteractionMarker'
 import { easeHover } from '@/interaction/hover'
 import GroundGlow from '../shared/ground-glow/GroundGlow'
-import { SUMMIT_GLOW } from './constants'
-import { highlightGlow, type MainIsland } from './mainIsland'
+import { MAIN_ISLAND_TOUCH_REACH, SUMMIT_GLOW } from './constants'
+import {
+  highlightGlow,
+  isMainIslandEngaged,
+  setMainIslandHovered,
+  type MainIsland,
+} from './mainIsland'
 
 interface MainIslandInteractionProps {
   mainIsland: MainIsland
@@ -19,14 +24,13 @@ export default function MainIslandInteraction({
   mainIsland,
   islandScale,
 }: MainIslandInteractionProps) {
-  const [isHovered, setHovered] = useState(false)
   const isSkyBeamActive = useSkyBeamStore((s) => s.isActive)
 
   const summitSites = useMemo(() => [mainIsland.summit], [mainIsland])
   const effectsRef = useRef<THREE.Group>(null)
 
   useFrame((_, delta) => {
-    easeHover(mainIsland, isHovered, delta)
+    easeHover(mainIsland, isMainIslandEngaged(mainIsland), delta)
     if (effectsRef.current) effectsRef.current.visible = mainIsland.hoverBlend > 0
   })
 
@@ -44,8 +48,10 @@ export default function MainIslandInteraction({
         <InteractionMarker
           position={mainIsland.marker}
           label={ISLAND_COPY.lumina.marker}
-          onHover={setHovered}
+          onHover={(isHovered) => setMainIslandHovered(mainIsland, isHovered)}
           onActivate={(markerSpot) => openPanel('contact', markerSpot)}
+          shipReach={MAIN_ISLAND_TOUCH_REACH}
+          baseGap={mainIsland.baseGap}
         />
       )}
     </>

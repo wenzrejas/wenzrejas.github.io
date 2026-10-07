@@ -5,6 +5,7 @@ import { useCycleStore } from '@/store/cycleStore'
 import { useDebugStore } from '@/store/debugStore'
 import { uniformsOf } from '@/utils/meshes'
 import { FALLBACK_FRAME_SECONDS, MAX_FRAME_SECONDS } from '@/utils/time'
+import { WAKE_STERN_SHIFT } from './constants'
 import {
   carryRibbon,
   createWakeRibbon,
@@ -51,6 +52,8 @@ export default function WakeTrail({ shipRef }: WakeTrailProps) {
       ribbon.current,
       ship.position.x,
       ship.position.z,
+      ship.position.x + Math.sin(ship.rotation.y) * WAKE_STERN_SHIFT,
+      ship.position.z + Math.cos(ship.rotation.y) * WAKE_STERN_SHIFT,
       wake.minSampleDist
     )
     fadeRibbon(ribbon.current, mesh.geometry, hasMoved, dt)

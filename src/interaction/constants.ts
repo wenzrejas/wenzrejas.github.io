@@ -4,6 +4,7 @@ export const INTERACTION_LAYER = 1
 export const SHIP_HOVER_REACH = 85
 export const BASE_TOUCH_REACH = 8
 export const BASE_FOOTPRINT_SECTORS = 72
+export const KEYBOARD_TARGETS = 'a, button, input, select, textarea, [contenteditable]'
 
 export const HOVER_EASE_RATE = 6
 export const HOVER_SNAP_GAP = 0.001

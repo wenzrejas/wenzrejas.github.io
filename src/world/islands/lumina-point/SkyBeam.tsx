@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import type * as THREE from 'three'
 import { endSkyBeam, useSkyBeamStore } from '@/store/skyBeamStore'
+import { buildFlatQuad } from '@/utils/geometry'
 import { uniformsOf } from '@/utils/meshes'
 import {
   CHARGE_MOTE_SIZE,
@@ -67,12 +68,14 @@ function SkyBeamParts({ anchor, origin, islandScale, materials, isActive }: SkyB
   const risingMotesRef = useRef<THREE.Points>(null)
   const orbRef = useRef<THREE.Mesh>(null)
   const beamRef = useRef<THREE.Mesh>(null)
+  const shockRingRef = useRef<THREE.Mesh>(null)
 
   const arcGeometry = useMemo(() => buildArcGeometry(), [])
   const chargeMoteGeometry = useMemo(() => buildChargeMoteGeometry(), [])
   const risingMoteGeometry = useMemo(() => buildRisingMoteGeometry(islandScale), [islandScale])
   const orbGeometry = useMemo(() => buildOrbGeometry(), [])
   const beamGeometry = useMemo(() => buildBeamGeometry(), [])
+  const shockRingGeometry = useMemo(() => buildFlatQuad(), [])
 
   useEffect(() => {
     if (!isActive) return
@@ -89,11 +92,19 @@ function SkyBeamParts({ anchor, origin, islandScale, materials, isActive }: SkyB
         risingMoteGeometry,
         orbGeometry,
         beamGeometry,
+        shockRingGeometry,
       ]) {
         geometry.dispose()
       }
     },
-    [arcGeometry, chargeMoteGeometry, risingMoteGeometry, orbGeometry, beamGeometry]
+    [
+      arcGeometry,
+      chargeMoteGeometry,
+      risingMoteGeometry,
+      orbGeometry,
+      beamGeometry,
+      shockRingGeometry,
+    ]
   )
 
   useFrame(({ camera, gl }, delta) => {
@@ -102,7 +113,8 @@ function SkyBeamParts({ anchor, origin, islandScale, materials, isActive }: SkyB
     const risingMotes = risingMotesRef.current
     const orb = orbRef.current
     const beam = beamRef.current
-    if (!isActive || !arcs || !chargeMotes || !risingMotes || !orb || !beam) return
+    const shockRing = shockRingRef.current
+    if (!isActive || !arcs || !chargeMotes || !risingMotes || !orb || !beam || !shockRing) return
 
     const isStrikeDue = advanceSkyBeam(run.current, delta)
     const { elapsed, stage } = run.current
@@ -143,6 +155,10 @@ function SkyBeamParts({ anchor, origin, islandScale, materials, isActive }: SkyB
     beamUniforms.uGlow.value = stage.beamGlow
     beamUniforms.uLength.value = SKY_BEAM_HEIGHT * stage.reach
     beamUniforms.uTime.value = elapsed
+
+    shockRing.visible = stage.ringGlow > 0
+    shockRing.scale.setScalar(stage.ringRadius * 2)
+    uniformsOf(shockRing).uGlow.value = stage.ringGlow
   })
 
   return (
@@ -179,6 +195,13 @@ function SkyBeamParts({ anchor, origin, islandScale, materials, isActive }: SkyB
         ref={orbRef}
         geometry={orbGeometry}
         material={materials.orb}
+        visible={false}
+        renderOrder={6}
+      />
+      <mesh
+        ref={shockRingRef}
+        geometry={shockRingGeometry}
+        material={materials.shockRing}
         visible={false}
         renderOrder={6}
       />

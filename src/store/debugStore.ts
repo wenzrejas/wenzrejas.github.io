@@ -17,6 +17,7 @@ import type {
 import { OCEAN_DEFAULTS } from '../world/environment/ocean/constants'
 import {
   MODEL_TARGET_SIZE,
+  MODEL_BRIGHTNESS,
   BASE_Y,
   BOB_AMP,
   BOB_SPEED,
@@ -26,7 +27,7 @@ import {
   TILT_SPEED,
   PARTICLE_LIFETIME,
   PARTICLE_SPEED,
-  FOAM_WIDTH_TRIM,
+  FOAM_REACH,
   FOAM_Y,
   WAKE_ARM_NEAR,
   WAKE_ARM_FAR,
@@ -97,6 +98,7 @@ export const useDebugStore = create<DebugState>(() => ({
   ocean: { ...OCEAN_DEFAULTS },
   ship: {
     modelSize: MODEL_TARGET_SIZE,
+    brightness: MODEL_BRIGHTNESS,
     moveSpeed: MOVE_SPEED,
     turnSpeed: TURN_SPEED,
     baseY: BASE_Y,
@@ -106,7 +108,7 @@ export const useDebugStore = create<DebugState>(() => ({
     tiltSpeed: TILT_SPEED,
     partLife: PARTICLE_LIFETIME,
     partSpeed: PARTICLE_SPEED,
-    foamWidth: FOAM_WIDTH_TRIM,
+    foamReach: FOAM_REACH,
     foamY: FOAM_Y,
   },
   islands: { ...ISLAND_MODEL_DEFAULTS },
