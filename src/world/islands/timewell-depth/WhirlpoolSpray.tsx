@@ -6,6 +6,7 @@ import { ParticlePool } from '@/world/effects/particlePool'
 import Spray from '@/world/effects/Spray'
 import type { ShoreField } from '@/world/shore/shoreField'
 import type { IslandPlacement } from '../shared/islandTransform'
+import { burstsDue, pickSite, useSiteFrame } from '../shared/shoreSites'
 import {
   WHIRLPOOL_SPLASH_DROP_POOL,
   WHIRLPOOL_SPLASH_FOAM_POOL,
@@ -19,7 +20,6 @@ import {
 } from './constants'
 import {
   MAGIC_SPRAY,
-  burstsDue,
   emitRockSplash,
   emitSwirlSpray,
   findSplashSites,
@@ -27,7 +27,6 @@ import {
   funnelSurfaceAt,
   isSprayInView,
   magicSprayAt,
-  pickSite,
 } from './sprayBursts'
 
 interface WhirlpoolSprayProps {
@@ -37,14 +36,7 @@ interface WhirlpoolSprayProps {
 }
 
 export default function WhirlpoolSpray({ shoreline, center, placement }: WhirlpoolSprayProps) {
-  const [originX, , originZ] = placement.position
-  const facing = placement.rotation[1]
-  const { scale } = placement
-
-  const frame = useMemo(
-    () => ({ originX, originZ, facing, scale }),
-    [originX, originZ, facing, scale]
-  )
+  const frame = useSiteFrame(placement)
   const rockSites = useMemo(
     () => findSplashSites(shoreline, center, frame),
     [shoreline, center, frame]

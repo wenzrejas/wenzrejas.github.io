@@ -24,6 +24,10 @@ import {
   ORB_SOURCE_SHARE,
   SHAKE_SECONDS,
   SHAKE_STRENGTH,
+  SHOCK_RING_GLOW,
+  SHOCK_RING_REACH,
+  SHOCK_RING_SECONDS,
+  SHOCK_RING_START,
   SHOOT_SECONDS,
   SKY_BEAM_ANCHOR_NODE,
   SKY_BEAM_BREATH_DEPTH,
@@ -33,6 +37,7 @@ import {
   SKY_BEAM_FLASH_WIDEN,
   SKY_BEAM_LINGER_SECONDS,
   SKY_DARKNESS,
+  SKY_FLASH_SECONDS,
   SPARK_STRIKE_RATE,
   SPARKS_FADE_SECONDS,
   SPARKS_FORM_SECONDS,
@@ -60,6 +65,9 @@ interface SkyBeamStage {
   beamGlow: number
   risingMotes: number
   presence: number
+  skyFlash: number
+  ringRadius: number
+  ringGlow: number
   focusBlend: number
   shake: number
   isCinematic: boolean
@@ -97,6 +105,9 @@ export const createSkyBeamRun = (): SkyBeamRun => ({
     beamGlow: 0,
     risingMotes: 0,
     presence: 0,
+    skyFlash: 0,
+    ringRadius: 0,
+    ringGlow: 0,
     focusBlend: 0,
     shake: 0,
     isCinematic: true,
@@ -113,6 +124,7 @@ function stageAt(elapsed: number, pulsePhase: number, stage: SkyBeamStage) {
   const breath = 1 - SKY_BEAM_BREATH_DEPTH * (0.5 + 0.5 * Math.sin(elapsed * SKY_BEAM_BREATH_RATE))
   const shot = clamp(sinceFire / SHOOT_SECONDS, 0, 1)
   const settle = clamp(sinceFire / SHAKE_SECONDS, 0, 1)
+  const blast = clamp(sinceFire / SHOCK_RING_SECONDS, 0, 1)
 
   stage.charge = smoothstep(elapsed, CHARGE_AT, FIRE_AT)
   stage.sparks =
@@ -130,6 +142,9 @@ function stageAt(elapsed: number, pulsePhase: number, stage: SkyBeamStage) {
   stage.beamGlow = hasFired ? (1 + flash * SKY_BEAM_FLASH_GLOW) * fade * breath : 0
   stage.risingMotes = smoothstep(sinceFire, 0, SHOOT_SECONDS) * fade
   stage.presence = smoothstep(elapsed, 0, DARKEN_SECONDS) * fade
+  stage.skyFlash = hasFired ? (1 - smoothstep(sinceFire, 0, SKY_FLASH_SECONDS)) ** 2 : 0
+  stage.ringRadius = mix(SHOCK_RING_START, SHOCK_RING_REACH, 1 - (1 - blast) ** 3)
+  stage.ringGlow = hasFired ? SHOCK_RING_GLOW * (1 - blast) ** 2 : 0
   stage.focusBlend =
     smoothstep(elapsed, 0, FOCUS_BLEND_SECONDS) *
     (1 - smoothstep(elapsed, CINEMATIC_END - FOCUS_BLEND_SECONDS, CINEMATIC_END))
@@ -167,9 +182,12 @@ export function beginSkyBeam(run: SkyBeamRun, anchor: THREE.Object3D) {
   run.restoreMusic = audio.silenceMusic(DARKEN_SECONDS)
 }
 
-type WorldStage = Pick<SkyBeamStage, 'isCinematic' | 'focusBlend' | 'shake' | 'presence'>
+type WorldStage = Pick<
+  SkyBeamStage,
+  'isCinematic' | 'focusBlend' | 'shake' | 'presence' | 'skyFlash'
+>
 
-export function applyStage({ isCinematic, focusBlend, shake, presence }: WorldStage) {
+export function applyStage({ isCinematic, focusBlend, shake, presence, skyFlash }: WorldStage) {
   const cinematic = useCinematicStore.getState()
   cinematic.isPlaying = isCinematic
   cinematic.focusBlend = focusBlend
@@ -177,9 +195,10 @@ export function applyStage({ isCinematic, focusBlend, shake, presence }: WorldSt
   const skyBeam = useSkyBeamStore.getState()
   skyBeam.presence = presence
   skyBeam.darkness = SKY_DARKNESS * presence
+  skyBeam.flash = skyFlash
 }
 
 export function releaseWorld(run: SkyBeamRun) {
-  applyStage({ isCinematic: false, focusBlend: 0, shake: 0, presence: 0 })
+  applyStage({ isCinematic: false, focusBlend: 0, shake: 0, presence: 0, skyFlash: 0 })
   run.restoreMusic(SKY_BEAM_FADE_SECONDS)
 }

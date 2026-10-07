@@ -46,7 +46,7 @@ export default function Whirlpool({ shoreline, center, islandScale, offsetY }: W
   const eyeGap = useCallback((x: number, z: number) => {
     const mesh = meshRef.current
     if (!mesh) return Infinity
-    mesh.localToWorld(_visibleEye.set(WHIRLPOOL_EYE_X, 0, WHIRLPOOL_EYE_Z))
+    _visibleEye.set(WHIRLPOOL_EYE_X, 0, WHIRLPOOL_EYE_Z).applyMatrix4(mesh.matrixWorld)
     return Math.hypot(x - _visibleEye.x, z - _visibleEye.z)
   }, [])
 

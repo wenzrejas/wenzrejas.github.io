@@ -10,6 +10,7 @@ import {
   HULL_RIPPLE_Y,
   HULL_RIPPLES_PER_GROUP,
 } from './constants'
+import type { HullOutline } from './hullOutline'
 import {
   createRippleSprites,
   drawRippleSprites,
@@ -19,9 +20,10 @@ import {
 
 interface HullRipplesProps {
   shipRef: RefObject<THREE.Group | null>
+  hullOutlineRef: RefObject<HullOutline | null>
 }
 
-export default function HullRipples({ shipRef }: HullRipplesProps) {
+export default function HullRipples({ shipRef, hullOutlineRef }: HullRipplesProps) {
   const meshRef = useRef<THREE.InstancedMesh>(null)
   const sprites = useRef(createRippleSprites(HULL_RIPPLE_TOTAL))
   const groupIndex = useRef(0)
@@ -46,9 +48,10 @@ export default function HullRipples({ shipRef }: HullRipplesProps) {
     const tuning = useDebugStore.getState().ship
     const time = clock.getElapsedTime()
     const bobSign = Math.sin(time * tuning.bobSpeed) >= 0 ? 1 : -1
-    if (previousBobSign.current > 0 && bobSign < 0) {
+    const hullOutline = hullOutlineRef.current
+    if (hullOutline && previousBobSign.current > 0 && bobSign < 0) {
       const slotBase = (groupIndex.current % HULL_RIPPLE_GROUPS) * HULL_RIPPLES_PER_GROUP
-      spawnHullRipples(sprites.current, slotBase, time, ship, tuning)
+      spawnHullRipples(sprites.current, slotBase, time, ship, hullOutline, tuning)
       groupIndex.current++
     }
     previousBobSign.current = bobSign

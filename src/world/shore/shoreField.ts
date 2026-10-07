@@ -55,10 +55,10 @@ function readTriangles(model: THREE.Object3D): Float32Array {
     const position = mesh.geometry.getAttribute('position')
     const points = new Float32Array(position.count * 3)
     for (let vertex = 0; vertex < position.count; vertex++) {
-      _point
-        .fromBufferAttribute(position, vertex)
-        .applyMatrix4(_meshToModel)
-        .toArray(points, vertex * 3)
+      _point.fromBufferAttribute(position, vertex).applyMatrix4(_meshToModel)
+      points[vertex * 3] = _point.x
+      points[vertex * 3 + 1] = _point.y
+      points[vertex * 3 + 2] = _point.z
     }
 
     const index = mesh.geometry.index
@@ -105,13 +105,35 @@ function sliceAtWaterline(triangles: Float32Array, waterY: number): number[] {
   return segments
 }
 
+// ── Field reads ───────────────────────────────────────────────────────────────
+
+export function distanceAt(field: DistanceField, x: number, z: number): number {
+  const column = Math.floor(((x - field.centerX) / field.size + 0.5) * field.resolution)
+  const row = Math.floor(((z - field.centerZ) / field.size + 0.5) * field.resolution)
+  if (column < 0 || row < 0 || column >= field.resolution || row >= field.resolution) {
+    return Infinity
+  }
+  return field.distances[row * field.resolution + column]
+}
+
+export function outwardAt(
+  { distances, resolution }: DistanceField,
+  cell: number,
+  out: THREE.Vector2
+): THREE.Vector2 {
+  return out
+    .set(
+      distances[cell + 1] - distances[cell - 1],
+      distances[cell + resolution] - distances[cell - resolution]
+    )
+    .normalize()
+}
+
 // ── Overhangs ─────────────────────────────────────────────────────────────────
 
 function isOverOpenWater(field: DistanceField, x: number, z: number): boolean {
-  const column = Math.floor(((x - field.centerX) / field.size + 0.5) * field.resolution)
-  const row = Math.floor(((z - field.centerZ) / field.size + 0.5) * field.resolution)
-  if (column < 0 || row < 0 || column >= field.resolution || row >= field.resolution) return false
-  return field.distances[row * field.resolution + column] > 0
+  const distance = distanceAt(field, x, z)
+  return Number.isFinite(distance) && distance > 0
 }
 
 function overhangFootprints(
@@ -288,20 +310,34 @@ function squaredDistancesToOutline(
     const spanX = gridSegments[i + 2] - startX
     const spanZ = gridSegments[i + 3] - startZ
     const lengthSquared = spanX * spanX + spanZ * spanZ
+    const leftX = Math.min(startX, startX + spanX)
+    const rightX = Math.max(startX, startX + spanX)
+    const topZ = Math.min(startZ, startZ + spanZ)
+    const bottomZ = Math.max(startZ, startZ + spanZ)
 
-    const firstColumn = clamp(Math.floor(Math.min(startX, startX + spanX) - farthest), 0, last)
-    const lastColumn = clamp(Math.ceil(Math.max(startX, startX + spanX) + farthest), 0, last)
-    const firstRow = clamp(Math.floor(Math.min(startZ, startZ + spanZ) - farthest), 0, last)
-    const lastRow = clamp(Math.ceil(Math.max(startZ, startZ + spanZ) + farthest), 0, last)
+    const firstRow = clamp(Math.floor(topZ - farthest), 0, last)
+    const lastRow = clamp(Math.ceil(bottomZ + farthest), 0, last)
 
     for (let row = firstRow; row <= lastRow; row++) {
+      const offsetZ = row + 0.5 - startZ
+      const rowGap = Math.max(topZ - row - 0.5, row + 0.5 - bottomZ, 0)
+      const sideReach = Math.min(
+        farthest,
+        Math.sqrt(Math.max(farthest * farthest - rowGap * rowGap, 0)) + 1
+      )
+      const firstColumn = clamp(Math.floor(leftX - sideReach), 0, last)
+      const lastColumn = clamp(Math.ceil(rightX + sideReach), 0, last)
+
       for (let column = firstColumn; column <= lastColumn; column++) {
         const offsetX = column + 0.5 - startX
-        const offsetZ = row + 0.5 - startZ
-        const along =
-          lengthSquared > 0 ? clamp((offsetX * spanX + offsetZ * spanZ) / lengthSquared, 0, 1) : 0
-        const gapX = offsetX - spanX * along
-        const gapZ = offsetZ - spanZ * along
+        const projection = offsetX * spanX + offsetZ * spanZ
+        let gapX = offsetX
+        let gapZ = offsetZ
+        if (projection > 0) {
+          const along = projection < lengthSquared ? projection / lengthSquared : 1
+          gapX -= spanX * along
+          gapZ -= spanZ * along
+        }
         const cell = row * resolution + column
         squared[cell] = Math.min(squared[cell], gapX * gapX + gapZ * gapZ)
       }
@@ -367,6 +403,23 @@ function smoothed(values: Float32Array, resolution: number, radius: number): Flo
 
 // ── Fields ────────────────────────────────────────────────────────────────────
 
+function fieldAround(waterline: number[], margin: number, resolution: number): DistanceField {
+  const frame = frameAround(waterline, margin, resolution)
+  const gridWaterline = toGrid(waterline, frame)
+  const outline = markOutline(gridWaterline, resolution)
+  return { ...frame, distances: signedDistances(gridWaterline, outline, frame, margin) }
+}
+
+export function buildWaterlineField(
+  model: THREE.Object3D,
+  waterY: number,
+  margin: number,
+  resolution: number
+): DistanceField | null {
+  const waterline = sliceAtWaterline(readTriangles(model), waterY)
+  return waterline.length === 0 ? null : fieldAround(waterline, margin, resolution)
+}
+
 export function buildCoastFields(
   model: THREE.Object3D,
   { waterY, margin, smoothing, resolution, collisionReach, collisionResolution }: CoastFieldSettings
@@ -375,19 +428,11 @@ export function buildCoastFields(
   const waterline = sliceAtWaterline(triangles, waterY)
   if (waterline.length === 0) return null
 
-  const frame = frameAround(waterline, margin, resolution)
-  const gridWaterline = toGrid(waterline, frame)
-  const distances = signedDistances(
-    gridWaterline,
-    markOutline(gridWaterline, resolution),
-    frame,
-    margin
-  )
-  const smoothingCells = Math.round(smoothing / (frame.size / resolution))
+  const field = fieldAround(waterline, margin, resolution)
+  const smoothingCells = Math.round(smoothing / (field.size / resolution))
   const shoreline = {
-    ...frame,
-    distances,
-    smoothedDistances: smoothed(distances, resolution, smoothingCells),
+    ...field,
+    smoothedDistances: smoothed(field.distances, resolution, smoothingCells),
   }
 
   const collisionFrame = frameAround(waterline, collisionReach, collisionResolution)

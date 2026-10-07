@@ -18,7 +18,7 @@ export const LIFETIME_MAX = 80
 export const DESPAWN_GRACE = 3
 
 // ── Swimming ──────────────────────────────────────────────────────────────────
-export const TURTLE_LENGTH = 8
+export const TURTLE_LENGTH = 6.5
 export const TURTLE_SIZE_JITTER = 0.15
 export const CRUISE_SPEED_MIN = 3
 export const CRUISE_SPEED_MAX = 5

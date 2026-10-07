@@ -19,7 +19,7 @@ import {
   WAVE_STRENGTH,
   WAVE_WIDTH,
 } from './constants'
-import type { ShoreField } from './shoreField'
+import type { DistanceField, ShoreField } from './shoreField'
 import SHORELINE_VERT from './shaders/shoreline.vert.glsl'
 import SHORELINE_FRAG from './shaders/shoreline.frag.glsl'
 
@@ -27,23 +27,39 @@ import SHORELINE_FRAG from './shaders/shoreline.frag.glsl'
 
 // ── Material ──────────────────────────────────────────────────────────────────
 
-export function createFieldTexture(field: ShoreField): THREE.DataTexture {
-  const halfFloats = new Uint16Array(field.distances.length * 2)
-  for (let i = 0; i < field.distances.length; i++) {
-    halfFloats[i * 2] = THREE.DataUtils.toHalfFloat(field.distances[i])
-    halfFloats[i * 2 + 1] = THREE.DataUtils.toHalfFloat(field.smoothedDistances[i])
-  }
+function createHalfFloatTexture(
+  halfFloats: Uint16Array,
+  resolution: number,
+  format: THREE.PixelFormat
+): THREE.DataTexture {
   const texture = new THREE.DataTexture(
     halfFloats,
-    field.resolution,
-    field.resolution,
-    THREE.RGFormat,
+    resolution,
+    resolution,
+    format,
     THREE.HalfFloatType
   )
   texture.minFilter = THREE.LinearFilter
   texture.magFilter = THREE.LinearFilter
   texture.needsUpdate = true
   return texture
+}
+
+export function createFieldTexture(field: ShoreField): THREE.DataTexture {
+  const halfFloats = new Uint16Array(field.distances.length * 2)
+  for (let i = 0; i < field.distances.length; i++) {
+    halfFloats[i * 2] = THREE.DataUtils.toHalfFloat(field.distances[i])
+    halfFloats[i * 2 + 1] = THREE.DataUtils.toHalfFloat(field.smoothedDistances[i])
+  }
+  return createHalfFloatTexture(halfFloats, field.resolution, THREE.RGFormat)
+}
+
+export function createDistanceTexture({ distances, resolution }: DistanceField): THREE.DataTexture {
+  const halfFloats = new Uint16Array(distances.length)
+  for (let i = 0; i < distances.length; i++) {
+    halfFloats[i] = THREE.DataUtils.toHalfFloat(distances[i])
+  }
+  return createHalfFloatTexture(halfFloats, resolution, THREE.RedFormat)
 }
 
 export function createShorelineMaterial(): THREE.ShaderMaterial {

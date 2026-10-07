@@ -1,30 +1,43 @@
 import * as THREE from 'three'
-import { boundsIn, displayColor, meshesOf } from '@/utils/meshes'
+import { boundsIn, displayColor, meshesOf, positionIn } from '@/utils/meshes'
+import { footprintGap, footprintOf } from '@/interaction/baseFootprint'
 import { markerPositionOn } from '@/interaction/marker'
+import { usePanelStore } from '@/store/panelStore'
 import type { GlowSite } from '../shared/ground-glow/glowSites'
 import { dayNightGlow } from '../shared/nightGlow'
 import {
   HIGHLIGHT_DAY_SHARE,
   LIGHTHOUSE_MARKER_HEIGHT,
   LIGHTHOUSE_NODE,
+  MAIN_ISLAND_NODE,
   SUMMIT_RING_NODE,
 } from './constants'
+import { LUMINA_MAIN_SHORE_RADIUS } from './shoreProfile'
 
 export interface MainIsland {
   marker: THREE.Vector3
   summit: GlowSite
+  baseGap: (x: number, z: number) => number
+  isHovered: boolean
   hoverBlend: number
 }
 
 export function findMainIsland(model: THREE.Object3D): MainIsland | null {
   const lighthouse = model.getObjectByName(LIGHTHOUSE_NODE)
   const ring = model.getObjectByName(SUMMIT_RING_NODE)
-  if (!lighthouse || !ring) return null
+  const land = model.getObjectByName(MAIN_ISLAND_NODE)
+  if (!lighthouse || !ring || !land) return null
 
   model.updateMatrixWorld(true)
   const ringMeshes = meshesOf(ring)
   const ringBounds = boundsIn(model, ringMeshes)
   const ringSize = ringBounds.getSize(new THREE.Vector3())
+  const shore = footprintOf(
+    model,
+    meshesOf(land),
+    positionIn(model, land),
+    LUMINA_MAIN_SHORE_RADIUS
+  )
 
   return {
     marker: markerPositionOn(model, lighthouse, LIGHTHOUSE_MARKER_HEIGHT),
@@ -33,9 +46,18 @@ export function findMainIsland(model: THREE.Object3D): MainIsland | null {
       radius: Math.max(ringSize.x, ringSize.z) / 2,
       color: displayColor(ringMeshes[0]),
     },
+    baseGap: (x, z) => footprintGap(shore, model, x, z),
+    isHovered: false,
     hoverBlend: 0,
   }
 }
+
+export function setMainIslandHovered(mainIsland: MainIsland, isHovered: boolean) {
+  mainIsland.isHovered = isHovered
+}
+
+export const isMainIslandEngaged = ({ isHovered }: MainIsland) =>
+  isHovered || usePanelStore.getState().activePanel === 'contact'
 
 export const highlightGlow = ({ hoverBlend }: MainIsland) =>
   hoverBlend * dayNightGlow(HIGHLIGHT_DAY_SHARE)

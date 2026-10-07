@@ -2,7 +2,12 @@ import * as THREE from 'three'
 import { useDebugStore } from '@/store/debugStore'
 import { useShipStore } from '@/store/shipStore'
 import { collisionDistance, collisionNormal, type CoastCollision } from '../shore/coastCollision'
-import { HULL_CIRCLES, HULL_COLLISION_PASSES, HULL_SHORE_GAP, MODEL_TARGET_SIZE } from './constants'
+import {
+  HULL_CIRCLES,
+  HULL_CIRCLES_SHIP_SIZE,
+  HULL_COLLISION_PASSES,
+  HULL_SHORE_GAP,
+} from './constants'
 
 const _normal = new THREE.Vector2()
 
@@ -12,7 +17,7 @@ export function keepHullOffCoasts(
   modelSize: number,
   collisions: CoastCollision[]
 ): void {
-  const sizeRatio = modelSize / MODEL_TARGET_SIZE
+  const sizeRatio = modelSize / HULL_CIRCLES_SHIP_SIZE
   const forwardX = -Math.sin(heading)
   const forwardZ = -Math.cos(heading)
 
@@ -34,7 +39,7 @@ export function keepHullOffCoasts(
 
 export function hullGap(gapAt: (x: number, z: number) => number): number {
   const { x, z, heading } = useShipStore.getState()
-  const sizeRatio = useDebugStore.getState().ship.modelSize / MODEL_TARGET_SIZE
+  const sizeRatio = useDebugStore.getState().ship.modelSize / HULL_CIRCLES_SHIP_SIZE
   const forwardX = Math.sin(heading)
   const forwardZ = Math.cos(heading)
 

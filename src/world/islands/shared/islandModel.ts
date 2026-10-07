@@ -4,7 +4,7 @@ import * as THREE from 'three'
 import { applyCloudShadow } from '@/world/environment/weather/cloudShadow'
 import type { GlowTarget } from './nightGlow'
 
-interface TintTarget {
+export interface TintTarget {
   mat: THREE.MeshStandardMaterial
   base: THREE.Color
 }
@@ -59,13 +59,15 @@ function prepareIslandModel(scene: THREE.Object3D): IslandModel {
   }
 }
 
+export function applyBrightness(tints: TintTarget[], brightness: number) {
+  for (const { mat, base } of tints) mat.color.copy(base).multiplyScalar(brightness)
+}
+
 export function useIslandModel(url: string, brightness: number): IslandModel {
   const { scene } = useGLTF(url)
   const island = useMemo(() => prepareIslandModel(scene), [scene])
 
-  useLayoutEffect(() => {
-    for (const { mat, base } of island.tints) mat.color.copy(base).multiplyScalar(brightness)
-  }, [island, brightness])
+  useLayoutEffect(() => applyBrightness(island.tints, brightness), [island, brightness])
 
   return island
 }

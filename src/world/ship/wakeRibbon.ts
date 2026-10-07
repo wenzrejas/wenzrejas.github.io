@@ -66,14 +66,16 @@ export function sampleShip(
   ribbon: WakeRibbon,
   shipX: number,
   shipZ: number,
+  wakeX: number,
+  wakeZ: number,
   minSampleDistance: number
 ): boolean {
   const sample = ribbon.lastSample
   if (Math.hypot(shipX - sample.x, shipZ - sample.z) <= minSampleDistance) return false
 
   ribbon.head = (ribbon.head - 1 + WAKE_TRAIL_LENGTH) % WAKE_TRAIL_LENGTH
-  ribbon.points[ribbon.head].x = shipX
-  ribbon.points[ribbon.head].z = shipZ
+  ribbon.points[ribbon.head].x = wakeX
+  ribbon.points[ribbon.head].z = wakeZ
   if (ribbon.count < WAKE_TRAIL_LENGTH) ribbon.count++
   sample.x = shipX
   sample.z = shipZ

@@ -1,7 +1,12 @@
 import * as THREE from 'three'
 import { useShipStore } from '../store/shipStore'
 import { hullGap } from '../world/ship/hullCollision'
-import { BASE_TOUCH_REACH, INTERACTION_LAYER, SHIP_HOVER_REACH } from './constants'
+import {
+  BASE_TOUCH_REACH,
+  INTERACTION_LAYER,
+  KEYBOARD_TARGETS,
+  SHIP_HOVER_REACH,
+} from './constants'
 
 interface InteractionHandlers {
   onHover: (isHovered: boolean) => void
@@ -36,12 +41,14 @@ class InteractionManager {
     canvas.addEventListener('pointerdown', this.press)
     canvas.addEventListener('pointerleave', this.leave)
     canvas.addEventListener('click', this.activate)
+    window.addEventListener('keydown', this.activateApproached)
 
     return () => {
       canvas.removeEventListener('pointermove', this.trackPointer)
       canvas.removeEventListener('pointerdown', this.press)
       canvas.removeEventListener('pointerleave', this.leave)
       canvas.removeEventListener('click', this.activate)
+      window.removeEventListener('keydown', this.activateApproached)
       this.hover(null)
       this.canvas = null
     }
@@ -155,6 +162,12 @@ class InteractionManager {
     const hitArea = this.pick()
     if (hitArea && hitArea === this.pressed) this.handlers.get(hitArea)?.onActivate?.()
     this.pressed = null
+  }
+
+  private activateApproached = (event: KeyboardEvent): void => {
+    if (event.key !== 'Enter' || event.repeat || this.isHeld || !this.approached) return
+    if (event.target instanceof Element && event.target.closest(KEYBOARD_TARGETS)) return
+    this.handlers.get(this.approached)?.onActivate?.()
   }
 
   private leave = (): void => {

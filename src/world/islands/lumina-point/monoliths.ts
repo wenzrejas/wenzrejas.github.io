@@ -46,8 +46,10 @@ export interface FloatingLogo {
 export interface Monolith {
   link: string
   label: string
+  station: THREE.Object3D
   marker: THREE.Vector3
   isHovered: boolean
+  isActivated: boolean
   hoverBlend: number
   inlet: GlowSite
   projection: Projection
@@ -91,8 +93,10 @@ function findMonolith(model: THREE.Object3D, name: MonolithName): Monolith | nul
   return {
     link: MONOLITH_LINKS[name],
     label: MONOLITH_COPY[name],
+    station,
     marker,
     isHovered: false,
+    isActivated: false,
     hoverBlend: 0,
     inlet: { center: base, radius, color },
     projection: {
@@ -114,5 +118,11 @@ export function findMonoliths(model: THREE.Object3D): Monolith[] {
 }
 
 export function easeHovers(monoliths: Monolith[], delta: number) {
-  for (const monolith of monoliths) easeHover(monolith, monolith.isHovered, delta)
+  for (const monolith of monoliths) {
+    easeHover(monolith, monolith.isHovered || monolith.isActivated, delta)
+  }
+}
+
+export function activateMonoliths(monoliths: Monolith[], isActivated: boolean) {
+  for (const monolith of monoliths) monolith.isActivated = isActivated
 }

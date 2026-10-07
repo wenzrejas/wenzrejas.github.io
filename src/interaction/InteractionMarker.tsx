@@ -4,6 +4,7 @@ import { Html } from '@react-three/drei'
 import { animated, useSpring } from '@react-spring/web'
 import * as THREE from 'three'
 import { isPanelOpen } from '../store/panelStore'
+import { isRevealPlaying } from '../store/revealStore'
 import { uniformsOf } from '../utils/meshes'
 import {
   INTERACTION_LAYER,
@@ -82,7 +83,7 @@ export default function InteractionMarker({
   useFrame(({ camera, clock }, delta) => {
     const mesh = meshRef.current
     if (!mesh) return
-    fadeMarker(motion.current, !isPanelOpen(), delta)
+    fadeMarker(motion.current, !isPanelOpen() && !isRevealPlaying(), delta)
     mesh.visible = motion.current.presence > 0
     if (!mesh.visible) return
     pinToScreen(mesh, camera, MARKER_PIXELS)
