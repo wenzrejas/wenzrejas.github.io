@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useCycleStore } from '@/store/cycleStore'
 import { useDebugStore } from '@/store/debugStore'
+import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import type { IslandKey } from '../islands/shared/constants'
 import { ISLAND_KEYS } from '../islands/shared/islandSpecs'
 import {
@@ -64,7 +65,7 @@ export default function ShoreRipples() {
           }}
           material={material}
           rotation-x={-Math.PI / 2}
-          renderOrder={3}
+          renderOrder={RENDER_LAYER.waterSurface}
         >
           <planeGeometry args={[span, span]} />
         </mesh>

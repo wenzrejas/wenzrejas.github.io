@@ -4,6 +4,7 @@ import type * as THREE from 'three'
 import { useDebugStore } from '@/store/debugStore'
 import { buildFlatQuad } from '@/utils/geometry'
 import { createRippleMaterial } from '@/world/effects/rippleModel'
+import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import {
   HULL_RIPPLE_GROUPS,
   HULL_RIPPLE_TOTAL,
@@ -64,7 +65,7 @@ export default function HullRipples({ shipRef, hullOutlineRef }: HullRipplesProp
       ref={meshRef}
       args={[geometry, material, HULL_RIPPLE_TOTAL]}
       frustumCulled={false}
-      renderOrder={4}
+      renderOrder={RENDER_LAYER.effects}
     />
   )
 }

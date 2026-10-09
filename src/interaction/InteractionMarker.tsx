@@ -3,6 +3,7 @@ import { useFrame, type Vector3 } from '@react-three/fiber'
 import { Html } from '@react-three/drei'
 import { animated, useSpring } from '@react-spring/web'
 import * as THREE from 'three'
+import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { isPanelOpen } from '../store/panelStore'
 import { isRevealPlaying } from '../store/revealStore'
 import { uniformsOf } from '../utils/meshes'
@@ -12,7 +13,6 @@ import {
   MARKER_LABEL_SPRING,
   MARKER_PIXELS,
   MARKER_PULSE_SECONDS,
-  MARKER_RENDER_ORDER,
   MARKER_RING_OUTER,
 } from './constants'
 import { interactions } from './interactionManager'
@@ -100,7 +100,7 @@ export default function InteractionMarker({
         ref={meshRef}
         geometry={geometry}
         material={material}
-        renderOrder={MARKER_RENDER_ORDER}
+        renderOrder={RENDER_LAYER.markers}
       />
       <Html pointerEvents="none">
         <div className="interaction-marker" style={LABEL_REACH}>

@@ -1,0 +1,146 @@
+export const ORBI_SCALE = 0.16
+export const ROUND_SEGMENTS = 64
+export const DETAIL_SEGMENTS = 24
+export const BEVEL_SEGMENTS = 3
+
+export const BODY_PROFILE = [
+  [0, -0.35],
+  [0.7, -0.35],
+  [0.92, -0.39],
+  [1.015, -0.2],
+  [1.025, 0.1],
+  [1, 0.28],
+  [0.94, 0.41],
+  [0, 0.41],
+] as const
+
+export const BEZEL = {
+  innerRadius: 0.77,
+  outerRadius: 1.005,
+  depth: 0.12,
+  bevel: 0.023,
+  front: 0.37,
+  lipRadius: 0.775,
+  lipThickness: 0.018,
+  lipFront: 0.506,
+  edgeRadius: 1.005,
+  edgeThickness: 0.018,
+  edgeFront: 0.448,
+}
+
+export const FACE = {
+  radius: 0.779,
+  depth: 0.17,
+  centerFront: 0.405,
+  eyeSpacing: 0.255,
+  eyeHeight: 0.025,
+  eyeFront: 0.585,
+  eyeWidth: 0.092,
+  eyeLength: 0.22,
+  eyeDepth: 0.025,
+  eyeGlow: 1.5,
+  haloWidth: 0.43,
+  haloHeight: 0.7,
+  haloFront: 0.587,
+  haloOpacity: 0.62,
+  haloFalloff: 4,
+  haloFadeStart: 0.45,
+  cheekSpacing: 0.46,
+  cheekHeight: -0.2,
+  cheekFront: 0.538,
+  cheekRadius: 0.018,
+}
+
+export const MARKINGS = {
+  letterSize: 0.14,
+  letterRadius: 0.878,
+  front: 0.515,
+  tickCount: 24,
+  tickRadius: 0.819,
+  tickWidth: 0.008,
+  tickLength: 0.026,
+  majorTickLength: 0.052,
+  depth: 0.003,
+  rivetRadius: 0.022,
+  rivetOrbit: 0.923,
+  rivetFront: 0.516,
+  rivetCount: 8,
+  screwSlotWidth: 0.005,
+  screwSlotLength: 0.026,
+}
+
+export const HARDWARE = {
+  loopRadius: 0.222,
+  loopTube: 0.064,
+  loopHeight: 1.363,
+  loopFront: -0.02,
+  loopEdgeRadius: 0.224,
+  loopEdgeTube: 0.014,
+  loopEdgeFront: 0.043,
+  loopBaseRadius: 0.115,
+  loopBaseHeight: 0.18,
+  loopBaseCenter: 1.079,
+  bottomLoopRadius: 0.182,
+  bottomLoopTube: 0.06,
+  bottomLoopHeight: -1.259,
+  bottomLoopFront: 0.02,
+  bottomBaseHeight: -1.027,
+  sideMountRadius: 0.24,
+  sideMountDepth: 0.105,
+  sideMountCenter: 1.015,
+  sideTipRadius: 0.219,
+  sideTipLength: 0.36,
+  sideTipCenter: 1.236,
+  sideTipSegments: 6,
+}
+
+export const BACK = {
+  plateRadius: 0.905,
+  plateDepth: 0.185,
+  plateCenter: -0.357,
+  rimRadius: 0.86,
+  rimTube: 0.015,
+  rimFront: -0.421,
+  badgeRadius: 0.275,
+  badgeDepth: 0.019,
+  badgeFront: -0.543,
+  badgeRim: 0.02,
+  compassRadius: 0.207,
+  compassShortRadius: 0.11,
+  compassWidth: 0.047,
+  compassCenterRadius: 0.034,
+  seamCount: 10,
+  seamRadius: 1.022,
+  seamThickness: 0.008,
+  seamDepth: 0.32,
+  rivetOrbit: 0.74,
+  rivetFront: -0.464,
+  rivetRadius: 0.023,
+  rivetCount: 8,
+}
+
+export const MATERIAL = {
+  brassMetalness: 0.28,
+  brassRoughness: 0.62,
+  edgeMetalness: 0.36,
+  edgeRoughness: 0.48,
+  casingMetalness: 0.08,
+  casingRoughness: 0.72,
+  faceMetalness: 0,
+  faceRoughness: 0.52,
+  faceClearcoat: 0.15,
+  faceClearcoatRoughness: 0.5,
+  backMetalness: 0.22,
+  backRoughness: 0.65,
+  engravingRoughness: 0.62,
+}
+
+export const PATINA = {
+  textureSize: 256,
+  brightness: 244,
+  grainContrast: 13,
+  washContrast: 9,
+  washWidth: 17,
+  washHeight: 29,
+  seed: 73,
+}

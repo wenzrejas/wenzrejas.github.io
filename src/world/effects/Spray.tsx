@@ -4,6 +4,7 @@ import * as THREE from 'three'
 import { buildFlatQuad } from '@/utils/geometry'
 import { MAX_FRAME_SECONDS } from '@/utils/time'
 import { useCycleStore } from '@/store/cycleStore'
+import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { updateDrops, updateFoam, type ParticlePool } from './particlePool'
 
 interface SprayProps {
@@ -52,14 +53,14 @@ export default function Spray({ foam, drops, gravity, surfaceAt, tint, tintAt }:
         args={[foamGeometry, material, foam.particles.length]}
         frustumCulled={false}
         visible={false}
-        renderOrder={4}
+        renderOrder={RENDER_LAYER.effects}
       />
       <instancedMesh
         ref={dropsRef}
         args={[dropGeometry, material, drops.particles.length]}
         frustumCulled={false}
         visible={false}
-        renderOrder={4}
+        renderOrder={RENDER_LAYER.effects}
       />
     </>
   )

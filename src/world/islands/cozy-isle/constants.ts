@@ -23,46 +23,25 @@ export const CAFE_NODE = 'Cafe'
 export const DOCK_NODE = 'Dock'
 export const FIRE_ANCHOR_NODE = 'Campfire_FireAnchor'
 export const TERRAIN_NODE = 'Terrain'
+export const BULB_NODES = ['Glow_StringLights', 'Glow_Cafe_Pendants']
+export const NEON_NODES = ['Glow_Cafe_Sign', 'Glow_Cafe_Heart']
 
 // ── Cafe ──────────────────────────────────────────────────────────────────────
 export const COUNTER_MARKER_SPOT = [0, 1.3, 1.62] as const
+export const NOTE_SPOT = [1.0, 3.5, 1.8] as const
 
-// ── Campfire ──────────────────────────────────────────────────────────────────
-export const FIRE_WIDTH = 0.456
-export const FIRE_HEIGHT = 0.518
-export const FIRE_VISIBLE_LEVEL = 0.001
+// ── Cafe break ────────────────────────────────────────────────────────────────
+export const CAFE_BREAK_RELEASE_SECONDS = 0.5
+export const FLARE_RISE_SECONDS = 0.35
 
-export const EMBER_COUNT = 24
-export const EMBER_SIZE = 0.075
-export const EMBER_SCALE_MIN = 0.6
-export const EMBER_SCALE_MAX = 1.4
-export const EMBER_LIFETIME = 2.6
-export const EMBER_RISE = 1.2
-export const EMBER_SPREAD = 0.35
-export const EMBER_DRIFT = 0.45
-export const EMBER_SWAY = 0.25
+// ── Cafe lights ───────────────────────────────────────────────────────────────
+export const BULB_WAVE_STEP_SECONDS = 0.09
+export const BULB_EMISSION_BOOST = 1.5
 
-export const FLAME_TONGUES = 5
-export const FLAME_SCALE = 2.4
-export const FLAME_GLOW = 0.34
-
-// ── Chimney smoke ─────────────────────────────────────────────────────────────
-export const SMOKE_PUFF_COUNT = 16
-export const SMOKE_LIFETIME = 7
-export const SMOKE_PUFF_SIZE = 0.3
-export const SMOKE_PUFF_SIZE_VARIANCE = 0.2
-export const SMOKE_PUFF_GROWTH = 3.2
-export const SMOKE_RISE = 2.6
-export const SMOKE_SPREAD = 0.35
-export const SMOKE_SWAY = 0.12
-export const SMOKE_DRIFT = 0.9
-export const SMOKE_OPACITY = 0.75
-export const SMOKE_SHADE = 0.9
-export const SMOKE_COLOR = '#fbfaf8'
-export const SMOKE_LIGHT_TINT = 0.5
-export const SMOKE_FADE_CYCLES = 0.04
-export const SMOKE_PRESENCE_RATE = 1.5
-export const SMOKE_RAIN_RATE = 0.3
+export const NEON_FLICKER_DELAY_SECONDS = 0.9
+export const NEON_FLICKER_SECONDS = 0.45
+export const NEON_FLICKER_RATE = 18
+export const NEON_FLICKER_DIM = 0.15
 
 // ── Contact blob ──────────────────────────────────────────────────────────────
 export const COZY_BLOB: ContactBlob = {

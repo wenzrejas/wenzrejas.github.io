@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { IS_DEBUG } from '@/app/experience/constants'
 
 export const LOADING_TASKS = ['scene', 'assets', 'panels'] as const
 
@@ -13,9 +14,9 @@ interface LoadingState {
 
 export const useLoadingStore = create<LoadingState>(() => ({
   pendingTasks: [...LOADING_TASKS],
-  hasSetSail: false,
+  hasSetSail: IS_DEBUG,
   descentStartedAt: null,
-  isLoaderGone: false,
+  isLoaderGone: IS_DEBUG,
 }))
 
 export function finishLoadingTask(task: LoadingTask) {

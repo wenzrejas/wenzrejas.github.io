@@ -10,6 +10,7 @@ import { isRaining } from '@/store/weatherStore'
 import { wrapAngle } from '@/utils/math'
 import { MAX_FRAME_SECONDS } from '@/utils/time'
 import { ParticlePool, updateDrops, updateFoam } from '@/world/effects/particlePool'
+import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { depthFade } from '../shared/wildlifeMaterial'
 import { isOpenWater } from '@/world/islands/shared/islandZones'
 import { buildDolphinGeometry, createDolphinMaterial } from './dolphinModel'
@@ -220,14 +221,14 @@ export default function Dolphins() {
         args={[foamGeometry, sprayMaterial, FOAM_POOL]}
         frustumCulled={false}
         visible={false}
-        renderOrder={4}
+        renderOrder={RENDER_LAYER.effects}
       />
       <instancedMesh
         ref={dropsRef}
         args={[dropGeometry, sprayMaterial, DROP_POOL]}
         frustumCulled={false}
         visible={false}
-        renderOrder={4}
+        renderOrder={RENDER_LAYER.effects}
       />
     </>
   )

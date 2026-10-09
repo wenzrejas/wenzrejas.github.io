@@ -1,0 +1,17 @@
+// ── Chimney smoke ─────────────────────────────────────────────────────────────
+export const SMOKE_PUFF_COUNT = 16
+export const SMOKE_LIFETIME = 7
+export const SMOKE_PUFF_SIZE = 0.3
+export const SMOKE_PUFF_SIZE_VARIANCE = 0.2
+export const SMOKE_PUFF_GROWTH = 3.2
+export const SMOKE_RISE = 2.6
+export const SMOKE_SPREAD = 0.35
+export const SMOKE_SWAY = 0.12
+export const SMOKE_DRIFT = 0.9
+export const SMOKE_OPACITY = 0.75
+export const SMOKE_SHADE = 0.9
+export const SMOKE_COLOR = '#fbfaf8'
+export const SMOKE_LIGHT_TINT = 0.5
+export const SMOKE_FADE_CYCLES = 0.04
+export const SMOKE_PRESENCE_RATE = 1.5
+export const SMOKE_RAIN_RATE = 0.3

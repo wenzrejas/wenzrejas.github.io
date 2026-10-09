@@ -6,6 +6,8 @@ import { MAX_FRAME_SECONDS } from '@/utils/time'
 import { OCEAN_Y } from '@/world/environment/ocean/constants'
 import { SHORE_Y } from '@/world/shore/constants'
 import type { ShoreField } from '@/world/shore/shoreField'
+import { RENDER_LAYER } from '@/app/experience/renderLayers'
+import { islandLocalY } from '../shared/islandSpec'
 import { createCircuitPower, powerCircuit } from './circuitPower'
 import { MAIN_ISLAND_NODE } from './constants'
 import { isMainIslandEngaged, type MainIsland } from './mainIsland'
@@ -63,8 +65,8 @@ export default function SeabedCircuit({
     uniforms.uTime.value = clock.getElapsedTime()
   })
 
-  const waterY = (OCEAN_Y - offsetY) / islandScale
-  const seaLevel = (SHORE_Y - offsetY) / islandScale
+  const waterY = islandLocalY(OCEAN_Y, islandScale, offsetY)
+  const seaLevel = islandLocalY(SHORE_Y, islandScale, offsetY)
 
   return (
     <>
@@ -93,7 +95,7 @@ export default function SeabedCircuit({
         material={conduitMaterial}
         position={[0, seaLevel, 0]}
         visible={false}
-        renderOrder={3}
+        renderOrder={RENDER_LAYER.waterSurface}
       />
     </>
   )

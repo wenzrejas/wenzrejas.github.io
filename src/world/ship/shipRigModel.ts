@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { connectedParts } from '@/utils/geometry'
 import { meshesOf } from '@/utils/meshes'
 import {
   FLAG_NODES,
@@ -76,33 +77,10 @@ function findSail(model: THREE.Object3D): Cloth[] {
   return cloths
 }
 
-function separateParts(geometry: THREE.BufferGeometry): Int32Array {
-  const positions = geometry.getAttribute('position')
-  const index = geometry.index!.array
-  const part = new Int32Array(positions.count)
-  const firstAtSpot = new Map<string, number>()
-  for (let i = 0; i < positions.count; i++) {
-    const spot = `${positions.getX(i)},${positions.getY(i)},${positions.getZ(i)}`
-    part[i] = firstAtSpot.get(spot) ?? i
-    if (part[i] === i) firstAtSpot.set(spot, i)
-  }
-
-  const partOf = (vertex: number) => {
-    while (part[vertex] !== vertex) vertex = part[vertex] = part[part[vertex]]
-    return vertex
-  }
-  for (let i = 0; i < index.length; i += 3) {
-    part[partOf(index[i])] = partOf(index[i + 1])
-    part[partOf(index[i + 1])] = partOf(index[i + 2])
-  }
-  for (let i = 0; i < positions.count; i++) part[i] = partOf(i)
-  return part
-}
-
 function splitOffInside(mesh: THREE.Mesh, bounds: THREE.Box3): THREE.Mesh | null {
   const positions = mesh.geometry.getAttribute('position')
   const index = mesh.geometry.index!.array
-  const part = separateParts(mesh.geometry)
+  const part = connectedParts(mesh.geometry)
 
   const reachesOutside = new Uint8Array(positions.count)
   for (let i = 0; i < positions.count; i++) {

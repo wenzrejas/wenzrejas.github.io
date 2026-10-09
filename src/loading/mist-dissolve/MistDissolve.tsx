@@ -3,7 +3,8 @@ import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useLoadingStore } from '@/store/loadingStore'
 import { uniformsOf } from '@/utils/meshes'
-import { DISSOLVE_RENDER_ORDER, DISSOLVE_SECONDS } from './constants'
+import { RENDER_LAYER } from '@/app/experience/renderLayers'
+import { DISSOLVE_SECONDS } from './constants'
 import { clearingFront } from './dissolveField'
 import {
   bindDissolveTextures,
@@ -55,7 +56,7 @@ export default function MistDissolve() {
       ref={meshRef}
       material={material}
       frustumCulled={false}
-      renderOrder={DISSOLVE_RENDER_ORDER}
+      renderOrder={RENDER_LAYER.loaderMist}
       visible={false}
     >
       <planeGeometry args={[2, 2]} />

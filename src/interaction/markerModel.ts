@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { displayColorOf } from '../utils/color'
 import { floatDefines } from '../utils/glsl'
 import {
   MARKER_CENTER_COLOR,
@@ -57,9 +58,9 @@ export const createMarkerMaterial = () =>
       GLOW_OPACITY: MARKER_GLOW_OPACITY,
     }),
     uniforms: {
-      uColor: { value: new THREE.Color(MARKER_COLOR).convertLinearToSRGB() },
-      uCenterColor: { value: new THREE.Color(MARKER_CENTER_COLOR).convertLinearToSRGB() },
-      uOutlineColor: { value: new THREE.Color(MARKER_OUTLINE_COLOR).convertLinearToSRGB() },
+      uColor: { value: displayColorOf(MARKER_COLOR) },
+      uCenterColor: { value: displayColorOf(MARKER_CENTER_COLOR) },
+      uOutlineColor: { value: displayColorOf(MARKER_OUTLINE_COLOR) },
       uHover: { value: 0 },
       uPulse: { value: 0 },
       uOpacity: { value: 1 },

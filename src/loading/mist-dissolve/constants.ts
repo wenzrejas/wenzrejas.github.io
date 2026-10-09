@@ -3,9 +3,6 @@ import type { NoiseOctave } from '@/panels/shared/procedural/valueNoise'
 // ── Timing ────────────────────────────────────────────────────────────────────
 export const DISSOLVE_SECONDS = 2
 
-// ── Drawing (above the cloud deck) ────────────────────────────────────────────
-export const DISSOLVE_RENDER_ORDER = 1001
-
 // ── Origin (where the 3D ship sits, from the screen centre) ───────────────────
 export const VOYAGE_SHIFT_X = -12
 export const VOYAGE_SHIFT_Y = 12

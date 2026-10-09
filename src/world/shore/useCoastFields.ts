@@ -9,13 +9,14 @@ import {
   WAVE_SMOOTHING,
 } from './constants'
 import { buildCoastFields, type CoastFields } from './shoreField'
+import { islandLocalY } from '@/world/islands/shared/islandSpec'
 
 export function useCoastFields(
   model: THREE.Object3D,
   islandScale: number,
   offsetY: number
 ): CoastFields | null {
-  const waterY = (OCEAN_Y - offsetY) / islandScale
+  const waterY = islandLocalY(OCEAN_Y, islandScale, offsetY)
   return useMemo(
     () =>
       buildCoastFields(model, {

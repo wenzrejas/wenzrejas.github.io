@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import type * as THREE from 'three'
 import { uniformsOf } from '@/utils/meshes'
 import { MAX_FRAME_SECONDS } from '@/utils/time'
+import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { BEAM_LENGTH, BEAM_SPEED, BEAM_VISIBLE_LEVEL } from './constants'
 import { aimHead, beamLevel } from './lighthouseBeam'
 import {
@@ -66,7 +67,7 @@ export default function LuminaBeam({
         position={lensOffset}
         scale={BEAM_LENGTH}
         rotation={[0, restYaw, -BEAM_TILT]}
-        renderOrder={4}
+        renderOrder={RENDER_LAYER.effects}
       />
     </group>
   )

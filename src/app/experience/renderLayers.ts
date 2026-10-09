@@ -1,0 +1,17 @@
+export const RENDER_LAYER = {
+  guide: 1,
+  ocean: 2,
+  inWater: 2.5,
+  waterSurface: 3,
+  surfaceBloom: 3.5,
+  effects: 4,
+  effectSparks: 4.5,
+  glow: 5,
+  overGlow: 6,
+  rainRipples: 7,
+  rain: 9,
+  fog: 10,
+  markers: 20,
+  loaderClouds: 1000,
+  loaderMist: 1001,
+}

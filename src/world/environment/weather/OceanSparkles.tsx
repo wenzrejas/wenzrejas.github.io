@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import type * as THREE from 'three'
 import { uniformsOf } from '@/utils/meshes'
 import { MAX_FRAME_SECONDS } from '@/utils/time'
+import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { SPARKLE_VISIBLE_LEVEL } from './constants'
 import { respawnSparkles, sparkleIntensity } from './moonSparkles'
 import { buildSparkleGeometry, createSparkleMaterial } from './moonSparklesModel'
@@ -43,7 +44,7 @@ export default function OceanSparkles({ shipRef }: OceanSparklesProps) {
       geometry={geometry}
       material={material}
       frustumCulled={false}
-      renderOrder={3}
+      renderOrder={RENDER_LAYER.waterSurface}
     />
   )
 }

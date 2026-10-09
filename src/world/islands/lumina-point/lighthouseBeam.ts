@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { useCycleStore } from '@/store/cycleStore'
 import { useSkyBeamStore } from '@/store/skyBeamStore'
-import { boundsIn, meshesOf, positionIn } from '@/utils/meshes'
+import { boundsIn, meshesOf, pointIn, positionIn } from '@/utils/meshes'
 import {
   BEAM_ANCHOR_FORWARD,
   BEAM_ANCHOR_NODE,
@@ -20,9 +20,7 @@ export function rigBeam(model: THREE.Object3D) {
 
   model.updateMatrixWorld(true)
   const origin = positionIn(model, anchor)
-  const facing = model
-    .worldToLocal(anchor.localToWorld(new THREE.Vector3(...BEAM_ANCHOR_FORWARD)))
-    .sub(origin)
+  const facing = pointIn(model, anchor, BEAM_ANCHOR_FORWARD).sub(origin)
   const pivot = positionIn(model, head).setY(origin.y)
   const lensSize = boundsIn(lens, meshesOf(lens)).getSize(new THREE.Vector3())
 

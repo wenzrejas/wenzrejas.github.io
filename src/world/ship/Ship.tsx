@@ -1,6 +1,7 @@
 import { forwardRef, useEffect, useMemo, useRef, type RefObject } from 'react'
 import * as THREE from 'three'
 import { useDebugStore } from '@/store/debugStore'
+import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { useShipModel } from './useShipModel'
 import { useShipMovement } from './useShipMovement'
 import { useHullFoam } from './useHullFoam'
@@ -52,7 +53,7 @@ const Ship = forwardRef<THREE.Group, ShipProps>(({ hullOutlineRef }, ref) => {
           ref={foam.meshRef}
           geometry={foam.geometry}
           material={foam.material}
-          renderOrder={3}
+          renderOrder={RENDER_LAYER.waterSurface}
           frustumCulled={false}
         />
       )}

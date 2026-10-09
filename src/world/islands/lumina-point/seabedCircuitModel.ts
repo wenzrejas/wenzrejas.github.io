@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import FIELD_QUAD_VERT from '@/shaders/fieldQuad.vert.glsl'
 import { stitchRibbon } from '@/utils/geometry'
 import { floatDefines } from '@/utils/glsl'
 import { buildWaterlineField, distanceAt, type DistanceField } from '@/world/shore/shoreField'
@@ -37,7 +38,6 @@ import {
 } from './constants'
 import type { MainIsland } from './mainIsland'
 import type { Monolith } from './monoliths'
-import SEABED_GLOW_VERT from './shaders/seabedGlow.vert.glsl'
 import SEABED_GLOW_FRAG from './shaders/seabedGlow.frag.glsl'
 import CONDUIT_VERT from './shaders/conduit.vert.glsl'
 import CONDUIT_FRAG from './shaders/conduit.frag.glsl'
@@ -79,7 +79,7 @@ export const traceSeabedGlow = (land: THREE.Object3D, waterY: number) =>
 
 export const createSeabedGlowMaterial = (color: THREE.Color) =>
   createUnderwaterLightMaterial(
-    SEABED_GLOW_VERT,
+    FIELD_QUAD_VERT,
     SEABED_GLOW_FRAG,
     {
       GLOW_REACH: SEABED_GLOW_REACH,

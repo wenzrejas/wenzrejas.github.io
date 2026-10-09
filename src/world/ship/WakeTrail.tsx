@@ -5,6 +5,7 @@ import { useCycleStore } from '@/store/cycleStore'
 import { useDebugStore } from '@/store/debugStore'
 import { uniformsOf } from '@/utils/meshes'
 import { FALLBACK_FRAME_SECONDS, MAX_FRAME_SECONDS } from '@/utils/time'
+import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { WAKE_STERN_SHIFT } from './constants'
 import {
   carryRibbon,
@@ -67,7 +68,7 @@ export default function WakeTrail({ shipRef }: WakeTrailProps) {
       geometry={geometry}
       material={material}
       frustumCulled={false}
-      renderOrder={3}
+      renderOrder={RENDER_LAYER.waterSurface}
     />
   )
 }

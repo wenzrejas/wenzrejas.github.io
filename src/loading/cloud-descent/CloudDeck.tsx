@@ -3,9 +3,10 @@ import { useFrame, useThree } from '@react-three/fiber'
 import type * as THREE from 'three'
 import { useLoadingStore } from '@/store/loadingStore'
 import { uniformsOf } from '@/utils/meshes'
+import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { bakeCloudLayers } from './cloudBake'
 import { createCloudBakeRig, createCloudDeckMaterial, disposeCloudBakeRig } from './cloudDeckModel'
-import { CLOUD_RENDER_ORDER, PASS_TO_ZOOM } from './constants'
+import { PASS_TO_ZOOM } from './constants'
 import { updateCloudLayerZooms } from './descent'
 
 export default function CloudDeck() {
@@ -52,7 +53,7 @@ export default function CloudDeck() {
       ref={meshRef}
       material={material}
       frustumCulled={false}
-      renderOrder={CLOUD_RENDER_ORDER}
+      renderOrder={RENDER_LAYER.loaderClouds}
       visible={false}
     >
       <planeGeometry args={[2, 2]} />

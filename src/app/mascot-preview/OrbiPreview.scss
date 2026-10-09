@@ -1,0 +1,228 @@
+@import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
+
+.orbi-preview {
+  --orbi-handwriting: 'Patrick Hand', 'Comic Sans MS', cursive;
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #2c638b url('/images/orbi-preview-background.jpg') center / 100% 100% no-repeat;
+  color: #493021;
+
+  &__header {
+    position: absolute;
+    z-index: 1;
+    right: 32px;
+    bottom: 370px;
+  }
+
+  &__views {
+    display: flex;
+    gap: 1.2rem;
+    padding: 0.2rem 0.8rem;
+    border-radius: 8px;
+    background: #173b536b;
+
+    button {
+      padding: 0.4rem 0.15rem;
+      border: 0;
+      border-bottom: 2px solid transparent;
+      background: transparent;
+      color: #e4edf1;
+      font-family: var(--orbi-handwriting);
+      font-size: 1rem;
+      cursor: pointer;
+
+      &[aria-pressed='true'] {
+        border-color: #f1c77d;
+        color: #ffe3af;
+      }
+
+      &:hover {
+        color: #ffe3af;
+      }
+    }
+  }
+
+  button:focus-visible {
+    outline: 2px solid #d49b49;
+    outline-offset: 5px;
+  }
+
+  &__scene {
+    position: absolute;
+    right: 24px;
+    bottom: 24px;
+    display: grid;
+    grid-template-columns: 500px 280px;
+    align-items: center;
+    width: 780px;
+    height: 330px;
+
+    &--model {
+      inset: 96px 32px 64px;
+      display: block;
+      width: auto;
+      height: auto;
+
+      .orbi-preview__stage {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        cursor: grab;
+
+        &:active {
+          cursor: grabbing;
+        }
+      }
+    }
+  }
+
+  &__stage {
+    position: relative;
+    grid-column: 2;
+    grid-row: 1;
+    width: 280px;
+    height: 330px;
+  }
+
+  &__greeting {
+    position: absolute;
+    top: 6%;
+    right: 7%;
+    width: 17%;
+    fill: #f1b34b;
+    stroke: #f1b34b;
+    stroke-width: 5;
+    stroke-linecap: round;
+    transform: rotate(12deg);
+    pointer-events: none;
+  }
+
+  &__hint {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #f7ebd5;
+    font-family: var(--orbi-handwriting);
+    font-size: 0.95rem;
+  }
+}
+
+.orbi-dialogue {
+  position: relative;
+  grid-column: 1;
+  grid-row: 1;
+  min-height: 270px;
+  padding: 36px 42px 20px 34px;
+
+  &__paper {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    transform: scaleX(-1);
+    pointer-events: none;
+  }
+
+  &__shadow {
+    fill: #1533474d;
+    transform: translate(-3px, 5px);
+  }
+
+  &__sheet {
+    fill: #fff3dc;
+    stroke: #77513b;
+    stroke-width: 1.6;
+    vector-effect: non-scaling-stroke;
+  }
+
+  &__crease {
+    fill: none;
+    stroke: #a47a52;
+    stroke-width: 1;
+    opacity: 0.65;
+  }
+
+  &__name {
+    position: absolute;
+    top: -14px;
+    right: 44px;
+    min-width: 96px;
+    padding: 0.2rem 1.2rem 0.35rem;
+    border: 1px solid #aa7344;
+    border-radius: 8% 3% 10% 4% / 19% 14% 17% 13%;
+    background: linear-gradient(110deg, #ddae72, #edc994 60%, #ddb47f);
+    box-shadow: 1px 3px 0 #986b3230;
+    font-family: var(--orbi-handwriting);
+    font-size: 1.5rem;
+    text-align: center;
+    transform: rotate(4deg);
+  }
+
+  &__copy {
+    position: relative;
+    min-height: 160px;
+
+    h2 {
+      margin-bottom: 0.5rem;
+      font-family: var(--orbi-handwriting);
+      font-size: 1.8rem;
+      font-weight: 400;
+      line-height: 1.3;
+    }
+
+    p {
+      font-family: var(--orbi-handwriting);
+      font-size: 1.3rem;
+      line-height: 1.6;
+      letter-spacing: 0.012em;
+
+      span {
+        display: block;
+      }
+    }
+  }
+
+  &__navigation {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1.2rem;
+    margin-top: 0.5rem;
+    color: #806144;
+    font-family: var(--orbi-handwriting);
+    font-size: 0.9rem;
+
+    button {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      min-height: 32px;
+      padding: 0 0.2rem;
+      border: 0;
+      background: transparent;
+      color: #78502e;
+      font: inherit;
+      cursor: pointer;
+
+      span {
+        color: #b77b36;
+        font-size: 1.9rem;
+        line-height: 1;
+      }
+
+      &:disabled {
+        opacity: 0.28;
+        cursor: default;
+      }
+
+      &:hover:not(:disabled) {
+        color: #ac5f20;
+      }
+    }
+  }
+}

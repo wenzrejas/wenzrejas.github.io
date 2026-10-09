@@ -1,0 +1,9 @@
+// ── Lights-on wave ────────────────────────────────────────────────────────────
+export const BULB_LIGHT_SECONDS = 0.15
+export const BULB_FLASH = 1.4
+export const BULB_FLASH_DECAY_SECONDS = 0.35
+export const BULB_HALO_SIZE = 0.7
+export const BULB_HALO_GROWTH = 0.5
+export const BULB_HALO_STRENGTH = 0.8
+export const BULB_HALO_COLOR = '#ffd079'
+export const BULB_HALO_VISIBLE_LEVEL = 0.001

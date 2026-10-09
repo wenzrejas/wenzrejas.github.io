@@ -26,7 +26,6 @@ export const MARKER_GLOW_OPACITY = 0.55
 export const MARKER_COLOR = '#33e6cc'
 export const MARKER_CENTER_COLOR = '#ffffff'
 export const MARKER_OUTLINE_COLOR = '#14182a'
-export const MARKER_RENDER_ORDER = 20
 
 export const MARKER_SPRING_STIFFNESS = 420
 export const MARKER_SPRING_DAMPING = 26

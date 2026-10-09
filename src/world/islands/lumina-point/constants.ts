@@ -54,7 +54,6 @@ export const MONOLITH_SHIP_REACH = 36
 // ── Hologram ──────────────────────────────────────────────────────────────────
 export const HOLOGRAM_SCAN_DENSITY = 0.75
 export const HOLOGRAM_SCAN_SPEED = 0.8
-export const HOLOGRAM_RENDER_ORDER = 5
 
 export const PROJECTOR_DAY_SHARE = 0.4
 

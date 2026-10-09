@@ -4,6 +4,7 @@ import type * as THREE from 'three'
 import { useDebugStore } from '@/store/debugStore'
 import { buildFlatQuad } from '@/utils/geometry'
 import { createRippleMaterial } from '@/world/effects/rippleModel'
+import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import {
   RIPPLE_MAX_GROUPS,
   RIPPLE_SPRITES_PER_GROUP,
@@ -72,7 +73,7 @@ export default function WakeRipples({ shipRef }: WakeRipplesProps) {
       ref={meshRef}
       args={[geometry, material, TOTAL_RIPPLE_SPRITES]}
       frustumCulled={false}
-      renderOrder={4}
+      renderOrder={RENDER_LAYER.effects}
     />
   )
 }

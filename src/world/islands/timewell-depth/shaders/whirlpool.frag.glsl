@@ -15,6 +15,11 @@ uniform vec3  uGlowColor;
 uniform vec3  uMagicColor;
 uniform float uNight;
 uniform float uMagic;
+uniform vec3  uAwakenColor;
+uniform float uWaterGlow;
+uniform float uSpiralGlow;
+uniform float uRipple;
+uniform float uRippleGlow;
 
 varying vec2 vLocal;
 varying vec2 vFieldUv;
@@ -114,6 +119,13 @@ vec3 magicTone(float radius) {
   return mix(uGlowColor, uMagicColor, smoothstep(0.15, 0.85, radius));
 }
 
+float rippleRing(float radius, float phase) {
+  float progress = fract(phase);
+  float front = 1.0 - (1.0 - progress) * (1.0 - progress);
+  float offset = (radius - front) / RIPPLE_WIDTH;
+  return exp(-offset * offset) * (1.0 - progress);
+}
+
 float lightStreaks(float warpedTurn, float flow, float radius, float pixelTurn) {
   float phase = warpedTurn * LIGHT_STREAKS;
   float lane = floor(phase + 0.5);
@@ -163,7 +175,7 @@ void main() {
   water *= mix(CORE_SHADE, 1.0, smoothstep(0.0, DEPTH_REACH, radius));
 
   float shimmer = (0.5 + 0.5 * sin(uTime * MAGIC_SHIFT_SPEED)) * MAGIC_SHIFT * uNight;
-  vec3 coreColor = mix(uGlowColor, uMagicColor, shimmer);
+  vec3 coreColor = mix(mix(uGlowColor, uMagicColor, shimmer), uAwakenColor, uSpiralGlow * CORE_SHIFT);
 
   float halo = exp(-(radius * radius) / (HALO_RADIUS * HALO_RADIUS)) * HALO_STRENGTH;
   halo *= 1.0 + MAGIC_HALO_BOOST * uMagic;
@@ -218,14 +230,26 @@ void main() {
   float foamShare = max(foam, fleck) * FOAM_OPACITY;
   vec3 color = mix(water, foamTint, foamShare);
 
-  if (uNight > 0.0) {
-    float light = lightStreaks(warpedTurn, flow, radius, pixelTurn) * LIGHT_STRENGTH * uNight;
-    color += magicTone(radius) * light;
+  float streamLevel = max(uNight, uSpiralGlow * SPIRAL_STREAKS);
+  if (streamLevel > 0.0) {
+    float light = lightStreaks(warpedTurn, flow, radius, pixelTurn) * LIGHT_STRENGTH * streamLevel;
+    color += mix(magicTone(radius), uAwakenColor, uSpiralGlow) * light;
+  }
+
+  if (uWaterGlow + uSpiralGlow + uRippleGlow > 0.0) {
+    float awakenReach = 1.0 - smoothstep(WATER_GLOW_REACH, 1.0, radius);
+    float trailingRing = rippleRing(radius, uRipple - RIPPLE_TRAIL) * step(RIPPLE_TRAIL, uRipple);
+    float ripple = (rippleRing(radius, uRipple) + RIPPLE_ECHO * trailingRing) * uRippleGlow;
+    float armOffset = (armPhase - ARM_CREST) / SPIRAL_WIDTH;
+    float armLine = exp(-armOffset * armOffset) * resolvable(ARMS, pixelTurn);
+    float awakenLight = WATER_GLOW * uWaterGlow * awakenReach + ripple * RIPPLE_GLOW;
+    awakenLight += armLine * SPIRAL_GLOW * uSpiralGlow * awakenReach * smoothstep(0.05, 0.2, radius);
+    color += uAwakenColor * awakenLight;
   }
 
   float pulse = 1.0 + GLOW_PULSE * sin(uTime * GLOW_PULSE_SPEED);
   float glow = exp(-(radius * radius) / (GLOW_RADIUS * GLOW_RADIUS));
-  glow *= GLOW_STRENGTH * pulse * (1.0 + MAGIC_GLOW_BOOST * uMagic);
+  glow *= GLOW_STRENGTH * pulse * (1.0 + MAGIC_GLOW_BOOST * uMagic) * (1.0 + CORE_BOOST * uSpiralGlow);
   color = mix(color, coreColor, clamp(glow, 0.0, 1.0));
   float bloomReach = GLOW_RADIUS * 3.0;
   color += coreColor * exp(-(radius * radius) / (bloomReach * bloomReach)) * pulse * 0.4 * uMagic;

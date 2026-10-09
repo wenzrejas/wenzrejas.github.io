@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
+import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import GroundGlow from '../shared/ground-glow/GroundGlow'
 import { INLET_GLOW } from './constants'
 import { inletGlow, lightHolograms } from './hologramGlow'
@@ -47,7 +48,12 @@ export default function Holograms({ monoliths, islandScale }: HologramsProps) {
         level={(site) => inletGlow(monoliths[site])}
       />
       {projectionGeometries.map((geometry, i) => (
-        <mesh key={i} geometry={geometry} material={projectionMaterial} renderOrder={5} />
+        <mesh
+          key={i}
+          geometry={geometry}
+          material={projectionMaterial}
+          renderOrder={RENDER_LAYER.glow}
+        />
       ))}
     </>
   )

@@ -1,3 +1,5 @@
+#include "/shaders/pointGlow.glsl"
+
 uniform vec3 uGlowColor;
 uniform vec3 uMagicColor;
 
@@ -6,9 +8,8 @@ varying float vShare;
 
 void main() {
   float fromCenter = length(gl_PointCoord - 0.5);
-  float halo = 1.0 - smoothstep(0.0, 0.5, fromCenter);
-  float core = 1.0 - smoothstep(0.0, 0.2, fromCenter);
-  float alpha = (halo * halo * 0.6 + core) * vAlpha;
+  float core = moteCore(fromCenter, 0.2);
+  float alpha = moteGlow(fromCenter, core) * vAlpha;
   if (alpha <= 0.003) discard;
 
   vec3 tone = mix(uGlowColor, uMagicColor, smoothstep(0.15, 0.85, vShare));

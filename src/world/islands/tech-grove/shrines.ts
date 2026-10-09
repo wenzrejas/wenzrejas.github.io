@@ -7,6 +7,7 @@ import type { GlowSite } from '../shared/ground-glow/glowSites'
 import {
   BASE_RIM_NODES,
   GEM_NODES,
+  PEDESTAL_LABEL_MATERIAL,
   SPARKLE_EDGE_ANGLE,
   SPINNING_GEM_NODES,
   STATUE_GROVES,
@@ -24,16 +25,19 @@ export interface ShrineGem {
   tumbles: boolean
 }
 
-export interface StatueMarker {
+export interface Statue {
   grove: GroveKey
-  position: THREE.Vector3
+  marker: THREE.Vector3
+  bounds: THREE.Box3
+  pedestalGlow: GlowSite
+  label?: THREE.Mesh
   baseGap: (x: number, z: number) => number
 }
 
 export interface Shrines {
   bases: GlowSite[]
   gems: ShrineGem[]
-  markers: StatueMarker[]
+  statues: Statue[]
 }
 
 const _toFrame = new THREE.Matrix4()
@@ -85,18 +89,21 @@ function findGem(model: THREE.Object3D, gemNode: string): ShrineGem | null {
   }
 }
 
-function findStatueMarker(
-  model: THREE.Object3D,
-  statueNode: string,
-  grove: GroveKey
-): StatueMarker | null {
+function findStatue(model: THREE.Object3D, statueNode: string, grove: GroveKey): Statue | null {
   const statue = model.getObjectByName(statueNode)
   const islet = statue?.parent
-  if (!statue || !islet) return null
+  const rimNode = BASE_RIM_NODES.find((node) => islet?.getObjectByName(node))
+  const pedestalGlow = rimNode ? findBase(model, rimNode) : null
+  if (!statue || !islet || !pedestalGlow) return null
   const footprint = footprintOf(model, meshesOf(islet), positionIn(model, islet))
   return {
     grove,
-    position: markerPositionOn(model, statue, STATUE_MARKER_HEIGHT),
+    marker: markerPositionOn(model, statue, STATUE_MARKER_HEIGHT),
+    bounds: boundsIn(model, meshesOf(statue)),
+    pedestalGlow,
+    label: meshesOf(islet).find(
+      (mesh) => (mesh.material as THREE.Material).name === PEDESTAL_LABEL_MATERIAL
+    ),
     baseGap: (x, z) => footprintGap(footprint, model, x, z),
   }
 }
@@ -106,8 +113,8 @@ export function findShrines(model: THREE.Object3D): Shrines {
   return {
     bases: BASE_RIM_NODES.map((node) => findBase(model, node)).filter((base) => base !== null),
     gems: GEM_NODES.map((node) => findGem(model, node)).filter((gem) => gem !== null),
-    markers: Object.entries(STATUE_GROVES)
-      .map(([node, grove]) => findStatueMarker(model, node, grove))
-      .filter((marker) => marker !== null),
+    statues: Object.entries(STATUE_GROVES)
+      .map(([node, grove]) => findStatue(model, node, grove))
+      .filter((statue) => statue !== null),
   }
 }

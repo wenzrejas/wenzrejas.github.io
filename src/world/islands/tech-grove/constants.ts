@@ -1,6 +1,5 @@
 import type { GroveKey } from '@/store/panelStore'
 import { BASE_TUNING, type ContactBlob, type IslandSpec } from '../shared/islandSpec'
-import type { GroundGlowTuning } from '../shared/ground-glow/glowSites'
 import type { SurfTuning } from '../shared/rock-surf/surfSplash'
 import { TECH_CLUSTER_RADIUS, TECH_FOOTPRINT, TECH_MODEL_TOP } from './shoreProfile'
 
@@ -29,6 +28,7 @@ export const STATUE_GROVES: Record<string, GroveKey> = {
   Statue_Frontend: 'frontend',
   Statue_WebGL: 'visuals',
 }
+export const PEDESTAL_LABEL_MATERIAL = 'Sanctuary_Static_VertexColors_R062_M000'
 
 // ── Island spec ───────────────────────────────────────────────────────────────
 export const TECH_SPEC: IslandSpec = {
@@ -40,59 +40,19 @@ export const TECH_SPEC: IslandSpec = {
   calm: { inner: TECH_CLUSTER_RADIUS, outer: TECH_CLUSTER_RADIUS },
 }
 
-// ── Fireflies ─────────────────────────────────────────────────────────────────
-export const FIREFLY_COUNT = 70
-export const FIREFLY_COLOR = '#d8ff6a'
-export const FIREFLY_SIZE = 2.2
-export const FIREFLY_HEIGHT_MIN = 6
-export const FIREFLY_HEIGHT_MAX = 28
-export const FIREFLY_SPREAD = 1.4
-export const FIREFLY_WANDER = 2.5
-export const FIREFLY_BOB = 1.2
-export const FIREFLY_FADE_BAND = 0.06
-export const FIREFLY_PRESENCE_RATE = 1.5
-export const FIREFLY_RAIN_RATE = 0.12
-
 // ── Sanctuary glow ────────────────────────────────────────────────────────────
 export const GLOW_DAY_SHARE = 0.25
 export const GLOW_EMISSIVE_GAIN = 1.8
 
-export const GEM_HALO_SPREAD = 1.8
-export const GEM_HALO_STRENGTH = 0.5
-
-// ── Shrine ground glow ────────────────────────────────────────────────────────
-export const SHRINE_GROUND_GLOW: GroundGlowTuning = {
-  haloSpread: 1.55,
-  haloFill: 0.35,
-  haloStrength: 0.55,
-  haloLift: 0.3,
-  motesPerSite: 16,
-  moteSize: 2,
-  moteRise: 13,
-  moteLifetime: 4.5,
-  moteSwirl: 0.9,
-  moteSpread: 0.6,
-  moteInnerShare: 0.35,
-  moteStrength: 1.7,
-}
+export const ORB_GLOW_DAY_SHARE = 0.5
 
 // ── Gems ──────────────────────────────────────────────────────────────────────
-export const GEM_SPIN_RATE = 0.4
-export const GEM_TUMBLE_RATE = 0.25
-
-export const SPARKLE_DENSITY = 0.8
-export const SPARKLE_MIN_COUNT = 2
-export const SPARKLE_SIZE = 2.8
-export const SPARKLE_PERIOD_MIN = 2
-export const SPARKLE_PERIOD_MAX = 4
-export const SPARKLE_FLASH_SHARE = 0.18
 export const SPARKLE_EDGE_ANGLE = 20
-export const SPARKLE_LIFT = 1.05
-export const SPARKLE_RAY_WIDTH = 0.14
-export const SPARKLE_TINT = 0.35
 
 // ── Statues ───────────────────────────────────────────────────────────────────
 export const STATUE_MARKER_HEIGHT = 0.2
+export const PEDESTAL_LABEL_GLOW = 1.6
+export const PEDESTAL_LABEL_DAY_SHARE = 0.1
 
 // ── Rock surf ─────────────────────────────────────────────────────────────────
 export const TECH_SURF: SurfTuning = {

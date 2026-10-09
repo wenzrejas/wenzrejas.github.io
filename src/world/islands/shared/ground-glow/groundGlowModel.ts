@@ -1,6 +1,6 @@
 import * as THREE from 'three'
-import { floatDefines } from '@/utils/glsl'
 import { mix, rand } from '@/utils/math'
+import { createAdditiveGlowMaterial } from '../glowMaterial'
 import type { GlowSite, GroundGlowTuning } from './glowSites'
 import GROUND_HALO_VERT from './shaders/groundHalo.vert.glsl'
 import GROUND_HALO_FRAG from './shaders/groundHalo.frag.glsl'
@@ -108,23 +108,6 @@ export function buildMoteGeometry(
 }
 
 // ── Materials ─────────────────────────────────────────────────────────────────
-
-export function createAdditiveGlowMaterial(
-  vertexShader: string,
-  fragmentShader: string,
-  defines: Record<string, number>,
-  uniforms: Record<string, THREE.IUniform>
-): THREE.ShaderMaterial {
-  return new THREE.ShaderMaterial({
-    vertexShader,
-    fragmentShader,
-    defines: floatDefines(defines),
-    transparent: true,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
-    uniforms: { uGlow: { value: 0 }, ...uniforms },
-  })
-}
 
 function splitGlowBySite(material: THREE.ShaderMaterial, siteCount: number): THREE.ShaderMaterial {
   material.uniforms.uGlow.value = new Array<number>(siteCount).fill(0)
