@@ -11,6 +11,7 @@ import { isOnScreen } from '@/utils/screen'
 import { MAX_FRAME_SECONDS } from '@/utils/time'
 import { ParticlePool, updateFoam } from '@/world/effects/particlePool'
 import { createRippleMaterial } from '@/world/effects/rippleModel'
+import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { depthFade } from '../shared/wildlifeMaterial'
 import {
   DESPAWN_GRACE,
@@ -130,7 +131,7 @@ export default function Turtles() {
         args={[rippleGeometry, rippleMaterial, RIPPLE_POOL]}
         frustumCulled={false}
         visible={false}
-        renderOrder={4}
+        renderOrder={RENDER_LAYER.effects}
       />
     </>
   )

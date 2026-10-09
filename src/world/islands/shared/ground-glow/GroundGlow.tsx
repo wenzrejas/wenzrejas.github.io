@@ -2,6 +2,8 @@ import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import type * as THREE from 'three'
 import { uniformsOf } from '@/utils/meshes'
+import { RENDER_LAYER } from '@/app/experience/renderLayers'
+import { pixelsPerUnit } from '@/utils/screen'
 import type { GlowSite, GroundGlowTuning } from './glowSites'
 import {
   buildHaloGeometry,
@@ -52,25 +54,38 @@ export default function GroundGlow({ sites, tuning, islandScale, level }: Ground
     const motes = motesRef.current
     if (!halo || !motes) return
 
-    const zoom = (camera as THREE.OrthographicCamera).zoom
     const haloUniforms = uniformsOf(halo)
     const moteUniforms = uniformsOf(motes)
 
+    let isLit = false
     for (let site = 0; site < sites.length; site++) {
       const glow = level(site)
       haloUniforms.uGlow.value[site] = glow
       moteUniforms.uGlow.value[site] = glow
+      if (glow > 0) isLit = true
     }
+    halo.visible = isLit
+    motes.visible = isLit
 
     moteUniforms.uTime.value = clock.getElapsedTime()
-    moteUniforms.uSize.value = tuning.moteSize * zoom * gl.getPixelRatio()
+    moteUniforms.uSize.value = tuning.moteSize * pixelsPerUnit(camera, gl)
     moteUniforms.uRise.value = tuning.moteRise / islandScale
   })
 
   return (
     <>
-      <mesh ref={haloRef} geometry={haloGeometry} material={haloMaterial} renderOrder={5} />
-      <points ref={motesRef} geometry={moteGeometry} material={moteMaterial} renderOrder={5} />
+      <mesh
+        ref={haloRef}
+        geometry={haloGeometry}
+        material={haloMaterial}
+        renderOrder={RENDER_LAYER.glow}
+      />
+      <points
+        ref={motesRef}
+        geometry={moteGeometry}
+        material={moteMaterial}
+        renderOrder={RENDER_LAYER.glow}
+      />
     </>
   )
 }

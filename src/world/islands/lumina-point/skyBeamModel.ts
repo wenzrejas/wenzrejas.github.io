@@ -3,9 +3,9 @@ import { rand } from '@/utils/math'
 import type { GlowSite } from '../shared/ground-glow/glowSites'
 import {
   buildMoteGeometry as buildGroundMoteGeometry,
-  createAdditiveGlowMaterial,
   createMoteMaterial as createGroundMoteMaterial,
 } from '../shared/ground-glow/groundGlowModel'
+import { createAdditiveGlowMaterial } from '../shared/glowMaterial'
 import {
   CHARGE_MOTE_LIFETIME,
   CHARGE_MOTE_REACH,
@@ -54,7 +54,7 @@ import CHARGE_MOTES_VERT from './shaders/chargeMotes.vert.glsl'
 import CHARGE_MOTES_FRAG from './shaders/chargeMotes.frag.glsl'
 import SKY_BEAM_VERT from './shaders/skyBeam.vert.glsl'
 import SKY_BEAM_FRAG from './shaders/skyBeam.frag.glsl'
-import SHOCK_RING_VERT from './shaders/shockRing.vert.glsl'
+import UV_QUAD_VERT from '@/shaders/uvQuad.vert.glsl'
 import SHOCK_RING_FRAG from './shaders/shockRing.frag.glsl'
 
 export interface SkyBeamMaterials {
@@ -223,7 +223,7 @@ const createBeamMaterial = () =>
 
 const createShockRingMaterial = () =>
   createAdditiveGlowMaterial(
-    SHOCK_RING_VERT,
+    UV_QUAD_VERT,
     SHOCK_RING_FRAG,
     { RING_EDGE: SHOCK_RING_EDGE, RING_WAKE: SHOCK_RING_WAKE },
     { uColor: { value: SHOCK_TINT } }

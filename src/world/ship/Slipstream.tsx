@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, type RefObject } from 'react'
 import { useFrame } from '@react-three/fiber'
 import type * as THREE from 'three'
 import { uniformsOf } from '@/utils/meshes'
+import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { SLIPSTREAM_HIDE_BELOW } from './constants'
 import { buildSlipstreamGeometry, createSlipstreamMaterial } from './slipstreamModel'
 
@@ -38,7 +39,7 @@ export default function Slipstream({ tailwindRef }: SlipstreamProps) {
       material={material}
       visible={false}
       frustumCulled={false}
-      renderOrder={5}
+      renderOrder={RENDER_LAYER.glow}
     />
   )
 }

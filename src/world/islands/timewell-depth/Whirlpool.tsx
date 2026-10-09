@@ -6,13 +6,20 @@ import { useCycleStore } from '@/store/cycleStore'
 import { enterDepths } from '@/store/viewStore'
 import { useWhirlpoolStore } from '@/store/whirlpoolStore'
 import { mix } from '@/utils/math'
+import { MAX_FRAME_SECONDS } from '@/utils/time'
+import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { syncWhirlpoolFunnel } from './whirlpoolFunnel'
+import { setHovered } from '@/interaction/hover'
 import InteractionMarker from '@/interaction/InteractionMarker'
 import { SHORE_Y } from '@/world/shore/constants'
 import type { ShoreField } from '@/world/shore/shoreField'
 import { createFieldTexture } from '@/world/shore/shorelineModel'
-import { nightGlow } from '../shared/nightGlow'
+import { dayNightGlow, nightGlow } from '../shared/nightGlow'
+import { islandLocalY } from '../shared/islandSpec'
+import { createHoverTimeline } from '../shared/hoverTimeline'
+import { glowLevel, ripplePhase, spiralLevel, stepAwakening } from './awakening'
 import {
+  AWAKEN_DAY_SHARE,
   WHIRLPOOL_EYE_X,
   WHIRLPOOL_EYE_Z,
   WHIRLPOOL_FLOW_DENSITY,
@@ -26,6 +33,8 @@ import {
 } from './constants'
 import { TIMEWELL_BASIN } from './shoreProfile'
 import { alignToShore, buildWhirlpoolGeometry, createWhirlpoolMaterial } from './whirlpoolModel'
+import MemoryEchoes from './memory-echoes/MemoryEchoes'
+import VortexBeam from './vortex-beam/VortexBeam'
 import WhirlpoolMotes from './WhirlpoolMotes'
 
 interface WhirlpoolProps {
@@ -43,6 +52,7 @@ export default function Whirlpool({ shoreline, center, islandScale, offsetY }: W
   const geometry = useMemo(() => buildWhirlpoolGeometry(), [])
   const material = useMemo(() => createWhirlpoolMaterial(), [])
   const shoreTexture = useMemo(() => createFieldTexture(shoreline), [shoreline])
+  const awakening = useMemo(() => createHoverTimeline(), [])
   const eyeGap = useCallback((x: number, z: number) => {
     const mesh = meshRef.current
     if (!mesh) return Infinity
@@ -70,9 +80,10 @@ export default function Whirlpool({ shoreline, center, islandScale, offsetY }: W
     []
   )
 
-  useFrame(({ clock, scene }) => {
+  useFrame(({ clock, scene }, delta) => {
     const mesh = meshRef.current
     if (!mesh) return
+    stepAwakening(awakening, Math.min(delta, MAX_FRAME_SECONDS))
 
     const presence = useWhirlpoolStore.getState()
     mesh.getWorldPosition(_eye)
@@ -94,6 +105,11 @@ export default function Whirlpool({ shoreline, center, islandScale, offsetY }: W
     if (scene.background instanceof THREE.Color) {
       uniforms.uBackground.value.copyLinearToSRGB(scene.background)
     }
+    const awakenLight = dayNightGlow(AWAKEN_DAY_SHARE)
+    uniforms.uWaterGlow.value = glowLevel(awakening) * awakenLight
+    uniforms.uSpiralGlow.value = spiralLevel(awakening) * awakenLight
+    uniforms.uRipple.value = ripplePhase(awakening)
+    uniforms.uRippleGlow.value = awakening.presence * awakenLight
   })
 
   return (
@@ -103,16 +119,19 @@ export default function Whirlpool({ shoreline, center, islandScale, offsetY }: W
       material={material}
       position={[
         center.x + TIMEWELL_BASIN.x,
-        (SHORE_Y - offsetY) / islandScale,
+        islandLocalY(SHORE_Y, islandScale, offsetY),
         center.z + TIMEWELL_BASIN.z,
       ]}
       scale={WHIRLPOOL_RADIUS}
-      renderOrder={2.5}
+      renderOrder={RENDER_LAYER.inWater}
     >
-      <WhirlpoolMotes islandScale={islandScale} />
+      <WhirlpoolMotes islandScale={islandScale} awakening={awakening} />
+      <VortexBeam awakening={awakening} />
+      <MemoryEchoes awakening={awakening} islandScale={islandScale} />
       <InteractionMarker
         position={[WHIRLPOOL_EYE_X, WHIRLPOOL_MARKER_LIFT, WHIRLPOOL_EYE_Z]}
         label={ISLAND_COPY.timewell.marker}
+        onHover={(isHovered) => setHovered(awakening, isHovered)}
         onActivate={enterDepths}
         baseGap={eyeGap}
       />

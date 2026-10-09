@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { footprintGap, footprintOf } from '@/interaction/baseFootprint'
-import { meshesOf, positionIn } from '@/utils/meshes'
-import { CAFE_NODE, COUNTER_MARKER_SPOT, DOCK_NODE, TERRAIN_NODE } from './constants'
+import { meshesOf, pointIn, positionIn } from '@/utils/meshes'
+import { CAFE_NODE, COUNTER_MARKER_SPOT, DOCK_NODE, NOTE_SPOT, TERRAIN_NODE } from './constants'
 import { COZY_MAIN_SHORE_RADIUS } from './shoreProfile'
 
 export interface CafeMarker {
@@ -23,7 +23,15 @@ export function findCafeMarker(model: THREE.Object3D): CafeMarker | null {
     COZY_MAIN_SHORE_RADIUS
   )
   return {
-    position: model.worldToLocal(cafe.localToWorld(new THREE.Vector3(...COUNTER_MARKER_SPOT))),
+    position: pointIn(model, cafe, COUNTER_MARKER_SPOT),
     baseGap: (x, z) => footprintGap(shore, model, x, z),
   }
+}
+
+export function findNoteSpot(model: THREE.Object3D): THREE.Vector3 | null {
+  const cafe = model.getObjectByName(CAFE_NODE)
+  if (!cafe) return null
+
+  model.updateMatrixWorld(true)
+  return pointIn(model, cafe, NOTE_SPOT)
 }

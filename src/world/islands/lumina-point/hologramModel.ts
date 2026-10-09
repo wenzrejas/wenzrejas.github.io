@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { floatDefines } from '@/utils/glsl'
+import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import {
-  HOLOGRAM_RENDER_ORDER,
   HOLOGRAM_SCAN_DENSITY,
   HOLOGRAM_SCAN_SPEED,
   LOGO_FLICKER_CHANCE,
@@ -110,7 +110,7 @@ export function dressLogos(logos: FloatingLogo[], shared: HologramUniforms): () 
       const original = { material: mesh.material, renderOrder: mesh.renderOrder }
       const hologram = createHologramMaterial(color, opacity, shared)
       mesh.material = hologram
-      mesh.renderOrder = HOLOGRAM_RENDER_ORDER
+      mesh.renderOrder = RENDER_LAYER.glow
       return { mesh, original, hologram }
     })
   )

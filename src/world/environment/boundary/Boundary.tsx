@@ -4,6 +4,7 @@ import * as THREE from 'three'
 import { IS_DEBUG } from '@/app/experience/constants'
 import { useDebugStore } from '@/store/debugStore'
 import { useCycleStore } from '@/store/cycleStore'
+import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import VERT from './shaders/boundary.vert.glsl'
 import FRAG from './shaders/boundary.frag.glsl'
 
@@ -48,7 +49,7 @@ function BoundaryFog() {
       rotation-x={-Math.PI / 2}
       position-y={8}
       frustumCulled={false}
-      renderOrder={10}
+      renderOrder={RENDER_LAYER.fog}
     >
       <circleGeometry args={[1500, 256]} />
       <primitive object={material} attach="material" />
@@ -59,7 +60,7 @@ function BoundaryFog() {
 function BoundaryRing() {
   const { radius } = useDebugStore((s) => s.boundary)
   return (
-    <mesh rotation-x={-Math.PI / 2} position-y={3} renderOrder={1}>
+    <mesh rotation-x={-Math.PI / 2} position-y={3} renderOrder={RENDER_LAYER.guide}>
       <ringGeometry args={[radius - 1, radius + 1, 128]} />
       <meshBasicMaterial
         color="#ff4444"

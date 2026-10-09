@@ -141,3 +141,27 @@ export const WHIRLPOOL_HALO_STRENGTH = 0.32
 
 // ── Whirlpool marker ──────────────────────────────────────────────────────────
 export const WHIRLPOOL_MARKER_LIFT = 0.05
+
+// ── Awakening ─────────────────────────────────────────────────────────────────
+export const AWAKEN_COLOR = '#5fd6ff'
+export const AWAKEN_GLOW_SECONDS = 0.6
+export const AWAKEN_SPIRAL_SECONDS = 0.8
+export const AWAKEN_ECHO_SECONDS = 1.6
+export const AWAKEN_RELEASE_SECONDS = 0.7
+export const AWAKEN_DAY_SHARE = 0.75
+export const FRAGMENT_RISE_SECONDS = 1.8
+
+// ── Awakening water ───────────────────────────────────────────────────────────
+export const RIPPLE_SECONDS = 1.6
+export const RIPPLE_WIDTH = 0.06
+export const RIPPLE_TRAIL = 0.22
+export const RIPPLE_ECHO = 0.6
+export const RIPPLE_GLOW = 0.9
+export const WATER_GLOW = 0.22
+export const WATER_GLOW_REACH = 0.45
+export const SPIRAL_WIDTH = 0.09
+export const SPIRAL_GLOW = 0.6
+export const SPIRAL_STREAKS = 1.4
+export const CORE_BOOST = 1.2
+export const CORE_SHIFT = 0.6
+export const MOTE_AWAKEN_BOOST = 1.5

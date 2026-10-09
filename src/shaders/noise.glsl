@@ -1,3 +1,7 @@
+float hash(float n) {
+  return fract(sin(n) * 43758.5453);
+}
+
 float hash(vec2 p) {
   p = fract(p * vec2(127.1, 311.7));
   p += dot(p, p + 45.32);

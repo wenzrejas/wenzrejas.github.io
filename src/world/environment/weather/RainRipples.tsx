@@ -8,6 +8,7 @@ import { floatDefines } from '@/utils/glsl'
 import { MAX_FRAME_SECONDS } from '@/utils/time'
 import { whirlpoolFunnelUniforms } from '@/world/islands/timewell-depth/whirlpoolFunnel'
 import { algaeAt, queueRainHit } from '@/world/wildlife/algae/algaeField'
+import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import RIPPLE_VERT from './shaders/rainRipple.vert.glsl'
 import RIPPLE_FRAG from './shaders/rainRipple.frag.glsl'
 
@@ -139,5 +140,13 @@ export default function RainRipples({ shipRef }: { shipRef: React.RefObject<THRE
     if (centerDirty) aCenter.needsUpdate = true
   })
 
-  return <mesh ref={meshRef} geometry={geo} material={mat} frustumCulled={false} renderOrder={7} />
+  return (
+    <mesh
+      ref={meshRef}
+      geometry={geo}
+      material={mat}
+      frustumCulled={false}
+      renderOrder={RENDER_LAYER.rainRipples}
+    />
+  )
 }

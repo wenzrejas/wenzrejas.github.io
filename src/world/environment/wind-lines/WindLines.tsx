@@ -5,6 +5,7 @@ import { useDebugStore } from '@/store/debugStore'
 import { useWeatherStore } from '@/store/weatherStore'
 import { uniformsOf } from '@/utils/meshes'
 import { MAX_FRAME_SECONDS } from '@/utils/time'
+import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { WIND_SETTLED_ANGLE, WIND_STREAK_POOL } from './constants'
 import { buildWindStreakGeometry, createWindStreakMaterial } from './windStreakModel'
 import { advanceStreak, createWindState, spawnStreak, turnWind } from './windStreaks'
@@ -78,7 +79,7 @@ export default function WindLines({ shipRef }: WindLinesProps) {
           material={material}
           visible={false}
           frustumCulled={false}
-          renderOrder={5}
+          renderOrder={RENDER_LAYER.glow}
         />
       ))}
     </>

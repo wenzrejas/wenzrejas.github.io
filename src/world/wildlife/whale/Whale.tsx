@@ -10,6 +10,7 @@ import { useWhaleStore } from '@/store/whaleStore'
 import { isOnScreen } from '@/utils/screen'
 import { MAX_FRAME_SECONDS } from '@/utils/time'
 import { ParticlePool, updateDrops, updateFoam } from '@/world/effects/particlePool'
+import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { depthFade } from '../shared/wildlifeMaterial'
 import {
   BREACH_PITCH_BOOST,
@@ -174,14 +175,14 @@ export default function Whale() {
         args={[foamGeometry, sprayMaterial, FOAM_POOL]}
         frustumCulled={false}
         visible={false}
-        renderOrder={4}
+        renderOrder={RENDER_LAYER.effects}
       />
       <instancedMesh
         ref={dropsRef}
         args={[dropGeometry, sprayMaterial, DROP_POOL]}
         frustumCulled={false}
         visible={false}
-        renderOrder={4}
+        renderOrder={RENDER_LAYER.effects}
       />
     </>
   )

@@ -1,3 +1,5 @@
+#include "/shaders/noise.glsl"
+
 uniform vec3  uColor;
 uniform float uOpacity;
 uniform float uTime;
@@ -6,10 +8,6 @@ uniform float uLevel;
 varying vec3  vViewNormal;
 varying float vWorldY;
 varying float vSeed;
-
-float hash(float n) {
-  return fract(sin(n) * 43758.5453);
-}
 
 void main() {
   float scan = 1.0 - SCAN_DEPTH * (0.5 + 0.5 * sin((vWorldY * SCAN_DENSITY - uTime * SCAN_SPEED) * 6.2831853));

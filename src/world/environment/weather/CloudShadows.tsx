@@ -4,6 +4,7 @@ import * as THREE from 'three'
 import { useWeatherStore } from '@/store/weatherStore'
 import { useWindStore } from '@/store/windStore'
 import { MAX_FRAME_SECONDS } from '@/utils/time'
+import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { CLOUD_PLANE_SIZE, CLOUD_TILE, createCloudTexture } from './cloudTexture'
 import { cloudRemap, cloudScroll, cloudShadowUniforms, updateCloudScroll } from './cloudShadow'
 import CLOUD_VERT from './shaders/cloudShadow.vert.glsl'
@@ -73,7 +74,7 @@ export default function CloudShadows() {
       rotation-x={-Math.PI / 2}
       position-y={PLANE_Y}
       material={material}
-      renderOrder={3}
+      renderOrder={RENDER_LAYER.waterSurface}
       frustumCulled={false}
       castShadow={false}
       receiveShadow={false}

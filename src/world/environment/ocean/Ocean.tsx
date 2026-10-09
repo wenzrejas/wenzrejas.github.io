@@ -1,6 +1,7 @@
 import { useRef, useMemo, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
+import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import VERT from './shaders/ocean.vert.glsl'
 import FRAG from './shaders/ocean.frag.glsl'
 import {
@@ -107,7 +108,7 @@ export default function Ocean() {
       rotation-x={-Math.PI / 2}
       position={[0, OCEAN_Y, 0]}
       frustumCulled={false}
-      renderOrder={2}
+      renderOrder={RENDER_LAYER.ocean}
     >
       <planeGeometry args={[OCEAN_PLANE_SIZE, OCEAN_PLANE_SIZE, OCEAN_SEGMENTS, OCEAN_SEGMENTS]} />
       <primitive object={material} attach="material" />

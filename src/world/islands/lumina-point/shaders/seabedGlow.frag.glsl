@@ -1,5 +1,5 @@
 #include "/shaders/noise.glsl"
-#include "./underwaterLight.glsl"
+#include "/shaders/underwaterLight.glsl"
 
 uniform sampler2D uField;
 uniform float uGlow;

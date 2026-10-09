@@ -1,7 +1,8 @@
-import { useMemo } from 'react'
+import { useLayoutEffect, useMemo } from 'react'
 import { ISLAND_COPY } from '@/data/islandCopy'
 import { useDebugStore } from '@/store/debugStore'
 import { openPanel } from '@/store/panelStore'
+import { setHovered } from '@/interaction/hover'
 import InteractionMarker from '@/interaction/InteractionMarker'
 import type { IslandBodyProps } from '../shared/types'
 import { useIslandModel } from '../shared/islandModel'
@@ -12,20 +13,31 @@ import { useCoastFields } from '@/world/shore/useCoastFields'
 import RockSurf from '../shared/rock-surf/RockSurf'
 import { TECH_BLOB, TECH_MODEL_URL, TECH_SURF, TERRAIN_NODES } from './constants'
 import { TECH_ISLETS } from './shoreProfile'
-import { useSanctuaryGlow } from './sanctuaryGlow'
+import { arrangeOrbs } from './logo-orbs/orbits'
+import { createPedestalLabels, dressPedestalLabels, tintPedestalLabels } from './pedestalLabelModel'
+import { useLabelGlow, useSanctuaryGlow } from './sanctuaryGlow'
 import { findShrines } from './shrines'
-import { useGemSpin } from './useGemSpin'
-import Fireflies from './Fireflies'
-import GemSparkles from './GemSparkles'
-import ShrineGlow from './ShrineGlow'
+import { useGemSpin } from './gems/useGemSpin'
+import { useOrbitReveal } from './logo-orbs/useOrbitReveal'
+import Fireflies from './fireflies/Fireflies'
+import GemSparkles from './gems/GemSparkles'
+import LightRings from './logo-orbs/LightRings'
+import LogoOrbs from './logo-orbs/LogoOrbs'
+import ShrineGlow from './shrine-glow/ShrineGlow'
 
 export default function TechGrove({ islandKey, config }: IslandBodyProps) {
   const tuning = useDebugStore((s) => s.islands.tech)
   const island = useIslandModel(TECH_MODEL_URL, tuning.brightness)
   const shrines = useMemo(() => findShrines(island.model), [island])
+  const { orbits, orbs } = useMemo(() => arrangeOrbs(shrines.statues), [shrines])
+  const labels = useMemo(() => createPedestalLabels(shrines.statues), [shrines])
 
+  useLayoutEffect(() => dressPedestalLabels(labels), [labels])
+  useLayoutEffect(() => tintPedestalLabels(labels), [labels, tuning.brightness])
   useSanctuaryGlow(island.glows)
+  useLabelGlow(labels)
   useGemSpin(shrines.gems)
+  useOrbitReveal(orbits)
 
   const placement = placeIsland(config.radius, tuning, island.footprint, island.center)
   const coast = useCoastFields(island.model, placement.scale, tuning.offsetY)
@@ -53,13 +65,16 @@ export default function TechGrove({ islandKey, config }: IslandBodyProps) {
         {shrines.gems.map((gem) => (
           <GemSparkles key={gem.node.name} gem={gem} />
         ))}
-        {shrines.markers.map((marker) => (
+        <LightRings orbits={orbits} />
+        <LogoOrbs orbits={orbits} orbs={orbs} />
+        {orbits.map((orbit) => (
           <InteractionMarker
-            key={marker.grove}
-            position={marker.position}
+            key={orbit.statue.grove}
+            position={orbit.statue.marker}
             label={ISLAND_COPY.tech.marker}
-            onActivate={(markerSpot) => openPanel(marker.grove, markerSpot)}
-            baseGap={marker.baseGap}
+            onHover={(isHovered) => setHovered(orbit, isHovered)}
+            onActivate={(markerSpot) => openPanel(orbit.statue.grove, markerSpot)}
+            baseGap={orbit.statue.baseGap}
           />
         ))}
       </group>

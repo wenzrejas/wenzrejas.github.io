@@ -54,6 +54,9 @@ export const BASE_TUNING: IslandModelTuning = {
   brightness: 1.05,
 }
 
+export const islandLocalY = (worldY: number, islandScale: number, offsetY: number) =>
+  (worldY - offsetY) / islandScale
+
 export const modelUnits = (world: number, islandRadius: number, footprint: number) =>
   (world * footprint) / (islandRadius * 2)
 

@@ -18,7 +18,6 @@ export const CLOUD_BAKE_SHARE = 0.75
 export const CLOUD_BAKE_MARGIN = 0.06
 
 // ── Cloud look ────────────────────────────────────────────────────────────────
-export const CLOUD_RENDER_ORDER = 1000
 export const CLOUD_TILT = 1.5
 export const CLOUD_DRIFT = 0.025
 export const CLOUD_OCTAVES = 5

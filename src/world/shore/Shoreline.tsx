@@ -3,9 +3,11 @@ import { useFrame } from '@react-three/fiber'
 import type * as THREE from 'three'
 import { useCycleStore } from '@/store/cycleStore'
 import { buildFlatQuad } from '@/utils/geometry'
+import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { SHORE_Y } from './constants'
 import type { ShoreField } from './shoreField'
 import { createFieldTexture, createShorelineMaterial } from './shorelineModel'
+import { islandLocalY } from '@/world/islands/shared/islandSpec'
 
 interface ShorelineProps {
   field: ShoreField
@@ -45,9 +47,9 @@ export default function Shoreline({ field, islandScale, offsetY }: ShorelineProp
       ref={meshRef}
       geometry={geometry}
       material={material}
-      position={[field.centerX, (SHORE_Y - offsetY) / islandScale, field.centerZ]}
+      position={[field.centerX, islandLocalY(SHORE_Y, islandScale, offsetY), field.centerZ]}
       scale={[field.size, 1, field.size]}
-      renderOrder={3}
+      renderOrder={RENDER_LAYER.waterSurface}
     />
   )
 }

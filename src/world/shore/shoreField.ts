@@ -73,6 +73,20 @@ function readTriangles(model: THREE.Object3D): Float32Array {
   return triangles
 }
 
+function trianglesWithin(triangles: Float32Array, center: THREE.Vector3, radius: number) {
+  const kept: number[] = []
+  for (let first = 0; first < triangles.length; first += 9) {
+    let isInside = true
+    for (let corner = first; corner < first + 9; corner += 3) {
+      if (Math.hypot(triangles[corner] - center.x, triangles[corner + 2] - center.z) > radius) {
+        isInside = false
+      }
+    }
+    if (isInside) kept.push(...triangles.subarray(first, first + 9))
+  }
+  return Float32Array.from(kept)
+}
+
 // ── Waterline slice ───────────────────────────────────────────────────────────
 
 function sliceEdge(
@@ -414,9 +428,13 @@ export function buildWaterlineField(
   model: THREE.Object3D,
   waterY: number,
   margin: number,
-  resolution: number
+  resolution: number,
+  maxRadius = Infinity
 ): DistanceField | null {
-  const waterline = sliceAtWaterline(readTriangles(model), waterY)
+  const triangles = readTriangles(model)
+  const nearby =
+    maxRadius === Infinity ? triangles : trianglesWithin(triangles, model.position, maxRadius)
+  const waterline = sliceAtWaterline(nearby, waterY)
   return waterline.length === 0 ? null : fieldAround(waterline, margin, resolution)
 }
 

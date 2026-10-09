@@ -1,0 +1,40 @@
+// ── Memory fragments ──────────────────────────────────────────────────────────
+export const FRAGMENT_COUNT = 9
+export const FRAGMENT_SIZE_MIN = 0.016
+export const FRAGMENT_SIZE_MAX = 0.03
+export const FRAGMENT_ORBIT_MIN = 0.2
+export const FRAGMENT_ORBIT_MAX = 0.45
+export const FRAGMENT_HEIGHT_MIN = 0.05
+export const FRAGMENT_HEIGHT_MAX = 0.14
+export const FRAGMENT_ORBIT_RATE = 0.18
+export const FRAGMENT_BOB_HEIGHT = 0.012
+export const FRAGMENT_BOB_RATE = 0.7
+export const FRAGMENT_TUMBLE_RATE = 0.5
+export const FRAGMENT_SLOT_JITTER = 0.25
+export const FRAGMENT_TUMBLE_TILT = 0.45
+export const FRAGMENT_RISE_TURN = 2.2
+export const FRAGMENT_HALO_SIZE = 0.09
+export const FRAGMENT_HALO_STRENGTH = 0.55
+
+// ── Crystal ───────────────────────────────────────────────────────────────────
+export const CRYSTAL_SIDES = 6
+export const CRYSTAL_RADIUS = 0.5
+export const CRYSTAL_RADIUS_JITTER = 0.15
+export const CRYSTAL_ANGLE_JITTER = 0.15
+export const CRYSTAL_BODY_TOP = 0.55
+export const CRYSTAL_BODY_BOTTOM = -0.5
+export const CRYSTAL_TAPER = 0.85
+export const CRYSTAL_TOP_TIP = 1.3
+export const CRYSTAL_BOTTOM_TIP = -1
+export const CRYSTAL_TIP_JITTER = 0.15
+export const CRYSTAL_SHAPE_JITTER = 0.2
+export const CRYSTAL_DEEP_COLOR = '#a85a14'
+export const CRYSTAL_GOLD_COLOR = '#ffc65c'
+export const CRYSTAL_BRIGHT_COLOR = '#fff1c2'
+export const CRYSTAL_LIGHT_DIRECTION = [-0.8, 0.55, 0.25] as const
+export const CRYSTAL_DEEP_UNTIL = 0.3
+export const CRYSTAL_GOLD_FROM = 0.65
+export const CRYSTAL_BRIGHT_FROM = 0.8
+export const CRYSTAL_GLINT_START = 0.9
+export const CRYSTAL_RIM_GLOW = 0.3
+export const CRYSTAL_TIP_GLOW = 0.35

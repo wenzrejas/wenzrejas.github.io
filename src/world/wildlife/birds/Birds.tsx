@@ -10,6 +10,7 @@ import { retain } from '@/utils/array'
 import { rand } from '@/utils/math'
 import { isOnScreen } from '@/utils/screen'
 import { MAX_FRAME_SECONDS } from '@/utils/time'
+import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { buildBirdGeometry, createBirdMaterial, createShadowMaterial } from './birdModel'
 import {
   BANK_FACTOR,
@@ -152,7 +153,7 @@ export default function Birds() {
         args={[geometry, shadowMaterial, MAX_BIRDS]}
         frustumCulled={false}
         visible={false}
-        renderOrder={4}
+        renderOrder={RENDER_LAYER.effects}
       />
     </>
   )

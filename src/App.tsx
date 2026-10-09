@@ -11,8 +11,17 @@ import Panels from './panels/Panels'
 import WorldMap from './world-map/WorldMap'
 
 const DebugTools = lazy(() => import('./app/debug/DebugTools'))
+const OrbiPreview = lazy(() => import('./app/mascot-preview/OrbiPreview'))
 
 export default function App() {
+  if (window.location.hash === '#orbi') {
+    return (
+      <Suspense fallback={null}>
+        <OrbiPreview />
+      </Suspense>
+    )
+  }
+
   return (
     <>
       {IS_DEBUG && (

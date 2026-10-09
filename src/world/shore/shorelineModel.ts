@@ -62,6 +62,10 @@ export function createDistanceTexture({ distances, resolution }: DistanceField):
   return createHalfFloatTexture(halfFloats, resolution, THREE.RedFormat)
 }
 
+export function bindFieldTexture(material: THREE.ShaderMaterial, texture: THREE.Texture) {
+  material.uniforms.uField.value = texture
+}
+
 export function createShorelineMaterial(): THREE.ShaderMaterial {
   return new THREE.ShaderMaterial({
     vertexShader: SHORELINE_VERT,

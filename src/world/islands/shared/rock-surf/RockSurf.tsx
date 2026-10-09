@@ -12,6 +12,7 @@ import type { IslandPlacement } from '../islandTransform'
 import { burstsDue, pickSite, useSiteFrame } from '../shoreSites'
 import { SURF_DROP_POOL, SURF_FOAM_POOL, SURF_GRAVITY, SURF_VIEW_REACH } from './constants'
 import { emitSurfSplash, findSurfSites, type SurfTuning } from './surfSplash'
+import { islandLocalY } from '../islandSpec'
 
 interface RockSurfProps {
   model: THREE.Object3D
@@ -33,7 +34,7 @@ export default function RockSurf({
   tuning,
 }: RockSurfProps) {
   const frame = useSiteFrame(placement)
-  const waterY = (OCEAN_Y - offsetY) / frame.scale
+  const waterY = islandLocalY(OCEAN_Y, frame.scale, offsetY)
   const sites = useMemo(
     () => findSurfSites(shoreline, model, terrainNodes, waterY, frame),
     [shoreline, model, terrainNodes, waterY, frame]

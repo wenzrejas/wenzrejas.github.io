@@ -1,0 +1,43 @@
+export const PREVIEW_CAMERA_POSITION: [number, number, number] = [0.7, 0.3, 1.2]
+export const DIALOGUE_CAMERA_POSITION: [number, number, number] = [0.23, 0.075, 1.08]
+export const DIALOGUE_MODEL_ROTATION: [number, number, number] = [0, 0, 0.06]
+export const PREVIEW_MODEL_ROTATION: [number, number, number] = [0, 0, 0]
+export const PREVIEW_CAMERA_TARGET: [number, number, number] = [0, 0.015, 0]
+export const PREVIEW_CAMERA_FIELD_OF_VIEW = 32
+export const PREVIEW_MIN_ASPECT_RATIO = 0.85
+export const PREVIEW_CAMERA_NEAR = 0.01
+export const PREVIEW_CAMERA_FAR = 20
+export const PREVIEW_PIXEL_RATIO: [number, number] = [1, 2]
+export const PREVIEW_MIN_DISTANCE = 0.7
+export const PREVIEW_MAX_DISTANCE = 2.4
+export const PREVIEW_ROTATE_SPEED = 0.7
+export const PREVIEW_ZOOM_SPEED = 0.7
+
+export const PREVIEW_AMBIENT_INTENSITY = 0.75
+export const PREVIEW_KEY_POSITION: [number, number, number] = [1.5, 2, 2]
+export const PREVIEW_KEY_INTENSITY = 2.2
+export const PREVIEW_FILL_POSITION: [number, number, number] = [-2, 0.6, 1]
+export const PREVIEW_FILL_INTENSITY = 1
+export const PREVIEW_RIM_POSITION: [number, number, number] = [-0.5, 0.5, -1]
+export const PREVIEW_RIM_INTENSITY = 2.5
+
+export const PREVIEW_ENVIRONMENT_RESOLUTION = 256
+export const PREVIEW_ENVIRONMENT_INTENSITY = 0.45
+export const PREVIEW_REFLECTION_TARGET: [number, number, number] = [0, 0, 0]
+export const PREVIEW_MAIN_REFLECTION_POSITION: [number, number, number] = [0, 2, 3]
+export const PREVIEW_MAIN_REFLECTION_SCALE: [number, number, number] = [4, 3, 1]
+export const PREVIEW_MAIN_REFLECTION_INTENSITY = 3
+export const PREVIEW_SIDE_REFLECTION_POSITION: [number, number, number] = [-3, 0.5, 1]
+export const PREVIEW_SIDE_REFLECTION_SCALE: [number, number, number] = [1, 3, 1]
+export const PREVIEW_SIDE_REFLECTION_INTENSITY = 2
+export const PREVIEW_TOP_REFLECTION_POSITION: [number, number, number] = [0, 3, -1]
+export const PREVIEW_TOP_REFLECTION_SCALE: [number, number, number] = [3, 3, 1]
+export const PREVIEW_TOP_REFLECTION_INTENSITY = 2
+
+export const PREVIEW_SHADOW_POSITION: [number, number, number] = [0, -0.3, 0]
+export const PREVIEW_SHADOW_SCALE = 1.2
+export const PREVIEW_SHADOW_OPACITY = 0.2
+export const PREVIEW_SHADOW_BLUR = 3.5
+export const PREVIEW_SHADOW_FAR = 0.6
+export const PREVIEW_SHADOW_RESOLUTION = 512
+export const PREVIEW_STATIC_FRAMES = 1

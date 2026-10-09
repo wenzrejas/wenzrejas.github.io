@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { rand } from '@/utils/math'
-import { meshesOf } from '@/utils/meshes'
+import { meshesNamed } from '@/utils/meshes'
 import type { ParticlePool } from '@/world/effects/particlePool'
 import { outwardAt, type ShoreField } from '@/world/shore/shoreField'
 import { placeOnIsland, scanShore, turnToIsland, type SiteFrame } from '../shoreSites'
@@ -62,23 +62,19 @@ function sampleWaterline(
   if (model.parent) _toShoreFrame.copy(model.parent.matrixWorld).invert()
 
   const buckets: WaterlineTerrain['buckets'] = new Map()
-  for (const name of terrainNodes) {
-    const node = model.getObjectByName(name)
-    if (!node) continue
-    for (const mesh of meshesOf(node)) {
-      const positions = mesh.geometry.getAttribute('position')
-      const colors = mesh.geometry.getAttribute('color')
-      if (!colors) continue
-      _meshToShoreFrame.multiplyMatrices(_toShoreFrame, mesh.matrixWorld)
-      for (let i = 0; i < positions.count; i++) {
-        _vertex.fromBufferAttribute(positions, i).applyMatrix4(_meshToShoreFrame)
-        if (Math.abs(_vertex.y - waterY) > band) continue
-        _color.fromBufferAttribute(colors, i)
-        const key = bucketKey(Math.floor(_vertex.x / reach), Math.floor(_vertex.z / reach))
-        const bucket = buckets.get(key) ?? []
-        bucket.push({ x: _vertex.x, z: _vertex.z, isSand: _color.r - _color.b > SAND_WARMTH })
-        buckets.set(key, bucket)
-      }
+  for (const mesh of meshesNamed(model, terrainNodes)) {
+    const positions = mesh.geometry.getAttribute('position')
+    const colors = mesh.geometry.getAttribute('color')
+    if (!colors) continue
+    _meshToShoreFrame.multiplyMatrices(_toShoreFrame, mesh.matrixWorld)
+    for (let i = 0; i < positions.count; i++) {
+      _vertex.fromBufferAttribute(positions, i).applyMatrix4(_meshToShoreFrame)
+      if (Math.abs(_vertex.y - waterY) > band) continue
+      _color.fromBufferAttribute(colors, i)
+      const key = bucketKey(Math.floor(_vertex.x / reach), Math.floor(_vertex.z / reach))
+      const bucket = buckets.get(key) ?? []
+      bucket.push({ x: _vertex.x, z: _vertex.z, isSand: _color.r - _color.b > SAND_WARMTH })
+      buckets.set(key, bucket)
     }
   }
   return { reach, buckets }

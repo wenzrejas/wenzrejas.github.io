@@ -4,6 +4,8 @@ import type * as THREE from 'three'
 import { endSkyBeam, useSkyBeamStore } from '@/store/skyBeamStore'
 import { buildFlatQuad } from '@/utils/geometry'
 import { uniformsOf } from '@/utils/meshes'
+import { RENDER_LAYER } from '@/app/experience/renderLayers'
+import { pixelsPerUnit } from '@/utils/screen'
 import {
   CHARGE_MOTE_SIZE,
   ORB_HALO,
@@ -124,7 +126,7 @@ function SkyBeamParts({ anchor, origin, islandScale, materials, isActive }: SkyB
       return
     }
     if (isStrikeDue) strikeArcs(arcs.geometry, stage.charge)
-    const pixelsPerUnit = (camera as THREE.OrthographicCamera).zoom * gl.getPixelRatio()
+    const unitPixels = pixelsPerUnit(camera, gl)
 
     arcs.visible = stage.sparks > 0
     uniformsOf(arcs).uGlow.value = stage.sparks
@@ -133,13 +135,13 @@ function SkyBeamParts({ anchor, origin, islandScale, materials, isActive }: SkyB
     const chargeUniforms = uniformsOf(chargeMotes)
     chargeUniforms.uGlow.value = stage.motes
     chargeUniforms.uTime.value = elapsed
-    chargeUniforms.uSize.value = CHARGE_MOTE_SIZE * pixelsPerUnit
+    chargeUniforms.uSize.value = CHARGE_MOTE_SIZE * unitPixels
 
     risingMotes.visible = stage.risingMotes > 0
     const risingUniforms = uniformsOf(risingMotes)
     risingUniforms.uGlow.value[0] = stage.risingMotes
     risingUniforms.uTime.value = elapsed
-    risingUniforms.uSize.value = RISING_MOTES.moteSize * pixelsPerUnit
+    risingUniforms.uSize.value = RISING_MOTES.moteSize * unitPixels
     risingUniforms.uRise.value = RISING_MOTES.moteRise / islandScale
 
     orb.visible = stage.orbSize > 0
@@ -168,42 +170,42 @@ function SkyBeamParts({ anchor, origin, islandScale, materials, isActive }: SkyB
         geometry={beamGeometry}
         material={materials.beam}
         visible={false}
-        renderOrder={5}
+        renderOrder={RENDER_LAYER.glow}
       />
       <mesh
         ref={arcsRef}
         geometry={arcGeometry}
         material={materials.arcs}
         visible={false}
-        renderOrder={5}
+        renderOrder={RENDER_LAYER.glow}
       />
       <points
         ref={chargeMotesRef}
         geometry={chargeMoteGeometry}
         material={materials.chargeMotes}
         visible={false}
-        renderOrder={5}
+        renderOrder={RENDER_LAYER.glow}
       />
       <points
         ref={risingMotesRef}
         geometry={risingMoteGeometry}
         material={materials.risingMotes}
         visible={false}
-        renderOrder={5}
+        renderOrder={RENDER_LAYER.glow}
       />
       <mesh
         ref={orbRef}
         geometry={orbGeometry}
         material={materials.orb}
         visible={false}
-        renderOrder={6}
+        renderOrder={RENDER_LAYER.overGlow}
       />
       <mesh
         ref={shockRingRef}
         geometry={shockRingGeometry}
         material={materials.shockRing}
         visible={false}
-        renderOrder={6}
+        renderOrder={RENDER_LAYER.overGlow}
       />
     </group>
   )

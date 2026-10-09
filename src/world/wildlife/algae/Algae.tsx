@@ -9,6 +9,7 @@ import { isRaining, useWeatherStore } from '@/store/weatherStore'
 import { retain } from '@/utils/array'
 import { MAX_FRAME_SECONDS } from '@/utils/time'
 import { ParticlePool, updateDrops, updateSparks } from '@/world/effects/particlePool'
+import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { algaeAt, algaeUniforms } from './algaeField'
 import { createAlgaeMaterial, createSparkMaterial } from './algaeMaterial'
 import { emitBowSplash, emitHullSpark, emitRainFlashes } from './algaeSpray'
@@ -146,7 +147,7 @@ export default function Algae() {
         material={planeMaterial}
         frustumCulled={false}
         visible={false}
-        renderOrder={3.5}
+        renderOrder={RENDER_LAYER.surfaceBloom}
       >
         <planeGeometry args={[PLANE_SIZE, PLANE_SIZE, PLANE_SEGMENTS, PLANE_SEGMENTS]} />
       </mesh>
@@ -155,14 +156,14 @@ export default function Algae() {
         args={[sparkGeometry, sparkMaterial, SPARK_POOL]}
         frustumCulled={false}
         visible={false}
-        renderOrder={4.5}
+        renderOrder={RENDER_LAYER.effectSparks}
       />
       <instancedMesh
         ref={splashRef}
         args={[splashGeometry, sparkMaterial, SPLASH_POOL]}
         frustumCulled={false}
         visible={false}
-        renderOrder={4.5}
+        renderOrder={RENDER_LAYER.effectSparks}
       />
     </>
   )

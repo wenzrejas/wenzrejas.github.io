@@ -4,6 +4,7 @@ import type * as THREE from 'three'
 import { useWeatherStore } from '@/store/weatherStore'
 import { useWindStore } from '@/store/windStore'
 import { uniformsOf } from '@/utils/meshes'
+import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { RAIN_VISIBLE_LEVEL } from './constants'
 import { buildRainGeometry, createRainMaterial } from './rainModel'
 
@@ -46,7 +47,7 @@ export default function Rain({ shipRef }: RainProps) {
       geometry={geometry}
       material={material}
       frustumCulled={false}
-      renderOrder={9}
+      renderOrder={RENDER_LAYER.rain}
     />
   )
 }

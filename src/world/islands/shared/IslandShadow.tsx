@@ -1,4 +1,5 @@
 import { Shadow } from '@react-three/drei'
+import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import type { ContactBlob, IslandModelTuning } from './islandSpec'
 
 interface IslandShadowProps {
@@ -14,7 +15,7 @@ export default function IslandShadow({ radius, tuning, blob }: IslandShadowProps
       scale={radius * 2 * tuning.scale * blob.spread}
       color={blob.color}
       opacity={blob.opacity}
-      renderOrder={2}
+      renderOrder={RENDER_LAYER.ocean}
     />
   )
 }

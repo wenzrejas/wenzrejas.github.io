@@ -1,8 +1,8 @@
 import * as THREE from 'three'
 import { boundsIn, displayColor, meshesOf, positionIn } from '@/utils/meshes'
 import { footprintGap, footprintOf } from '@/interaction/baseFootprint'
+import { isEngaged } from '@/interaction/hover'
 import { markerPositionOn } from '@/interaction/marker'
-import { usePanelStore } from '@/store/panelStore'
 import type { GlowSite } from '../shared/ground-glow/glowSites'
 import { dayNightGlow } from '../shared/nightGlow'
 import {
@@ -52,12 +52,7 @@ export function findMainIsland(model: THREE.Object3D): MainIsland | null {
   }
 }
 
-export function setMainIslandHovered(mainIsland: MainIsland, isHovered: boolean) {
-  mainIsland.isHovered = isHovered
-}
-
-export const isMainIslandEngaged = ({ isHovered }: MainIsland) =>
-  isHovered || usePanelStore.getState().activePanel === 'contact'
+export const isMainIslandEngaged = ({ isHovered }: MainIsland) => isEngaged(isHovered, 'contact')
 
 export const highlightGlow = ({ hoverBlend }: MainIsland) =>
   hoverBlend * dayNightGlow(HIGHLIGHT_DAY_SHARE)

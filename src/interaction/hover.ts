@@ -1,3 +1,4 @@
+import { usePanelStore, type PanelKey } from '../store/panelStore'
 import { MAX_FRAME_SECONDS } from '../utils/time'
 import { HOVER_EASE_RATE, HOVER_SNAP_GAP } from './constants'
 
@@ -7,3 +8,10 @@ export function easeHover(hoverable: { hoverBlend: number }, isHovered: boolean,
   const eased = hoverable.hoverBlend + (target - hoverable.hoverBlend) * step
   hoverable.hoverBlend = Math.abs(target - eased) < HOVER_SNAP_GAP ? target : eased
 }
+
+export function setHovered(hoverable: { isHovered: boolean }, isHovered: boolean) {
+  hoverable.isHovered = isHovered
+}
+
+export const isEngaged = (isHovered: boolean, panel: PanelKey) =>
+  isHovered || usePanelStore.getState().activePanel === panel
