@@ -35,6 +35,12 @@ export interface ContactBlob {
   opacity: number
 }
 
+interface Mooring {
+  x: number
+  z: number
+  headingDegrees: number
+}
+
 export interface IslandSpec {
   tuning: IslandModelTuning
   footprint: number
@@ -43,6 +49,7 @@ export interface IslandSpec {
   shore: ShoreRing[]
   calm: CalmBand
   shoreOptions?: Partial<ShoreTuning>
+  mooring?: Mooring
 }
 
 export const BASE_TUNING: IslandModelTuning = {

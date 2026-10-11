@@ -15,6 +15,7 @@ export const COZY_SPEC: IslandSpec = {
     inner: modelUnits(40, WORLD_LOCATIONS.cozy.radius, COZY_FOOTPRINT),
     outer: modelUnits(43, WORLD_LOCATIONS.cozy.radius, COZY_FOOTPRINT),
   },
+  mooring: { x: 2.15, z: 9.6, headingDegrees: 92.4 },
 }
 
 // ── Model nodes ───────────────────────────────────────────────────────────────

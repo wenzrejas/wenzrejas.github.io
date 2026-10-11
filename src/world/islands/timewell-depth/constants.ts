@@ -13,6 +13,7 @@ export const TIMEWELL_SPEC: IslandSpec = {
   collision: [],
   shore: [],
   calm: { inner: MODEL_RADIUS, outer: MODEL_RADIUS },
+  mooring: { x: 0.18, z: 23.11, headingDegrees: 94.5 },
 }
 
 // ── Whirlpool ─────────────────────────────────────────────────────────────────

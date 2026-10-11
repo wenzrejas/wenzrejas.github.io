@@ -1,10 +1,11 @@
-import { useRef, type RefObject } from 'react'
+import { useEffect, useRef, type RefObject } from 'react'
 import { useFrame } from '@react-three/fiber'
 import type * as THREE from 'three'
 import { isCinematicPlaying } from '@/store/cinematicStore'
 import { useDebugStore } from '@/store/debugStore'
 import { isLoaderShowing } from '@/store/loadingStore'
 import { useRevealStore } from '@/store/revealStore'
+import { onShipPlaced } from '@/store/shipStore'
 import { MAX_FRAME_SECONDS } from '@/utils/time'
 import type { IslandKey } from './constants'
 import { enterReachedIsland, REVEAL_TOTAL, revealBlend } from './revealTimeline'
@@ -18,6 +19,16 @@ export default function IslandReveal({ shipRef }: IslandRevealProps) {
   const seen = useRef<Set<IslandKey>>(new Set())
   const isPrimed = useRef(false)
   const elapsed = useRef(-1)
+
+  useEffect(
+    () =>
+      onShipPlaced(() => {
+        if (elapsed.current < 0) return
+        elapsed.current = -1
+        useRevealStore.setState({ blend: 0, activeKey: null })
+      }),
+    []
+  )
 
   useFrame(({ camera }, delta) => {
     const ship = shipRef.current

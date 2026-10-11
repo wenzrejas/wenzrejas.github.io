@@ -1,0 +1,95 @@
+@use '../motion' as *;
+
+$decoration-opacity: 0.88;
+$highlight-change: 0.35s ease;
+$dimmed-island-opacity: 0.5;
+$raised-island-scale: 1.06;
+
+@property --mist-reveal {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 1;
+}
+
+.map-art {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  &__decoration,
+  &__rock,
+  &__island {
+    position: absolute;
+    background-repeat: no-repeat;
+  }
+
+  &__decoration {
+    opacity: $decoration-opacity;
+  }
+
+  &__decoration--line {
+    --mist-size: calc(var(--mist-reveal) * var(--reach));
+
+    mask-image: var(--mist);
+    mask-repeat: no-repeat;
+    mask-size: var(--mist-size) var(--mist-size);
+    mask-position: calc(var(--origin-x) - var(--mist-size) / 2)
+      calc(var(--origin-y) - var(--mist-size) / 2);
+  }
+
+  &__island {
+    transition:
+      opacity $highlight-change,
+      scale $highlight-change;
+  }
+
+  &--focused &__island {
+    opacity: $dimmed-island-opacity;
+  }
+
+  &--focused &__island--selected {
+    opacity: 1;
+    scale: $raised-island-scale;
+  }
+
+  &--unfold {
+    animation: map-art-rise $art-duration $rise-ease $art-delay both;
+  }
+
+  &--unfold &__decoration--compass {
+    animation: map-art-compass-settle $art-duration $overshoot-ease $art-delay both;
+  }
+
+  &--unfold &__decoration--line {
+    animation: map-art-mist-reveal $art-duration ease-out $art-delay both;
+  }
+
+  &--fold {
+    animation: map-art-fade $art-out-duration ease-in $art-out-delay both;
+  }
+}
+
+@keyframes map-art-rise {
+  from {
+    opacity: 0;
+    translate: 0 $art-rise;
+  }
+}
+
+@keyframes map-art-compass-settle {
+  from {
+    rotate: $compass-turn;
+  }
+}
+
+@keyframes map-art-mist-reveal {
+  from {
+    --mist-reveal: 0;
+  }
+}
+
+@keyframes map-art-fade {
+  to {
+    opacity: 0;
+  }
+}

@@ -3,12 +3,14 @@ import { useFrame } from '@react-three/fiber'
 import type * as THREE from 'three'
 import { useCycleStore } from '@/store/cycleStore'
 import { useDebugStore } from '@/store/debugStore'
+import { onShipPlaced } from '@/store/shipStore'
 import { uniformsOf } from '@/utils/meshes'
 import { FALLBACK_FRAME_SECONDS, MAX_FRAME_SECONDS } from '@/utils/time'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { WAKE_STERN_SHIFT } from './constants'
 import {
   carryRibbon,
+  clearRibbon,
   createWakeRibbon,
   fadeRibbon,
   ribbonSpan,
@@ -33,6 +35,11 @@ export default function WakeTrail({ shipRef }: WakeTrailProps) {
       material.dispose()
     },
     [geometry, material]
+  )
+
+  useEffect(
+    () => onShipPlaced(({ x, z }) => clearRibbon(ribbon.current, geometry, x, z)),
+    [geometry]
   )
 
   useFrame(({ clock }, delta) => {

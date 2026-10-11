@@ -1,7 +1,8 @@
-import { useRef, type RefObject } from 'react'
+import { useEffect, useRef, type RefObject } from 'react'
 import { useFrame } from '@react-three/fiber'
 import type * as THREE from 'three'
 import { isPanelOpen } from '@/store/panelStore'
+import { onShipPlaced } from '@/store/shipStore'
 import { createPanelFraming, easePanelFraming, frameShip } from './cameraFraming'
 
 interface CameraRigProps {
@@ -10,6 +11,14 @@ interface CameraRigProps {
 
 export default function CameraRig({ shipRef }: CameraRigProps) {
   const panelFraming = useRef(createPanelFraming())
+
+  useEffect(
+    () =>
+      onShipPlaced(() => {
+        panelFraming.current.blend = 0
+      }),
+    []
+  )
 
   useFrame(({ camera, clock }, delta) => {
     const ship = shipRef.current

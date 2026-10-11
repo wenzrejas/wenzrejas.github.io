@@ -5,7 +5,6 @@ $ship-shift-x: -3px;
 $ship-shift-y: 17px;
 $caption-drop: 116px;
 $course-drop: 158px;
-$set-sail-height: 3rem;
 
 .loading-screen {
   position: fixed;
@@ -62,30 +61,13 @@ $set-sail-height: 3rem;
   }
 
   &__set-sail {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    height: $set-sail-height;
-    padding: 0 1.6rem;
-    border: none;
-    background: none;
-    color: $ink;
-    cursor: pointer;
     animation: raise-set-sail 0.7s ease backwards;
-    transition:
-      color $state-change,
-      translate 0.08s ease;
 
-    @include cartouche-button;
+    @include set-sail-button;
   }
 
   &__set-sail-label {
-    position: relative;
-    font-family: var(--font-accent);
-    font-size: 0.9rem;
-    font-weight: 700;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
+    @include set-sail-label;
   }
 
   &--dissolving {
