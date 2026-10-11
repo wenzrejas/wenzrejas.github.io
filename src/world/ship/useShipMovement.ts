@@ -1,4 +1,4 @@
-import { useRef, type RefObject } from 'react'
+import { useEffect, useRef, type RefObject } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useKeyboardInput, type Keys } from '@/hooks/useKeyboardInput'
@@ -21,7 +21,7 @@ import { isWorldInView } from '@/store/viewStore'
 import { useWindStore } from '@/store/windStore'
 import { useWeatherStore } from '@/store/weatherStore'
 import { useRevealStore } from '@/store/revealStore'
-import { useShipStore } from '@/store/shipStore'
+import { onShipPlaced, useShipStore } from '@/store/shipStore'
 import { useCoastStore } from '@/store/coastStore'
 import { keepHullOffCoasts } from './hullCollision'
 import { whirlpoolCurrent, whirlpoolLean } from './whirlpoolDrift'
@@ -49,6 +49,23 @@ export function useShipMovement(groupRef: RefObject<THREE.Group | null>) {
   const tailwind = useRef(0)
   const lean = useRef(new THREE.Vector2())
   const velocity = useRef({ x: 0, z: 0 })
+
+  useEffect(
+    () =>
+      onShipPlaced((ship) => {
+        const group = groupRef.current
+        if (!group) return
+        group.position.x = ship.x
+        group.position.z = ship.z
+        heading.current = ship.heading - Math.PI
+        velocity.current.x = 0
+        velocity.current.z = 0
+        tilt.current = 0
+        tailwind.current = 0
+        lean.current.set(0, 0)
+      }),
+    [groupRef]
+  )
 
   useFrame(({ clock }, delta) => {
     const group = groupRef.current

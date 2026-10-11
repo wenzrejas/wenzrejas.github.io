@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react'
+import { atlasSpriteStyle } from '@/utils/atlas'
 import {
   CHART_STRETCH_LIMIT,
   CHART_WIDTH_FILL,
@@ -21,11 +22,14 @@ export function atlasImage() {
   return atlas
 }
 
+export const mistMaskVariables = () =>
+  Object.fromEntries(MIST_REVEAL_MASKS.map(({ url }, i) => [`--mist-${i}`, `url(${url})`]))
+
 export const imageryStyle = () =>
   ({
     opacity: IMAGERY_OPACITY,
     '--atlas': `url(${MAP_ATLAS_URL})`,
-    ...Object.fromEntries(MIST_REVEAL_MASKS.map(({ url }, i) => [`--mist-${i}`, `url(${url})`])),
+    ...mistMaskVariables(),
   }) as CSSProperties
 
 function placePieces(width: number, height: number) {
@@ -80,32 +84,45 @@ function farthestCorner(width: number, height: number, originX: number, originY:
   )
 }
 
+export function mistRevealStyle(
+  boxWidth: number,
+  boxHeight: number,
+  originX: number,
+  originY: number,
+  variant: number
+) {
+  const reach =
+    (2 * farthestCorner(boxWidth, boxHeight, originX, originY)) /
+    MIST_REVEAL_MASKS[variant].clearShare
+  return {
+    '--mist': `var(--mist-${variant})`,
+    '--origin-x': `${originX.toFixed(1)}px`,
+    '--origin-y': `${originY.toFixed(1)}px`,
+    '--reach': `${reach.toFixed(1)}px`,
+  }
+}
+
 export const pieceStyles = (width: number, height: number) =>
   placePieces(width, height).map(({ piece, left, top, scaleX, scaleY }, index) => {
-    const variant = index % MIST_REVEAL_MASKS.length
-    const boxWidth = piece.width * scaleX
-    const boxHeight = piece.height * scaleY
+    const sprite = atlasSpriteStyle(ATLAS_WIDTH, ATLAS_HEIGHT, piece, scaleX, scaleY)
     const originX = (piece.originX - piece.left) * scaleX
     const originY = (piece.originY - piece.top) * scaleY
-    const reach =
-      (2 * farthestCorner(boxWidth, boxHeight, originX, originY)) /
-      MIST_REVEAL_MASKS[variant].clearShare
     const [from, clear] = MIST_REVEALS[piece.key]
     return {
       key: piece.key,
       style: {
         left,
         top,
-        width: boxWidth,
-        height: boxHeight,
-        backgroundSize: `${ATLAS_WIDTH * scaleX}px ${ATLAS_HEIGHT * scaleY}px`,
-        backgroundPosition: `${-piece.atlasX * scaleX}px ${-piece.atlasY * scaleY}px`,
-        '--mist': `var(--mist-${variant})`,
+        ...sprite,
         '--from': from,
         '--span': clear - from,
-        '--origin-x': `${originX.toFixed(1)}px`,
-        '--origin-y': `${originY.toFixed(1)}px`,
-        '--reach': `${reach.toFixed(1)}px`,
+        ...mistRevealStyle(
+          sprite.width,
+          sprite.height,
+          originX,
+          originY,
+          index % MIST_REVEAL_MASKS.length
+        ),
       } as CSSProperties,
     }
   })

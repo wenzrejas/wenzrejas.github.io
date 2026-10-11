@@ -3,7 +3,7 @@ import { WORLD_LOCATIONS, type IslandKey } from '@/world/islands/shared/constant
 import { ISLAND_KEYS, ISLAND_SPECS } from '@/world/islands/shared/islandSpecs'
 import { islandExtent } from '@/world/islands/shared/islandTransform'
 import type { Coastline } from '@/world/shore/coastline'
-import { EAST_DIRECTION, NORTH_DIRECTION } from '../north'
+import { toEastNorth } from '../north'
 import {
   CHART_WORLD_RADIUS,
   COVE_COUNT,
@@ -19,9 +19,8 @@ import {
 import { ellipseShape, facetedOutline, lobedShape } from './outlineShaping'
 
 export function chartPercent(x: number, z: number, out: THREE.Vector2): THREE.Vector2 {
-  const right = (x * EAST_DIRECTION.x + z * EAST_DIRECTION.y) / CHART_WORLD_RADIUS
-  const up = (x * NORTH_DIRECTION.x + z * NORTH_DIRECTION.y) / CHART_WORLD_RADIUS
-  return out.set(50 + right * 50, 50 - up * 50)
+  toEastNorth(x, z, out)
+  return out.set(50 + (out.x / CHART_WORLD_RADIUS) * 50, 50 - (out.y / CHART_WORLD_RADIUS) * 50)
 }
 
 const formatPoint = (point: THREE.Vector2) => `${point.x.toFixed(2)} ${point.y.toFixed(2)}`

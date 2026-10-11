@@ -1,36 +1,68 @@
-import { useId } from 'react'
-import { ISLAND_COPY } from '@/data/islandCopy'
+import { useEffect, useRef, useState, type AnimationEvent } from 'react'
 import { WORLD_MAP_COPY } from '@/data/worldMapCopy'
-import { closeWorldMap, useViewStore } from '@/store/viewStore'
+import MapPaper from '@/loading/map-paper/MapPaper'
+import { useLoadingStore } from '@/store/loadingStore'
+import {
+  closeWorldMap,
+  finishMapFold,
+  finishMapUnfold,
+  isMapUnfolded,
+  useViewStore,
+} from '@/store/viewStore'
+import type { IslandKey } from '@/world/islands/shared/constants'
+import { FOLD_ANIMATION, UNFOLD_ANIMATION } from './constants'
+import { sailTo } from './fastTravel'
+import IslandsPanel from './islands-panel/IslandsPanel'
+import MapArt from './map-art/MapArt'
+import { preloadWorldMap } from './worldMapPreload'
 import './WorldMap.scss'
 
 export default function WorldMap() {
-  const isMapOpen = useViewStore((state) => state.isMapOpen)
-  const titleId = useId()
+  const hasMapOpened = useViewStore((state) => state.hasMapOpened)
+  const isClosed = useViewStore((state) => state.mapPhase === 'closed')
+  const isUnfolded = useViewStore(isMapUnfolded)
+  const isLoaderGone = useLoadingStore((state) => state.isLoaderGone)
+  const paperRef = useRef<HTMLCanvasElement>(null)
+  const [selectedIsland, setSelectedIsland] = useState<IslandKey | null>(null)
 
-  if (!isMapOpen) return null
+  useEffect(() => {
+    if (isLoaderGone) preloadWorldMap()
+  }, [isLoaderGone])
+
+  if (!hasMapOpened) return null
+
+  const motion = isClosed ? null : isUnfolded ? 'unfold' : 'fold'
+
+  const finishMotion = (event: AnimationEvent) => {
+    if (event.target !== event.currentTarget) return
+    if (event.animationName === UNFOLD_ANIMATION) finishMapUnfold()
+    if (event.animationName !== FOLD_ANIMATION) return
+    setSelectedIsland(null)
+    finishMapFold()
+  }
+
+  const setSail = () => {
+    if (selectedIsland) sailTo(selectedIsland)
+  }
 
   return (
-    <section className="world-map" aria-labelledby={titleId}>
-      <div className="world-map__illustration">
-        <button type="button" className="world-map__back" onClick={closeWorldMap}>
-          {WORLD_MAP_COPY.back}
-        </button>
-        <h2 id={titleId} className="world-map__title">
-          {WORLD_MAP_COPY.title}
-        </h2>
+    <section
+      className={motion ? `world-map world-map--${motion}` : 'world-map world-map--closed'}
+      aria-label={WORLD_MAP_COPY.title}
+      onAnimationEnd={finishMotion}
+    >
+      <MapPaper ref={paperRef} />
+      <div className="world-map__creases" />
+      <div className="world-map__chart">
+        <MapArt selectedIsland={selectedIsland} motion={motion} />
       </div>
-      <aside className="world-map__islands">
-        <h3 className="world-map__heading">{WORLD_MAP_COPY.islandsHeading}</h3>
-        <ul className="world-map__list">
-          {Object.entries(ISLAND_COPY).map(([key, { label, description }]) => (
-            <li key={key} className="world-map__island">
-              <span className="world-map__name">{label}</span>
-              <span className="world-map__tagline">{description}</span>
-            </li>
-          ))}
-        </ul>
-      </aside>
+      <IslandsPanel
+        selectedIsland={selectedIsland}
+        motion={motion}
+        onSelect={setSelectedIsland}
+        onSetSail={setSail}
+        onClose={closeWorldMap}
+      />
     </section>
   )
 }

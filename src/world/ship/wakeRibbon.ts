@@ -113,6 +113,21 @@ export function fadeRibbon(
   }
 }
 
+export function clearRibbon(
+  ribbon: WakeRibbon,
+  trail: THREE.BufferGeometry,
+  shipX: number,
+  shipZ: number
+) {
+  ribbon.count = 0
+  ribbon.isDirty = false
+  ribbon.fade = WAKE_FADE_MAX
+  ribbon.wasStationary = true
+  ribbon.lastSample.x = shipX
+  ribbon.lastSample.z = shipZ
+  trail.setDrawRange(0, 0)
+}
+
 function writeDraped(positions: Float32Array, offset: number, x: number, z: number) {
   positions[offset] = x
   positions[offset + 1] = WAKE_TRAIL_Y - whirlpoolDip(x, z)

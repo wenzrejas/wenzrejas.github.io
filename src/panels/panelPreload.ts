@@ -1,3 +1,4 @@
+import { decodeImage } from '@/utils/image'
 import { PANEL_IMAGES } from './constants'
 import type { PanelTextures } from './panelTextureWorker'
 import { cacheMistMasks } from './shared/island-panel/mistModel'
@@ -23,12 +24,6 @@ function generateTextures(pixelRatio: number) {
   })
   worker.postMessage(pixelRatio)
   return textures.then(cacheTextures).finally(() => worker.terminate())
-}
-
-function decodeImage(url: string) {
-  const image = new Image()
-  image.src = url
-  return image.decode()
 }
 
 async function preload() {

@@ -1,0 +1,37 @@
+// ── Unfold the map (from opening) ─────────────────────────────────────────────
+$unfold-duration: 350ms;
+$crease-fade-delay: 120ms;
+$crease-fade-duration: 230ms;
+$art-delay: 250ms;
+$art-duration: 350ms;
+$panel-delay: 450ms;
+$panel-duration: 350ms;
+$entry-delay: 650ms;
+$entry-stagger: 40ms;
+$entry-duration: 140ms;
+
+// ── Fold away (from closing) ──────────────────────────────────────────────────
+$entry-out-duration: 150ms;
+$panel-out-delay: 100ms;
+$panel-out-duration: 200ms;
+$art-out-delay: 200ms;
+$art-out-duration: 180ms;
+$crease-show-delay: 200ms;
+$crease-show-duration: 200ms;
+$fold-delay: 200ms;
+$fold-duration: 300ms;
+
+// ── Feel ──────────────────────────────────────────────────────────────────────
+$unfold-ease: cubic-bezier(0.22, 1, 0.36, 1);
+$fold-ease: cubic-bezier(0.55, 0, 0.7, 0.2);
+$rise-ease: cubic-bezier(0.2, 0.8, 0.3, 1);
+$overshoot-ease: cubic-bezier(0.34, 1.5, 0.62, 1);
+$art-rise: 14px;
+$entry-rise: 10px;
+$compass-turn: -35deg;
+$panel-travel: calc(100% + 40px);
+
+// ── Folded packet (share of the screen clipped away per side) ─────────────────
+$packet-inset-x: 39%;
+$packet-inset-y: 31%;
+$packet-scale: 0.94;

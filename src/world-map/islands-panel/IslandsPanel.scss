@@ -1,0 +1,223 @@
+@use '@/styles/parchment' as *;
+@use '../motion' as *;
+
+$sheet-width: 395px;
+$sheet-gap-right: 4px;
+$sheet-top-slice: 170;
+$sheet-bottom-slice: 104;
+
+$content-top: 112px;
+$content-right: 34px;
+$content-bottom: 72px;
+$content-left: 22px;
+
+$close-left: 313px;
+$close-top: 54px;
+$close-size: 64px;
+$close-hover-scale: 1.06;
+$close-pressed-scale: 0.95;
+$close-focus-ring: rgba(216, 66, 42, 0.75);
+
+$header-height: 66px;
+$header-inset: 27px;
+$header-gap: 13px;
+$icon-width: 76px;
+$heading-size: 2.2rem;
+
+$rule-height: 11px;
+$rule-end-diamond: 8px;
+$rule-centre-diamond: 11px;
+$rule-ink: rgba(140, 95, 50, 0.32);
+
+$list-gap: 9px;
+$item-padding: 5px;
+$separator-inset: 10px;
+$separator-ink: rgba(176, 128, 74, 0.28);
+
+$voyage-change: 0.3s ease;
+$voyage-rise: 6px;
+
+.islands-panel {
+  position: relative;
+  flex: none;
+  width: $sheet-width;
+  margin-right: $sheet-gap-right;
+  border-style: solid;
+  border-width: 0;
+  border-image: var(--sheet) #{$sheet-top-slice} 0 #{$sheet-bottom-slice} 0 fill /
+    #{$sheet-top-slice}px 0 #{$sheet-bottom-slice}px 0 stretch;
+
+  &__close {
+    position: absolute;
+    top: $close-top;
+    left: $close-left;
+    z-index: 1;
+    width: $close-size;
+    height: $close-size;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: none;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid $close-focus-ring;
+      outline-offset: 2px;
+    }
+  }
+
+  &__close-art {
+    display: block;
+    width: 100%;
+    height: 100%;
+    transition: scale $state-change;
+    user-select: none;
+  }
+
+  &__close:hover &__close-art,
+  &__close:focus-visible &__close-art {
+    scale: $close-hover-scale;
+  }
+
+  &__close:active &__close-art {
+    scale: $close-pressed-scale;
+  }
+
+  &__content {
+    position: absolute;
+    inset: $content-top $content-right $content-bottom $content-left;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__header {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: $header-gap;
+    height: $header-height;
+    padding-left: $header-inset;
+  }
+
+  &__icon {
+    width: $icon-width;
+    user-select: none;
+  }
+
+  &__heading {
+    color: $ink;
+    @include handwritten;
+    font-size: $heading-size;
+    font-weight: 400;
+  }
+
+  &__rule {
+    flex: none;
+    height: $rule-height;
+    margin: 2px 15px 0 13px;
+    background-image:
+      url($diamond-ornament), url($diamond-ornament), url($diamond-ornament),
+      linear-gradient($rule-ink, $rule-ink);
+    background-position:
+      left center,
+      center,
+      right center,
+      center;
+    background-size:
+      $rule-end-diamond $rule-end-diamond,
+      $rule-centre-diamond $rule-centre-diamond,
+      $rule-end-diamond $rule-end-diamond,
+      calc(100% - #{$rule-end-diamond}) 1px;
+    background-repeat: no-repeat;
+  }
+
+  &__list {
+    flex: none;
+    margin-top: $list-gap;
+    padding: 0 3px;
+    list-style: none;
+  }
+
+  &__item {
+    position: relative;
+    padding: $item-padding 0;
+
+    & + &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: $separator-inset;
+      left: $separator-inset;
+      height: 1px;
+      background: $separator-ink;
+    }
+  }
+
+  &__voyage {
+    display: flex;
+    justify-content: center;
+    margin: auto 0;
+    opacity: 0;
+    pointer-events: none;
+    translate: 0 $voyage-rise;
+    transition:
+      opacity $voyage-change,
+      translate $voyage-change;
+
+    &--ready {
+      opacity: 1;
+      pointer-events: auto;
+      translate: 0 0;
+    }
+  }
+
+  &__set-sail {
+    @include set-sail-button;
+  }
+
+  &__set-sail-label {
+    @include set-sail-label;
+  }
+
+  &--unfold {
+    animation: islands-panel-slide-in $panel-duration $overshoot-ease $panel-delay both;
+  }
+
+  &--unfold &__item {
+    animation: islands-panel-entry-in $entry-duration $rise-ease both;
+    animation-delay: calc(#{$entry-delay} + var(--entry-index) * #{$entry-stagger});
+  }
+
+  &--fold {
+    animation: islands-panel-slide-out $panel-out-duration ease-in $panel-out-delay both;
+  }
+
+  &--fold &__item {
+    animation: islands-panel-entry-out $entry-out-duration ease-in both;
+  }
+}
+
+@keyframes islands-panel-slide-in {
+  from {
+    translate: $panel-travel 0;
+  }
+}
+
+@keyframes islands-panel-slide-out {
+  to {
+    translate: $panel-travel 0;
+  }
+}
+
+@keyframes islands-panel-entry-in {
+  from {
+    opacity: 0;
+    translate: 0 $entry-rise;
+  }
+}
+
+@keyframes islands-panel-entry-out {
+  to {
+    opacity: 0;
+  }
+}

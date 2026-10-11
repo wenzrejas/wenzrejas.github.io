@@ -26,6 +26,8 @@ $state-change: 0.18s ease;
 $cartouche-hover-ink: #5a3c24;
 $cartouche-pressed-ink: #ecd3b4;
 
+$set-sail-height: 3rem;
+
 @function card-frame-image($fill-opacity, $fill: 'fff6e4', $edge: '8c5a30', $edge-opacity: 0.6) {
   @return url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E" + "%3Cpath d='#{$frame-path}' fill='%23#{$fill}' fill-opacity='#{$fill-opacity}'/%3E" + "%3Cpath d='#{$frame-path}' transform='translate(1 1.2)' fill='none' stroke='%23784824' stroke-opacity='.22' stroke-width='1.4'/%3E" + "%3Cpath d='#{$frame-path}' fill='none' stroke='%23#{$edge}' stroke-opacity='#{$edge-opacity}' stroke-width='1.2'/%3E" + '%3C/svg%3E');
 }
@@ -66,6 +68,32 @@ $cartouche-pressed-ink: #ecd3b4;
     color: $cartouche-pressed-ink;
     translate: 0 1px;
   }
+}
+
+@mixin set-sail-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: $set-sail-height;
+  padding: 0 1.6rem;
+  border: none;
+  background: none;
+  color: $ink;
+  cursor: pointer;
+  transition:
+    color $state-change,
+    translate 0.08s ease;
+
+  @include cartouche-button;
+}
+
+@mixin set-sail-label {
+  position: relative;
+  font-family: var(--font-accent);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
 }
 
 @mixin diamond-rule($ornament-size) {
