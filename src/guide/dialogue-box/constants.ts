@@ -1,0 +1,14 @@
+import type { SpringConfig } from '@react-spring/web'
+
+// ── Box motion ────────────────────────────────────────────────────────────────
+export const BOX_SPRING: SpringConfig = { tension: 420, friction: 24 }
+export const BOX_CLOSE_SPRING: SpringConfig = { ...BOX_SPRING, clamp: true }
+export const HIDDEN_BOX_SCALE = 0.9
+
+// ── Key boxes (one arrow drawn pointing up, turned clockwise in degrees) ──────
+export const ARROW_KEY_TURNS: Partial<Record<string, number>> = {
+  '↑': 0,
+  '→': 90,
+  '↓': 180,
+  '←': 270,
+}

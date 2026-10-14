@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import type { IslandControls } from '@/app/debug/types'
 import {
+  ISLAND_LEAVE_MARGIN,
   REVEAL_FALL,
   REVEAL_HOLD,
   REVEAL_LEAD,
@@ -31,6 +32,19 @@ export function revealBlend(elapsed: number): number {
   return 1 - THREE.MathUtils.smoothstep(falling, 0, REVEAL_FALL)
 }
 
+function isInReach(
+  { key, x, z }: RevealTrigger,
+  shipX: number,
+  shipZ: number,
+  tuning: Record<IslandKey, IslandControls>,
+  margin: number
+) {
+  const dx = shipX - x
+  const dz = shipZ - z
+  const range = groundReach(dx, dz) + islandExtent(key, tuning[key]) + REVEAL_LEAD + margin
+  return dx * dx + dz * dz < range * range
+}
+
 export function enterReachedIsland(
   seen: Set<IslandKey>,
   shipX: number,
@@ -39,14 +53,24 @@ export function enterReachedIsland(
   isPrimed: boolean
 ): RevealTrigger | null {
   for (const trigger of REVEAL_TRIGGERS) {
-    if (seen.has(trigger.key)) continue
-    const dx = shipX - trigger.x
-    const dz = shipZ - trigger.z
-    const range = groundReach(dx, dz) + islandExtent(trigger.key, tuning[trigger.key]) + REVEAL_LEAD
-    if (dx * dx + dz * dz >= range * range) continue
+    if (seen.has(trigger.key) || !isInReach(trigger, shipX, shipZ, tuning, 0)) continue
 
     seen.add(trigger.key)
     if (isPrimed) return trigger
   }
   return null
+}
+
+export function islandInReach(
+  current: IslandKey | null,
+  shipX: number,
+  shipZ: number,
+  tuning: Record<IslandKey, IslandControls>
+): IslandKey | null {
+  const isKept = REVEAL_TRIGGERS.some(
+    (trigger) =>
+      trigger.key === current && isInReach(trigger, shipX, shipZ, tuning, ISLAND_LEAVE_MARGIN)
+  )
+  if (isKept) return current
+  return REVEAL_TRIGGERS.find((trigger) => isInReach(trigger, shipX, shipZ, tuning, 0))?.key ?? null
 }

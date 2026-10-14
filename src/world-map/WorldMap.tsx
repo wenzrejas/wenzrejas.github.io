@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type AnimationEvent } from 'react'
 import { WORLD_MAP_COPY } from '@/data/worldMapCopy'
 import MapPaper from '@/loading/map-paper/MapPaper'
+import { isModalDialogue, useGuideStore } from '@/store/guideStore'
 import { useLoadingStore } from '@/store/loadingStore'
 import {
   closeWorldMap,
@@ -22,6 +23,7 @@ export default function WorldMap() {
   const isClosed = useViewStore((state) => state.mapPhase === 'closed')
   const isUnfolded = useViewStore(isMapUnfolded)
   const isLoaderGone = useLoadingStore((state) => state.isLoaderGone)
+  const isGuideSpeaking = useGuideStore(isModalDialogue)
   const paperRef = useRef<HTMLCanvasElement>(null)
   const [selectedIsland, setSelectedIsland] = useState<IslandKey | null>(null)
 
@@ -49,6 +51,7 @@ export default function WorldMap() {
     <section
       className={motion ? `world-map world-map--${motion}` : 'world-map world-map--closed'}
       aria-label={WORLD_MAP_COPY.title}
+      inert={isGuideSpeaking}
       onAnimationEnd={finishMotion}
     >
       <MapPaper ref={paperRef} />

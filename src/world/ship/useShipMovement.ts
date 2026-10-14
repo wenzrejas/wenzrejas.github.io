@@ -15,7 +15,7 @@ import { ISLAND_KEYS, ISLAND_SPECS } from '../islands/shared/islandSpecs'
 import { createIslandTransform, islandTransform, toWorld } from '../islands/shared/islandTransform'
 import { isCinematicPlaying } from '@/store/cinematicStore'
 import { useDebugStore } from '@/store/debugStore'
-import { isLoaderShowing } from '@/store/loadingStore'
+import { isIntroductionPending } from '@/store/guideStore'
 import { isPanelOpen } from '@/store/panelStore'
 import { isWorldInView } from '@/store/viewStore'
 import { useWindStore } from '@/store/windStore'
@@ -72,10 +72,10 @@ export function useShipMovement(groupRef: RefObject<THREE.Group | null>) {
     if (!group) return
 
     const dt =
-      isFinite(delta) && delta > 0 ? Math.min(delta, MAX_FRAME_SECONDS) : FALLBACK_FRAME_SECONDS
+      isFinite(delta) && delta >= 0 ? Math.min(delta, MAX_FRAME_SECONDS) : FALLBACK_FRAME_SECONDS
     const time = clock.getElapsedTime()
     const keys =
-      isLoaderShowing() || isCinematicPlaying() || isPanelOpen() || !isWorldInView()
+      isIntroductionPending() || isCinematicPlaying() || isPanelOpen() || !isWorldInView()
         ? IDLE_KEYS
         : pressedKeys.current
     const { moveSpeed, turnSpeed, tiltMax, tiltSpeed, baseY, bobAmp, bobSpeed, modelSize } =
@@ -165,6 +165,7 @@ export function useShipMovement(groupRef: RefObject<THREE.Group | null>) {
     motion.vz = velocity.current.z
     motion.speed = Math.hypot(velocity.current.x, velocity.current.z)
     motion.heading = heading.current + Math.PI
+    motion.tailwind = tailwind.current
     group.position.y =
       baseY +
       Math.sin(time * bobSpeed) * bobAmp * weather.waveAmpMult -

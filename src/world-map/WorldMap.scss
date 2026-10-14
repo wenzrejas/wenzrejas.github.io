@@ -71,10 +71,6 @@ $panel-shade: rgba(110, 72, 36, 0.13);
     animation: world-map-creases-fade $crease-fade-duration ease-out $crease-fade-delay both;
   }
 
-  &--fold &__creases {
-    animation: world-map-creases-fade $crease-show-duration ease-out $crease-show-delay both reverse;
-  }
-
   &__chart {
     position: relative;
     flex: 1;

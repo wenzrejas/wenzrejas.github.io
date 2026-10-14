@@ -5,6 +5,7 @@ import type * as THREE from 'three'
 import { CAMERA_FAR, CAMERA_NEAR, CAMERA_OFFSET, CAMERA_ZOOM, IS_DEBUG } from './constants'
 import CameraRig from './CameraRig'
 import TopView from './TopView'
+import WorldPause from './WorldPause'
 import WorldRenderer from './WorldRenderer'
 import InteractionLayer from '@/interaction/InteractionLayer'
 import CloudDeck from '@/loading/cloud-descent/CloudDeck'
@@ -46,6 +47,7 @@ export default function Experience() {
         <DayNightCycle />
         <InteractionLayer />
         <WorldRenderer />
+        <WorldPause />
         <World ref={shipRef} />
         {topView ? (
           <TopView />

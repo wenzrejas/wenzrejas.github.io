@@ -1,4 +1,4 @@
-import { useEffect, useRef, type RefObject } from 'react'
+import { useEffect, useRef, useState, type RefObject } from 'react'
 import { useFrame } from '@react-three/fiber'
 import type * as THREE from 'three'
 import { isCinematicPlaying } from '@/store/cinematicStore'
@@ -6,9 +6,10 @@ import { useDebugStore } from '@/store/debugStore'
 import { isLoaderShowing } from '@/store/loadingStore'
 import { useRevealStore } from '@/store/revealStore'
 import { onShipPlaced } from '@/store/shipStore'
+import { rememberedItems, rememberItem } from '@/store/visitorMemory'
 import { MAX_FRAME_SECONDS } from '@/utils/time'
-import type { IslandKey } from './constants'
-import { enterReachedIsland, REVEAL_TOTAL, revealBlend } from './revealTimeline'
+import { ISLAND_KEYS } from './islandSpecs'
+import { enterReachedIsland, islandInReach, REVEAL_TOTAL, revealBlend } from './revealTimeline'
 import { sampleGroundFrame } from './viewReach'
 
 interface IslandRevealProps {
@@ -16,7 +17,7 @@ interface IslandRevealProps {
 }
 
 export default function IslandReveal({ shipRef }: IslandRevealProps) {
-  const seen = useRef<Set<IslandKey>>(new Set())
+  const [seen] = useState(() => new Set(rememberedItems('revealedIslands', ISLAND_KEYS)))
   const isPrimed = useRef(false)
   const elapsed = useRef(-1)
 
@@ -38,16 +39,21 @@ export default function IslandReveal({ shipRef }: IslandRevealProps) {
       if (useDebugStore.getState().camera.topView || isCinematicPlaying() || isLoaderShowing())
         return
       sampleGroundFrame(camera)
+      const tuning = useDebugStore.getState().islands
+      const { nearbyIsland } = useRevealStore.getState()
+      const nearby = islandInReach(nearbyIsland, ship.position.x, ship.position.z, tuning)
+      if (nearby !== nearbyIsland) useRevealStore.setState({ nearbyIsland: nearby })
       const trigger = enterReachedIsland(
-        seen.current,
+        seen,
         ship.position.x,
         ship.position.z,
-        useDebugStore.getState().islands,
+        tuning,
         isPrimed.current
       )
       isPrimed.current = true
       if (!trigger) return
 
+      rememberItem('revealedIslands', trigger.key)
       useRevealStore.getState().target.set(trigger.x, 0, trigger.z)
       useRevealStore.setState({ activeKey: trigger.key })
       elapsed.current = 0

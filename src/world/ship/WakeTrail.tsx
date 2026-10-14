@@ -48,7 +48,7 @@ export default function WakeTrail({ shipRef }: WakeTrailProps) {
     if (!ship || !mesh) return
 
     const dt =
-      isFinite(delta) && delta > 0 ? Math.min(delta, MAX_FRAME_SECONDS) : FALLBACK_FRAME_SECONDS
+      isFinite(delta) && delta >= 0 ? Math.min(delta, MAX_FRAME_SECONDS) : FALLBACK_FRAME_SECONDS
     const wake = useDebugStore.getState().wake
     const uniforms = uniformsOf(mesh)
     uniforms.uTime.value = clock.getElapsedTime()

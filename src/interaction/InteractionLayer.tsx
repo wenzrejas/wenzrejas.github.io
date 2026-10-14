@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { isCinematicPlaying } from '../store/cinematicStore'
+import { isIntroductionPending } from '../store/guideStore'
 import { isPanelOpen } from '../store/panelStore'
 import { isRevealPlaying } from '../store/revealStore'
 import { isWorldInView } from '../store/viewStore'
@@ -12,7 +13,13 @@ export default function InteractionLayer() {
   useEffect(() => interactions.install(get().gl.domElement), [get])
 
   useFrame(({ camera }) => {
-    if (isCinematicPlaying() || isPanelOpen() || isRevealPlaying() || !isWorldInView())
+    if (
+      isIntroductionPending() ||
+      isCinematicPlaying() ||
+      isPanelOpen() ||
+      isRevealPlaying() ||
+      !isWorldInView()
+    )
       interactions.hold()
     else interactions.update(camera)
   })

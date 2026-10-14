@@ -1,0 +1,9 @@
+.mascot {
+  flex: none;
+  width: 16rem;
+  height: 16rem;
+
+  &--mirrored {
+    transform: scaleX(-1);
+  }
+}

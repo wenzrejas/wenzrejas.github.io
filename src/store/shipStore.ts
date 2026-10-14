@@ -8,6 +8,7 @@ interface ShipState {
   vz: number
   speed: number
   heading: number
+  tailwind: number
   placements: number
 }
 
@@ -20,6 +21,7 @@ export const useShipStore = create<ShipState>(() => ({
   vz: 0,
   speed: 0,
   heading: SPAWN_HEADING,
+  tailwind: 0,
   placements: 0,
 }))
 
