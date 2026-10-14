@@ -4,6 +4,7 @@ import IslandTitle from './world/islands/shared/IslandTitle'
 import { IS_DEBUG } from './app/experience/constants'
 import Soundscape from './audio/Soundscape'
 import DepthsPlaceholder from './depths/DepthsPlaceholder'
+import Guide from './guide/Guide'
 import Hud from './hud/Hud'
 import HudMenu from './hud/menu/HudMenu'
 import LoadingScreen from './loading/LoadingScreen'
@@ -11,17 +12,8 @@ import Panels from './panels/Panels'
 import WorldMap from './world-map/WorldMap'
 
 const DebugTools = lazy(() => import('./app/debug/DebugTools'))
-const OrbiPreview = lazy(() => import('./app/mascot-preview/OrbiPreview'))
 
 export default function App() {
-  if (window.location.hash === '#orbi') {
-    return (
-      <Suspense fallback={null}>
-        <OrbiPreview />
-      </Suspense>
-    )
-  }
-
   return (
     <>
       {IS_DEBUG && (
@@ -35,6 +27,7 @@ export default function App() {
       <IslandTitle />
       <Hud />
       <HudMenu />
+      <Guide />
       <Panels />
       <WorldMap />
       <LoadingScreen />

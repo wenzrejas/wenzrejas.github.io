@@ -37,6 +37,7 @@ export const REVEAL_ZOOM = 0.82
 export const REVEAL_PAN = 90
 export const REVEAL_SPEED = 0.32
 export const REVEAL_TITLE_IN = 0.55
+export const ISLAND_LEAVE_MARGIN = 120
 
 export type IslandKey = keyof typeof WORLD_LOCATIONS
 export type IslandConfig = (typeof WORLD_LOCATIONS)[IslandKey]

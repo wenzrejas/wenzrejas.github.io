@@ -1,6 +1,7 @@
 import { audio } from '@/audio/audioManager'
 import { openingMusic } from '@/audio/musicDirector'
 import type { SoundName } from '@/audio/sounds'
+import { preloadMascotSheets } from '@/guide/mascot/mascotSheets'
 import { isRaining } from '@/store/weatherStore'
 
 const LATIN_CAPITAL_A = 0x41
@@ -30,6 +31,7 @@ async function preload() {
   audio.install()
   await Promise.allSettled([
     preloadFonts(),
+    preloadMascotSheets(),
     audio.preloadBuffers(),
     ...openingStreams().map((name) => audio.preload(name)),
   ])

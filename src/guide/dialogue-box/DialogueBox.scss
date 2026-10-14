@@ -1,0 +1,194 @@
+@use '@/styles/parchment';
+
+$ink: #493021;
+$sheet-fill: #fff3dc;
+$sheet-edge: #77513b;
+$edge-width: 1.6;
+$sheet-shadow: rgba(21, 51, 71, 0.3);
+$crease-ink: #a47a52;
+$tab-edge: #aa7344;
+$tab-face: linear-gradient(110deg, #ddae72, #edc994 60%, #ddb47f);
+$tab-shadow: rgba(152, 107, 50, 0.19);
+$key-face: linear-gradient(#fbeed5, #efd6a8);
+$key-depth: #b98a55;
+$turn-ink: #78502e;
+$turn-hover-ink: #ac5f20;
+$focus-ring: #d49b49;
+
+.dialogue-box {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 33rem;
+  min-height: 13.25rem;
+  margin-right: -1.25rem;
+  padding: 2.6rem 3rem 1.1rem 2.4rem;
+  color: $ink;
+  font-family: var(--font-secondary);
+  transform-origin: 100% 34%;
+
+  &--interactive {
+    pointer-events: auto;
+  }
+
+  &--tail-left {
+    margin-right: 0;
+    margin-left: -1.25rem;
+    padding-right: 2.4rem;
+    padding-left: 3rem;
+    transform-origin: 0% 34%;
+  }
+
+  &--tail-left &__paper {
+    transform: none;
+  }
+
+  &--tail-left &__shadow {
+    transform: translate(3px, 5px);
+  }
+
+  &__paper {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    transform: scaleX(-1);
+    pointer-events: none;
+  }
+
+  &__shadow {
+    fill: $sheet-shadow;
+    transform: translate(-3px, 5px);
+  }
+
+  &__sheet {
+    fill: $sheet-fill;
+    stroke: $sheet-edge;
+    stroke-width: $edge-width;
+    vector-effect: non-scaling-stroke;
+  }
+
+  &__crease {
+    fill: none;
+    stroke: $crease-ink;
+    stroke-width: $edge-width;
+    opacity: 0.65;
+    vector-effect: non-scaling-stroke;
+  }
+
+  &__name {
+    position: absolute;
+    top: -0.9rem;
+    left: 2.6rem;
+    min-width: 6rem;
+    padding: 0.2rem 1.2rem 0.35rem;
+    border: 1px solid $tab-edge;
+    border-radius: 8% 3% 10% 4% / 19% 14% 17% 13%;
+    background: $tab-face;
+    box-shadow: 1px 3px 0 $tab-shadow;
+    @include parchment.handwritten;
+    font-size: 1.4rem;
+    text-align: center;
+    transform: rotate(-4deg);
+  }
+
+  &__copy {
+    position: relative;
+    flex: 1;
+  }
+
+  &__page {
+    display: grid;
+    gap: 0.45rem;
+    animation: dialogue-page-in 0.25s ease-out;
+  }
+
+  &__heading {
+    margin-bottom: 0.4rem;
+    @include parchment.handwritten;
+    font-size: 1.6rem;
+    font-weight: 400;
+    line-height: 1.3;
+  }
+
+  &__line {
+    font-size: 1.05rem;
+    line-height: 1.6;
+  }
+
+  &__key {
+    display: inline-grid;
+    place-items: center;
+    width: 1.75em;
+    height: 1.75em;
+    margin: 0 0.12em;
+    border: 1px solid $tab-edge;
+    border-radius: 0.35em;
+    background: $key-face;
+    box-shadow: 0 0.14em 0 $key-depth;
+    font: inherit;
+    font-size: 0.78em;
+    font-weight: 500;
+    line-height: 1;
+    vertical-align: 0.05em;
+  }
+
+  &__key-arrow {
+    width: 0.9em;
+    height: 0.9em;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  &__navigation {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1.2rem;
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
+  &__turn {
+    display: flex;
+    align-items: center;
+    min-height: 2rem;
+    padding: 0 0.2rem;
+    border: 0;
+    background: transparent;
+    color: $turn-ink;
+    font: inherit;
+    cursor: pointer;
+
+    &--skip {
+      margin-right: auto;
+    }
+
+    &:disabled {
+      opacity: 0.28;
+      cursor: default;
+    }
+
+    &:hover:not(:disabled) {
+      color: $turn-hover-ink;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $focus-ring;
+      outline-offset: 3px;
+    }
+  }
+}
+
+@keyframes dialogue-page-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.25rem);
+  }
+}

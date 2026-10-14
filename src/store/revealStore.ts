@@ -6,12 +6,14 @@ interface RevealState {
   blend: number
   target: THREE.Vector3
   activeKey: IslandKey | null
+  nearbyIsland: IslandKey | null
 }
 
 export const useRevealStore = create<RevealState>(() => ({
   blend: 0,
   target: new THREE.Vector3(),
   activeKey: null,
+  nearbyIsland: null,
 }))
 
 export const isRevealPlaying = () => useRevealStore.getState().activeKey !== null

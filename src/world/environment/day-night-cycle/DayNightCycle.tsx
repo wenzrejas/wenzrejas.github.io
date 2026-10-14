@@ -4,7 +4,7 @@ import * as THREE from 'three'
 import { useCycleStore } from '@/store/cycleStore'
 import { useWeatherStore } from '@/store/weatherStore'
 import { useDebugStore } from '@/store/debugStore'
-import { isLoaderShowing } from '@/store/loadingStore'
+import { isIntroductionPending } from '@/store/guideStore'
 import { useSkyBeamStore } from '@/store/skyBeamStore'
 import { CYCLE_DURATION, DAY_CYCLE_FRAME_PRIORITY } from './constants'
 import { BRIGHTEST_MOON, PHASES, sampleKeyframes } from './dayNightKeyframes'
@@ -28,7 +28,7 @@ export default function DayNightCycle() {
     const { dayCycle } = useDebugStore.getState()
     const { isActive: isSkyBeamActive, darkness, flash } = useSkyBeamStore.getState()
     if (dayCycle.timeOfDay === 'auto') {
-      if (!isSkyBeamActive && !isLoaderShowing()) {
+      if (!isSkyBeamActive && !isIntroductionPending()) {
         timeRef.current = (timeRef.current + (delta * dayCycle.cycleSpeed) / CYCLE_DURATION) % 1
       }
     } else {
