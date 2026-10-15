@@ -18,6 +18,9 @@ export const COZY_SPEC: IslandSpec = {
   mooring: { x: 2.15, z: 9.6, headingDegrees: 92.4 },
 }
 
+// ── Lighting bake ─────────────────────────────────────────────────────────────
+export const COZY_OVERHEAD_SHADOW_STRENGTH = 1.8
+
 // ── Model nodes ───────────────────────────────────────────────────────────────
 export const BOAT_NODE = 'Boat'
 export const CAFE_NODE = 'Cafe'
@@ -38,6 +41,7 @@ export const FLARE_RISE_SECONDS = 0.35
 // ── Cafe lights ───────────────────────────────────────────────────────────────
 export const BULB_WAVE_STEP_SECONDS = 0.09
 export const BULB_EMISSION_BOOST = 1.5
+export const LAMP_SPILL_STRENGTH = 1.5
 
 export const NEON_FLICKER_DELAY_SECONDS = 0.9
 export const NEON_FLICKER_SECONDS = 0.45

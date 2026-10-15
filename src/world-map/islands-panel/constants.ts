@@ -2,7 +2,6 @@ import type { IslandKey } from '@/world/islands/shared/constants'
 
 // ── Sheet art ─────────────────────────────────────────────────────────────────
 export const SHEET_URL = '/images/world-map/sheet.webp'
-export const CLOSE_BUTTON_URL = '/images/world-map/close-button.webp'
 export const MAP_SCROLL_URL = '/images/world-map/map-scroll.webp'
 
 // ── Island list ───────────────────────────────────────────────────────────────

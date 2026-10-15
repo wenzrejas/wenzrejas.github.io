@@ -2,7 +2,9 @@ import { audio } from '@/audio/audioManager'
 import { openingMusic } from '@/audio/musicDirector'
 import type { SoundName } from '@/audio/sounds'
 import { preloadMascotSheets } from '@/guide/mascot/mascotSheets'
+import { CARTOUCHE_ART_URLS } from '@/panels/shared/cartouche/constants'
 import { isRaining } from '@/store/weatherStore'
+import { decodeImage } from '@/utils/image'
 
 const LATIN_CAPITAL_A = 0x41
 
@@ -32,6 +34,7 @@ async function preload() {
   await Promise.allSettled([
     preloadFonts(),
     preloadMascotSheets(),
+    ...Object.values(CARTOUCHE_ART_URLS).map(decodeImage),
     audio.preloadBuffers(),
     ...openingStreams().map((name) => audio.preload(name)),
   ])

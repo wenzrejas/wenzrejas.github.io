@@ -1,0 +1,38 @@
+@use '@/styles/parchment' as *;
+
+$default-size: 64px;
+$hover-scale: 1.06;
+$pressed-scale: 0.95;
+$focus-ring: rgba(216, 66, 42, 0.75);
+
+.close-button {
+  width: var(--close-button-size, #{$default-size});
+  height: var(--close-button-size, #{$default-size});
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid $focus-ring;
+    outline-offset: 2px;
+  }
+
+  &__art {
+    display: block;
+    width: 100%;
+    height: 100%;
+    transition: scale $state-change;
+    user-select: none;
+  }
+
+  &:hover &__art,
+  &:focus-visible &__art {
+    scale: $hover-scale;
+  }
+
+  &:active &__art {
+    scale: $pressed-scale;
+  }
+}

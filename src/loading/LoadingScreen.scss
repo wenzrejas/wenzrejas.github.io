@@ -5,6 +5,7 @@ $ship-shift-x: -3px;
 $ship-shift-y: 17px;
 $caption-drop: 116px;
 $course-drop: 158px;
+$set-sail-drop: 12px;
 
 .loading-screen {
   position: fixed;
@@ -42,7 +43,7 @@ $course-drop: 158px;
 
   &__sound {
     position: absolute;
-    top: 1.25rem;
+    top: 1.5rem;
     right: 1.5rem;
   }
 
@@ -61,13 +62,14 @@ $course-drop: 158px;
   }
 
   &__set-sail {
+    margin-top: $set-sail-drop;
     animation: raise-set-sail 0.7s ease backwards;
 
-    @include set-sail-button;
+    @include cartouche-button;
   }
 
   &__set-sail-label {
-    @include set-sail-label;
+    @include cartouche-label;
   }
 
   &--dissolving {
@@ -82,6 +84,13 @@ $course-drop: 158px;
   &--dissolving &__course,
   &--dissolving &__sound {
     opacity: 0;
+  }
+
+  &--dissolving &__set-sail {
+    --cartouche-art-opacity: 1;
+    --cartouche-art-filter: none;
+
+    color: $cartouche-ink;
   }
 }
 

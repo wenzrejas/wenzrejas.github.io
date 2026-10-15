@@ -27,9 +27,8 @@ export const SAILING_FOR_A_WHILE_SECONDS = 60
 export const STAYING_IDLE_SECONDS = 45
 export const CIRCLE_TURN_RADIANS = Math.PI * 2
 
-// ── World map (spoken over the open map, once per visitor) ────────────────────
+// ── World map (spoken over the open map) ──────────────────────────────────────
 export const MAP_REMARKS: RemarkKey[] = ['openedWorldMap']
-export const ONCE_EVER_REMARKS: RemarkKey[] = ['openedWorldMap']
 
 // ── Island reveals ────────────────────────────────────────────────────────────
 export const ISLAND_REMARKS: Record<IslandKey, RemarkKey> = {
@@ -39,3 +38,10 @@ export const ISLAND_REMARKS: Record<IslandKey, RemarkKey> = {
   lumina: 'reachedLuminaPoint',
   cozy: 'reachedCozyIsle',
 }
+
+// ── Once per visitor (remembered across visits) ───────────────────────────────
+export const ONCE_EVER_REMARKS: RemarkKey[] = [
+  'openedWorldMap',
+  'ridingTheWind',
+  ...Object.values(ISLAND_REMARKS),
+]

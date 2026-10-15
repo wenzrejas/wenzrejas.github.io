@@ -4,7 +4,6 @@ import { closePanel } from '@/store/panelStore'
 import { startSkyBeam } from '@/store/skyBeamStore'
 import { scrollAncestorToEnd } from '@/utils/scroll'
 import Cartouche from '../shared/cartouche/Cartouche'
-import PanelIcon from '../shared/PanelIcon'
 import { deliverContact } from './contactDelivery'
 import {
   hasErrors,
@@ -83,7 +82,6 @@ export default function ContactForm() {
         >
           <Cartouche />
           <span className="contact-form__send-label">
-            <PanelIcon icon="send" />
             {isSending ? CONTACT_COPY.sending : CONTACT_COPY.send}
           </span>
         </button>

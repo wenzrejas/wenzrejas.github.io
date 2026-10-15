@@ -2,16 +2,21 @@ import { useDebugStore } from '@/store/debugStore'
 import type { IslandBodyProps } from '../shared/types'
 import { useIslandModel } from '../shared/islandModel'
 import { placeIsland } from '../shared/islandTransform'
+import { useLightingBake } from '../shared/lighting-bake/useLightingBake'
 import Coast from '@/world/shore/Coast'
 import { useCoastFields } from '@/world/shore/useCoastFields'
-import { TIMEWELL_MODEL_URL } from './constants'
-import { useRuneGlow } from './runeGlow'
+import { TIMEWELL_MODEL_URL, TIMEWELL_OVERHEAD_SHADOW_STRENGTH } from './constants'
+import { runeSpillLevel, useRuneGlow } from './runeGlow'
 import Whirlpool from './Whirlpool'
 import WhirlpoolSpray from './WhirlpoolSpray'
 
 export default function TimewellDepth({ islandKey, config }: IslandBodyProps) {
   const tuning = useDebugStore((s) => s.islands.timewell)
   const island = useIslandModel(TIMEWELL_MODEL_URL, tuning.brightness)
+  useLightingBake(island, {
+    overheadShadowStrength: TIMEWELL_OVERHEAD_SHADOW_STRENGTH,
+    lampLevel: runeSpillLevel,
+  })
   useRuneGlow(island)
 
   const placement = placeIsland(config.radius, tuning, island.footprint, island.center)

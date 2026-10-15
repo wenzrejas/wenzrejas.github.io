@@ -13,10 +13,10 @@ import {
 import './PanelArt.scss'
 
 interface PanelArtProps {
-  paintingUrl: string
+  splashUrl: string
 }
 
-export default function PanelArt({ paintingUrl }: PanelArtProps) {
+export default function PanelArt({ splashUrl }: PanelArtProps) {
   const baseId = useSvgId()
   const raggedId = `${baseId}-ragged`
   const washId = `${baseId}-wash`
@@ -70,7 +70,7 @@ export default function PanelArt({ paintingUrl }: PanelArtProps) {
             ? 'panel-art__painting panel-art__painting--loaded'
             : 'panel-art__painting'
         }
-        href={paintingUrl}
+        href={splashUrl}
         {...PAINTING}
         mask={isPaintingLoaded ? `url(#${washId})` : undefined}
         onLoad={() => setPaintingLoaded(true)}

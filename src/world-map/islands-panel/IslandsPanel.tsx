@@ -1,9 +1,10 @@
 import { useId, type CSSProperties } from 'react'
 import { WORLD_MAP_COPY } from '@/data/worldMapCopy'
 import Cartouche from '@/panels/shared/cartouche/Cartouche'
+import CloseButton from '@/panels/shared/close-button/CloseButton'
 import type { IslandKey } from '@/world/islands/shared/constants'
 import type { MapMotion } from '../types'
-import { CLOSE_BUTTON_URL, ISLAND_LIST_ORDER, MAP_SCROLL_URL, SHEET_URL } from './constants'
+import { ISLAND_LIST_ORDER, MAP_SCROLL_URL, SHEET_URL } from './constants'
 import IslandCard from './IslandCard'
 import './IslandsPanel.scss'
 
@@ -34,14 +35,11 @@ export default function IslandsPanel({
       style={SHEET_STYLE}
       aria-labelledby={headingId}
     >
-      <button
-        type="button"
+      <CloseButton
         className="islands-panel__close"
-        aria-label={WORLD_MAP_COPY.close}
-        onClick={onClose}
-      >
-        <img className="islands-panel__close-art" src={CLOSE_BUTTON_URL} alt="" draggable={false} />
-      </button>
+        label={WORLD_MAP_COPY.close}
+        onClose={onClose}
+      />
       <div className="islands-panel__content">
         <div className="islands-panel__header">
           <img className="islands-panel__icon" src={MAP_SCROLL_URL} alt="" draggable={false} />

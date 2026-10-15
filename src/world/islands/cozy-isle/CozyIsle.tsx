@@ -8,15 +8,22 @@ import type { IslandBodyProps } from '../shared/types'
 import { useIslandModel } from '../shared/islandModel'
 import { createHoverTimeline } from '../shared/hoverTimeline'
 import { placeIsland } from '../shared/islandTransform'
+import { useLightingBake } from '../shared/lighting-bake/useLightingBake'
 import { useNightGlow } from '../shared/nightGlow'
 import IslandShadow from '../shared/IslandShadow'
 import Coast from '@/world/shore/Coast'
 import { useCoastFields } from '@/world/shore/useCoastFields'
-import { BOAT_NODE, COZY_BLOB, COZY_MODEL_URL, TERRAIN_NODE } from './constants'
+import {
+  BOAT_NODE,
+  COZY_BLOB,
+  COZY_MODEL_URL,
+  COZY_OVERHEAD_SHADOW_STRENGTH,
+  TERRAIN_NODE,
+} from './constants'
 import { FIRE_HEIGHT, FIRE_WIDTH } from './campfire/constants'
 import { findCafeMarker, findNoteSpot } from './cafe'
 import { flareLevel } from './cafeBreak'
-import { findBulbs, sortCafeGlows } from './cafeLights'
+import { findBulbs, lampSpillLevel, sortCafeGlows } from './cafeLights'
 import { findFire } from './campfire/campfire'
 import { useBoatBob } from './useBoatBob'
 import { useCafeBreak } from './useCafeBreak'
@@ -31,6 +38,11 @@ import MusicNotes from './music-notes/MusicNotes'
 export default function CozyIsle({ islandKey, config }: IslandBodyProps) {
   const tuning = useDebugStore((s) => s.islands.cozy)
   const island = useIslandModel(COZY_MODEL_URL, tuning.brightness)
+  const cafeBreak = useMemo(() => createHoverTimeline(), [])
+  useLightingBake(island, {
+    overheadShadowStrength: COZY_OVERHEAD_SHADOW_STRENGTH,
+    lampLevel: () => lampSpillLevel(cafeBreak),
+  })
 
   const { boat, terrain, fire, cafeMarker, noteSpot, bulbs, cafeGlows } = useMemo(
     () => ({
@@ -44,7 +56,6 @@ export default function CozyIsle({ islandKey, config }: IslandBodyProps) {
     }),
     [island]
   )
-  const cafeBreak = useMemo(() => createHoverTimeline(), [])
 
   useBoatBob(boat)
   useNightGlow(cafeGlows.others)

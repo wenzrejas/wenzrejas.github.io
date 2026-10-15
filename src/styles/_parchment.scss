@@ -1,18 +1,12 @@
+@use 'sass:math';
+
 $ink: #3a291d;
 $ink-soft: #5a4535;
 $ink-faint: rgba(90, 69, 53, 0.32);
 $error-ink: #a3361f;
 
-$seal: #3b2b21;
-$seal-hover: #4a3729;
-$seal-rim: #261a12;
-$seal-ink: #f3e4c6;
-
 $frame-fill-opacity: 0.4;
 $frame-hover-fill-opacity: 0.62;
-$frame-fill: rgba(255, 246, 228, $frame-fill-opacity);
-$frame-hover-fill: rgba(255, 246, 228, $frame-hover-fill-opacity);
-$frame-edge: rgba(140, 90, 48, 0.6);
 
 $frame-slice: 10;
 $frame-width: 8px;
@@ -23,10 +17,34 @@ $diamond-ornament: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'
 $short-screen: 820px;
 $state-change: 0.18s ease;
 
-$cartouche-hover-ink: #5a3c24;
-$cartouche-pressed-ink: #ecd3b4;
+$cartouche-art-scale: 0.5;
+$cartouche-art-width: 514;
+$cartouche-art-height: 184;
+$cartouche-scroll-left: 18;
+$cartouche-scroll-top: 20;
+$cartouche-scroll-width: 478;
+$cartouche-scroll-height: 138;
+$cartouche-left-cap: 136;
+$cartouche-right-cap: 128;
+$cartouche-label-inset-left: 144;
+$cartouche-label-inset-right: 107;
+$cartouche-label-lift: 12;
 
-$set-sail-height: 3rem;
+$cartouche-label-size: 1.2rem;
+$cartouche-label-stroke: 0.45px;
+$cartouche-ink: #4b2e10;
+$cartouche-disabled-ink: rgba(75, 46, 16, 0.5);
+$cartouche-disabled-art-opacity: 0.6;
+$cartouche-disabled-art-filter: saturate(0.2);
+$cartouche-press: 0.08s ease;
+$cartouche-pressed-art-shrink: 0.93;
+$cartouche-pressed-shrink: 0.96;
+$cartouche-pressed-art-scale: math.div($cartouche-pressed-shrink, $cartouche-pressed-art-shrink);
+$cartouche-pressed-label-drop: 1px;
+
+@function cartouche-px($art-pixels) {
+  @return $art-pixels * $cartouche-art-scale * 1px;
+}
 
 @function card-frame-image($fill-opacity, $fill: 'fff6e4', $edge: '8c5a30', $edge-opacity: 0.6) {
   @return url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E" + "%3Cpath d='#{$frame-path}' fill='%23#{$fill}' fill-opacity='#{$fill-opacity}'/%3E" + "%3Cpath d='#{$frame-path}' transform='translate(1 1.2)' fill='none' stroke='%23784824' stroke-opacity='.22' stroke-width='1.4'/%3E" + "%3Cpath d='#{$frame-path}' fill='none' stroke='%23#{$edge}' stroke-opacity='#{$edge-opacity}' stroke-width='1.2'/%3E" + '%3C/svg%3E');
@@ -38,62 +56,42 @@ $set-sail-height: 3rem;
 }
 
 @mixin cartouche-button {
-  &:hover:not(:disabled),
-  &:focus-visible {
-    --cartouche-face: #{$frame-hover-fill};
-    --cartouche-band-top: #f0b46c;
-    --cartouche-band-bottom: #b8743a;
-    --cartouche-edge: rgba(140, 90, 48, 0.85);
-    --cartouche-line: rgba(160, 100, 50, 0.75);
-    --cartouche-sheen: rgba(255, 246, 214, 0.85);
-    --cartouche-aging: rgba(226, 156, 84, 0.18);
-    --cartouche-glow: drop-shadow(0 0 3px rgba(255, 186, 96, 0.9))
-      drop-shadow(0 0 10px rgba(255, 156, 60, 0.45));
-
-    outline: none;
-    color: $cartouche-hover-ink;
-  }
-
-  &:active:not(:disabled) {
-    --cartouche-face: #3a3533;
-    --cartouche-band-top: #9a8270;
-    --cartouche-band-bottom: #5e4a3e;
-    --cartouche-edge: #241c19;
-    --cartouche-line: rgba(196, 168, 140, 0.7);
-    --cartouche-sheen: rgba(226, 196, 166, 0.3);
-    --cartouche-aging: rgba(0, 0, 0, 0.28);
-    --cartouche-glow: none;
-    --cartouche-elevation: 0.35;
-
-    color: $cartouche-pressed-ink;
-    translate: 0 1px;
-  }
-}
-
-@mixin set-sail-button {
   position: relative;
   display: inline-flex;
   align-items: center;
-  height: $set-sail-height;
-  padding: 0 1.6rem;
+  justify-content: center;
+  min-width: cartouche-px($cartouche-scroll-width);
+  height: cartouche-px($cartouche-scroll-height);
+  padding: 0 cartouche-px($cartouche-label-inset-right) cartouche-px($cartouche-label-lift)
+    cartouche-px($cartouche-label-inset-left);
   border: none;
   background: none;
-  color: $ink;
+  color: $cartouche-ink;
   cursor: pointer;
-  transition:
-    color $state-change,
-    translate 0.08s ease;
+  transition: color $state-change;
 
-  @include cartouche-button;
-}
+  &:hover:not(:disabled),
+  &:focus-visible {
+    --cartouche-hover-art: 1;
 
-@mixin set-sail-label {
-  position: relative;
-  font-family: var(--font-accent);
-  font-size: 0.9rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
+    outline: none;
+  }
+
+  &:active:not(:disabled) {
+    --cartouche-hover-art: 0;
+    --cartouche-pressed-art: 1;
+    --cartouche-fade: #{$cartouche-press};
+    --cartouche-label-scale: #{$cartouche-pressed-shrink};
+    --cartouche-label-drop: #{$cartouche-pressed-label-drop};
+  }
+
+  &:disabled {
+    --cartouche-art-opacity: #{$cartouche-disabled-art-opacity};
+    --cartouche-art-filter: #{$cartouche-disabled-art-filter};
+
+    color: $cartouche-disabled-ink;
+    cursor: not-allowed;
+  }
 }
 
 @mixin diamond-rule($ornament-size) {
@@ -125,4 +123,17 @@ $set-sail-height: 3rem;
 @mixin handwritten {
   font-family: var(--font-handwritten);
   font-style: italic;
+}
+
+@mixin cartouche-label {
+  position: relative;
+  @include handwritten;
+  font-size: $cartouche-label-size;
+  font-weight: 400;
+  -webkit-text-stroke: $cartouche-label-stroke currentColor;
+  scale: var(--cartouche-label-scale, 1);
+  translate: 0 var(--cartouche-label-drop, 0);
+  transition:
+    scale $cartouche-press,
+    translate $cartouche-press;
 }

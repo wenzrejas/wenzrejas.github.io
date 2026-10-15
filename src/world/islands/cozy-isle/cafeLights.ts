@@ -9,6 +9,7 @@ import {
   BULB_NODES,
   BULB_WAVE_STEP_SECONDS,
   CAFE_NODE,
+  LAMP_SPILL_STRENGTH,
   NEON_NODES,
 } from './constants'
 
@@ -70,8 +71,13 @@ export function sortCafeGlows(model: THREE.Object3D, glows: GlowTarget[]): CafeG
   }
 }
 
+const bulbLevel = (cafeBreak: HoverTimeline) =>
+  nightGlow() * (1 + BULB_EMISSION_BOOST * waveLevel(cafeBreak))
+
+export const lampSpillLevel = (cafeBreak: HoverTimeline) =>
+  bulbLevel(cafeBreak) * LAMP_SPILL_STRENGTH
+
 export function lightCafeGlows({ bulbs, neon }: CafeGlows, cafeBreak: HoverTimeline) {
-  const night = nightGlow()
-  lightGlows(bulbs, night * (1 + BULB_EMISSION_BOOST * waveLevel(cafeBreak)))
-  lightGlows(neon, night * neonLevel(cafeBreak))
+  lightGlows(bulbs, bulbLevel(cafeBreak))
+  lightGlows(neon, nightGlow() * neonLevel(cafeBreak))
 }

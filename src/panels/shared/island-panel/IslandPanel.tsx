@@ -12,41 +12,34 @@ import { useScrollOverflowVariables } from '@/hooks/useScrollOverflowVariables'
 import { PANEL_COPY } from '@/data/panelCopy'
 import { centerFocusLeftOf, closePanel } from '@/store/panelStore'
 import { isWorldInView } from '@/store/viewStore'
+import CloseButton from '../close-button/CloseButton'
 import CompassRose from '../compass-rose/CompassRose'
 import PanelArt from '../panel-art/PanelArt'
-import PanelIcon from '../PanelIcon'
 import Parchment from '../parchment/Parchment'
 import { TITLE_UNDERLINE, TITLE_UNDERLINE_BOX } from './brushStrokeModel'
 import { mistMasks } from './mistModel'
 import './IslandPanel.scss'
 
-export interface SheetMotion {
+interface SheetMotion {
   opacity: number
   x: number
   rotate: number
 }
 
-export interface PanelBodyProps {
-  motion: SpringValues<SheetMotion>
-}
-
-interface IslandPanelProps extends PanelBodyProps {
+interface IslandPanelProps {
   title: string
   subtitle: string
-  paintingUrl: string
-  intro: ReactNode
-  children?: ReactNode
-  hasFloatingArt?: boolean
+  splashUrl?: string
+  motion: SpringValues<SheetMotion>
+  children: ReactNode
 }
 
 export default function IslandPanel({
   title,
   subtitle,
-  paintingUrl,
-  intro,
-  children,
-  hasFloatingArt = false,
+  splashUrl,
   motion,
+  children,
 }: IslandPanelProps) {
   const layoutRef = useRef<HTMLElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
@@ -78,26 +71,28 @@ export default function IslandPanel({
     <aside ref={layoutRef} className="island-panel" role="dialog" aria-labelledby={titleId}>
       <animated.div className="island-panel__sheet" style={motion}>
         <Parchment />
-        <button
-          type="button"
+        <CloseButton
           className="island-panel__close"
-          aria-label={PANEL_COPY.close}
-          onClick={closePanel}
-        >
-          <PanelIcon icon="close" />
-        </button>
+          label={PANEL_COPY.close}
+          onClose={closePanel}
+        />
         <div className="island-panel__viewport">
           <div ref={contentRef} className="island-panel__content" style={mistStyle}>
             <CompassRose className="island-panel__compass" />
             <div
               className={
-                hasFloatingArt
-                  ? 'island-panel__top island-panel__top--floating-art'
-                  : 'island-panel__top'
+                splashUrl
+                  ? 'island-panel__page island-panel__page--with-splash'
+                  : 'island-panel__page'
               }
             >
-              <div className="island-panel__intro">
-                <header>
+              {splashUrl && (
+                <div className="island-panel__splash">
+                  <PanelArt splashUrl={splashUrl} />
+                </div>
+              )}
+              <div className="island-panel__body">
+                <header className="island-panel__beside-splash">
                   <div className="island-panel__titles">
                     <h2 id={titleId} className="island-panel__title">
                       {title}
@@ -113,13 +108,9 @@ export default function IslandPanel({
                     <p className="island-panel__subtitle">{subtitle}</p>
                   </div>
                 </header>
-                {intro}
-              </div>
-              <div className="island-panel__art">
-                <PanelArt paintingUrl={paintingUrl} />
+                {children}
               </div>
             </div>
-            {children}
           </div>
         </div>
       </animated.div>
