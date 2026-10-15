@@ -3,8 +3,6 @@
 $placeholder-ink: #b39072;
 $invalid-placeholder-ink: #c8644e;
 
-$send-height: 3.5rem;
-
 .contact-form {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -117,24 +115,6 @@ $send-height: 3.5rem;
   }
 
   &__send {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    height: $send-height;
-    padding: 0 1.9rem;
-    opacity: 80%;
-
-    border: none;
-    background: none;
-    color: $ink;
-    @include handwritten;
-    font-size: 1.08rem;
-    font-weight: 400;
-    cursor: pointer;
-    transition:
-      color $state-change,
-      translate 0.08s ease;
-
     @include cartouche-button;
 
     &:disabled {
@@ -143,18 +123,6 @@ $send-height: 3.5rem;
   }
 
   &__send-label {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.55rem;
-    font-family: var(--font-primary);
-    font-style: normal;
-    font-size: medium;
-    font-weight: 500;
-
-    svg {
-      flex: none;
-      font-size: 1.4rem;
-    }
+    @include cartouche-label;
   }
 }

@@ -4,23 +4,22 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.35rem 0.5rem;
-  border: none;
+  padding: 0.25rem 0.8rem 0.25rem 0.65rem;
+  @include card-frame;
   background: none;
-  color: $ink-soft;
+  color: $ink;
   @include handwritten;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   cursor: pointer;
-  transition: color $state-change;
 
   svg {
     flex: none;
-    font-size: 1.25rem;
+    font-size: 1.3rem;
   }
 
   &:hover,
   &:focus-visible {
-    color: $ink;
+    border-image-source: card-frame-image($frame-hover-fill-opacity);
     outline: none;
   }
 

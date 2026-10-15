@@ -1,6 +1,7 @@
+@use 'sass:math';
 @use '@/styles/parchment' as *;
 
-$close-size: 2.75rem;
+$close-size: 48px;
 $heading-ornament-size: 9px;
 $wash-size: 2rem;
 $wash-reach: 7.5rem;
@@ -12,7 +13,7 @@ $viewport-bottom-share: 0.0375;
 $viewport-left-share: 0.0316;
 $content-right-share: 0.0166;
 $content-left-share: 0.0264;
-$art-reach-share: 0.014;
+$splash-reach-share: 0.014;
 $title-share: 0.06;
 $compass-size-share: 0.28;
 $compass-center-left-share: 0.011;
@@ -20,6 +21,12 @@ $compass-center-top-share: 0.036;
 $compass-opacity: 0.3;
 $close-center-top-share: 0.0638;
 $close-center-right-share: 0.0695;
+
+$splash-gap: 1.25rem;
+$splash-to-text-ratio: 1.05;
+$splash-column-share: math.div($splash-to-text-ratio, 1 + $splash-to-text-ratio);
+$content-width-share: 1 - $viewport-right-share - $viewport-left-share - $content-right-share -
+  $content-left-share;
 
 @each $name in hidden-above, hidden-below, top-wash, bottom-wash {
   @property --#{$name} {
@@ -97,37 +104,13 @@ $close-center-right-share: 0.0695;
   }
 
   &__close {
+    --close-button-size: #{$close-size};
+
     position: absolute;
-    top: calc(var(--sheet-width) * $close-center-top-share - $close-size / 2);
-    right: calc(var(--sheet-width) * $close-center-right-share - $close-size / 2);
+    top: calc(var(--sheet-width) * $close-center-top-share);
+    right: calc(var(--sheet-width) * $close-center-right-share);
     z-index: 2;
-    display: grid;
-    place-items: center;
-    width: $close-size;
-    height: $close-size;
-    padding: 0;
-    border: 2px solid $seal-rim;
-    border-radius: 50%;
-    background: $seal;
-    color: $seal-ink;
-    font-size: 1.45rem;
-    cursor: pointer;
-    box-shadow:
-      inset 0 0 0 2px rgba($seal-ink, 0.12),
-      0 2px 4px rgba(40, 24, 10, 0.35);
-    transition:
-      background-color 0.15s ease,
-      transform 0.15s ease;
-
-    &:hover {
-      background: $seal-hover;
-      transform: scale(1.05);
-    }
-
-    &:focus-visible {
-      outline: 2px solid $ink;
-      outline-offset: 3px;
-    }
+    translate: 50% -50%;
   }
 
   &__compass {
@@ -141,11 +124,34 @@ $close-center-right-share: 0.0695;
     pointer-events: none;
   }
 
-  &__top {
+  &__page {
+    --splash-clearance: 0px;
+
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
-    gap: 1.25rem;
-    align-items: start;
+
+    &--with-splash {
+      --splash-column: calc(
+        (var(--sheet-width) * #{$content-width-share} - #{$splash-gap}) * #{$splash-column-share}
+      );
+      --splash-clearance: calc(var(--splash-column) + #{$splash-gap});
+    }
+  }
+
+  &__splash {
+    grid-area: 1 / 1;
+    align-self: start;
+    justify-self: end;
+    width: calc(var(--splash-column) + var(--sheet-width) * $splash-reach-share);
+    margin: -0.4rem calc(var(--sheet-width) * -1 * $splash-reach-share) 0 0;
+  }
+
+  &__body {
+    grid-area: 1 / 1;
+    min-width: 0;
+  }
+
+  &__beside-splash {
+    padding-right: var(--splash-clearance);
   }
 
   &__titles {
@@ -224,13 +230,5 @@ $close-center-right-share: 0.0695;
       background-color: transparent;
       @include diamond-rule($heading-ornament-size);
     }
-  }
-
-  &__art {
-    margin: -0.4rem calc(var(--sheet-width) * -1 * $art-reach-share) 0 0;
-  }
-
-  &__top--floating-art &__art {
-    height: 0;
   }
 }

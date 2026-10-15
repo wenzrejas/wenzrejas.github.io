@@ -2,11 +2,13 @@ import type { MapPieceKey } from './mapPieces'
 
 // ── Atlas ─────────────────────────────────────────────────────────────────────
 export const MAP_ATLAS_URL = '/images/loading/map-atlas.webp'
+export const COMPASS_PIECE: MapPieceKey = 'compass'
 
 // ── Layout ────────────────────────────────────────────────────────────────────
 export const CHART_WIDTH_FILL = 0.96
 export const CHART_STRETCH_LIMIT = 1.3
-export const GLYPH_SHRINK = 0.85
+export const GLYPH_SHRINK = 0.72
+export const COMPASS_SHRINK = 0.66
 
 // ── Muting (lets the centre group lead) ───────────────────────────────────────
 export const IMAGERY_OPACITY = 0.88

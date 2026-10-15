@@ -1,70 +1,43 @@
 @use '@/styles/parchment' as *;
 
+$art-right: $cartouche-art-width - $cartouche-scroll-left - $cartouche-scroll-width;
+$art-bottom: $cartouche-art-height - $cartouche-scroll-top - $cartouche-scroll-height;
+
 .cartouche {
   position: absolute;
-  inset: 0;
+  top: cartouche-px(-$cartouche-scroll-top);
+  right: cartouche-px(-$art-right);
+  bottom: cartouche-px(-$art-bottom);
+  left: cartouche-px(-$cartouche-scroll-left);
   pointer-events: none;
+  opacity: var(--cartouche-art-opacity, 1);
+  filter: var(--cartouche-art-filter, none);
+  transition:
+    opacity $state-change,
+    filter $state-change;
 
-  &__canvas {
+  &__art {
     position: absolute;
     inset: 0;
-    width: 100%;
-    height: 100%;
-    overflow: visible;
-    filter: var(--cartouche-glow, none);
-    transition: filter $state-change;
-  }
+    border-style: solid;
+    border-width: 0 cartouche-px($cartouche-right-cap) 0 cartouche-px($cartouche-left-cap);
+    border-image-slice: 0 $cartouche-right-cap 0 $cartouche-left-cap fill;
+    transition: opacity var(--cartouche-fade, #{$state-change});
 
-  &__elevation {
-    opacity: var(--cartouche-elevation, 1);
-    transition: opacity 0.08s ease;
-  }
+    &--default {
+      border-image-source: var(--art-default);
+      opacity: calc(1 - var(--cartouche-pressed-art, 0));
+    }
 
-  &__shadow {
-    fill: #3c200c;
-  }
+    &--hover {
+      border-image-source: var(--art-hover);
+      opacity: var(--cartouche-hover-art, 0);
+    }
 
-  &__face {
-    fill: var(--cartouche-face, $frame-fill);
-    transition: fill $state-change;
-  }
-
-  &__aging {
-    fill: none;
-    stroke: var(--cartouche-aging, rgba(110, 70, 40, 0.2));
-    stroke-width: 7;
-    transition: stroke $state-change;
-  }
-
-  &__band-top {
-    stop-color: var(--cartouche-band-top, #a07a5c);
-    transition: stop-color $state-change;
-  }
-
-  &__band-bottom {
-    stop-color: var(--cartouche-band-bottom, #5a4031);
-    transition: stop-color $state-change;
-  }
-
-  &__sheen {
-    fill: none;
-    stroke: var(--cartouche-sheen, rgba(255, 226, 190, 0.35));
-    stroke-width: 0.8;
-    transition: stroke $state-change;
-  }
-
-  &__edge {
-    fill: none;
-    stroke: var(--cartouche-edge, $frame-edge);
-    stroke-width: 1;
-    transition: stroke $state-change;
-  }
-
-  &__line {
-    fill: none;
-    stroke: var(--cartouche-line, $frame-edge);
-    stroke-width: 0.9;
-    stroke-linecap: round;
-    transition: stroke $state-change;
+    &--pressed {
+      border-image-source: var(--art-pressed);
+      opacity: var(--cartouche-pressed-art, 0);
+      scale: $cartouche-pressed-art-scale;
+    }
   }
 }

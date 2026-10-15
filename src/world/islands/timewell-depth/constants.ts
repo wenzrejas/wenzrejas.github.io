@@ -16,6 +16,9 @@ export const TIMEWELL_SPEC: IslandSpec = {
   mooring: { x: 0.18, z: 23.11, headingDegrees: 94.5 },
 }
 
+// ── Lighting bake ─────────────────────────────────────────────────────────────
+export const TIMEWELL_OVERHEAD_SHADOW_STRENGTH = 1.8
+
 // ── Whirlpool ─────────────────────────────────────────────────────────────────
 export const WHIRLPOOL_SPREAD = 2
 export const WHIRLPOOL_RADIUS = TIMEWELL_BASIN.radius * WHIRLPOOL_SPREAD
@@ -116,9 +119,9 @@ export const WHIRLPOOL_LIGHT_TAIL = 0.65
 export const WHIRLPOOL_LIGHT_WIDTH = 0.06
 export const WHIRLPOOL_LIGHT_SHARE = 0.55
 export const WHIRLPOOL_LIGHT_STRENGTH = 1.1
-export const WHIRLPOOL_RUNE_COLOR = '#5a1aff'
 export const WHIRLPOOL_RUNE_NIGHT_BOOST = 0.8
 export const WHIRLPOOL_RUNE_PULSE = 0.25
+export const WHIRLPOOL_RUNE_SPILL_STRENGTH = 0.6
 export const WHIRLPOOL_SPRAY_NIGHT_TINT = 0.7
 
 // ── Whirlpool motes ───────────────────────────────────────────────────────────

@@ -46,7 +46,7 @@ export const ROCK_SPOTS: Record<RockKey, ChartSpot> = {
 
 // ── Decorations (the loading screen's art, chart centre) ──────────────────────
 export const DECORATION_SCALE = 0.85
-export const COMPASS_DECORATION: MapPieceKey = 'compass'
+export const COMPASS_SCALE = 0.66
 
 export const DECORATION_SPOTS: Partial<Record<MapPieceKey, ChartSpot>> = {
   compass: { x: 128, y: 140 },

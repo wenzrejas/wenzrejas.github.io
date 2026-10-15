@@ -3,7 +3,7 @@ import type { GroveKey } from '@/store/panelStore'
 
 export type ToolKey = keyof typeof TOOLKIT_COPY.tools
 
-export const TOOLKIT_PAINTING_URL = '/images/panels/lumina-point.webp'
+export const TOOLKIT_SPLASH_URL = '/images/panels/lumina-point.webp'
 export const TOOL_LOGO_SPRITE_URL = '/images/panels/tech-logos.svg'
 
 export const GROVE_TOOLS: Record<GroveKey, ToolKey[]> = {

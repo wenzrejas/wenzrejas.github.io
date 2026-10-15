@@ -3,6 +3,8 @@ import { atlasSpriteStyle } from '@/utils/atlas'
 import {
   CHART_STRETCH_LIMIT,
   CHART_WIDTH_FILL,
+  COMPASS_PIECE,
+  COMPASS_SHRINK,
   GLYPH_SHRINK,
   IMAGERY_OPACITY,
   MAP_ATLAS_URL,
@@ -38,8 +40,9 @@ function placePieces(width: number, height: number) {
     (width / CHART_WIDTH) * CHART_WIDTH_FILL,
     stretchY * CHART_STRETCH_LIMIT
   )
-  const glyphScale = Math.min(stretchX, stretchY) * GLYPH_SHRINK
+  const fitScale = Math.min(stretchX, stretchY)
   return MAP_PIECES.map((piece) => {
+    const glyphScale = fitScale * (piece.key === COMPASS_PIECE ? COMPASS_SHRINK : GLYPH_SHRINK)
     const scaleX = piece.isRoute ? stretchX : glyphScale
     const scaleY = piece.isRoute ? stretchY : glyphScale
     const centerX = width / 2 + (piece.left + piece.width / 2 - CHART_WIDTH / 2) * stretchX

@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react'
 import * as THREE from 'three'
 import { toEastNorth } from '@/hud/north'
-import { MAP_ATLAS_URL, MIST_REVEAL_MASKS } from '@/loading/map-imagery/constants'
+import { COMPASS_PIECE, MAP_ATLAS_URL, MIST_REVEAL_MASKS } from '@/loading/map-imagery/constants'
 import { mistMaskVariables, mistRevealStyle } from '@/loading/map-imagery/mapImageryModel'
 import {
   ATLAS_HEIGHT,
@@ -17,7 +17,7 @@ import {
   CHART_PX_PER_WORLD_UNIT,
   CHART_STRETCH_LIMIT,
   CHART_WIDTH,
-  COMPASS_DECORATION,
+  COMPASS_SCALE,
   DECORATION_SCALE,
   DECORATION_SPOTS,
   ISLAND_ART,
@@ -78,7 +78,7 @@ const atlasStyle = (sheet: AtlasSheet, piece: AtlasPiece, scale: number) => ({
 })
 
 const decorationKind = (key: MapPieceKey): DecorationKind =>
-  key === COMPASS_DECORATION ? 'compass' : LINE_DECORATIONS.includes(key) ? 'line' : 'glyph'
+  key === COMPASS_PIECE ? 'compass' : LINE_DECORATIONS.includes(key) ? 'line' : 'glyph'
 
 function islandChartSpot(island: IslandKey): ChartPoint {
   const [x, , z] = WORLD_LOCATIONS[island].position
@@ -108,11 +108,11 @@ export function placeMapArt(width: number, height: number) {
   })
   const centreOf = (piece: AtlasPiece) => ({ x: piece.width / 2, y: piece.height / 2 })
 
-  const decorationScale = glyphScale * DECORATION_SCALE
   const decorations = MAP_PIECES.flatMap((piece, index) => {
     const spot = DECORATION_SPOTS[piece.key]
     if (!spot) return []
     const kind = decorationKind(piece.key)
+    const decorationScale = glyphScale * (kind === 'compass' ? COMPASS_SCALE : DECORATION_SCALE)
     const mist =
       kind === 'line'
         ? mistRevealStyle(
