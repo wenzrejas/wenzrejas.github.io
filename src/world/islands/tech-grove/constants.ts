@@ -12,7 +12,7 @@ export const BASE_RIM_NODES = [
   'Glow_Frontend_Rim',
   'Glow_WebGL_Rim',
 ]
-export const GEM_NODES = ['Gem_Design', 'Gem_Frontend', 'Gem_WebGL']
+export const GEM_NODES = ['Gem_Creative', 'Gem_Design', 'Gem_Frontend', 'Gem_WebGL']
 export const SPINNING_GEM_NODES = ['Gem_Frontend', 'Gem_WebGL']
 export const TUMBLING_GEM_NODES = ['Gem_WebGL']
 export const TERRAIN_NODES = [
@@ -41,6 +41,10 @@ export const TECH_SPEC: IslandSpec = {
   mooring: { x: -0.96, z: 11.23, headingDegrees: -103.1 },
 }
 
+// ── Lighting bake ─────────────────────────────────────────────────────────────
+export const TECH_OVERHEAD_SHADOW_STRENGTH = 1.5
+export const SHRINE_SPILL_STRENGTH = 0.8
+
 // ── Sanctuary glow ────────────────────────────────────────────────────────────
 export const GLOW_DAY_SHARE = 0.25
 export const GLOW_EMISSIVE_GAIN = 1.8
@@ -52,7 +56,6 @@ export const SPARKLE_EDGE_ANGLE = 20
 
 // ── Statues ───────────────────────────────────────────────────────────────────
 export const STATUE_MARKER_HEIGHT = 0.2
-export const PEDESTAL_LABEL_GLOW = 1.6
 export const PEDESTAL_LABEL_DAY_SHARE = 0.1
 
 // ── Rock surf ─────────────────────────────────────────────────────────────────

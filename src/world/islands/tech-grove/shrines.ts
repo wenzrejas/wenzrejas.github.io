@@ -7,7 +7,6 @@ import type { GlowSite } from '../shared/ground-glow/glowSites'
 import {
   BASE_RIM_NODES,
   GEM_NODES,
-  PEDESTAL_LABEL_MATERIAL,
   SPARKLE_EDGE_ANGLE,
   SPINNING_GEM_NODES,
   STATUE_GROVES,
@@ -30,7 +29,6 @@ export interface Statue {
   marker: THREE.Vector3
   bounds: THREE.Box3
   pedestalGlow: GlowSite
-  label?: THREE.Mesh
   baseGap: (x: number, z: number) => number
 }
 
@@ -101,9 +99,6 @@ function findStatue(model: THREE.Object3D, statueNode: string, grove: GroveKey):
     marker: markerPositionOn(model, statue, STATUE_MARKER_HEIGHT),
     bounds: boundsIn(model, meshesOf(statue)),
     pedestalGlow,
-    label: meshesOf(islet).find(
-      (mesh) => (mesh.material as THREE.Material).name === PEDESTAL_LABEL_MATERIAL
-    ),
     baseGap: (x, z) => footprintGap(footprint, model, x, z),
   }
 }
