@@ -16,6 +16,10 @@ export const LUMINA_SPEC: IslandSpec = {
   calm: { inner: LUMINA_MAIN_SHORE_RADIUS, outer: LUMINA_MAIN_SHORE_RADIUS },
 }
 
+// ── Lighting bake ─────────────────────────────────────────────────────────────
+export const LUMINA_OVERHEAD_SHADOW_STRENGTH = 1.5
+export const LAMP_SPILL_STRENGTH = 1
+
 // ── Lighthouse beam ───────────────────────────────────────────────────────────
 export const BEAM_ANCHOR_NODE = 'Anchor_BeaconCone'
 export const BEAM_ANCHOR_FORWARD = [0, -1, 0] as const

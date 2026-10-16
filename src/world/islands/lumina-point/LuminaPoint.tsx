@@ -4,12 +4,21 @@ import { useDebugStore } from '@/store/debugStore'
 import type { IslandBodyProps } from '../shared/types'
 import { useIslandModel } from '../shared/islandModel'
 import { placeIsland } from '../shared/islandTransform'
+import { nightLampLevel } from '../shared/lighting-bake/lightingBakeLevels'
+import { useLightingBake } from '../shared/lighting-bake/useLightingBake'
 import { useNightGlow } from '../shared/nightGlow'
 import IslandShadow from '../shared/IslandShadow'
 import Coast from '@/world/shore/Coast'
 import { useCoastFields } from '@/world/shore/useCoastFields'
 import RockSurf from '../shared/rock-surf/RockSurf'
-import { LUMINA_BLOB, LUMINA_MODEL_URL, LUMINA_SURF, MAIN_ISLAND_TERRAIN_NODES } from './constants'
+import {
+  LAMP_SPILL_STRENGTH,
+  LUMINA_BLOB,
+  LUMINA_MODEL_URL,
+  LUMINA_OVERHEAD_SHADOW_STRENGTH,
+  LUMINA_SURF,
+  MAIN_ISLAND_TERRAIN_NODES,
+} from './constants'
 import { rigBeam } from './lighthouseBeam'
 import Holograms from './Holograms'
 import LuminaBeam from './LuminaBeam'
@@ -27,6 +36,10 @@ export default function LuminaPoint({ islandKey, config }: IslandBodyProps) {
   const root = useThree((s) => s.scene)
   const tuning = useDebugStore((s) => s.islands.lumina)
   const island = useIslandModel(LUMINA_MODEL_URL, tuning.brightness)
+  useLightingBake(island, {
+    overheadShadowStrength: LUMINA_OVERHEAD_SHADOW_STRENGTH,
+    lampLevel: nightLampLevel(LAMP_SPILL_STRENGTH),
+  })
   const { beam, skyBeam, monoliths, mainIsland } = useMemo(() => {
     tintLights(island)
     return {
