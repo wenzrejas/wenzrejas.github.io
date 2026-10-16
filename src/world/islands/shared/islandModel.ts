@@ -15,9 +15,15 @@ export interface IslandModel {
   center: THREE.Vector3
   tints: TintTarget[]
   glows: GlowTarget[]
+  loadTexture: (index: number) => Promise<THREE.Texture>
 }
 
-function prepareIslandModel(scene: THREE.Object3D): IslandModel {
+interface IslandSource {
+  scene: THREE.Object3D
+  parser: { getDependency: (type: 'texture', index: number) => Promise<THREE.Texture> }
+}
+
+function prepareIslandModel({ scene, parser }: IslandSource): IslandModel {
   const model = scene.clone(true)
   const box = new THREE.Box3().setFromObject(model)
   const size = box.getSize(new THREE.Vector3())
@@ -56,6 +62,7 @@ function prepareIslandModel(scene: THREE.Object3D): IslandModel {
     center: box.getCenter(new THREE.Vector3()),
     tints,
     glows,
+    loadTexture: (index) => parser.getDependency('texture', index),
   }
 }
 
@@ -64,8 +71,8 @@ export function applyBrightness(tints: TintTarget[], brightness: number) {
 }
 
 export function useIslandModel(url: string, brightness: number): IslandModel {
-  const { scene } = useGLTF(url)
-  const island = useMemo(() => prepareIslandModel(scene), [scene])
+  const gltf = useGLTF(url)
+  const island = useMemo(() => prepareIslandModel(gltf), [gltf])
 
   useLayoutEffect(() => applyBrightness(island.tints, brightness), [island, brightness])
 

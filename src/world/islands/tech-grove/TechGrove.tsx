@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { ISLAND_COPY } from '@/data/islandCopy'
 import { useDebugStore } from '@/store/debugStore'
 import { openPanel } from '@/store/panelStore'
@@ -7,15 +7,26 @@ import InteractionMarker from '@/interaction/InteractionMarker'
 import type { IslandBodyProps } from '../shared/types'
 import { useIslandModel } from '../shared/islandModel'
 import { placeIsland } from '../shared/islandTransform'
+import { useLightingBake } from '../shared/lighting-bake/useLightingBake'
 import IslandShadow from '../shared/IslandShadow'
 import Coast from '@/world/shore/Coast'
 import { useCoastFields } from '@/world/shore/useCoastFields'
 import RockSurf from '../shared/rock-surf/RockSurf'
-import { TECH_BLOB, TECH_MODEL_URL, TECH_SURF, TERRAIN_NODES } from './constants'
+import {
+  TECH_BLOB,
+  TECH_MODEL_URL,
+  TECH_OVERHEAD_SHADOW_STRENGTH,
+  TECH_SURF,
+  TERRAIN_NODES,
+} from './constants'
 import { TECH_ISLETS } from './shoreProfile'
 import { arrangeOrbs } from './logo-orbs/orbits'
-import { createPedestalLabels, dressPedestalLabels, tintPedestalLabels } from './pedestalLabelModel'
-import { useLabelGlow, useSanctuaryGlow } from './sanctuaryGlow'
+import {
+  shrineSpillLevel,
+  sortSanctuaryGlows,
+  useLabelGlow,
+  useSanctuaryGlow,
+} from './sanctuaryGlow'
 import { findShrines } from './shrines'
 import { useGemSpin } from './gems/useGemSpin'
 import { useOrbitReveal } from './logo-orbs/useOrbitReveal'
@@ -30,12 +41,14 @@ export default function TechGrove({ islandKey, config }: IslandBodyProps) {
   const island = useIslandModel(TECH_MODEL_URL, tuning.brightness)
   const shrines = useMemo(() => findShrines(island.model), [island])
   const { orbits, orbs } = useMemo(() => arrangeOrbs(shrines.statues), [shrines])
-  const labels = useMemo(() => createPedestalLabels(shrines.statues), [shrines])
+  const { shrineGlows, labelGlows } = useMemo(() => sortSanctuaryGlows(island.glows), [island])
 
-  useLayoutEffect(() => dressPedestalLabels(labels), [labels])
-  useLayoutEffect(() => tintPedestalLabels(labels), [labels, tuning.brightness])
-  useSanctuaryGlow(island.glows)
-  useLabelGlow(labels)
+  useLightingBake(island, {
+    overheadShadowStrength: TECH_OVERHEAD_SHADOW_STRENGTH,
+    lampLevel: shrineSpillLevel,
+  })
+  useSanctuaryGlow(shrineGlows)
+  useLabelGlow(labelGlows)
   useGemSpin(shrines.gems)
   useOrbitReveal(orbits)
 
