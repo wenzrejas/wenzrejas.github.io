@@ -1,7 +1,10 @@
 import * as THREE from 'three'
 import { useCycleStore } from '@/store/cycleStore'
+import { nightGlow } from '../nightGlow'
 import { OVERHEAD_LIGHT_HIGH_HEIGHT, OVERHEAD_LIGHT_LOW_HEIGHT } from './constants'
 import type { LightingBakeLevels } from './lightingBakeModel'
+
+export const nightLampLevel = (strength: number) => () => nightGlow() * strength
 
 function overheadLightLevel(sunHeight: number, moonHeight: number): number {
   const lightHeight = sunHeight > 0 ? sunHeight : moonHeight

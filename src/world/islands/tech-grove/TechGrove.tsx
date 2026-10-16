@@ -7,12 +7,14 @@ import InteractionMarker from '@/interaction/InteractionMarker'
 import type { IslandBodyProps } from '../shared/types'
 import { useIslandModel } from '../shared/islandModel'
 import { placeIsland } from '../shared/islandTransform'
+import { nightLampLevel } from '../shared/lighting-bake/lightingBakeLevels'
 import { useLightingBake } from '../shared/lighting-bake/useLightingBake'
 import IslandShadow from '../shared/IslandShadow'
 import Coast from '@/world/shore/Coast'
 import { useCoastFields } from '@/world/shore/useCoastFields'
 import RockSurf from '../shared/rock-surf/RockSurf'
 import {
+  SHRINE_SPILL_STRENGTH,
   TECH_BLOB,
   TECH_MODEL_URL,
   TECH_OVERHEAD_SHADOW_STRENGTH,
@@ -21,12 +23,7 @@ import {
 } from './constants'
 import { TECH_ISLETS } from './shoreProfile'
 import { arrangeOrbs } from './logo-orbs/orbits'
-import {
-  shrineSpillLevel,
-  sortSanctuaryGlows,
-  useLabelGlow,
-  useSanctuaryGlow,
-} from './sanctuaryGlow'
+import { sortSanctuaryGlows, useLabelGlow, useSanctuaryGlow } from './sanctuaryGlow'
 import { findShrines } from './shrines'
 import { useGemSpin } from './gems/useGemSpin'
 import { useOrbitReveal } from './logo-orbs/useOrbitReveal'
@@ -45,7 +42,7 @@ export default function TechGrove({ islandKey, config }: IslandBodyProps) {
 
   useLightingBake(island, {
     overheadShadowStrength: TECH_OVERHEAD_SHADOW_STRENGTH,
-    lampLevel: shrineSpillLevel,
+    lampLevel: nightLampLevel(SHRINE_SPILL_STRENGTH),
   })
   useSanctuaryGlow(shrineGlows)
   useLabelGlow(labelGlows)
