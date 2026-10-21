@@ -3,6 +3,7 @@ import type * as THREE from 'three'
 import { useCoastStore } from '@/store/coastStore'
 import type { IslandKey } from '../islands/shared/constants'
 import { traceCoastline } from './coastline'
+import { COASTLINE_ARCHIPELAGOS } from './constants'
 import type { DistanceField } from './shoreField'
 
 interface CoastlineChartProps {
@@ -19,10 +20,15 @@ export default function CoastlineChart({ islandKey, field, islandScale }: Coastl
     if (!modelSpace) return
 
     modelSpace.updateWorldMatrix(true, false)
-    const outline = traceCoastline(field, islandScale, modelSpace.matrixWorld)
-    if (!outline) return
+    const outlines = traceCoastline(
+      field,
+      islandScale,
+      modelSpace.matrixWorld,
+      COASTLINE_ARCHIPELAGOS.includes(islandKey)
+    )
+    if (!outlines) return
 
-    const coastline = { islandKey, outline }
+    const coastline = { islandKey, outlines }
     useCoastStore.setState((state) => ({ coastlines: [...state.coastlines, coastline] }))
     return () =>
       useCoastStore.setState((state) => ({

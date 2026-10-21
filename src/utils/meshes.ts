@@ -12,11 +12,14 @@ export function meshesOf(object: THREE.Object3D): THREE.Mesh[] {
   return meshes
 }
 
+export const nodeNamed = (root: THREE.Object3D, name: string) =>
+  root.getObjectByName(THREE.PropertyBinding.sanitizeNodeName(name))
+
+export const nodesNamed = (root: THREE.Object3D, names: readonly string[]) =>
+  names.flatMap((name) => nodeNamed(root, name) ?? [])
+
 export const meshesNamed = (root: THREE.Object3D, names: readonly string[]) =>
-  names.flatMap((name) => {
-    const node = root.getObjectByName(name)
-    return node ? meshesOf(node) : []
-  })
+  nodesNamed(root, names).flatMap((node) => meshesOf(node))
 
 export function boundsIn(frame: THREE.Object3D, meshes: THREE.Mesh[]): THREE.Box3 {
   _toFrame.copy(frame.matrixWorld).invert()
@@ -37,6 +40,12 @@ export const pointIn = (
   node: THREE.Object3D,
   point: readonly [number, number, number]
 ) => frame.worldToLocal(node.localToWorld(new THREE.Vector3(...point)))
+
+export function sinkBehindCoplanar(material: THREE.Material, depthSteps: number): void {
+  material.polygonOffset = true
+  material.polygonOffsetFactor = depthSteps
+  material.polygonOffsetUnits = depthSteps
+}
 
 export const uniformsOf = (object: THREE.Mesh | THREE.Points) =>
   (object.material as THREE.ShaderMaterial).uniforms

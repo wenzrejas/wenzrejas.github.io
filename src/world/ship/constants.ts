@@ -5,15 +5,11 @@ export const MODEL_BRIGHTNESS = 1.15
 export const INITIAL_HEADING = 0
 
 // ── Rig nodes ─────────────────────────────────────────────────────────────────
-export const HULL_NODE = 'Hull'
 export const RUDDER_NODE = 'Rudder'
 export const SAIL_NODE = 'Sail'
 export const FLAG_NODES = ['Flag_Main', 'Flag_Stern']
-export const LANTERN_GLOW_NODE = 'Lantern_Glow'
-export const LANTERN_PARTS_MIN = [-0.4, 1.9, 4.45] as const
-export const LANTERN_PARTS_MAX = [0.4, 3.35, 5.25] as const
-export const WHEEL_PARTS_MIN = [-0.7, 2.45, 0.78] as const
-export const WHEEL_PARTS_MAX = [0.7, 3.9, 1.0] as const
+export const LANTERN_NODE = 'Lantern'
+export const WHEEL_NODE = 'Wheel'
 
 // ── Ship glow ─────────────────────────────────────────────────────────────────
 export const GLOW_NIGHT_GAIN = 1.8
@@ -119,7 +115,7 @@ export const HULL_RIPPLE_SIZE_MAX = 1.9
 // ── Wake trail ────────────────────────────────────────────────────────────────
 export const WAKE_STERN_SHIFT = 6
 export const WAKE_TRAIL_LENGTH = 128
-export const WAKE_ARM_NEAR = 2.5
+export const WAKE_ARM_NEAR = 4.2
 export const WAKE_ARM_FAR = 20
 export const WAKE_ARM_HALF_WIDTH = 4
 export const WAKE_MIN_SAMPLE_DIST = 0.5

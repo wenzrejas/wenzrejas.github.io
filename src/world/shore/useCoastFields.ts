@@ -14,7 +14,8 @@ import { islandLocalY } from '@/world/islands/shared/islandSpec'
 export function useCoastFields(
   model: THREE.Object3D,
   islandScale: number,
-  offsetY: number
+  offsetY: number,
+  shorelineResolution = SHORELINE_RESOLUTION
 ): CoastFields | null {
   const waterY = islandLocalY(OCEAN_Y, islandScale, offsetY)
   return useMemo(
@@ -23,10 +24,10 @@ export function useCoastFields(
         waterY,
         margin: SHORELINE_MARGIN / islandScale,
         smoothing: WAVE_SMOOTHING / islandScale,
-        resolution: SHORELINE_RESOLUTION,
+        resolution: shorelineResolution,
         collisionReach: COLLISION_REACH / islandScale,
         collisionResolution: COLLISION_RESOLUTION,
       }),
-    [model, waterY, islandScale]
+    [model, waterY, islandScale, shorelineResolution]
   )
 }

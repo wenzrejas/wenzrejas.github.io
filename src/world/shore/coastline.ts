@@ -7,13 +7,14 @@ import {
   COASTLINE_OFFSET,
   COASTLINE_OPENING,
   COASTLINE_PIECE_MIN_AREA,
+  COASTLINE_RESOLUTION,
   COASTLINE_TOLERANCE,
 } from './constants'
-import { floodOpenWater, type DistanceField } from './shoreField'
+import { distanceAt, floodOpenWater, type DistanceField } from './shoreField'
 
 export interface Coastline {
   islandKey: IslandKey
-  outline: number[]
+  outlines: number[][]
 }
 
 interface Piece {
@@ -80,6 +81,7 @@ const SADDLE_SIDES: Record<number, { landCentre: [Side, Side][]; waterCentre: [S
   },
 }
 
+const pieceMinArea = (islandScale: number) => COASTLINE_PIECE_MIN_AREA / (islandScale * islandScale)
 const cellSizeOf = (field: DistanceField) => field.size / field.resolution
 const firstSampleX = (field: DistanceField) =>
   field.centerX - field.size / 2 + cellSizeOf(field) / 2
@@ -304,7 +306,11 @@ function markWithin(values: Float32Array, limit: number): Uint8Array {
   return marked
 }
 
-function mergedOutline(field: DistanceField, islandScale: number): DistanceField {
+function mergedOutline(
+  field: DistanceField,
+  islandScale: number,
+  isArchipelago: boolean
+): DistanceField {
   const cellSize = cellSizeOf(field)
   const closingCells = COASTLINE_CLOSING / islandScale / cellSize
   const padding = Math.ceil(closingCells) + 2
@@ -320,11 +326,12 @@ function mergedOutline(field: DistanceField, islandScale: number): DistanceField
     }
   }
 
-  const minArea = COASTLINE_PIECE_MIN_AREA / (islandScale * islandScale)
-  const pieces = traceLoops(field)
-    .map((points) => ({ points, area: polygonArea(points) }))
-    .filter((piece) => piece.area >= minArea)
-  for (const bridge of bridgePieces(pieces)) stampBridge(land, frame, bridge)
+  if (!isArchipelago) {
+    const pieces = traceLoops(field)
+      .map((points) => ({ points, area: polygonArea(points) }))
+      .filter((piece) => piece.area >= pieceMinArea(islandScale))
+    for (const bridge of bridgePieces(pieces)) stampBridge(land, frame, bridge)
+  }
 
   const grown = markWithin(cellsAwayFrom(land, resolution), closingCells)
   const toOpenWater = cellsAwayFrom(floodOpenWater(grown, resolution), resolution)
@@ -374,6 +381,30 @@ function simplifyLoop(loop: number[]): number[] {
 
 // ── World coastline ───────────────────────────────────────────────────────────
 
+function resampled(field: DistanceField, resolution: number): DistanceField {
+  const { size, centerX, centerZ } = field
+  const coarse = {
+    distances: new Float32Array(resolution * resolution),
+    resolution,
+    size,
+    centerX,
+    centerZ,
+  }
+  const cellSize = cellSizeOf(coarse)
+  const firstX = firstSampleX(coarse)
+  const firstZ = firstSampleZ(coarse)
+  for (let row = 0; row < resolution; row++) {
+    for (let column = 0; column < resolution; column++) {
+      coarse.distances[row * resolution + column] = distanceAt(
+        field,
+        firstX + column * cellSize,
+        firstZ + row * cellSize
+      )
+    }
+  }
+  return coarse
+}
+
 function toWorld(loop: number[], modelToWorld: THREE.Matrix4): number[] {
   const world: number[] = []
   for (let i = 0; i < loop.length; i += 2) {
@@ -386,10 +417,17 @@ function toWorld(loop: number[], modelToWorld: THREE.Matrix4): number[] {
 export function traceCoastline(
   field: DistanceField,
   islandScale: number,
-  modelToWorld: THREE.Matrix4
-): number[] | null {
-  const loops = traceLoops(mergedOutline(field, islandScale))
-  if (loops.length === 0) return null
+  modelToWorld: THREE.Matrix4,
+  isArchipelago: boolean
+): number[][] | null {
+  const chartField =
+    field.resolution > COASTLINE_RESOLUTION ? resampled(field, COASTLINE_RESOLUTION) : field
+  const loops = traceLoops(mergedOutline(chartField, islandScale, isArchipelago))
   const areas = loops.map(polygonArea)
-  return simplifyLoop(toWorld(loops[areas.indexOf(Math.max(...areas))], modelToWorld))
+  const largest = areas.indexOf(Math.max(...areas))
+  const kept = isArchipelago
+    ? loops.filter((_, index) => areas[index] >= pieceMinArea(islandScale))
+    : loops.slice(largest, largest + 1)
+  if (kept.length === 0) return null
+  return kept.map((loop) => simplifyLoop(toWorld(loop, modelToWorld)))
 }

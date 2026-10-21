@@ -61,7 +61,7 @@ function frontArrival(island: IslandKey): Arrival {
   const coastline = useCoastStore.getState().coastlines.find((entry) => entry.islandKey === island)
   const shoreGap = (x: number, z: number) =>
     coastline
-      ? signedLoopDistance(coastline.outline, x, z)
+      ? Math.min(...coastline.outlines.map((outline) => signedLoopDistance(outline, x, z)))
       : Math.hypot(x - centre.x, z - centre.z) - extent
   const arrivalAt = (side: THREE.Vector2, reach: number): Arrival => ({
     x: centre.x + side.x * reach,

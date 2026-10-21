@@ -1,9 +1,10 @@
 import type { ComponentType } from 'react'
-import { ISLAND_COPY } from '@/data/islandCopy'
+import { ISLAND_COPY, PROJECT_COPY } from '@/data/islandCopy'
 import { TOOLKIT_COPY } from '@/data/panelCopy'
-import type { GroveKey, PanelKey } from '@/store/panelStore'
+import type { GroveKey, PanelKey, ProjectKey } from '@/store/panelStore'
 import { CONTACT_SPLASH_URL } from './contact/constants'
 import ContactContent from './contact/ContactContent'
+import { PROJECT_SPLASH_URL } from './project/constants'
 import { SUPPORT_SPLASH_URL } from './support/constants'
 import SupportContent from './support/SupportContent'
 import { TOOLKIT_SPLASH_URL } from './toolkit/constants'
@@ -23,6 +24,13 @@ const groveSpec = (grove: GroveKey): PanelSpec => ({
   Content: () => <ToolkitContent grove={grove} />,
 })
 
+const projectSpec = (project: ProjectKey): PanelSpec => ({
+  title: PROJECT_COPY[project],
+  subtitle: ISLAND_COPY.buildshore.description,
+  splashUrl: PROJECT_SPLASH_URL,
+  Content: () => null,
+})
+
 export const PANEL_SPECS: Record<PanelKey, PanelSpec> = {
   contact: {
     title: ISLAND_COPY.lumina.label,
@@ -40,4 +48,10 @@ export const PANEL_SPECS: Record<PanelKey, PanelSpec> = {
   creative: groveSpec('creative'),
   visuals: groveSpec('visuals'),
   design: groveSpec('design'),
+  beeSigned: projectSpec('beeSigned'),
+  chooChooChain: projectSpec('chooChooChain'),
+  paymentsManager: projectSpec('paymentsManager'),
+  uiuxWorks: projectSpec('uiuxWorks'),
+  gelTemplateEditor: projectSpec('gelTemplateEditor'),
+  qoves: projectSpec('qoves'),
 }

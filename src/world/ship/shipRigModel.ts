@@ -1,34 +1,18 @@
 import * as THREE from 'three'
-import { connectedParts } from '@/utils/geometry'
+import { FULL_TURN } from '@/utils/math'
 import { meshesOf } from '@/utils/meshes'
 import {
   FLAG_NODES,
   FLAG_WAVES_PER_LENGTH,
-  HULL_NODE,
-  LANTERN_GLOW_NODE,
-  LANTERN_PARTS_MAX,
-  LANTERN_PARTS_MIN,
+  LANTERN_NODE,
   RUDDER_NODE,
   SAIL_NODE,
   SAIL_WAVES_PER_DROP,
-  WHEEL_PARTS_MAX,
-  WHEEL_PARTS_MIN,
+  WHEEL_NODE,
 } from './constants'
 import type { Cloth, Flag, ShipRig } from './shipRig'
 
-const LANTERN_PARTS = new THREE.Box3(
-  new THREE.Vector3(...LANTERN_PARTS_MIN),
-  new THREE.Vector3(...LANTERN_PARTS_MAX)
-)
-const WHEEL_PARTS = new THREE.Box3(
-  new THREE.Vector3(...WHEEL_PARTS_MIN),
-  new THREE.Vector3(...WHEEL_PARTS_MAX)
-)
-const FULL_TURN = Math.PI * 2
-
 const { clamp } = THREE.MathUtils
-
-const _vertex = new THREE.Vector3()
 
 function clothOf(mesh: THREE.Mesh): Cloth {
   mesh.geometry = mesh.geometry.clone()
@@ -77,74 +61,14 @@ function findSail(model: THREE.Object3D): Cloth[] {
   return cloths
 }
 
-function splitOffInside(mesh: THREE.Mesh, bounds: THREE.Box3): THREE.Mesh | null {
-  const positions = mesh.geometry.getAttribute('position')
-  const index = mesh.geometry.index!.array
-  const part = connectedParts(mesh.geometry)
-
-  const reachesOutside = new Uint8Array(positions.count)
-  for (let i = 0; i < positions.count; i++) {
-    if (!bounds.containsPoint(_vertex.fromBufferAttribute(positions, i))) {
-      reachesOutside[part[i]] = 1
-    }
-  }
-
-  const kept: number[] = []
-  const taken: number[] = []
-  for (let i = 0; i < index.length; i += 3) {
-    const triangle = reachesOutside[part[index[i]]] ? kept : taken
-    triangle.push(index[i], index[i + 1], index[i + 2])
-  }
-  if (taken.length === 0) return null
-
-  const inside = new THREE.Mesh(mesh.geometry.clone().setIndex(taken).toNonIndexed(), mesh.material)
-  mesh.geometry = mesh.geometry.clone().setIndex(kept)
-  return inside
-}
-
-function pivotPartsInside(
-  hull: THREE.Object3D,
-  hullMeshes: THREE.Mesh[],
-  inside: THREE.Box3,
-  pivotAt: (bounds: THREE.Box3) => THREE.Vector3
-): THREE.Group | null {
-  const parts = hullMeshes
-    .map((mesh) => splitOffInside(mesh, inside))
-    .filter((part) => part !== null)
-  if (parts.length === 0) return null
-
-  const bounds = new THREE.Box3()
-  for (const part of parts) {
-    part.geometry.computeBoundingBox()
-    bounds.union(part.geometry.boundingBox!)
-  }
-
-  const pivot = new THREE.Group()
-  pivot.position.copy(pivotAt(bounds))
-  hull.add(pivot, ...parts)
-  for (const part of parts) pivot.attach(part)
-  return pivot
-}
-
-const hangingPoint = (bounds: THREE.Box3) =>
-  bounds.getCenter(new THREE.Vector3()).setY(bounds.max.y)
-
-const hubPoint = (bounds: THREE.Box3) => bounds.getCenter(new THREE.Vector3())
-
 export function buildShipRig(model: THREE.Object3D): ShipRig {
-  const hull = model.getObjectByName(HULL_NODE) ?? null
-  const hullMeshes = hull ? meshesOf(hull) : []
-  const lantern = hull && pivotPartsInside(hull, hullMeshes, LANTERN_PARTS, hangingPoint)
-  const lanternGlow = model.getObjectByName(LANTERN_GLOW_NODE)
-  if (lantern && lanternGlow) lantern.attach(lanternGlow)
-
   return {
     rudder: model.getObjectByName(RUDDER_NODE) ?? null,
-    wheel: hull && pivotPartsInside(hull, hullMeshes, WHEEL_PARTS, hubPoint),
+    wheel: model.getObjectByName(WHEEL_NODE) ?? null,
     rudderAngle: 0,
     flags: FLAG_NODES.map((node) => findFlag(model, node)).filter((flag) => flag !== null),
     sail: findSail(model),
-    lantern,
+    lantern: model.getObjectByName(LANTERN_NODE) ?? null,
     sinceClothStep: 0,
   }
 }

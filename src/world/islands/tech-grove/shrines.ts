@@ -4,6 +4,7 @@ import { boundsIn, displayColor, meshesOf, positionIn } from '@/utils/meshes'
 import { footprintGap, footprintOf } from '@/interaction/baseFootprint'
 import { markerPositionOn } from '@/interaction/marker'
 import type { GlowSite } from '../shared/ground-glow/glowSites'
+import { spotsAlongEdges, type SparkleSpots } from '../shared/gem-sparkles/sparkleSpots'
 import {
   BASE_RIM_NODES,
   GEM_NODES,
@@ -13,13 +14,14 @@ import {
   STATUE_MARKER_HEIGHT,
   TUMBLING_GEM_NODES,
 } from './constants'
+import { SPARKLE_DENSITY, SPARKLE_MIN_COUNT } from './gems/constants'
 
 export interface ShrineGem {
   node: THREE.Object3D
   center: THREE.Vector3
   radius: number
   color: THREE.Color
-  edges: Float32Array
+  sparkleSpots: SparkleSpots
   spins: boolean
   tumbles: boolean
 }
@@ -81,7 +83,7 @@ function findGem(model: THREE.Object3D, gemNode: string): ShrineGem | null {
     center: positionIn(model, gem),
     radius: boundsIn(gem, meshes).getSize(new THREE.Vector3()).length() / 2,
     color: displayColor(meshes[0]),
-    edges: hardEdgesIn(gem, meshes),
+    sparkleSpots: spotsAlongEdges(hardEdgesIn(gem, meshes), SPARKLE_DENSITY, SPARKLE_MIN_COUNT),
     spins: SPINNING_GEM_NODES.includes(gemNode),
     tumbles: TUMBLING_GEM_NODES.includes(gemNode),
   }

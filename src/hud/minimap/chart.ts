@@ -72,7 +72,9 @@ function shapedOutline(key: IslandKey, index: number, outline: number[]): number
 
 function islandPath(key: IslandKey, index: number, coastline?: Coastline): string {
   if (!coastline) return placeholderPath(key, index)
-  return coastlinePath(shapedOutline(key, index, coastline.outline))
+  return coastline.outlines
+    .map((outline) => coastlinePath(shapedOutline(key, index, outline)))
+    .join(' ')
 }
 
 export const chartIslands = (coastlines: Coastline[]) =>

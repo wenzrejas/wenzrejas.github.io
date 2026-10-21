@@ -1,13 +1,10 @@
-import { useEffect, useMemo, useRef } from 'react'
-import { useFrame } from '@react-three/fiber'
-import type * as THREE from 'three'
-import { RENDER_LAYER } from '@/app/experience/renderLayers'
+import GemHalo from '@/world/islands/shared/gem-halo/GemHalo'
 import GroundGlow from '@/world/islands/shared/ground-glow/GroundGlow'
-import { pixelsPerUnit } from '@/utils/screen'
-import { SHRINE_GROUND_GLOW } from './constants'
+import { GEM_HALO_SPREAD, GEM_HALO_STRENGTH, SHRINE_GROUND_GLOW } from './constants'
 import { sanctuaryGlow } from '../sanctuaryGlow'
-import { buildGemHaloGeometry, createGemHaloMaterial } from './gemHaloModel'
 import type { Shrines } from '../shrines'
+
+const GEM_HALO = { spread: GEM_HALO_SPREAD, strength: GEM_HALO_STRENGTH }
 
 interface ShrineGlowProps {
   shrines: Shrines
@@ -15,28 +12,6 @@ interface ShrineGlowProps {
 }
 
 export default function ShrineGlow({ shrines, islandScale }: ShrineGlowProps) {
-  const gemHaloRef = useRef<THREE.Points>(null)
-
-  const gemHaloGeometry = useMemo(() => buildGemHaloGeometry(shrines.gems), [shrines])
-  const gemHaloMaterial = useMemo(() => createGemHaloMaterial(), [])
-
-  useEffect(
-    () => () => {
-      gemHaloGeometry.dispose()
-      gemHaloMaterial.dispose()
-    },
-    [gemHaloGeometry, gemHaloMaterial]
-  )
-
-  useFrame(({ camera, gl }) => {
-    const gemHalo = gemHaloRef.current
-    if (!gemHalo) return
-
-    const { uniforms } = gemHalo.material as THREE.ShaderMaterial
-    uniforms.uGlow.value = sanctuaryGlow()
-    uniforms.uPixelsPerUnit.value = pixelsPerUnit(camera, gl) * islandScale
-  })
-
   return (
     <>
       <GroundGlow
@@ -45,11 +20,11 @@ export default function ShrineGlow({ shrines, islandScale }: ShrineGlowProps) {
         islandScale={islandScale}
         level={sanctuaryGlow}
       />
-      <points
-        ref={gemHaloRef}
-        geometry={gemHaloGeometry}
-        material={gemHaloMaterial}
-        renderOrder={RENDER_LAYER.glow}
+      <GemHalo
+        gems={shrines.gems}
+        tuning={GEM_HALO}
+        islandScale={islandScale}
+        level={sanctuaryGlow}
       />
     </>
   )
