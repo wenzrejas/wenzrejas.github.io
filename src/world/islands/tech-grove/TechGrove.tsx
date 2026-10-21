@@ -25,10 +25,11 @@ import { TECH_ISLETS } from './shoreProfile'
 import { arrangeOrbs } from './logo-orbs/orbits'
 import { sortSanctuaryGlows, useLabelGlow, useSanctuaryGlow } from './sanctuaryGlow'
 import { findShrines } from './shrines'
+import { GEM_SPARKLES, SPARKLE_SIZE } from './gems/constants'
 import { useGemSpin } from './gems/useGemSpin'
 import { useOrbitReveal } from './logo-orbs/useOrbitReveal'
 import Fireflies from './fireflies/Fireflies'
-import GemSparkles from './gems/GemSparkles'
+import GemSparkles from '../shared/gem-sparkles/GemSparkles'
 import LightRings from './logo-orbs/LightRings'
 import LogoOrbs from './logo-orbs/LogoOrbs'
 import ShrineGlow from './shrine-glow/ShrineGlow'
@@ -73,7 +74,7 @@ export default function TechGrove({ islandKey, config }: IslandBodyProps) {
         />
         <ShrineGlow shrines={shrines} islandScale={placement.scale} />
         {shrines.gems.map((gem) => (
-          <GemSparkles key={gem.node.name} gem={gem} />
+          <GemSparkles key={gem.node.name} gem={gem} tuning={GEM_SPARKLES} size={SPARKLE_SIZE} />
         ))}
         <LightRings orbits={orbits} />
         <LogoOrbs orbits={orbits} orbs={orbs} />

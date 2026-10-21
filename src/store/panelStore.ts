@@ -2,7 +2,14 @@ import { create } from 'zustand'
 import * as THREE from 'three'
 
 export type GroveKey = 'frontend' | 'creative' | 'visuals' | 'design'
-export type PanelKey = 'contact' | 'support' | GroveKey
+export type ProjectKey =
+  | 'beeSigned'
+  | 'chooChooChain'
+  | 'paymentsManager'
+  | 'uiuxWorks'
+  | 'gelTemplateEditor'
+  | 'qoves'
+export type PanelKey = 'contact' | 'support' | GroveKey | ProjectKey
 
 interface PanelState {
   activePanel: PanelKey | null

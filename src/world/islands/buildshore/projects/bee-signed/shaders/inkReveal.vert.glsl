@@ -1,0 +1,1 @@
+vInkAlong = position.x / uInkLength;

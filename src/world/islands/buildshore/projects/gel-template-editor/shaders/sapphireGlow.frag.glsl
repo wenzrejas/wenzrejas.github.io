@@ -1,0 +1,1 @@
+totalEmissiveRadiance += diffuseColor.rgb * uSapphireGlow;

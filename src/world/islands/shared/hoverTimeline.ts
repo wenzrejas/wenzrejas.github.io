@@ -36,3 +36,5 @@ export function stepHoverTimeline(
 
 export const timelineStage = ({ seconds, presence }: HoverTimeline, length: number) =>
   smoothstep(seconds, 0, length) * presence
+
+export const isHoverHeld = ({ presence }: HoverTimeline) => presence === 1

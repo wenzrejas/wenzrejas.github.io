@@ -15,7 +15,7 @@
     color: '#e07b39',
   },
   buildshore: {
-    position: [-300, 0, -670] as [number, number, number],
+    position: [-527.33, 0, -628.45] as [number, number, number],
     radius: 80,
     color: '#9b59b6',
   },

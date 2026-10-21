@@ -1,5 +1,6 @@
 import type { IslandKey } from '@/world/islands/shared/constants'
 import type { MonolithName } from '@/world/islands/lumina-point/constants'
+import type { ProjectKey } from '@/store/panelStore'
 
 interface IslandCopy {
   label: string
@@ -24,7 +25,7 @@ export const ISLAND_COPY = {
     marker: 'Send a Signal',
   },
   buildshore: {
-    label: 'Buildshore Archipelago',
+    label: 'Buildshore',
     description: 'Projects & Works',
   },
   tech: {
@@ -39,4 +40,18 @@ export const MONOLITH_COPY: Record<MonolithName, string> = {
   Email: 'Email',
   GitHub: 'GitHub',
   LinkedIn: 'LinkedIn',
+}
+
+export const PROJECT_COPY: Record<ProjectKey, string> = {
+  beeSigned: 'BeeSigned',
+  chooChooChain: 'Choo Choo Chain',
+  paymentsManager: 'Payments Manager +',
+  uiuxWorks: 'UI/UX Works',
+  gelTemplateEditor: 'GEL & Template Editor',
+  qoves: 'Qoves',
+}
+
+export const DESIGN_CANVAS_COPY = {
+  layerName: 'Gem',
+  layerSize: '120 × 160',
 }

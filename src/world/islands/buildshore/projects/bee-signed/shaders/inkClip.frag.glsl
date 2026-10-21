@@ -1,0 +1,1 @@
+if (vInkAlong > uReveal) discard;
