@@ -42,10 +42,13 @@ export const PAD_WIDTH_SHARE = 1.5
 export const PAD_DEPTH = 12
 export const PAD_LIFT = 0.15
 export const PAD_FLOW = 0.12
+export const POOL_PAD_WIDTH_SHARE = 1
+export const POOL_PAD_DEPTH = 6
+export const POOL_PAD_LIFT = 0.12
 
 // ── Splash (world units, cycles per second) ───────────────────────────────────
 export const SEA_SPLASH_PARTICLES = 100
-export const POOL_SPLASH_PARTICLES = 30
+export const POOL_SPLASH_PARTICLES = 90
 export const SPLASH_RATE = 0.6
 export const SPLASH_RATE_SPREAD = 0.3
 export const SPLASH_ANGLE_MIN = 0.35

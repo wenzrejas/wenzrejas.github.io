@@ -2,7 +2,7 @@ import { SOCIAL_LINKS } from '@/data/socialLinks'
 import { BASE_TUNING, type ContactBlob, type IslandSpec } from '../shared/islandSpec'
 import type { GroundGlowTuning } from '../shared/ground-glow/glowSites'
 import type { SurfTuning } from '../shared/rock-surf/surfSplash'
-import { LUMINA_FOOTPRINT, LUMINA_MAIN_SHORE_RADIUS, LUMINA_MODEL_TOP } from './shoreProfile'
+import { LUMINA_FOOTPRINT, LUMINA_MODEL_TOP } from './shoreProfile'
 
 export const LUMINA_MODEL_URL = '/models/islands/lumina_point_web_draco.glb'
 
@@ -13,7 +13,6 @@ export const LUMINA_SPEC: IslandSpec = {
   height: LUMINA_MODEL_TOP,
   collision: [],
   shore: [],
-  calm: { inner: LUMINA_MAIN_SHORE_RADIUS, outer: LUMINA_MAIN_SHORE_RADIUS },
 }
 
 // ── Lighting bake ─────────────────────────────────────────────────────────────
@@ -108,7 +107,7 @@ export const LOGO_HOVER_RISE = 0.35
 export const MAIN_ISLAND_NODE = 'MainIsland'
 export const MAIN_ISLAND_TERRAIN_NODES = ['Static_MainIsland']
 export const LIGHTHOUSE_NODE = 'Lighthouse_Root'
-export const LIGHTHOUSE_MARKER_HEIGHT = 0.3
+export const LIGHTHOUSE_MARKER_SPOT = [-0.054, -0.201, 2.04] as const
 export const MAIN_ISLAND_TOUCH_REACH = 2
 export const HIGHLIGHT_DAY_SHARE = 0.7
 

@@ -7,7 +7,7 @@ export type ProjectKey =
   | 'chooChooChain'
   | 'paymentsManager'
   | 'uiuxWorks'
-  | 'gelTemplateEditor'
+  | 'gelify'
   | 'qoves'
 export type PanelKey = 'contact' | 'support' | GroveKey | ProjectKey
 

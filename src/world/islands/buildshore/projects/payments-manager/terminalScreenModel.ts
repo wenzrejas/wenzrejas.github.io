@@ -3,9 +3,9 @@ import { onceFor } from '@/utils/cache'
 import { displayColorOf } from '@/utils/color'
 import { floatDefines } from '@/utils/glsl'
 import {
+  APPROVED_COLOR,
   CHECK_DISC_REACH,
   CHECK_STROKE_WIDTH,
-  SCREEN_APPROVED_COLOR,
   SCREEN_CHECK_COLOR,
   SCREEN_IDLE_COLOR,
 } from './constants'
@@ -31,7 +31,7 @@ export const dressTerminalScreen = (screen: THREE.Mesh) =>
       uniforms: {
         ...uniforms,
         uIdleColor: { value: displayColorOf(SCREEN_IDLE_COLOR) },
-        uApprovedColor: { value: displayColorOf(SCREEN_APPROVED_COLOR) },
+        uApprovedColor: { value: displayColorOf(APPROVED_COLOR) },
         uCheckColor: { value: displayColorOf(SCREEN_CHECK_COLOR) },
         uHalfHeight: { value: (bounds.max.y - bounds.min.y) / 2 },
       },

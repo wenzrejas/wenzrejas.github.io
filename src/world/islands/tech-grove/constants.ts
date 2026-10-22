@@ -1,7 +1,7 @@
 import type { GroveKey } from '@/store/panelStore'
 import { BASE_TUNING, type ContactBlob, type IslandSpec } from '../shared/islandSpec'
 import type { SurfTuning } from '../shared/rock-surf/surfSplash'
-import { TECH_CLUSTER_RADIUS, TECH_FOOTPRINT, TECH_MODEL_TOP } from './shoreProfile'
+import { TECH_FOOTPRINT, TECH_MODEL_TOP } from './shoreProfile'
 
 export const TECH_MODEL_URL = '/models/islands/tech_grove_web_draco.glb'
 
@@ -37,7 +37,6 @@ export const TECH_SPEC: IslandSpec = {
   height: TECH_MODEL_TOP,
   collision: [],
   shore: [],
-  calm: { inner: TECH_CLUSTER_RADIUS, outer: TECH_CLUSTER_RADIUS },
   mooring: { x: -0.96, z: 11.23, headingDegrees: -103.1 },
 }
 

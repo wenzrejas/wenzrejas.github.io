@@ -9,7 +9,8 @@ varying float vWaveHeight;
 void main() {
   vec4 worldPos = modelMatrix * vec4(position, 1.0);
   vec3 wave = waveField(worldPos.xz);
-  float calm = shoreCalm(worldPos.xz);
+  float whirlpoolCalm = smoothstep(1.0, WHIRLPOOL_CALM_REACH, whirlpoolShare(worldPos.xz));
+  float calm = shoreCalm(worldPos.xz) * whirlpoolCalm;
 
   float amp = uWaveAmp * calm;
 

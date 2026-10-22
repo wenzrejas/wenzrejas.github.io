@@ -18,6 +18,11 @@ export interface CoastFields {
   collision: DistanceField
 }
 
+export interface Waterline {
+  field: DistanceField
+  modelToWorld: THREE.Matrix4
+}
+
 interface CoastFieldSettings {
   waterY: number
   margin: number

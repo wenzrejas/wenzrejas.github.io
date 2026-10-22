@@ -47,8 +47,6 @@ export const isInDepths = () => isDepthsScene(useViewStore.getState())
 export const isMapUnfolded = ({ mapPhase }: ViewState) =>
   mapPhase === 'unfolding' || mapPhase === 'open'
 
-export const isMapOut = ({ mapPhase }: ViewState) => mapPhase !== 'closed'
-
 export const isWorldPaused = (view: ViewState) => isMapUnfolded(view) || isDepthsScene(view)
 
 export function isWorldInView() {

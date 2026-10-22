@@ -1,3 +1,4 @@
+@use '@/styles/glass';
 @use '@/styles/typography';
 
 .island-title {
@@ -11,6 +12,7 @@
   z-index: 90;
   pointer-events: none;
   opacity: 0;
+  filter: glass.$hud-drop-shadow;
 
   display: flex;
   flex-direction: column;

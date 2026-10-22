@@ -1,5 +1,4 @@
-import { WORLD_LOCATIONS } from '../shared/constants'
-import { BASE_TUNING, modelUnits, type ContactBlob, type IslandSpec } from '../shared/islandSpec'
+import { BASE_TUNING, type ContactBlob, type IslandSpec } from '../shared/islandSpec'
 import { COZY_FOOTPRINT, COZY_MODEL_TOP } from './shoreProfile'
 
 export const COZY_MODEL_URL = '/models/islands/cozy_isle_web_draco.glb'
@@ -11,10 +10,6 @@ export const COZY_SPEC: IslandSpec = {
   height: COZY_MODEL_TOP,
   collision: [],
   shore: [],
-  calm: {
-    inner: modelUnits(40, WORLD_LOCATIONS.cozy.radius, COZY_FOOTPRINT),
-    outer: modelUnits(43, WORLD_LOCATIONS.cozy.radius, COZY_FOOTPRINT),
-  },
   mooring: { x: 2.15, z: 9.6, headingDegrees: 92.4 },
 }
 

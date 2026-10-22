@@ -1,11 +1,9 @@
-#define MAX_ISLANDS 8
-
 uniform float uTime;
 uniform float uWaveAmp;
 uniform float uWaveSpeed;
 uniform float uWindAmp;
-uniform vec4  uIslands[MAX_ISLANDS];
-uniform float uShoreCalmBand;
+uniform sampler2D uShoreCalmMap;
+uniform float uShoreCalmMapSize;
 
 float hash(vec2 p) {
   p = fract(p * vec2(127.1, 311.7));
@@ -74,13 +72,5 @@ vec3 waveField(vec2 xz) {
 }
 
 float shoreCalm(vec2 xz) {
-  float calm = 1.0;
-  for (int i = 0; i < MAX_ISLANDS; i++) {
-    vec4  isl = uIslands[i];
-    vec2  rel = xz - isl.xy;
-    vec2  dir = rel / max(length(rel), 1e-4);
-    float d   = (length(rel / isl.zw) - 1.0) * length(dir * isl.zw);
-    calm = min(calm, smoothstep(0.0, uShoreCalmBand, d));
-  }
-  return calm;
+  return texture2D(uShoreCalmMap, xz / uShoreCalmMapSize + 0.5).r;
 }

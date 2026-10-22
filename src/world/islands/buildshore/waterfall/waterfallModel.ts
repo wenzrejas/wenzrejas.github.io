@@ -22,6 +22,9 @@ import {
   PAD_FLOW,
   PAD_LIFT,
   PAD_WIDTH_SHARE,
+  POOL_PAD_DEPTH,
+  POOL_PAD_LIFT,
+  POOL_PAD_WIDTH_SHARE,
   POOL_SPLASH_PARTICLES,
   SEA_SPLASH_PARTICLES,
   SPLASH_ANGLE_MAX,
@@ -136,20 +139,28 @@ const PAD_CORNERS = [
   [1, 1],
 ]
 
+const padShapeOf = (site: SplashSite) =>
+  site.intoSea
+    ? { halfWidth: site.halfWidth * PAD_WIDTH_SHARE, depth: PAD_DEPTH, y: PAD_LIFT }
+    : {
+        halfWidth: site.halfWidth * POOL_PAD_WIDTH_SHARE,
+        depth: POOL_PAD_DEPTH,
+        y: site.y + POOL_PAD_LIFT,
+      }
+
 export function buildFoamPadGeometry(sites: SplashSite[]): THREE.BufferGeometry {
-  const seaSites = sites.filter(({ intoSea }) => intoSea)
   const positions: number[] = []
   const uvs: number[] = []
   const seeds: number[] = []
   const indices: number[] = []
-  seaSites.forEach((site, i) => {
+  sites.forEach((site, i) => {
     const seed = Math.random()
-    const halfWidth = site.halfWidth * PAD_WIDTH_SHARE
+    const { halfWidth, depth, y } = padShapeOf(site)
     for (const [side, outward] of PAD_CORNERS) {
       positions.push(
-        site.x + site.alongX * halfWidth * side + site.awayX * PAD_DEPTH * outward,
-        PAD_LIFT,
-        site.z + site.alongZ * halfWidth * side + site.awayZ * PAD_DEPTH * outward
+        site.x + site.alongX * halfWidth * side + site.awayX * depth * outward,
+        y,
+        site.z + site.alongZ * halfWidth * side + site.awayZ * depth * outward
       )
       uvs.push((side + 1) / 2, outward)
       seeds.push(seed)

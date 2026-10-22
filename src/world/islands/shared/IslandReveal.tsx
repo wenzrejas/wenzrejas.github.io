@@ -9,7 +9,14 @@ import { onShipPlaced } from '@/store/shipStore'
 import { rememberedItems, rememberItem } from '@/store/visitorMemory'
 import { MAX_FRAME_SECONDS } from '@/utils/time'
 import { ISLAND_KEYS } from './islandSpecs'
-import { enterReachedIsland, islandInReach, REVEAL_TOTAL, revealBlend } from './revealTimeline'
+import {
+  enterReachedIsland,
+  islandInReach,
+  REVEAL_TOTAL,
+  revealBlend,
+  revealFocus,
+  revealScreenTop,
+} from './revealTimeline'
 import { sampleGroundFrame } from './viewReach'
 
 interface IslandRevealProps {
@@ -54,8 +61,11 @@ export default function IslandReveal({ shipRef }: IslandRevealProps) {
       if (!trigger) return
 
       rememberItem('revealedIslands', trigger.key)
-      useRevealStore.getState().target.set(trigger.x, 0, trigger.z)
-      useRevealStore.setState({ activeKey: trigger.key })
+      revealFocus(trigger, tuning[trigger.key], useRevealStore.getState().target)
+      useRevealStore.setState({
+        activeKey: trigger.key,
+        islandScreenTop: revealScreenTop(trigger, tuning[trigger.key]),
+      })
       elapsed.current = 0
     }
 

@@ -52,7 +52,7 @@ const LEARNING_TO_SAIL: DialoguePage[] = [
   },
   {
     mood: 'talking',
-    lines: ['Use [W] or [↑] to sail forward, and [S] or [↓] to slow down or reverse.'],
+    lines: ['Use [W] or [↑] to sail forward, and [S] or [↓] to reverse.'],
   },
   {
     mood: 'talking',

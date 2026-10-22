@@ -6,7 +6,7 @@ import type { IslandModel } from '@/world/islands/shared/islandModel'
 import type { DistanceField } from '@/world/shore/shoreField'
 import BeeSigned from './bee-signed/BeeSigned'
 import { useChooChooChain } from './choo-choo-chain/useChooChooChain'
-import GelTemplateEditor from './gel-template-editor/GelTemplateEditor'
+import Gelify from './gelify/Gelify'
 import { usePaymentsManager } from './payments-manager/usePaymentsManager'
 import type { ProjectHovers } from './projectHovers'
 import { findProjectSites } from './projectSites'
@@ -37,11 +37,7 @@ export default function BuildshoreProjects({
     <>
       <BeeSigned model={island.model} hover={hovers.beeSigned} islandScale={islandScale} />
       <UIUXWorks model={island.model} hover={hovers.uiuxWorks} islandScale={islandScale} />
-      <GelTemplateEditor
-        model={island.model}
-        hover={hovers.gelTemplateEditor}
-        islandScale={islandScale}
-      />
+      <Gelify model={island.model} hover={hovers.gelify} islandScale={islandScale} />
       <Qoves island={island} hover={hovers.qoves} islandScale={islandScale} />
       {sites.map((site) => (
         <InteractionMarker

@@ -17,13 +17,13 @@ import { editorLevel, findEditorMotion, poseEditor } from './editorMotion'
 import { preparePlayhead, sweepPlayhead } from './playhead'
 import { dressSapphire, glowSapphire } from './sapphireModel'
 
-interface GelTemplateEditorProps {
+interface GelifyProps {
   model: THREE.Object3D
   hover: HoverTimeline
   islandScale: number
 }
 
-export default function GelTemplateEditor({ model, hover, islandScale }: GelTemplateEditorProps) {
+export default function Gelify({ model, hover, islandScale }: GelifyProps) {
   const editor = useMemo(() => findEditorMotion(model), [model])
   const playhead = useMemo(() => preparePlayhead(model), [model])
   const blocks = useMemo(() => findAngularBlocks(model), [model])

@@ -3,6 +3,7 @@ import type { IslandControls } from '@/app/debug/types'
 import {
   ISLAND_LEAVE_MARGIN,
   REVEAL_FALL,
+  REVEAL_FOCUS_HEIGHT_SHARE,
   REVEAL_HOLD,
   REVEAL_LEAD,
   REVEAL_RISE,
@@ -10,7 +11,8 @@ import {
   type IslandConfig,
   type IslandKey,
 } from './constants'
-import { islandExtent } from './islandTransform'
+import { ISLAND_SPECS } from './islandSpecs'
+import { createIslandTransform, islandExtent, islandTransform } from './islandTransform'
 import { groundReach } from './viewReach'
 
 interface RevealTrigger {
@@ -24,6 +26,24 @@ export const REVEAL_TOTAL = REVEAL_RISE + REVEAL_HOLD + REVEAL_FALL
 const REVEAL_TRIGGERS: RevealTrigger[] = (
   Object.entries(WORLD_LOCATIONS) as [IslandKey, IslandConfig][]
 ).map(([key, config]) => ({ key, x: config.position[0], z: config.position[2] }))
+
+const _transform = createIslandTransform()
+
+export function revealFocus(
+  { key, x, z }: RevealTrigger,
+  tuning: IslandControls,
+  out: THREE.Vector3
+): THREE.Vector3 {
+  const { scale } = islandTransform(key, tuning, _transform)
+  const top = ISLAND_SPECS[key].height * scale + tuning.offsetY
+  return out.set(x, top * REVEAL_FOCUS_HEIGHT_SHARE, z)
+}
+
+export function revealScreenTop({ key }: RevealTrigger, tuning: IslandControls): number | null {
+  const { screenTop } = ISLAND_SPECS[key]
+  if (screenTop === undefined) return null
+  return screenTop * islandTransform(key, tuning, _transform).scale
+}
 
 export function revealBlend(elapsed: number): number {
   if (elapsed < REVEAL_RISE) return THREE.MathUtils.smoothstep(elapsed, 0, REVEAL_RISE)
@@ -41,7 +61,8 @@ function isInReach(
 ) {
   const dx = shipX - x
   const dz = shipZ - z
-  const range = groundReach(dx, dz) + islandExtent(key, tuning[key]) + REVEAL_LEAD + margin
+  const lead = ISLAND_SPECS[key].revealLead ?? REVEAL_LEAD
+  const range = groundReach(dx, dz) + islandExtent(key, tuning[key]) + lead + margin
   return dx * dx + dz * dz < range * range
 }
 

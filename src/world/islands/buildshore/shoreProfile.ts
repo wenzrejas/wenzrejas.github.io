@@ -2,4 +2,6 @@ export const BUILDSHORE_FOOTPRINT = 97.433
 
 export const BUILDSHORE_MODEL_TOP = 15.422
 
+export const BUILDSHORE_SCREEN_TOP = 28.734
+
 export const BUILDSHORE_SMOKESTACK_TOP = { x: 0.76, y: 2.36, z: 0 }

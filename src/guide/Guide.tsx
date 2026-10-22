@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import { startDialogue, useGuideStore } from '@/store/guideStore'
 import { useLoadingStore } from '@/store/loadingStore'
-import { isMapOut, useViewStore } from '@/store/viewStore'
 import { INTRODUCTION_DELAY_SECONDS } from './constants'
 import DialogueBox from './dialogue-box/DialogueBox'
 import Mascot from './mascot/Mascot'
@@ -11,7 +10,7 @@ import './Guide.scss'
 export default function Guide() {
   const isLoaderGone = useLoadingStore((state) => state.isLoaderGone)
   const hasFinishedIntroduction = useGuideStore((state) => state.hasFinishedIntroduction)
-  const isGuideLeft = useViewStore(isMapOut)
+  const isGuideLeft = useGuideStore((state) => state.isOverMap)
 
   useRemarks()
 

@@ -52,6 +52,6 @@ export const PANEL_SPECS: Record<PanelKey, PanelSpec> = {
   chooChooChain: projectSpec('chooChooChain'),
   paymentsManager: projectSpec('paymentsManager'),
   uiuxWorks: projectSpec('uiuxWorks'),
-  gelTemplateEditor: projectSpec('gelTemplateEditor'),
+  gelify: projectSpec('gelify'),
   qoves: projectSpec('qoves'),
 }
