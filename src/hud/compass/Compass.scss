@@ -1,3 +1,5 @@
+@use '@/styles/glass';
+
 $ink: rgba(236, 240, 244, 0.9);
 $line-weight: 1px;
 $tick-width: 2px;
@@ -17,7 +19,7 @@ $pointer-gap: 1.4rem;
   translate: -50% 0;
   z-index: 80;
   pointer-events: none;
-  filter: drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.45));
+  filter: glass.$hud-drop-shadow;
 
   &__window {
     position: absolute;

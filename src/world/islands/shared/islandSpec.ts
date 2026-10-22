@@ -23,11 +23,6 @@ export interface ShoreRing {
   options?: Partial<ShoreTuning>
 }
 
-export interface CalmBand {
-  inner: number
-  outer: number
-}
-
 export interface ContactBlob {
   spread: number
   y: number
@@ -47,9 +42,10 @@ export interface IslandSpec {
   height: number
   collision: CollisionCircle[]
   shore: ShoreRing[]
-  calm: CalmBand
   shoreOptions?: Partial<ShoreTuning>
   mooring?: Mooring
+  revealLead?: number
+  screenTop?: number
 }
 
 export const BASE_TUNING: IslandModelTuning = {
@@ -63,9 +59,6 @@ export const BASE_TUNING: IslandModelTuning = {
 
 export const islandLocalY = (worldY: number, islandScale: number, offsetY: number) =>
   (worldY - offsetY) / islandScale
-
-export const modelUnits = (world: number, islandRadius: number, footprint: number) =>
-  (world * footprint) / (islandRadius * 2)
 
 export const modelToWorld = (islandRadius: number, footprint: number, scale: number) =>
   (islandRadius * 2 * scale) / footprint

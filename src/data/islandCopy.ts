@@ -47,7 +47,7 @@ export const PROJECT_COPY: Record<ProjectKey, string> = {
   chooChooChain: 'Choo Choo Chain',
   paymentsManager: 'Payments Manager +',
   uiuxWorks: 'UI/UX Works',
-  gelTemplateEditor: 'GEL & Template Editor',
+  gelify: 'Gelify',
   qoves: 'Qoves',
 }
 

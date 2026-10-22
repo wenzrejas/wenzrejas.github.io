@@ -1,13 +1,12 @@
 import * as THREE from 'three'
-import { boundsIn, displayColor, meshesOf, positionIn } from '@/utils/meshes'
+import { boundsIn, displayColor, meshesOf, pointIn, positionIn } from '@/utils/meshes'
 import { footprintGap, footprintOf } from '@/interaction/baseFootprint'
 import { isEngaged } from '@/interaction/hover'
-import { markerPositionOn } from '@/interaction/marker'
 import type { GlowSite } from '../shared/ground-glow/glowSites'
 import { dayNightGlow } from '../shared/nightGlow'
 import {
   HIGHLIGHT_DAY_SHARE,
-  LIGHTHOUSE_MARKER_HEIGHT,
+  LIGHTHOUSE_MARKER_SPOT,
   LIGHTHOUSE_NODE,
   MAIN_ISLAND_NODE,
   SUMMIT_RING_NODE,
@@ -40,7 +39,7 @@ export function findMainIsland(model: THREE.Object3D): MainIsland | null {
   )
 
   return {
-    marker: markerPositionOn(model, lighthouse, LIGHTHOUSE_MARKER_HEIGHT),
+    marker: pointIn(model, lighthouse, LIGHTHOUSE_MARKER_SPOT),
     summit: {
       center: ringBounds.getCenter(new THREE.Vector3()).setY(ringBounds.max.y),
       radius: Math.max(ringSize.x, ringSize.z) / 2,

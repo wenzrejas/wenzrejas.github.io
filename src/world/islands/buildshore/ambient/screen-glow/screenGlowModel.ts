@@ -7,7 +7,7 @@ import {
   dressColorGlow,
   type ColorGlow,
 } from '@/world/islands/buildshore/shared/color-glow/colorGlowModel'
-import { FLOATING_CARD_NODES } from '@/world/islands/buildshore/projects/gel-template-editor/constants'
+import { FLOATING_CARD_NODES } from '@/world/islands/buildshore/projects/gelify/constants'
 import { SCREEN_DEPTH_STEPS, SCREEN_GLOW_MATERIAL, UIUX_SCREEN_NODES } from './constants'
 
 export interface ScreenGlows {

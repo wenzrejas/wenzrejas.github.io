@@ -8,7 +8,7 @@ export const PROJECT_LANDMARK_NODES: Record<ProjectKey, string[]> = {
   chooChooChain: ['ChooChooChain_Station_Root'],
   paymentsManager: ['PaymentsManager_Terminal_Root'],
   uiuxWorks: ['UIUX_Works_Gem'],
-  gelTemplateEditor: ['GEL_Angular_Root', 'GEL_Editor_Root'],
+  gelify: ['GEL_Angular_Root', 'GEL_Editor_Root'],
   qoves: ['Qoves_Logo_Root'],
 }
 
@@ -17,7 +17,7 @@ export const PROJECT_MARKER_ANCHORS: Record<ProjectKey, string> = {
   chooChooChain: 'ChooChooChain_Marker_Anchor',
   paymentsManager: 'PaymentsManager_Marker_Anchor',
   uiuxWorks: 'UIUX_Works_Marker_Anchor',
-  gelTemplateEditor: 'GEL_Marker_Anchor',
+  gelify: 'GEL_Marker_Anchor',
   qoves: 'Qoves_Marker_Anchor',
 }
 

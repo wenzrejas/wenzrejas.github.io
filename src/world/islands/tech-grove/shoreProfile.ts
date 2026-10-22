@@ -2,8 +2,6 @@ export const TECH_FOOTPRINT = 18.937
 
 export const TECH_MODEL_TOP = 7.666
 
-export const TECH_CLUSTER_RADIUS = 9.567
-
 export const TECH_ISLETS = [
   {
     x: -6.238,

@@ -2,12 +2,14 @@ export const OCEAN_PLANE_SIZE = 2600
 export const OCEAN_SEGMENTS = 128
 export const OCEAN_Y = -0.1
 export const OCEAN_FUNNEL_OVERSHOOT = 1.3
+export const OCEAN_WHIRLPOOL_CALM_REACH = 1.5
 
-// ── Shoreline ─────────────────────────────────────────────────────────────────
-export const MAX_SHORE_ISLANDS = 8
+// ── Shore calm (world units) ──────────────────────────────────────────────────
+export const SHORE_CALM_START = 14
+export const SHORE_CALM_BAND = 46
+export const SHORE_CALM_MAP_RESOLUTION = 512
 
-export const SHORE_CALM_BAND = 95
-
+// ── Surface ───────────────────────────────────────────────────────────────────
 export const RAIN_DARKEN = 0.22
 
 export const OCEAN_DEFAULTS = {

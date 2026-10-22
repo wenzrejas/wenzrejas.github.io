@@ -9,9 +9,11 @@ import {
   OCEAN_FUNNEL_OVERSHOOT,
   OCEAN_PLANE_SIZE,
   OCEAN_SEGMENTS,
+  OCEAN_WHIRLPOOL_CALM_REACH,
   OCEAN_Y,
   RAIN_DARKEN,
 } from './constants'
+import { useShoreCalm } from './useShoreCalm'
 import { waveUniforms } from './waveUniforms'
 import { oceanSurfaceUniforms } from './oceanSurfaceUniforms'
 import { floatDefines } from '@/utils/glsl'
@@ -26,6 +28,7 @@ const PRIMARY_WAVE_DIR = new THREE.Vector2(0.97, -0.26).normalize()
 export default function Ocean() {
   const meshRef = useRef<THREE.Mesh>(null)
   const smoothedWindAmp = useRef(1.0)
+  useShoreCalm()
 
   const material = useMemo(
     () =>
@@ -35,7 +38,10 @@ export default function Ocean() {
         side: THREE.FrontSide,
         vertexShader: VERT,
         fragmentShader: FRAG,
-        defines: floatDefines({ FUNNEL_OVERSHOOT: OCEAN_FUNNEL_OVERSHOOT }),
+        defines: floatDefines({
+          FUNNEL_OVERSHOOT: OCEAN_FUNNEL_OVERSHOOT,
+          WHIRLPOOL_CALM_REACH: OCEAN_WHIRLPOOL_CALM_REACH,
+        }),
         uniforms: {
           ...waveUniforms,
           ...oceanSurfaceUniforms,

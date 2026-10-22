@@ -4,10 +4,10 @@ import { floatDefines } from '@/utils/glsl'
 import { meshesOf } from '@/utils/meshes'
 import { cloneLit, patchShader } from '@/world/islands/shared/materialPatch'
 import {
+  APPROVED_COLOR,
   ARC_FADE_SECONDS,
   ARC_FIRST_AT_SECONDS,
   ARC_STAGGER_SECONDS,
-  ARC_TINT_COLOR,
   ARC_TINT_GLOW,
   INNER_ARC_EDGE,
   OUTER_ARC_EDGE,
@@ -35,7 +35,7 @@ export function dressContactlessIcon(icon: THREE.Object3D): ContactlessArcs | nu
     const arcs: ContactlessArcs = {
       uArcClock: { value: 0 },
       uArcLevel: { value: 0 },
-      uArcColor: { value: new THREE.Color(ARC_TINT_COLOR) },
+      uArcColor: { value: new THREE.Color(APPROVED_COLOR) },
     }
     const material = patchShader(cloneLit(meshes[0].material as THREE.MeshStandardMaterial), {
       uniforms: { ...arcs },

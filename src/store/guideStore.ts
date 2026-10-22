@@ -2,12 +2,14 @@ import { create } from 'zustand'
 import { IS_DEBUG } from '@/app/experience/constants'
 import { DIALOGUES, type DialogueKey } from '@/data/guideCopy'
 import { MODAL_DIALOGUES } from '@/guide/constants'
+import { MAP_REMARKS } from '@/guide/remarks/constants'
 import { isLoaderShowing, useLoadingStore } from './loadingStore'
 import { isRemembered, rememberFlag } from './visitorMemory'
 
 interface GuideState {
   dialogue: DialogueKey | null
   pageIndex: number
+  isOverMap: boolean
   isReturningVisitor: boolean
   hasFinishedIntroduction: boolean
 }
@@ -17,12 +19,17 @@ const isReturningVisitor = isRemembered('returningVisitor')
 export const useGuideStore = create<GuideState>(() => ({
   dialogue: null,
   pageIndex: 0,
+  isOverMap: false,
   isReturningVisitor,
   hasFinishedIntroduction: IS_DEBUG || isReturningVisitor,
 }))
 
 export const startDialogue = (dialogue: DialogueKey) =>
-  useGuideStore.setState({ dialogue, pageIndex: 0 })
+  useGuideStore.setState({
+    dialogue,
+    pageIndex: 0,
+    isOverMap: MAP_REMARKS.some((remark) => remark === dialogue),
+  })
 
 export function endDialogue() {
   const { dialogue } = useGuideStore.getState()
