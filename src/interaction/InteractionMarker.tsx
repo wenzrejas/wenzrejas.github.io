@@ -6,6 +6,7 @@ import * as THREE from 'three'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { isPanelOpen } from '../store/panelStore'
 import { isRevealPlaying } from '../store/revealStore'
+import { isWorldScene, useViewStore } from '../store/viewStore'
 import { uniformsOf } from '../utils/meshes'
 import {
   INTERACTION_LAYER,
@@ -83,7 +84,8 @@ export default function InteractionMarker({
   useFrame(({ camera, clock }, delta) => {
     const mesh = meshRef.current
     if (!mesh) return
-    fadeMarker(motion.current, !isPanelOpen() && !isRevealPlaying(), delta)
+    const isShown = !isPanelOpen() && !isRevealPlaying() && isWorldScene(useViewStore.getState())
+    fadeMarker(motion.current, isShown, delta)
     mesh.visible = motion.current.presence > 0
     if (!mesh.visible) return
     pinToScreen(mesh, camera, MARKER_PIXELS)

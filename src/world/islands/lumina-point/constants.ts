@@ -16,8 +16,8 @@ export const LUMINA_SPEC: IslandSpec = {
 }
 
 // ── Lighting bake ─────────────────────────────────────────────────────────────
-export const LUMINA_OVERHEAD_SHADOW_STRENGTH = 1.5
-export const LAMP_SPILL_STRENGTH = 1
+export const LUMINA_OVERHEAD_SHADOW_STRENGTH = 1.8
+export const LAMP_SPILL_STRENGTH = 0.4
 
 // ── Lighthouse beam ───────────────────────────────────────────────────────────
 export const BEAM_ANCHOR_NODE = 'Anchor_BeaconCone'

@@ -4,7 +4,7 @@ import { useCoastStore } from '@/store/coastStore'
 import { useDebugStore } from '@/store/debugStore'
 import { closePanel } from '@/store/panelStore'
 import { placeShip } from '@/store/shipStore'
-import { closeWorldMap, isInDepths, leaveDepths } from '@/store/viewStore'
+import { closeWorldMap, leaveDepths } from '@/store/viewStore'
 import { signedLoopDistance } from '@/utils/polygon'
 import { BOUNDARY_RADIUS } from '@/world/environment/boundary/constants'
 import type { IslandKey } from '@/world/islands/shared/constants'
@@ -84,7 +84,7 @@ function frontArrival(island: IslandKey): Arrival {
 export function sailTo(island: IslandKey) {
   const arrival = mooredArrival(island) ?? frontArrival(island)
   closePanel()
-  if (isInDepths()) leaveDepths()
+  leaveDepths()
   placeShip(arrival.x, arrival.z, arrival.heading)
   closeWorldMap()
 }

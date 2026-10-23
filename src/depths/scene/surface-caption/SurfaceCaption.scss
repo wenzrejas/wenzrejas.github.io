@@ -1,0 +1,57 @@
+@use '@/styles/glass';
+
+$ink: rgba(236, 240, 244, 0.95);
+$rule-length: 3rem;
+$rule-shadow: 0 1px 3px rgba(5, 15, 35, 0.9);
+
+.surface-caption {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  visibility: hidden;
+  opacity: 0;
+  translate: 0 0.5rem;
+  transition:
+    opacity 0.8s ease,
+    translate 0.8s ease,
+    visibility 0.8s;
+
+  &::before,
+  &::after {
+    content: '';
+    width: $rule-length;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, $ink);
+    box-shadow: $rule-shadow;
+  }
+
+  &::after {
+    background: linear-gradient(90deg, $ink, transparent);
+  }
+
+  &--shown {
+    visibility: visible;
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  &__button {
+    @include glass.rise-button;
+    padding: 1rem 1.6rem 1rem 1.35rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.22em;
+  }
+
+  &__arrow {
+    @include glass.rise-arrow(0.65rem, 0.55rem);
+  }
+
+  &__label {
+    @include glass.rise-label;
+  }
+
+  &__button:hover &__arrow,
+  &__button:focus-visible &__arrow {
+    animation-play-state: paused;
+  }
+}

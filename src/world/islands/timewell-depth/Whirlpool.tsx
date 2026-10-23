@@ -3,12 +3,13 @@ import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { ISLAND_COPY } from '@/data/islandCopy'
 import { useCycleStore } from '@/store/cycleStore'
-import { enterDepths } from '@/store/viewStore'
+import { beginDive } from '@/store/viewStore'
 import { useWhirlpoolStore } from '@/store/whirlpoolStore'
 import { mix } from '@/utils/math'
 import { MAX_FRAME_SECONDS } from '@/utils/time'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { syncWhirlpoolFunnel } from './whirlpoolFunnel'
+import { prefetchDepths } from '@/depths/depthsSceneLoader'
 import { setHovered } from '@/interaction/hover'
 import InteractionMarker from '@/interaction/InteractionMarker'
 import { SHORE_Y } from '@/world/shore/constants'
@@ -131,8 +132,11 @@ export default function Whirlpool({ shoreline, center, islandScale, offsetY }: W
       <InteractionMarker
         position={[WHIRLPOOL_EYE_X, WHIRLPOOL_MARKER_LIFT, WHIRLPOOL_EYE_Z]}
         label={ISLAND_COPY.timewell.marker}
-        onHover={(isHovered) => setHovered(awakening, isHovered)}
-        onActivate={enterDepths}
+        onHover={(isHovered) => {
+          setHovered(awakening, isHovered)
+          if (isHovered) prefetchDepths()
+        }}
+        onActivate={beginDive}
         baseGap={eyeGap}
       />
     </mesh>

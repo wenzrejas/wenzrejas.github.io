@@ -35,6 +35,9 @@ const SCREEN_UP = new THREE.Vector3(0, 1, 0)
   .normalize()
 const GROUND_FORWARD = new THREE.Vector2(VIEW_DIRECTION.x, VIEW_DIRECTION.z).normalize()
 const FORWARD_RISE = GROUND_FORWARD.x * SCREEN_UP.x + GROUND_FORWARD.y * SCREEN_UP.z
+const BASE_OFFSET = new THREE.Vector3(...CAMERA_OFFSET)
+const UP = new THREE.Vector3(0, 1, 0)
+const _offset = new THREE.Vector3()
 const _panelCenter = new THREE.Vector3()
 const _panelLook = new THREE.Vector2()
 const _focusLook = new THREE.Vector2()
@@ -47,9 +50,14 @@ function shakeCamera(camera: THREE.Camera, strength: number, time: number) {
   camera.translateY(strength * Math.sin(time * CAMERA_SHAKE_RATE_UP))
 }
 
-function lookPointThrough(point: THREE.Vector3, lookY: number, out: THREE.Vector2) {
-  const lift = (point.y - lookY) / (CAMERA_OFFSET[1] - CAMERA_LOOK_Y_OFFSET)
-  return out.set(point.x - CAMERA_OFFSET[0] * lift, point.z - CAMERA_OFFSET[2] * lift)
+function lookPointThrough(
+  point: THREE.Vector3,
+  lookY: number,
+  offset: THREE.Vector3,
+  out: THREE.Vector2
+) {
+  const lift = (point.y - lookY) / (offset.y - CAMERA_LOOK_Y_OFFSET)
+  return out.set(point.x - offset.x * lift, point.z - offset.z * lift)
 }
 
 function keepTitleClear(
@@ -93,11 +101,12 @@ export function frameShip(
 ) {
   const y = useDebugStore.getState().ship.baseY
   const { blend, target, islandScreenTop } = useRevealStore.getState()
-  const { focus, focusBlend, focusZoom, shake } = useCinematicStore.getState()
+  const { focus, focusBlend, focusZoom, shake, spin } = useCinematicStore.getState()
   const panel = usePanelStore.getState()
+  const offset = _offset.copy(BASE_OFFSET).applyAxisAngle(UP, spin)
 
   const lookY = y + CAMERA_LOOK_Y_OFFSET
-  const revealLook = lookPointThrough(target, lookY, _revealLook)
+  const revealLook = lookPointThrough(target, lookY, offset, _revealLook)
   const dx = revealLook.x - shipX
   const dz = revealLook.y - shipZ
   const gap = Math.hypot(dx, dz)
@@ -109,15 +118,15 @@ export function frameShip(
 
   const panelShift = -panel.focusOffsetPixels / (CAMERA_ZOOM * PANEL_FRAMING_ZOOM)
   _panelCenter.copy(panel.focus).addScaledVector(SCREEN_RIGHT, panelShift)
-  const panelLook = lookPointThrough(_panelCenter, lookY, _panelLook)
+  const panelLook = lookPointThrough(_panelCenter, lookY, offset, _panelLook)
   const framedX = mix(mix(shipX, _revealFrame.x, blend), panelLook.x, panelBlend)
   const framedZ = mix(mix(shipZ, _revealFrame.y, blend), panelLook.y, panelBlend)
 
-  const focusLook = lookPointThrough(focus, lookY, _focusLook)
+  const focusLook = lookPointThrough(focus, lookY, offset, _focusLook)
   const fx = mix(framedX, focusLook.x, focusBlend)
   const fz = mix(framedZ, focusLook.y, focusBlend)
 
-  camera.position.set(fx + CAMERA_OFFSET[0], y + CAMERA_OFFSET[1], fz + CAMERA_OFFSET[2])
+  camera.position.set(fx + offset.x, y + offset.y, fz + offset.z)
   camera.lookAt(fx, lookY, fz)
   shakeCamera(camera, shake, time)
 

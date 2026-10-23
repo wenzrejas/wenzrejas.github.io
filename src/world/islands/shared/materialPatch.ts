@@ -21,7 +21,7 @@ export function cloneLit<T extends THREE.Material>(material: T): T {
   return clone
 }
 
-export function patchShader<T extends THREE.MeshStandardMaterial>(
+export function patchShader<T extends THREE.Material>(
   material: T,
   { uniforms, defines, vertex = {}, fragment = {} }: ShaderPatch
 ): T {

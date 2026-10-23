@@ -1,4 +1,5 @@
 $hud-drop-shadow: drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.45));
+$card-radius: 12px;
 
 @mixin glass-backdrop {
   backdrop-filter: blur(10px) saturate(1.2);
@@ -10,26 +11,69 @@ $hud-drop-shadow: drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.45));
   @include glass-backdrop;
 }
 
-@mixin glass-button {
-  @include glass-panel;
-  height: 3.5rem;
-  padding: 0 1.5rem;
-  border-radius: 999px;
+@mixin rise-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  border: 1px solid rgba(190, 225, 255, 0.5);
+  border-radius: $card-radius;
+  background: rgba(8, 22, 46, 0.6);
   color: #ffffff;
   font-family: var(--font-hud);
-  font-size: 0.85rem;
   font-weight: 600;
-  letter-spacing: 0.15em;
+  line-height: 1;
   text-transform: uppercase;
+  white-space: nowrap;
   cursor: pointer;
-  transition: background-color 0.15s ease;
+  pointer-events: auto;
+  animation: rise-button-breathe 2.4s ease-in-out infinite;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 
-  &:hover {
-    background: rgba(255, 255, 255, 0.18);
+  @keyframes rise-button-breathe {
+    50% {
+      box-shadow: 0 0 0.75rem rgba(127, 220, 255, 0.35);
+    }
+  }
+
+  &:hover,
+  &:focus-visible {
+    border-color: rgba(200, 245, 255, 0.95);
+    background: rgba(40, 120, 190, 0.5);
+    box-shadow: 0 0 1rem rgba(127, 220, 255, 0.6);
+    animation: none;
   }
 
   &:focus-visible {
     outline: 2px solid #ffffff;
-    outline-offset: 2px;
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@mixin rise-label {
+  text-box: trim-both cap alphabetic;
+}
+
+@mixin rise-arrow($width, $height) {
+  width: $width;
+  height: $height;
+  background: currentColor;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  animation: rise-arrow-nudge 1.6s ease-in-out infinite;
+
+  @keyframes rise-arrow-nudge {
+    50% {
+      translate: 0 -0.15rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
   }
 }

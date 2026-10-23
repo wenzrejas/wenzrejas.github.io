@@ -1,0 +1,126 @@
+import * as THREE from 'three'
+import { RENDER_LAYER } from '@/app/experience/renderLayers'
+import { displayColorOf } from '@/utils/color'
+import { floatDefines } from '@/utils/glsl'
+import { buildVeilQuad, type VeilQuad } from '../veilQuad'
+import {
+  HAND_BEVEL_SHARE,
+  HAND_BEVEL_WIDTH_SHARE,
+  HAND_GLOW,
+  HAND_GLOW_SPREAD,
+  HAND_GROOVE_FROM,
+  HAND_GROOVE_HALF_WIDTH,
+  HAND_GROOVE_LIGHT,
+  HAND_GROOVE_SHARE,
+  HAND_TAIL,
+  HAND_TAIL_WIDTH_SHARE,
+  HOUR_HAND_HALF_WIDTH,
+  HOUR_HAND_REACH,
+  HUB_FILL,
+  HUB_RADIUS,
+  HUB_RIM,
+  JEWEL_RADIUS,
+  MINUTE_HAND_HALF_WIDTH,
+  MINUTE_HAND_REACH,
+  SECONDS_HAND_HALF_WIDTH,
+  SECONDS_HAND_REACH,
+  SECONDS_HAND_TAIL,
+  SIGIL_CORE_COLOR,
+  SIGIL_CORE_GLOW,
+  SIGIL_CORE_SIZE,
+  SIGIL_FLARE,
+  SIGIL_GHOST_ALPHA,
+  SIGIL_GHOST_BLUR,
+  SIGIL_GHOST_SCALE,
+  SIGIL_GLOW,
+  SIGIL_GLOW_COLOR,
+  SIGIL_HALO_BLUR,
+  SIGIL_INK_COLOR,
+  SIGIL_RADIUS,
+  SIGIL_REVEAL_FEATHER,
+  SIGIL_REVEAL_REACH,
+  SIGIL_SPARKLE_CELLS,
+  SIGIL_SPARKLE_DRIFT,
+  SIGIL_SPARKLE_FADE_FROM,
+  SIGIL_SPARKLE_FADE_TO,
+  SIGIL_SPARKLE_SHARE,
+  SIGIL_SPARKLE_SIZE,
+  SIGIL_SPARKLE_TWINKLE_RATE,
+} from './constants'
+import { buildDialTexture } from './dialTexture'
+import REWIND_SIGIL_FRAG from './shaders/rewindSigil.frag.glsl'
+
+export const buildRewindSigil = (geometry: THREE.BufferGeometry) =>
+  buildVeilQuad(
+    geometry,
+    {
+      fragmentShader: REWIND_SIGIL_FRAG,
+      blending: THREE.AdditiveBlending,
+      defines: floatDefines({
+        RADIUS: SIGIL_RADIUS,
+        REVEAL_REACH: SIGIL_REVEAL_REACH,
+        REVEAL_FEATHER: SIGIL_REVEAL_FEATHER,
+        FLARE: SIGIL_FLARE,
+        GLOW: SIGIL_GLOW,
+        HALO_BLUR: SIGIL_HALO_BLUR,
+        GHOST_SCALE: SIGIL_GHOST_SCALE,
+        GHOST_ALPHA: SIGIL_GHOST_ALPHA,
+        GHOST_BLUR: SIGIL_GHOST_BLUR,
+        CORE_GLOW: SIGIL_CORE_GLOW,
+        CORE_SIZE: SIGIL_CORE_SIZE,
+        SPARKLE_CELLS: SIGIL_SPARKLE_CELLS,
+        SPARKLE_SHARE: SIGIL_SPARKLE_SHARE,
+        SPARKLE_SIZE: SIGIL_SPARKLE_SIZE,
+        SPARKLE_DRIFT: SIGIL_SPARKLE_DRIFT,
+        SPARKLE_TWINKLE_RATE: SIGIL_SPARKLE_TWINKLE_RATE,
+        SPARKLE_FADE_FROM: SIGIL_SPARKLE_FADE_FROM,
+        SPARKLE_FADE_TO: SIGIL_SPARKLE_FADE_TO,
+        HOUR_HAND_REACH,
+        HOUR_HAND_HALF_WIDTH,
+        MINUTE_HAND_REACH,
+        MINUTE_HAND_HALF_WIDTH,
+        SECONDS_HAND_REACH,
+        SECONDS_HAND_TAIL,
+        SECONDS_HAND_HALF_WIDTH,
+        HAND_TAIL,
+        HAND_TAIL_WIDTH_SHARE,
+        HAND_BEVEL_SHARE,
+        HAND_BEVEL_WIDTH_SHARE,
+        HAND_GROOVE_FROM,
+        HAND_GROOVE_SHARE,
+        HAND_GROOVE_HALF_WIDTH,
+        HAND_GROOVE_LIGHT,
+        HAND_GLOW,
+        HAND_GLOW_SPREAD,
+        HUB_RADIUS,
+        HUB_RIM,
+        HUB_FILL,
+        JEWEL_RADIUS,
+      }),
+      uniforms: {
+        uDial: { value: buildDialTexture() },
+        uPresence: { value: 0 },
+        uReveal: { value: 0 },
+        uFlare: { value: 0 },
+        uGrowth: { value: 1 },
+        uDialTurn: { value: 0 },
+        uGhostTurn: { value: 0 },
+        uHourAngle: { value: 0 },
+        uMinuteAngle: { value: 0 },
+        uSecondsAngle: { value: 0 },
+        uTime: { value: 0 },
+        uAspect: { value: 1 },
+        uInk: { value: displayColorOf(SIGIL_INK_COLOR) },
+        uGlow: { value: displayColorOf(SIGIL_GLOW_COLOR) },
+        uCore: { value: displayColorOf(SIGIL_CORE_COLOR) },
+      },
+    },
+    RENDER_LAYER.veilSigil
+  )
+
+export const dialOf = ({ material }: VeilQuad) => material.uniforms.uDial.value as THREE.Texture
+
+export function disposeRewindSigil(sigil: VeilQuad) {
+  dialOf(sigil).dispose()
+  sigil.material.dispose()
+}

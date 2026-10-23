@@ -1,7 +1,7 @@
 import { useDebugStore } from '@/store/debugStore'
 import { useOceanControls } from './panels/ocean'
 import { useShipControls } from './panels/ship'
-import { useIslandControls } from './panels/island'
+import { useRuinControls } from './panels/ruins'
 import { useWakeControls } from './panels/wake'
 import { useBoundaryControls } from './panels/boundary'
 import { useWindLinesControls } from './panels/windLines'
@@ -15,7 +15,7 @@ import { useMusicControls } from './panels/music'
 export function DebugSync() {
   const ocean = useOceanControls()
   const ship = useShipControls()
-  const islands = useIslandControls()
+  const ruins = useRuinControls()
   const wake = useWakeControls()
   const boundary = useBoundaryControls()
   const windLines = useWindLinesControls()
@@ -29,7 +29,7 @@ export function DebugSync() {
   useDebugStore.setState({
     ocean,
     ship,
-    islands,
+    ruins,
     wake,
     boundary,
     windLines,

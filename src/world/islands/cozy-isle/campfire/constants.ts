@@ -15,7 +15,6 @@ export const EMBER_SPREAD = 0.35
 export const EMBER_DRIFT = 0.45
 export const EMBER_SWAY = 0.25
 
-export const FLAME_TONGUES = 5
 export const FLAME_SCALE = 2.4
 export const FLAME_GLOW = 0.34
 

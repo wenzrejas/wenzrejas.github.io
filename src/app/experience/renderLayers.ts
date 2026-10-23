@@ -1,4 +1,5 @@
 export const RENDER_LAYER = {
+  depthsBackdrop: -1,
   guide: 1,
   ocean: 2,
   inWater: 2.5,
@@ -12,6 +13,13 @@ export const RENDER_LAYER = {
   rain: 9,
   fog: 10,
   markers: 20,
+  depthsDarkness: 30,
+  depthsShip: 31,
+  depthsFoam: 32,
+  depthsBubbles: 33,
+  veil: 40,
+  veilSigil: 41,
+  veilBubbles: 42,
   loaderClouds: 1000,
   loaderMist: 1001,
 }

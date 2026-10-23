@@ -11,14 +11,10 @@ import {
   EMBER_SCALE_MIN,
   EMBER_SPREAD,
   EMBER_SWAY,
-  FLAME_GLOW,
-  FLAME_TONGUES,
   FLARE_EMBER_RISE,
 } from './constants'
 import EMBERS_VERT from './shaders/campfireEmbers.vert.glsl'
 import EMBERS_FRAG from './shaders/campfireEmbers.frag.glsl'
-import FLAMES_VERT from './shaders/campfireFlames.vert.glsl'
-import FLAMES_FRAG from './shaders/campfireFlames.frag.glsl'
 
 // ── Embers ────────────────────────────────────────────────────────────────────
 export function buildEmberGeometry(width: number, height: number): THREE.BufferGeometry {
@@ -61,28 +57,4 @@ export const createEmberMaterial = () =>
     },
     vertexShader: EMBERS_VERT,
     fragmentShader: EMBERS_FRAG,
-  })
-
-// ── Flames ────────────────────────────────────────────────────────────────────
-export function buildFlameGeometry(size: number): THREE.PlaneGeometry {
-  const geometry = new THREE.PlaneGeometry(1, 1)
-  geometry.boundingSphere = new THREE.Sphere(new THREE.Vector3(0, size / 2, 0), size * Math.SQRT1_2)
-  return geometry
-}
-
-export const createFlameMaterial = () =>
-  new THREE.ShaderMaterial({
-    defines: { TONGUES: FLAME_TONGUES },
-    transparent: true,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
-    side: THREE.DoubleSide,
-    uniforms: {
-      uTime: { value: 0 },
-      uSize: { value: 1 },
-      uIntensity: { value: 0 },
-      uGlow: { value: FLAME_GLOW },
-    },
-    vertexShader: FLAMES_VERT,
-    fragmentShader: FLAMES_FRAG,
   })

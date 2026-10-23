@@ -1,4 +1,4 @@
-import { isInDepths } from '../store/viewStore'
+import { isBelowSurface, useViewStore } from '../store/viewStore'
 import { rand } from '../utils/math'
 import { audio, type SoundHandle } from './audioManager'
 import {
@@ -17,7 +17,7 @@ let dolphinTimer = rand(DOLPHIN_FIRST_CALL_MIN, DOLPHIN_FIRST_CALL_MAX)
 let lastSeagullCall = -Infinity
 
 export function updateDolphinCalls(present: boolean, dt: number): void {
-  if (!present || isInDepths()) {
+  if (!present || isBelowSurface(useViewStore.getState())) {
     dolphinTimer = rand(DOLPHIN_FIRST_CALL_MIN, DOLPHIN_FIRST_CALL_MAX)
     return
   }
@@ -33,7 +33,11 @@ export function updateDolphinCalls(present: boolean, dt: number): void {
 }
 
 export function maybeSeagullCall(time: number): SoundHandle | null {
-  if (isInDepths() || time - lastSeagullCall < SEAGULL_COOLDOWN || Math.random() >= SEAGULL_CHANCE)
+  if (
+    isBelowSurface(useViewStore.getState()) ||
+    time - lastSeagullCall < SEAGULL_COOLDOWN ||
+    Math.random() >= SEAGULL_CHANCE
+  )
     return null
   lastSeagullCall = time
   return makeRoom(audio.play('seagulls', { volume: rand(0.8, 1), fadeIn: SEAGULL_FADE_IN }))

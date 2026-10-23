@@ -1,16 +1,14 @@
 import { useLayoutEffect, useMemo } from 'react'
 import { useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
-import { MODEL_BOW_OFFSET } from './constants'
+import { MODEL_BOW_OFFSET, SHIP_MODEL_URL } from './constants'
 import { applyCloudShadow } from '../environment/weather/cloudShadow'
 import type { GlowTarget } from '../islands/shared/nightGlow'
 import { applyBrightness, type TintTarget } from '../islands/shared/islandModel'
 import { buildShipRig } from './shipRigModel'
 
-const MODEL_URL = '/models/ship/voyager-red-draco.glb'
-
 export function useShipModel(brightness: number) {
-  const { scene } = useGLTF(MODEL_URL)
+  const { scene } = useGLTF(SHIP_MODEL_URL)
 
   const ship = useMemo(() => {
     const clone = scene.clone(true)
@@ -60,4 +58,4 @@ export function useShipModel(brightness: number) {
   return { scene, ...ship }
 }
 
-useGLTF.preload(MODEL_URL)
+useGLTF.preload(SHIP_MODEL_URL)

@@ -8,6 +8,7 @@ interface CinematicState {
   focusBlend: number
   focusZoom: number
   shake: number
+  spin: number
 }
 
 export const useCinematicStore = create<CinematicState>(() => ({
@@ -16,6 +17,7 @@ export const useCinematicStore = create<CinematicState>(() => ({
   focusBlend: 0,
   focusZoom: 1,
   shake: 0,
+  spin: 0,
 }))
 
 export const isCinematicPlaying = () => useCinematicStore.getState().isPlaying

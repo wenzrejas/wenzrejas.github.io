@@ -10,7 +10,7 @@ $art-bottom: $cartouche-art-height - $cartouche-scroll-top - $cartouche-scroll-h
   bottom: cartouche-px(-$art-bottom);
   left: cartouche-px(-$cartouche-scroll-left);
   pointer-events: none;
-  opacity: var(--cartouche-art-opacity, 1);
+  opacity: var(--cartouche-art-opacity, 0.9);
   filter: var(--cartouche-art-filter, none);
   transition:
     opacity $state-change,

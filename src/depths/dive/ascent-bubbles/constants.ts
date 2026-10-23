@@ -1,0 +1,32 @@
+// ── Bubble sprites ────────────────────────────────────────────────────────────
+export const BUBBLE_SEED = 17
+export const BUBBLE_FAR_COUNT = 120
+export const BUBBLE_MID_COUNT = 90
+export const BUBBLE_NEAR_COUNT = 30
+export const BUBBLE_SMALLEST_PIXELS = 4
+export const BUBBLE_LARGEST_PIXELS = 30
+export const BUBBLE_FAR_SCALE = 0.55
+export const BUBBLE_NEAR_SCALE = 2.2
+export const BUBBLE_FAR_ALPHA = 0.45
+export const BUBBLE_NEAR_ALPHA = 0.6
+export const BUBBLE_TINT = '#8fd3f4'
+export const BUBBLE_EDGE_TINT = '#2b6f99'
+
+// ── Bubble motion ─────────────────────────────────────────────────────────────
+export const BUBBLE_RISE = 0.35
+export const BUBBLE_RISE_PER_SIZE = 0.5
+export const BUBBLE_FADE_IN_SECONDS = 0.35
+export const BUBBLE_CENTRE_BIAS = 1.4
+export const BUBBLE_FAN = 0.25
+export const BUBBLE_STREAMS = 6
+export const BUBBLE_STREAM_SHARE = 0.45
+export const BUBBLE_STREAM_JITTER = 0.015
+export const BUBBLE_WOBBLE = 0.025
+export const BUBBLE_WOBBLE_RATE = 5
+export const BUBBLE_SQUASH = 0.14
+export const BUBBLE_SQUASH_RATE = 9
+
+// ── Bubble rush ───────────────────────────────────────────────────────────────
+export const BUBBLE_RUSH_START = 0.5
+export const BUBBLE_RUSH_PEAK = 2.2
+export const BUBBLE_EMERGE_SLOWDOWN = 0.5

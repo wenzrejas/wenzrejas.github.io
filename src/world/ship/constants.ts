@@ -1,4 +1,5 @@
 // ── Ship model ────────────────────────────────────────────────────────────────
+export const SHIP_MODEL_URL = '/models/ship/voyager-red-draco.glb'
 export const MODEL_BOW_OFFSET = Math.PI
 export const MODEL_TARGET_SIZE = 55
 export const MODEL_BRIGHTNESS = 1.15
