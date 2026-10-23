@@ -4,7 +4,7 @@ import { useCycleStore } from '../store/cycleStore'
 import { useDebugStore } from '../store/debugStore'
 import { useRevealStore } from '../store/revealStore'
 import { useShipStore } from '../store/shipStore'
-import { isInDepths } from '../store/viewStore'
+import { isBelowSurface, useViewStore } from '../store/viewStore'
 import { isRaining } from '../store/weatherStore'
 import { audio } from './audioManager'
 import {
@@ -49,7 +49,8 @@ function chooseMusic(currentIsland: IslandKey | null) {
   const island = islandInRange(currentIsland)
   const islandTune = island ? ISLAND_TUNES[island] : undefined
 
-  if (isInDepths()) return { island, track: DEPTHS_MUSIC, context: 'depths' }
+  if (isBelowSurface(useViewStore.getState()))
+    return { island, track: DEPTHS_MUSIC, context: 'depths' }
 
   return {
     island,

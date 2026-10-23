@@ -4,6 +4,7 @@ import type {
   OceanControls,
   ShipControls,
   IslandControls,
+  RuinControls,
   WakeControls,
   BoundaryControls,
   WindLineControls,
@@ -14,6 +15,7 @@ import type {
   WildlifeControls,
   MusicControls,
 } from '../app/debug/types'
+import { RUIN_PLACEMENTS } from '@/depths/scene/sunken-ruins/constants'
 import { OCEAN_DEFAULTS } from '../world/environment/ocean/constants'
 import {
   MODEL_TARGET_SIZE,
@@ -83,6 +85,7 @@ export interface DebugState {
   ocean: OceanControls
   ship: ShipControls
   islands: Record<IslandKey, IslandControls>
+  ruins: RuinControls[]
   wake: WakeControls
   windLines: WindLineControls
   boundary: BoundaryControls
@@ -112,6 +115,7 @@ export const useDebugStore = create<DebugState>(() => ({
     foamY: FOAM_Y,
   },
   islands: { ...ISLAND_MODEL_DEFAULTS },
+  ruins: [...RUIN_PLACEMENTS],
   wake: {
     armNear: WAKE_ARM_NEAR,
     armFar: WAKE_ARM_FAR,

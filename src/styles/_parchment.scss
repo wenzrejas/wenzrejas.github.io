@@ -38,7 +38,7 @@ $cartouche-disabled-art-opacity: 0.6;
 $cartouche-disabled-art-filter: saturate(0.2);
 $cartouche-press: 0.08s ease;
 $cartouche-pressed-art-shrink: 0.93;
-$cartouche-pressed-shrink: 0.96;
+$cartouche-pressed-shrink: 1;
 $cartouche-pressed-art-scale: math.div($cartouche-pressed-shrink, $cartouche-pressed-art-shrink);
 $cartouche-pressed-label-drop: 1px;
 

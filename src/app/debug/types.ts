@@ -1,3 +1,4 @@
+import type { RuinPlacement } from '@/depths/scene/sunken-ruins/ruinLayout'
 import type { PhaseName } from '@/world/environment/day-night-cycle/dayNightKeyframes'
 import type { IslandKey } from '@/world/islands/shared/constants'
 import type { IslandModelTuning } from '@/world/islands/shared/islandSpec'
@@ -51,6 +52,8 @@ export interface ShipControls {
 }
 
 export type IslandControls = IslandModelTuning
+
+export type RuinControls = RuinPlacement
 
 export interface WakeControls {
   armNear: number

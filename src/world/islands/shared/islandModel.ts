@@ -23,7 +23,7 @@ interface IslandSource {
   parser: { getDependency: (type: 'texture', index: number) => Promise<THREE.Texture> }
 }
 
-function prepareIslandModel({ scene, parser }: IslandSource): IslandModel {
+function prepareIslandModel({ scene, parser }: IslandSource, isCloudShaded: boolean): IslandModel {
   const model = scene.clone(true)
   const box = new THREE.Box3().setFromObject(model)
   const size = box.getSize(new THREE.Vector3())
@@ -43,7 +43,7 @@ function prepareIslandModel({ scene, parser }: IslandSource): IslandModel {
     if ('emissive' in mat && mat.emissive.getHex() !== 0) {
       glows.push({ mat, base: mat.emissiveIntensity })
     }
-    applyCloudShadow(mat)
+    if (isCloudShaded) applyCloudShadow(mat)
     cache.set(source, mat)
     return mat
   }
@@ -70,9 +70,9 @@ export function applyBrightness(tints: TintTarget[], brightness: number) {
   for (const { mat, base } of tints) mat.color.copy(base).multiplyScalar(brightness)
 }
 
-export function useIslandModel(url: string, brightness: number): IslandModel {
+export function useIslandModel(url: string, brightness: number, isCloudShaded = true): IslandModel {
   const gltf = useGLTF(url)
-  const island = useMemo(() => prepareIslandModel(gltf), [gltf])
+  const island = useMemo(() => prepareIslandModel(gltf, isCloudShaded), [gltf, isCloudShaded])
 
   useLayoutEffect(() => applyBrightness(island.tints, brightness), [island, brightness])
 

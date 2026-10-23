@@ -1,0 +1,150 @@
+@use '@/styles/glass';
+
+$ink: rgba(236, 240, 244, 0.9);
+$line-weight: 1px;
+$tick-weight: 2px;
+$end-dot-size: 2px;
+$line-inset: 0.5rem;
+$line-end-gap: 0.3rem;
+$tick-length: 0.4rem;
+$label-gap: 0.75rem;
+$pointer-gap: 1.4rem;
+$arrow-width: 0.55rem;
+$arrow-height: 0.45rem;
+$surface-lift: 0.5rem;
+$surface-padding-block: 0.7rem;
+$surface-padding-start: 0.9rem;
+$surface-padding-end: 1.1rem;
+
+@keyframes depth-gauge-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.depth-gauge {
+  position: fixed;
+  top: 50%;
+  left: 2.5rem;
+  width: 4rem;
+  height: min(26rem, 60vh);
+  translate: 0 -50%;
+  z-index: 80;
+  pointer-events: none;
+  filter: glass.$hud-drop-shadow;
+  animation: depth-gauge-in 0.8s ease both;
+
+  &__surface {
+    @include glass.rise-button;
+    position: absolute;
+    bottom: calc(100% + $surface-lift);
+    left: calc($line-inset - $surface-padding-start - $arrow-width / 2);
+    padding: $surface-padding-block $surface-padding-end $surface-padding-block
+      $surface-padding-start;
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+  }
+
+  &__surface-arrow {
+    @include glass.rise-arrow($arrow-width, $arrow-height);
+  }
+
+  &__surface-label {
+    @include glass.rise-label;
+  }
+
+  &__surface:hover &__surface-arrow,
+  &__surface:focus-visible &__surface-arrow {
+    animation-play-state: paused;
+  }
+
+  &--bare &__window,
+  &--bare &__line,
+  &--bare &__pointer {
+    visibility: hidden;
+  }
+
+  &__window {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    mask-image: linear-gradient(180deg, transparent, #000000 12%, #000000 88%, transparent);
+  }
+
+  &__tape {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    left: 0;
+    will-change: transform;
+  }
+
+  &__mark {
+    position: absolute;
+    left: 0;
+    padding-left: calc($line-inset + $line-weight + $label-gap);
+    translate: 0 -50%;
+    font-family: var(--font-hud);
+    font-size: 0.6rem;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    color: $ink;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: calc($line-inset - $tick-length);
+      width: $tick-length;
+      height: $tick-weight;
+      translate: 0 -50%;
+      background: $ink;
+    }
+  }
+
+  &__line {
+    position: absolute;
+    top: $line-end-gap;
+    bottom: $line-end-gap;
+    left: $line-inset;
+    width: $line-weight;
+    background: linear-gradient(
+      180deg,
+      $ink calc(50% - $pointer-gap / 2),
+      transparent 0 calc(50% + $pointer-gap / 2),
+      $ink 0
+    );
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      width: $end-dot-size;
+      height: $end-dot-size;
+      translate: -50% 0;
+      border-radius: 50%;
+      background: $ink;
+    }
+
+    &::before {
+      top: -$line-end-gap;
+    }
+
+    &::after {
+      bottom: -$line-end-gap;
+    }
+  }
+
+  &__pointer {
+    position: absolute;
+    top: 50%;
+    left: calc($line-inset + $line-weight / 2);
+    width: 0.9rem;
+    height: 0.55rem;
+    translate: -50% -50%;
+    background: #ffffff;
+    clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  }
+}

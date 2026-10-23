@@ -1,25 +1,41 @@
 import { create } from 'zustand'
 
-type SceneKey = 'world' | 'depths'
+type ScenePhase = 'world' | 'diving' | 'depths' | 'surfacing'
 type MapPhase = 'closed' | 'unfolding' | 'open' | 'folding'
+type RenderedScene = 'world' | 'depths' | null
 
 interface ViewState {
-  activeScene: SceneKey
+  scenePhase: ScenePhase
   mapPhase: MapPhase
   hasMapOpened: boolean
 }
 
 export const useViewStore = create<ViewState>(() => ({
-  activeScene: 'world',
+  scenePhase: 'world',
   mapPhase: 'closed',
   hasMapOpened: false,
 }))
 
+export const isWorldScene = ({ scenePhase }: ViewState) => scenePhase === 'world'
+
+export const isDepthsScene = ({ scenePhase }: ViewState) => scenePhase === 'depths'
+
+export const isSurfacingScene = ({ scenePhase }: ViewState) => scenePhase === 'surfacing'
+
+const isSceneChanging = ({ scenePhase }: ViewState) =>
+  scenePhase === 'diving' || scenePhase === 'surfacing'
+
+export const isBelowSurface = ({ scenePhase }: ViewState) =>
+  scenePhase === 'diving' || scenePhase === 'depths'
+
+export const isDepthsMounted = ({ scenePhase }: ViewState) => scenePhase !== 'world'
+
 export const openWorldMap = () =>
-  useViewStore.setState(({ mapPhase }) => ({
-    mapPhase: mapPhase === 'open' ? 'open' : 'unfolding',
-    hasMapOpened: true,
-  }))
+  useViewStore.setState((view) =>
+    isSceneChanging(view)
+      ? view
+      : { mapPhase: view.mapPhase === 'open' ? 'open' : 'unfolding', hasMapOpened: true }
+  )
 
 export const closeWorldMap = () =>
   useViewStore.setState(({ mapPhase }) => ({
@@ -36,25 +52,44 @@ export const finishMapFold = () =>
     mapPhase: mapPhase === 'folding' ? 'closed' : mapPhase,
   }))
 
-export const enterDepths = () => useViewStore.setState({ activeScene: 'depths' })
+const changeScene = (from: ScenePhase, to: ScenePhase) =>
+  useViewStore.setState((view) =>
+    view.scenePhase === from && view.mapPhase === 'closed' ? { scenePhase: to } : view
+  )
 
-export const leaveDepths = () => useViewStore.setState({ activeScene: 'world' })
+export const beginDive = () => changeScene('world', 'diving')
 
-export const isDepthsScene = ({ activeScene }: ViewState) => activeScene === 'depths'
+export const arriveInDepths = () => changeScene('diving', 'depths')
 
-export const isInDepths = () => isDepthsScene(useViewStore.getState())
+export const abortDive = () => changeScene('diving', 'world')
+
+export const beginSurfacing = () => changeScene('depths', 'surfacing')
+
+export const arriveAtSurface = () => changeScene('surfacing', 'world')
+
+export const leaveDepths = () =>
+  useViewStore.setState((view) => (isDepthsScene(view) ? { scenePhase: 'world' } : view))
+
+export const isDiving = () => useViewStore.getState().scenePhase === 'diving'
 
 export const isMapUnfolded = ({ mapPhase }: ViewState) =>
   mapPhase === 'unfolding' || mapPhase === 'open'
 
-export const isWorldPaused = (view: ViewState) => isMapUnfolded(view) || isDepthsScene(view)
+export const isWorldPaused = (view: ViewState) =>
+  isMapUnfolded(view) || view.scenePhase === 'depths' || view.scenePhase === 'surfacing'
 
 export function isWorldInView() {
-  const { activeScene, mapPhase } = useViewStore.getState()
-  return activeScene === 'world' && mapPhase === 'closed'
+  const { scenePhase, mapPhase } = useViewStore.getState()
+  return scenePhase === 'world' && mapPhase === 'closed'
 }
 
-export function isWorldVisible() {
-  const { activeScene, mapPhase } = useViewStore.getState()
-  return activeScene === 'world' && mapPhase !== 'open'
+export function isDepthsInView() {
+  const { scenePhase, mapPhase } = useViewStore.getState()
+  return scenePhase === 'depths' && mapPhase === 'closed'
+}
+
+export function renderedScene(): RenderedScene {
+  const { scenePhase, mapPhase } = useViewStore.getState()
+  if (mapPhase === 'open') return null
+  return scenePhase === 'world' || scenePhase === 'diving' ? 'world' : 'depths'
 }

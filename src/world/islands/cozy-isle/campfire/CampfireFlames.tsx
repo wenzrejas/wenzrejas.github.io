@@ -3,8 +3,14 @@ import { useFrame } from '@react-three/fiber'
 import type * as THREE from 'three'
 import { uniformsOf } from '@/utils/meshes'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
-import { buildFlameGeometry, createFlameMaterial } from './campfireModel'
-import { FIRE_VISIBLE_LEVEL, FLAME_SCALE, FLARE_BOOST, FLARE_FLAME_GROWTH } from './constants'
+import { buildFlameGeometry, createFlameMaterial } from '@/world/effects/flame/flameModel'
+import {
+  FIRE_VISIBLE_LEVEL,
+  FLAME_GLOW,
+  FLAME_SCALE,
+  FLARE_BOOST,
+  FLARE_FLAME_GROWTH,
+} from './constants'
 import { fireGlow } from './fireGlow'
 
 interface CampfireFlamesProps {
@@ -20,7 +26,7 @@ export default function CampfireFlames({ base, height, islandScale, flare }: Cam
     () => buildFlameGeometry(height * FLAME_SCALE * (1 + FLARE_FLAME_GROWTH)),
     [height]
   )
-  const material = useMemo(() => createFlameMaterial(), [])
+  const material = useMemo(() => createFlameMaterial(FLAME_GLOW), [])
 
   useEffect(
     () => () => {

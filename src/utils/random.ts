@@ -1,5 +1,14 @@
 export type Random = () => number
 
+export function pickByShare<T extends { share: number }>(entries: readonly T[], roll: number): T {
+  let reach = 0
+  for (const entry of entries) {
+    reach += entry.share
+    if (roll < reach) return entry
+  }
+  return entries[entries.length - 1]
+}
+
 export function seededRandom(seed: number): Random {
   let state = seed >>> 0
   return () => {

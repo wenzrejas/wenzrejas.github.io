@@ -1,3 +1,4 @@
+import { isDiving } from '@/store/viewStore'
 import { stepHoverTimeline, timelineStage, type HoverTimeline } from '../shared/hoverTimeline'
 import {
   AWAKEN_ECHO_SECONDS,
@@ -16,7 +17,13 @@ const FULL_AWAKE_SECONDS = Math.max(
 )
 
 export const stepAwakening = (awakening: HoverTimeline, dt: number) =>
-  stepHoverTimeline(awakening, awakening.isHovered, dt, AWAKEN_RELEASE_SECONDS, FULL_AWAKE_SECONDS)
+  stepHoverTimeline(
+    awakening,
+    awakening.isHovered || isDiving(),
+    dt,
+    AWAKEN_RELEASE_SECONDS,
+    FULL_AWAKE_SECONDS
+  )
 
 export const glowLevel = (awakening: HoverTimeline) => timelineStage(awakening, AWAKEN_GLOW_SECONDS)
 

@@ -4,6 +4,10 @@ export const COMPASS_COPY = {
   points: ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'],
 }
 
+export const DEPTH_GAUGE_COPY = {
+  surface: 'Surface',
+}
+
 export const MINIMAP_COPY = {
   north: 'N',
 }

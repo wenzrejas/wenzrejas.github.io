@@ -3,7 +3,7 @@ import Experience from './app/experience/Experience'
 import IslandTitle from './world/islands/shared/IslandTitle'
 import { IS_DEBUG } from './app/experience/constants'
 import Soundscape from './audio/Soundscape'
-import DepthsPlaceholder from './depths/DepthsPlaceholder'
+import DepthsOverlay from './depths/DepthsOverlay'
 import Guide from './guide/Guide'
 import Hud from './hud/Hud'
 import HudMenu from './hud/menu/HudMenu'
@@ -23,7 +23,7 @@ export default function App() {
       )}
       <Soundscape />
       <Experience />
-      <DepthsPlaceholder />
+      <DepthsOverlay />
       <IslandTitle />
       <Hud />
       <HudMenu />

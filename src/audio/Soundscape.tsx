@@ -6,11 +6,11 @@ import { createWeatherSounds } from './weatherSounds'
 import { useDebugStore } from '../store/debugStore'
 import { useHudStore } from '../store/hudStore'
 import { useLoadingStore } from '../store/loadingStore'
-import { isDepthsScene, useViewStore } from '../store/viewStore'
+import { isBelowSurface, useViewStore } from '../store/viewStore'
 
 export default function Soundscape() {
   const hasSetSail = useLoadingStore((state) => state.hasSetSail)
-  const isInDepths = useViewStore(isDepthsScene)
+  const isUnderwater = useViewStore(isBelowSurface)
 
   useEffect(() => {
     audio.install()
@@ -42,7 +42,7 @@ export default function Soundscape() {
   }, [hasSetSail])
 
   useEffect(() => {
-    if (!hasSetSail || isInDepths) return
+    if (!hasSetSail || isUnderwater) return
     const waves = audio.play('oceanWaves', { loop: true, fadeIn: AMBIENCE_FADE_IN })
     const weatherSounds = createWeatherSounds()
     const weatherTimer = window.setInterval(() => weatherSounds.update(), WEATHER_POLL_MS)
@@ -52,7 +52,7 @@ export default function Soundscape() {
       weatherSounds.dispose()
       waves.stop(DEFAULT_FADE)
     }
-  }, [hasSetSail, isInDepths])
+  }, [hasSetSail, isUnderwater])
 
   return null
 }
