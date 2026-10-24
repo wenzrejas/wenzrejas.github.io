@@ -2,10 +2,11 @@ import type { GemHaloTuning } from '@/world/islands/shared/gem-halo/gemHaloModel
 import type { CornerSparkleTuning } from '@/world/islands/shared/gem-sparkles/sparkleSpots'
 
 export const PORTAL_GLOW_MATERIAL = 'Magic | luminous cyan'
+export const PORTAL_CIRCLE_NODE = 'Portal_Summoning_Circle'
+export const PORTAL_KEYSTONE_NODE = 'Portal_Keystone_Jewel'
 
-// ── Dancing motes ─────────────────────────────────────────────────────────────
-export const MOTES_LOWEST_Y = 0.6
-export const MOTES_HIGHEST_Y = 3.4
+// ── Summoning circle (radians per second) ─────────────────────────────────────
+export const CIRCLE_TURN_RATE = 0.12
 
 // ── Base ring glow ────────────────────────────────────────────────────────────
 export const RING_GLOW_LIFT = 0.012

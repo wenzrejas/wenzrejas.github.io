@@ -1,5 +1,8 @@
 export type Random = () => number
 
+export const randomBetween = (random: Random) => (min: number, max: number) =>
+  min + (max - min) * random()
+
 export function pickByShare<T extends { share: number }>(entries: readonly T[], roll: number): T {
   let reach = 0
   for (const entry of entries) {

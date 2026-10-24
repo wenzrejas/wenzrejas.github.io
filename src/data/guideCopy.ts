@@ -7,7 +7,7 @@ export interface DialoguePage {
 }
 
 // ── Introduction ──────────────────────────────────────────────────────────────
-const WELCOME_ABOARD: DialoguePage[] = [
+const A_NEW_VISITOR: DialoguePage[] = [
   {
     mood: 'surprised',
     heading: 'Oh! A visitor!',
@@ -15,71 +15,68 @@ const WELCOME_ABOARD: DialoguePage[] = [
   },
   {
     mood: 'happy',
-    heading: "I'm Wobbi!",
-    lines: ['Your trusty little navigator.', 'Well... mostly trusty.'],
+    lines: ["I'm Wobbi, your trusty little navigator.", 'Well... mostly trusty.'],
   },
+]
+
+const MEET_THE_CREATOR: DialoguePage[] = [
   {
     mood: 'curious',
     lines: ['Say, have you met the one who created this place?'],
   },
   {
-    mood: 'excited',
-    lines: [
-      'This whole world was dreamed up by Wenz Louie Rejas!',
-      "He's a frontend developer who loves turning creative ideas into interactive digital experiences.",
-    ],
-  },
-  {
     mood: 'talking',
     lines: [
-      'He builds websites and web applications, bringing designs to life with code, creativity, and a little bit of magic!',
+      'This world belongs to Wenz Louie Rejas, a frontend developer who loves turning creative ideas into interactive experiences.',
     ],
   },
   {
     mood: 'happy',
     lines: [
-      'Every island here tells a part of his story.',
-      'His projects, skills, experiences, and even a little about the person behind the code!',
+      "He's inspired by grand RPG adventures and stories of sailing across vast oceans.",
+      'So he built a little world where you can explore his projects, skills, and journey as a developer!',
     ],
   },
 ]
 
-const LEARNING_TO_SAIL: DialoguePage[] = [
+const LEARN_TO_SAIL: DialoguePage[] = [
   {
     mood: 'excited',
-    heading: 'Now, how about we explore?',
-    lines: ['But first, let me show you how to sail!'],
-  },
-  {
-    mood: 'talking',
-    lines: ['Use [W] or [↑] to sail forward, and [S] or [↓] to reverse.'],
-  },
-  {
-    mood: 'talking',
-    lines: ['Use [A] or [←] and [D] or [→] to steer left and right.', 'Easy, right?'],
-  },
-  {
-    mood: 'curious',
-    heading: 'See an island that catches your eye?',
-    lines: ["Sail closer to discover what it's hiding!"],
-  },
-  {
-    mood: 'happy',
-    heading: 'Feeling a little lost?',
-    lines: ['Open your map to see the islands and find your way!'],
-  },
-]
-
-const BEGIN_THE_ADVENTURE: DialoguePage[] = [
-  {
-    mood: 'curious',
     heading: 'Ready to explore?',
-    lines: ["There's a whole world waiting out there!"],
+    lines: ['Let me show you the ropes!'],
   },
   {
-    mood: 'excited',
-    heading: 'Come on, captain!',
-    lines: ["Let's set sail!"],
+    mood: 'talking',
+    lines: [
+      'Use [W] or [↑] to move forward, [S] or [↓] to reverse, and [A] or [←] / [D] or [→] to steer.',
+    ],
+  },
+  {
+    mood: 'curious',
+    lines: [
+      'Keep an eye out for wind currents, too.',
+      'They can give our little ship a helpful boost!',
+    ],
+  },
+  {
+    mood: 'happy',
+    lines: [
+      'And if you get lost, just open the world map.',
+      'Even seasoned explorers need a little guidance!',
+    ],
+  },
+]
+
+const SET_SAIL: DialoguePage[] = [
+  {
+    mood: 'curious',
+    heading: 'Well, where shall we go first?',
+    lines: ['Each island has a story waiting to be discovered.'],
+  },
+  {
+    mood: 'happy',
+    heading: 'Come on!',
+    lines: ["Let's see where the horizon takes us!"],
   },
 ]
 
@@ -260,6 +257,38 @@ const REACHED_COZY_ISLE: DialoguePage[] = [
   },
 ]
 
+// ── Depths ────────────────────────────────────────────────────────────────────
+const ARRIVED_IN_DEPTHS: DialoguePage[] = [
+  {
+    mood: 'excited',
+    lines: [
+      'Here we are!',
+      "This is where Wenz's journey as a developer unfolds.",
+      'Every stop tells a story of learning, building, and growing.',
+      'Shall we take a look?',
+    ],
+  },
+]
+
+const LANDED_AT_THE_CLOCK: DialoguePage[] = [
+  {
+    mood: 'achievement',
+    lines: [
+      "And that's a little glimpse into Wenz's journey!",
+      'Every experience has helped shape where he is today.',
+      'I wonder what the next chapter holds!',
+    ],
+  },
+  {
+    mood: 'excited',
+    lines: [
+      'Ready to head back up?',
+      "There's still so much to explore out there.",
+      "Come on, our adventure isn't over yet!",
+    ],
+  },
+]
+
 // ── Dialogues ─────────────────────────────────────────────────────────────────
 const REMARKS = {
   welcomeBack: WELCOME_BACK,
@@ -285,7 +314,9 @@ const REMARKS = {
 } satisfies Record<string, DialoguePage[]>
 
 export const DIALOGUES = {
-  introduction: [...WELCOME_ABOARD, ...LEARNING_TO_SAIL, ...BEGIN_THE_ADVENTURE],
+  introduction: [...A_NEW_VISITOR, ...MEET_THE_CREATOR, ...LEARN_TO_SAIL, ...SET_SAIL],
+  arrivedInDepths: ARRIVED_IN_DEPTHS,
+  landedAtTheClock: LANDED_AT_THE_CLOCK,
   ...REMARKS,
 } satisfies Record<string, DialoguePage[]>
 

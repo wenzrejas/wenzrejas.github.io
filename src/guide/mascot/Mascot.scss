@@ -1,7 +1,9 @@
+@use '../sizes';
+
 .mascot {
   flex: none;
-  width: 16rem;
-  height: 16rem;
+  width: sizes.$mascot-size;
+  height: sizes.$mascot-size;
 
   &--mirrored {
     transform: scaleX(-1);

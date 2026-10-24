@@ -1,4 +1,6 @@
+@use 'sass:math';
 @use '@/styles/parchment';
+@use '../sizes';
 
 $ink: #493021;
 $sheet-fill: #fff3dc;
@@ -14,18 +16,21 @@ $key-depth: #b98a55;
 $turn-ink: #78502e;
 $turn-hover-ink: #ac5f20;
 $focus-ring: #d49b49;
+$box-bottom-lift: math.div(sizes.$mascot-size - sizes.$box-min-height, 2);
+$tail-lift: sizes.$box-min-height * 0.66;
 
 .dialogue-box {
   position: relative;
   display: flex;
   flex-direction: column;
   width: 33rem;
-  min-height: 13.25rem;
+  min-height: sizes.$box-min-height;
   margin-right: -1.25rem;
+  margin-bottom: $box-bottom-lift;
   padding: 2.6rem 3rem 1.1rem 2.4rem;
   color: $ink;
   font-family: var(--font-secondary);
-  transform-origin: 100% 34%;
+  transform-origin: 100% calc(100% - #{$tail-lift});
 
   &--interactive {
     pointer-events: auto;
@@ -36,7 +41,7 @@ $focus-ring: #d49b49;
     margin-left: -1.25rem;
     padding-right: 2.4rem;
     padding-left: 3rem;
-    transform-origin: 0% 34%;
+    transform-origin: 0% calc(100% - #{$tail-lift});
   }
 
   &--tail-left &__paper {

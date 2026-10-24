@@ -5,11 +5,10 @@ import { bakeIslandLighting } from '@/world/islands/shared/lighting-bake/lightin
 import {
   ARMILLARY_TURN_RATE,
   GEM_BOB_HEIGHT,
-  GEM_GLOW,
   GEM_SPIN_RATE,
+  LANDING_ANCHOR_ROLE,
   RUIN_LANTERN_SPILL,
   RUIN_OVERHEAD_SHADE,
-  RUIN_STONE_MATERIAL,
 } from './constants'
 
 export interface RuinMover {
@@ -64,31 +63,16 @@ function collectMovers(model: THREE.Object3D): RuinMover[] {
   return movers
 }
 
-function lightGems(model: THREE.Object3D) {
-  for (const mesh of meshesOf(model)) {
-    const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material]
-    for (const material of materials as THREE.MeshPhysicalMaterial[]) {
-      if (material.userData.role !== 'gem' || material.transmission === 0) continue
-      material.transmission = 0
-      material.emissiveIntensity = GEM_GLOW
-    }
-  }
-}
-
-function showStoneBothSides(model: THREE.Object3D) {
-  for (const mesh of meshesOf(model)) {
-    const material = mesh.material as THREE.Material
-    if (material.name.startsWith(RUIN_STONE_MATERIAL)) material.side = THREE.DoubleSide
-  }
-}
-
 export function prepareRuins(island: IslandModel) {
-  lightGems(island.model)
-  showStoneBothSides(island.model)
   const levels = bakeIslandLighting(island)
   levels.uOverheadShadow.value = RUIN_OVERHEAD_SHADE
   levels.uLampSpill.value = RUIN_LANTERN_SPILL
   return { movers: collectMovers(island.model), ruins: findRuins(island.model) }
+}
+
+export function readLandingAnchor(clockRuin: THREE.Object3D | undefined, out: THREE.Vector3) {
+  const anchor = clockRuin?.children.find((child) => roleOf(child) === LANDING_ANCHOR_ROLE)
+  if (anchor) out.copy(anchor.position)
 }
 
 export function disposeRuinMaterials({ model }: IslandModel) {

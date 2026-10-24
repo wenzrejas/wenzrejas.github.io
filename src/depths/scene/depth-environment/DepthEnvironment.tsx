@@ -1,22 +1,10 @@
 import { useEffect, useLayoutEffect, useMemo } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import type { WallClock } from '@/utils/time'
+import { surfaceDaylight } from '../surface-daylight/surfaceDaylight'
 import type { Timeline } from '../timeline/timeline'
-import {
-  FRONT_LIGHT_COLOR,
-  FRONT_LIGHT_INTENSITY,
-  FRONT_LIGHT_POSITION,
-  HEMISPHERE_GROUND_COLOR,
-  HEMISPHERE_INTENSITY,
-  HEMISPHERE_SKY_COLOR,
-  RIM_LIGHT_COLOR,
-  RIM_LIGHT_INTENSITY,
-  RIM_LIGHT_POSITION,
-  SURFACE_LIGHT_COLOR,
-  SURFACE_LIGHT_INTENSITY,
-  SURFACE_LIGHT_POSITION,
-} from './constants'
 import { buildDepthEnvironment, disposeDepthEnvironment } from './depthEnvironmentModel'
+import { shineLights } from './depthLights'
 import { drainWater, fillWater, tintWater } from './depthWater'
 
 interface DepthEnvironmentProps {
@@ -35,29 +23,11 @@ export default function DepthEnvironment({ timeline, clock }: DepthEnvironmentPr
     return () => drainWater(scene)
   }, [scene, environment])
 
-  useFrame(({ size }) => tintWater(environment, timeline, size.width / size.height, clock.elapsed))
+  useFrame(({ size }) => {
+    const daylight = surfaceDaylight()
+    tintWater(environment, timeline, daylight, size.width / size.height, clock.elapsed)
+    shineLights(environment.lights, daylight)
+  })
 
-  return (
-    <>
-      <hemisphereLight
-        args={[HEMISPHERE_SKY_COLOR, HEMISPHERE_GROUND_COLOR, HEMISPHERE_INTENSITY]}
-      />
-      <directionalLight
-        position={SURFACE_LIGHT_POSITION}
-        color={SURFACE_LIGHT_COLOR}
-        intensity={SURFACE_LIGHT_INTENSITY}
-      />
-      <directionalLight
-        position={FRONT_LIGHT_POSITION}
-        color={FRONT_LIGHT_COLOR}
-        intensity={FRONT_LIGHT_INTENSITY}
-      />
-      <directionalLight
-        position={RIM_LIGHT_POSITION}
-        color={RIM_LIGHT_COLOR}
-        intensity={RIM_LIGHT_INTENSITY}
-      />
-      <primitive object={environment.group} />
-    </>
-  )
+  return <primitive object={environment.group} />
 }

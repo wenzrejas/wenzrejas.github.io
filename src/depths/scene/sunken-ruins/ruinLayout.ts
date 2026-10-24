@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { DEEPEST_LEVEL, levelSpot } from '../timeline/timeline'
-import { CLOCK_PLAZA_SPOT, RUIN_BOB_HEIGHT, RUIN_BOB_RATE, RUIN_PHASE_STEP } from './constants'
+import { RUIN_BOB_HEIGHT, RUIN_BOB_RATE, RUIN_PHASE_STEP } from './constants'
 
 export interface RuinPlacement {
   offsetX: number
@@ -42,12 +42,13 @@ export const ruinBob = (level: number, time: number) =>
 
 export function clockLandingSpot(
   clockRuin: RuinPlacement,
+  plazaSpot: THREE.Vector3,
   keelDepth: number,
   time: number,
   out: THREE.Vector3
 ) {
   const rotation = ruinRotation(clockRuin, _clockRotation)
-  out.fromArray(CLOCK_PLAZA_SPOT).multiplyScalar(clockRuin.scale).applyEuler(rotation)
+  out.copy(plazaSpot).multiplyScalar(clockRuin.scale).applyEuler(rotation)
   out.add(ruinSpot(clockRuin, DEEPEST_LEVEL, _clockSpot))
   out.addScaledVector(_plazaNormal.copy(UP).applyEuler(rotation), keelDepth)
   out.y += ruinBob(DEEPEST_LEVEL, time)

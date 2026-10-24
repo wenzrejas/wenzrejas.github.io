@@ -32,6 +32,14 @@ export const HEMISPHERE_SKY_COLOR = '#3f9dff'
 export const HEMISPHERE_GROUND_COLOR = '#2a1f6e'
 export const HEMISPHERE_INTENSITY = 0.6
 
+// ── Night (share of the daytime level kept at full night) ─────────────────────
+export const WATER_NIGHT_LEVEL = 0.5
+export const LIGHT_COLUMN_NIGHT_LEVEL = 0.3
+export const SURFACE_GLOW_NIGHT_LEVEL = 0.35
+export const SURFACE_LIGHT_NIGHT_LEVEL = 0.4
+export const SURFACE_LIGHT_NIGHT_COLOR = '#a8c4ff'
+export const FILL_LIGHT_NIGHT_LEVEL = 0.7
+
 // ── Layout ────────────────────────────────────────────────────────────────────
 export const ENVIRONMENT_SEED = 7
 

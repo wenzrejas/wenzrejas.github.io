@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { isCinematicPlaying } from '@/store/cinematicStore'
 import { useCycleStore } from '@/store/cycleStore'
 import {
+  dismissDialogue,
   endDialogue,
   startDialogue,
   useGuideStore,
@@ -55,16 +56,24 @@ export function useRemarks() {
     const opening = isReturningVisitor ? 'welcomeBack' : null
     const heardBefore = rememberedItems('heardRemarks', ONCE_EVER_REMARKS)
     const watch = createRemarkWatch(performance.now() / 1000, opening, heardBefore)
-    const poll = window.setInterval(() => {
+    const followWorld = () => {
       const { dialogue } = useGuideStore.getState()
       const seconds = performance.now() / 1000
       const step = stepRemarks(watch, readWorld(), seconds, dialogue, readStage())
       if (step === 'close') endDialogue()
+      else if (step === 'dismiss') dismissDialogue()
       else if (step) {
         startDialogue(step)
         if (ONCE_EVER_REMARKS.includes(step)) rememberItem('heardRemarks', step)
       }
-    }, REMARK_POLL_SECONDS * 1000)
-    return () => window.clearInterval(poll)
+    }
+    const poll = window.setInterval(followWorld, REMARK_POLL_SECONDS * 1000)
+    const stopFollowingMap = useViewStore.subscribe((view, previous) => {
+      if (view.mapPhase !== previous.mapPhase) followWorld()
+    })
+    return () => {
+      window.clearInterval(poll)
+      stopFollowingMap()
+    }
   }, [isIntroductionOver, isReturningVisitor])
 }

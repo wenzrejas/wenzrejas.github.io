@@ -2,16 +2,17 @@ import { useEffect, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
 import type * as THREE from 'three'
 import type { WallClock } from '@/utils/time'
-import { driftMotes } from './depthMotes'
-import { buildMoteGeometry, createMoteMaterial } from './depthParticlesModel'
+import { advancePoints } from './pointMaterial'
 
-interface DepthParticlesProps {
+interface DepthPointsProps {
+  buildGeometry: () => THREE.BufferGeometry
+  createMaterial: () => THREE.ShaderMaterial
   clock: WallClock
 }
 
-export default function DepthParticles({ clock }: DepthParticlesProps) {
-  const geometry = useMemo(() => buildMoteGeometry(), [])
-  const material = useMemo(() => createMoteMaterial(), [])
+export default function DepthPoints({ buildGeometry, createMaterial, clock }: DepthPointsProps) {
+  const geometry = useMemo(() => buildGeometry(), [buildGeometry])
+  const material = useMemo(() => createMaterial(), [createMaterial])
 
   useEffect(
     () => () => {
@@ -22,7 +23,7 @@ export default function DepthParticles({ clock }: DepthParticlesProps) {
   )
 
   useFrame(({ camera, gl, size }) =>
-    driftMotes(
+    advancePoints(
       material,
       camera as THREE.PerspectiveCamera,
       size.height * gl.getPixelRatio(),

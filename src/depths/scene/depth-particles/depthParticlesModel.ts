@@ -1,8 +1,7 @@
 import * as THREE from 'three'
 import { displayColorOf } from '@/utils/color'
 import { floatDefines } from '@/utils/glsl'
-import { mix } from '@/utils/math'
-import { pickByShare, seededRandom } from '@/utils/random'
+import { pickByShare, randomBetween, seededRandom } from '@/utils/random'
 import { ARRIVAL_LEVEL } from '../constants'
 import { DEEPEST_LEVEL, levelDepth } from '../timeline/timeline'
 import {
@@ -29,7 +28,7 @@ const TINTS = MOTE_TINTS.map(({ color, share }) => ({ color: displayColorOf(colo
 
 export function buildMoteGeometry(): THREE.BufferGeometry {
   const random = seededRandom(MOTE_SEED)
-  const between = (min: number, max: number) => mix(min, max, random())
+  const between = randomBetween(random)
   const positions = new Float32Array(MOTE_COUNT * 3)
   const seeds = new Float32Array(MOTE_COUNT)
   const tints = new Float32Array(MOTE_COUNT * 3)

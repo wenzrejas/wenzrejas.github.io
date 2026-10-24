@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type AnimationEvent } from 'react'
+import { audio } from '@/audio/audioManager'
 import { WORLD_MAP_COPY } from '@/data/worldMapCopy'
 import MapPaper from '@/loading/map-paper/MapPaper'
 import { isModalDialogue, useGuideStore } from '@/store/guideStore'
@@ -30,6 +31,15 @@ export default function WorldMap() {
   useEffect(() => {
     if (isLoaderGone) preloadWorldMap()
   }, [isLoaderGone])
+
+  useEffect(
+    () =>
+      useViewStore.subscribe(({ mapPhase }, previous) => {
+        const isTurning = mapPhase === 'unfolding' || mapPhase === 'folding'
+        if (isTurning && mapPhase !== previous.mapPhase) audio.play('paperPanel')
+      }),
+    []
+  )
 
   if (!hasMapOpened) return null
 

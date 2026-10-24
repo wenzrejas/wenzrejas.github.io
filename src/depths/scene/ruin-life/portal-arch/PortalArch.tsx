@@ -7,14 +7,11 @@ import RuinGlints from '../shared/RuinGlints'
 import RuinHalo from '../shared/RuinHalo'
 import { wakeShare, wakeStrength } from '../shared/ruinWake'
 import { DIAMOND_GLINTS, PORTAL_HALO } from './constants'
-import { buildRingGlow, createRingGlowMaterial, hideDancingMotes } from './portalArchModel'
-import { breathePortal, findPortalArch, glowRing } from './portalGlow'
+import { buildRingGlow, createRingGlowMaterial } from './portalArchModel'
+import { breathePortal, findPortalArch, glowRing, turnSummoningCircle } from './portalGlow'
 
 export default function PortalArch({ ruin, level, timeline, clock }: MilestoneProps) {
-  const arch = useMemo(() => {
-    hideDancingMotes(ruin)
-    return findPortalArch(ruin)
-  }, [ruin])
+  const arch = useMemo(() => findPortalArch(ruin), [ruin])
   const geometry = useMemo(() => buildRingGlow(arch.ringRadius), [arch])
   const material = useMemo(() => createRingGlowMaterial(), [])
   const strength = () => wakeStrength(wakeShare(timeline, level))
@@ -30,6 +27,7 @@ export default function PortalArch({ ruin, level, timeline, clock }: MilestonePr
   useFrame(() => {
     const wake = wakeShare(timeline, level)
     breathePortal(arch, clock.elapsed, wake)
+    turnSummoningCircle(arch, clock.elapsed)
     glowRing(material, clock.elapsed, wake)
   }, RUIN_LIFE_FRAME_PRIORITY)
 

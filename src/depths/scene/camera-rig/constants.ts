@@ -1,7 +1,7 @@
 // ── Lens ──────────────────────────────────────────────────────────────────────
 export const DEPTHS_CAMERA_FOV = 45
 export const DEPTHS_CAMERA_NEAR = 0.5
-export const DEPTHS_CAMERA_FAR = 1200
+export const DEPTHS_CAMERA_FAR = 1600
 
 // ── Framing ───────────────────────────────────────────────────────────────────
 export const CAMERA_DISTANCE = 130

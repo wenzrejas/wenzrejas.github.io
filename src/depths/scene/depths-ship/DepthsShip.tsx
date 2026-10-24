@@ -24,6 +24,7 @@ interface DepthsShipProps {
   surfacing: Surfacing
   focus: THREE.Vector3
   shipSpot: THREE.Vector3
+  plazaSpot: THREE.Vector3
   clock: WallClock
 }
 
@@ -33,6 +34,7 @@ export default function DepthsShip({
   surfacing,
   focus,
   shipSpot,
+  plazaSpot,
   clock,
 }: DepthsShipProps) {
   const { scene } = useGLTF(SHIP_MODEL_URL)
@@ -44,7 +46,7 @@ export default function DepthsShip({
   useFrame(() => {
     const clockRuin = useDebugStore.getState().ruins[DEEPEST_LEVEL]
     stepShipMotion(motion, timeline, surfacing, clock.delta)
-    followClockRuin(motion, clockRuin, clock.elapsed)
+    followClockRuin(motion, clockRuin, plazaSpot, clock.elapsed)
     poseShip(ship.root, motion, focus, plungeSeconds(arrival), clock.elapsed)
     setShipLanded(isShipLanded(motion))
   })

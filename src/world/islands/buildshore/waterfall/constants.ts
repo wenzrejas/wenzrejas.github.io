@@ -58,3 +58,10 @@ export const SPLASH_HEIGHT = 6
 export const SPLASH_SIZE = 1.8
 export const SPLASH_LIFT = 0.3
 export const SPLASH_BOUNDS_MARGIN = 12
+
+// ── Sound (world units from the nearest fall, seconds) ────────────────────────
+export const WATERFALL_SOUND_FULL_DISTANCE = 30
+export const WATERFALL_SOUND_SILENT_DISTANCE = 160
+export const WATERFALL_SOUND_RAMP_SECONDS = 0.5
+export const WATERFALL_SOUND_FADE_SECONDS = 2
+export const WATERFALL_SOUND_LEVEL_STEP = 0.02
