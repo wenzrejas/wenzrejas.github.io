@@ -17,8 +17,11 @@ export default function Mascot({ isMirrored }: { isMirrored: boolean }) {
     const playback = createPlayback()
     let frame = 0
     const tick = (milliseconds: number) => {
-      const page = currentPage(useGuideStore.getState())
-      if (stepPlayback(playback, page, milliseconds / 1000)) drawMascotFrame(context, playback)
+      const guide = useGuideStore.getState()
+      const page = currentPage(guide)
+      if (stepPlayback(playback, page, guide.isDismissed, milliseconds / 1000)) {
+        drawMascotFrame(context, playback)
+      }
       frame = requestAnimationFrame(tick)
     }
     frame = requestAnimationFrame(tick)

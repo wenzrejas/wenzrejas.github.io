@@ -1,7 +1,7 @@
 import type * as THREE from 'three'
 import { pointPixelScale } from '@/utils/screen'
 
-export function driftMotes(
+export function advancePoints(
   material: THREE.ShaderMaterial,
   camera: THREE.PerspectiveCamera,
   drawingHeight: number,

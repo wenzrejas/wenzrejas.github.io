@@ -8,9 +8,10 @@ import './DepthGauge.scss'
 
 interface DepthGaugeProps {
   isTapeShown: boolean
+  isLocked: boolean
 }
 
-export default function DepthGauge({ isTapeShown }: DepthGaugeProps) {
+export default function DepthGauge({ isTapeShown, isLocked }: DepthGaugeProps) {
   const tapeRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -31,7 +32,7 @@ export default function DepthGauge({ isTapeShown }: DepthGaugeProps) {
   }, [])
 
   return (
-    <div className={isTapeShown ? 'depth-gauge' : 'depth-gauge depth-gauge--bare'}>
+    <div className={isTapeShown ? 'depth-gauge' : 'depth-gauge depth-gauge--bare'} inert={isLocked}>
       <button
         type="button"
         className="depth-gauge__surface"

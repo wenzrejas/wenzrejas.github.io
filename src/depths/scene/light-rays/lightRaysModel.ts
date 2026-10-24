@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import { displayColorOf } from '@/utils/color'
 import { floatDefines } from '@/utils/glsl'
 import { mix } from '@/utils/math'
-import { seededRandom } from '@/utils/random'
+import { randomBetween, seededRandom } from '@/utils/random'
 import {
   RAY_COLOR,
   RAY_COUNT,
@@ -37,7 +37,7 @@ const CORNERS: [number, number][] = [
 
 export function buildRayGeometry(): THREE.BufferGeometry {
   const random = seededRandom(RAY_SEED)
-  const between = (min: number, max: number) => mix(min, max, random())
+  const between = randomBetween(random)
   const positions: number[] = []
   const shafts: number[] = []
   const seeds: number[] = []
@@ -87,5 +87,6 @@ export const createRayMaterial = () =>
     uniforms: {
       uTime: { value: 0 },
       uColor: { value: displayColorOf(RAY_COLOR) },
+      uShine: { value: 1 },
     },
   })

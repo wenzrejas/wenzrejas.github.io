@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import { displayColorOf } from '@/utils/color'
 import { floatDefines } from '@/utils/glsl'
 import { mix } from '@/utils/math'
-import { pickByShare, seededRandom } from '@/utils/random'
+import { pickByShare, randomBetween, seededRandom } from '@/utils/random'
 import { ARRIVAL_LEVEL } from '../constants'
 import { DEEPEST_LEVEL, levelDepth, levelSpot } from '../timeline/timeline'
 import {
@@ -139,7 +139,7 @@ function addTentacles(body: Body) {
 
 function placeSwarm() {
   const random = seededRandom(JELLYFISH_SEED)
-  const between = (min: number, max: number) => mix(min, max, random())
+  const between = randomBetween(random)
   const origins: number[] = []
   const radii: number[] = []
   const seeds: number[] = []

@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { audio } from '@/audio/audioManager'
 import { useCinematicStore } from '@/store/cinematicStore'
 import { mix } from '@/utils/math'
 import { SHORE_Y } from '@/world/shore/constants'
@@ -115,6 +116,7 @@ export function startSurfacing(run: DiveRun, isRewinding: boolean) {
   run.ascentSeconds = 0
   run.bubbleTravel = 0
   run.rewindTurns = 0
+  if (isRewinding) audio.play('timeRewind')
   enterStage(run, 'rising')
 }
 
@@ -123,6 +125,7 @@ function spinRewind(run: DiveRun, drive: number, dt: number) {
 }
 
 function rushBubbles(run: DiveRun, rush: number, dt: number) {
+  if (run.ascentSeconds === 0) audio.play('ascentBubbles')
   run.ascentSeconds += dt
   run.bubbleTravel += rush * dt
 }

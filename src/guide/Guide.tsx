@@ -5,6 +5,7 @@ import { INTRODUCTION_DELAY_SECONDS } from './constants'
 import DialogueBox from './dialogue-box/DialogueBox'
 import Mascot from './mascot/Mascot'
 import { useRemarks } from './remarks/useRemarks'
+import { useDepthsDialogues } from './useDepthsDialogues'
 import './Guide.scss'
 
 export default function Guide() {
@@ -13,6 +14,7 @@ export default function Guide() {
   const isGuideLeft = useGuideStore((state) => state.isOverMap)
 
   useRemarks()
+  useDepthsDialogues()
 
   useEffect(() => {
     if (!isLoaderGone || hasFinishedIntroduction) return

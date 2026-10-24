@@ -5,6 +5,7 @@ const MEMORY_KEYS = {
   returningVisitor: 'returning-visitor',
   revealedIslands: 'revealed-islands',
   heardRemarks: 'heard-remarks',
+  heardDialogues: 'heard-dialogues',
 }
 
 type Memory = keyof typeof MEMORY_KEYS

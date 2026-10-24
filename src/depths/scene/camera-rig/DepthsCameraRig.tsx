@@ -3,6 +3,7 @@ import { useFrame, useThree } from '@react-three/fiber'
 import type * as THREE from 'three'
 import { useKeyboardInput } from '@/hooks/useKeyboardInput'
 import { useDepthsStore } from '@/store/depthsStore'
+import { isTravelHeld, useGuideStore } from '@/store/guideStore'
 import { isDepthsInView } from '@/store/viewStore'
 import type { WallClock } from '@/utils/time'
 import { DEPTHS_CAMERA_FRAME_PRIORITY } from '../constants'
@@ -30,7 +31,10 @@ interface DepthsCameraRigProps {
   surfacing: Surfacing
 }
 
-const canTravel = () => isDepthsInView() && useDepthsStore.getState().isRevealed
+const canTravel = () =>
+  isDepthsInView() &&
+  useDepthsStore.getState().isRevealed &&
+  !isTravelHeld(useGuideStore.getState())
 
 export default function DepthsCameraRig({
   camera,

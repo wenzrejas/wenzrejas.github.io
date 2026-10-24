@@ -10,17 +10,21 @@ import ArrivalDarkness from './arrival/ArrivalDarkness'
 import DepthsCameraRig from './camera-rig/DepthsCameraRig'
 import { DEPTHS_CAMERA_FAR, DEPTHS_CAMERA_FOV, DEPTHS_CAMERA_NEAR } from './camera-rig/constants'
 import { DEPTHS_CLOCK_FRAME_PRIORITY } from './constants'
+import { buildSparkleGeometry, createSparkleMaterial } from './deep-sparkles/deepSparklesModel'
 import DepthEnvironment from './depth-environment/DepthEnvironment'
-import DepthParticles from './depth-particles/DepthParticles'
+import { buildMoteGeometry, createMoteMaterial } from './depth-particles/depthParticlesModel'
 import DepthsShip from './depths-ship/DepthsShip'
 import FishSchools from './fish-schools/FishSchools'
 import Jellyfish from './jellyfish/Jellyfish'
 import LightRays from './light-rays/LightRays'
 import MilestonePanels from './milestone-panels/MilestonePanels'
 import PlungeSplash from './plunge-splash/PlungeSplash'
+import SceneryKit from './scenery-kit/SceneryKit'
+import DepthPoints from './shared/DepthPoints'
 import SunkenRuins from './sunken-ruins/SunkenRuins'
 import { advanceSurfacing, createSurfacing } from './surfacing/surfacing'
 import { createTimeline } from './timeline/timeline'
+import WhaleSilhouette from './whale-silhouette/WhaleSilhouette'
 
 export default function DepthsScene() {
   const gl = useThree((state) => state.gl)
@@ -35,6 +39,7 @@ export default function DepthsScene() {
   const surfacing = useMemo(() => createSurfacing(), [])
   const focus = useMemo(() => new THREE.Vector3(), [])
   const shipSpot = useMemo(() => new THREE.Vector3(), [])
+  const plazaSpot = useMemo(() => new THREE.Vector3(), [])
 
   useEffect(() => {
     let isCurrent = true
@@ -65,16 +70,28 @@ export default function DepthsScene() {
     <>
       <DepthEnvironment timeline={timeline} clock={clock} />
       <LightRays clock={clock} />
-      <DepthParticles clock={clock} />
+      <DepthPoints
+        buildGeometry={buildMoteGeometry}
+        createMaterial={createMoteMaterial}
+        clock={clock}
+      />
+      <DepthPoints
+        buildGeometry={buildSparkleGeometry}
+        createMaterial={createSparkleMaterial}
+        clock={clock}
+      />
       <Jellyfish clock={clock} />
       <FishSchools clock={clock} />
-      <SunkenRuins timeline={timeline} surfacing={surfacing} clock={clock} />
+      <WhaleSilhouette timeline={timeline} camera={camera} clock={clock} />
+      <SceneryKit clock={clock} />
+      <SunkenRuins timeline={timeline} surfacing={surfacing} plazaSpot={plazaSpot} clock={clock} />
       <DepthsShip
         arrival={arrival}
         timeline={timeline}
         surfacing={surfacing}
         focus={focus}
         shipSpot={shipSpot}
+        plazaSpot={plazaSpot}
         clock={clock}
       />
       <PlungeSplash arrival={arrival} shipSpot={shipSpot} clock={clock} />

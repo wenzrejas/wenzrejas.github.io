@@ -95,8 +95,13 @@ export function stepShipMotion(
   motion.landing = smootherstep(motion.landingProgress, 0, 1)
 }
 
-export function followClockRuin(motion: ShipMotion, clockRuin: RuinPlacement, time: number) {
-  clockLandingSpot(clockRuin, motion.keelDepth, time, motion.landingSpot)
+export function followClockRuin(
+  motion: ShipMotion,
+  clockRuin: RuinPlacement,
+  plazaSpot: THREE.Vector3,
+  time: number
+) {
+  clockLandingSpot(clockRuin, plazaSpot, motion.keelDepth, time, motion.landingSpot)
   motion.landingTurn.setFromEuler(ruinRotation(clockRuin, _clockRotation))
 }
 

@@ -55,12 +55,55 @@ export const SOUNDS = {
     channel: 'sfx',
     volume: 0.12,
   },
+
   paperPanel: {
     url: '/audio/sfx/paper-panel.webm',
     fallback: '/audio/sfx/paper-panel.mp3',
     channel: 'sfx',
     volume: 0.15,
     hasLeadIn: true,
+  },
+  dive: {
+    url: '/audio/sfx/dive.webm',
+    fallback: '/audio/sfx/dive.mp3',
+    channel: 'sfx',
+    volume: 0.05,
+  },
+  ascentBubbles: {
+    url: '/audio/sfx/bubbles.webm',
+    fallback: '/audio/sfx/bubbles.mp3',
+    channel: 'sfx',
+    volume: 0.5,
+  },
+  timeRewind: {
+    url: '/audio/sfx/time-rewind.webm',
+    fallback: '/audio/sfx/time-rewind.mp3',
+    channel: 'sfx',
+    volume: 0.02,
+  },
+  whale: {
+    url: '/audio/sfx/whale.webm',
+    fallback: '/audio/sfx/whale.mp3',
+    channel: 'sfx',
+    volume: 0.05,
+  },
+  waterfall: {
+    url: '/audio/sfx/waterfall.webm',
+    fallback: '/audio/sfx/waterfall.mp3',
+    channel: 'ambience',
+    volume: 1.4,
+  },
+  trainEngine: {
+    url: '/audio/sfx/steam-engine.webm',
+    fallback: '/audio/sfx/steam-engine.mp3',
+    channel: 'ambience',
+    volume: 0.03,
+  },
+  trainWhistle: {
+    url: '/audio/sfx/train-whistle.webm',
+    fallback: '/audio/sfx/train-whistle.mp3',
+    channel: 'sfx',
+    volume: 0.03,
   },
   pacificTune: {
     url: '/audio/bgm/pacific-melody.webm',

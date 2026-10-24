@@ -27,6 +27,8 @@ export function createWildlifeMaterial({
 
   if (defines) material.defines = floatDefines(defines)
 
+  const programCacheKey = [vertexGlsl, fragmentGlsl, deform, fade].join('|')
+  material.customProgramCacheKey = () => programCacheKey
   material.onBeforeCompile = (shader) => {
     if (uniforms) Object.assign(shader.uniforms, uniforms)
     shader.vertexShader = shader.vertexShader

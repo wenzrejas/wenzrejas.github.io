@@ -1,5 +1,6 @@
 uniform vec3 uColor;
 uniform float uTime;
+uniform float uShine;
 
 varying vec2 vShaft;
 varying float vSeed;
@@ -13,7 +14,7 @@ void main() {
   float shimmer = 0.65 + 0.35 * sin(uTime * SHIMMER_RATE * 1.7 + vSeed * 11.0 + along * 3.0);
   float ends = smoothstep(0.0, 0.06, along) * (1.0 - smoothstep(0.85, 1.0, along));
   float reach = exp(-vDrop / REACH);
-  float alpha = STRENGTH * core * core * shimmer * ends * reach * (0.5 + 0.5 * vSeed);
+  float alpha = STRENGTH * uShine * core * core * shimmer * ends * reach * (0.5 + 0.5 * vSeed);
   if (alpha <= 0.002) discard;
   gl_FragColor = vec4(uColor, alpha);
 }

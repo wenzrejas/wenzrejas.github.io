@@ -20,6 +20,7 @@ const openBoxKey = () => 'open'
 export default function DialogueBox({ isTailLeft }: { isTailLeft: boolean }) {
   const dialogue = useGuideStore((state) => state.dialogue)
   const pageIndex = useGuideStore((state) => state.pageIndex)
+  const isDismissed = useGuideStore((state) => state.isDismissed)
   const nameId = useId()
   const transitions = useTransition(dialogue ? [dialogue] : [], {
     keys: openBoxKey,
@@ -27,7 +28,10 @@ export default function DialogueBox({ isTailLeft }: { isTailLeft: boolean }) {
     enter: SHOWN_BOX,
     leave: CLOSING_BOX,
     config: BOX_SPRING,
+    immediate: isDismissed,
   })
+
+  if (isDismissed) return null
 
   return transitions((motion, shownDialogue) => {
     const pages = DIALOGUES[shownDialogue]
@@ -48,7 +52,7 @@ export default function DialogueBox({ isTailLeft }: { isTailLeft: boolean }) {
         style={{ ...motion, visibility: motion.opacity.to(visibilityAt) }}
         aria-labelledby={nameId}
       >
-        <DialoguePaper />
+        <DialoguePaper isTailLeft={isTailLeft} />
         <span id={nameId} className="dialogue-box__name">
           {GUIDE_COPY.name}
         </span>

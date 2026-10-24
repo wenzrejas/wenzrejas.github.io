@@ -25,14 +25,11 @@ export const RUIN_DRIFT_TURN_DEGREES = 3
 export const RUIN_DRIFT_TURN_RATE = 0.12
 
 // ── Clock ruin ────────────────────────────────────────────────────────────────
-export const CLOCK_PLAZA_SPOT: [number, number, number] = [0, 0, 2.5]
+export const LANDING_ANCHOR_ROLE = 'landing_anchor'
 
 // ── Lighting bake ─────────────────────────────────────────────────────────────
 export const RUIN_OVERHEAD_SHADE = 1
 export const RUIN_LANTERN_SPILL = 1
-
-// ── Gems ──────────────────────────────────────────────────────────────────────
-export const GEM_GLOW = 6
 
 // ── Armillary ─────────────────────────────────────────────────────────────────
 export const ARMILLARY_TURN_RATE = 0.35

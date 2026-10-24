@@ -3,6 +3,7 @@ import { Html } from '@react-three/drei'
 import type * as THREE from 'three'
 import { DEPTHS_COPY } from '@/data/depthsCopy'
 import { chooseRewind, useDepthsStore } from '@/store/depthsStore'
+import { hasHeard, useGuideStore } from '@/store/guideStore'
 import { beginSurfacing, isDepthsInView, isDepthsScene, useViewStore } from '@/store/viewStore'
 import { CAPTION_Z_INDEX_RANGE, CLOCK_CAPTION_SPOT } from './constants'
 import './SurfaceCaption.scss'
@@ -20,7 +21,8 @@ function rewindToSurface() {
 export default function SurfaceCaption({ clockRuin }: SurfaceCaptionProps) {
   const isInDepths = useViewStore(isDepthsScene)
   const isShipLanded = useDepthsStore((state) => state.isShipLanded)
-  const isShown = isInDepths && isShipLanded
+  const hasHeardFarewell = useGuideStore(hasHeard('landedAtTheClock'))
+  const isShown = isInDepths && isShipLanded && hasHeardFarewell
 
   return createPortal(
     <Html position={CLOCK_CAPTION_SPOT} center zIndexRange={CAPTION_Z_INDEX_RANGE}>

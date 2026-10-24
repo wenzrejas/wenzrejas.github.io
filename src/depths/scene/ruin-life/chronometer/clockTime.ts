@@ -1,8 +1,8 @@
 import * as THREE from 'three'
 import type { Surfacing } from '@/depths/scene/surfacing/surfacing'
-import { onceFor } from '@/utils/cache'
 import { meshesOf } from '@/utils/meshes'
 import { glowLevelsOf, shineGlow, type GlowLevel } from '../shared/glowLevels'
+import { turnFromRest } from '../shared/restingTurn'
 import { materialNameOf, ruinPoints } from '../shared/ruinPoints'
 import { wakeGlow } from '../shared/ruinWake'
 import {
@@ -31,14 +31,12 @@ type HandKind = 'hour' | 'minute' | 'seconds'
 
 interface ClockHand {
   node: THREE.Object3D
-  rest: THREE.Quaternion
   kind: HandKind
   authoredDegrees: number
 }
 
 interface ClockGear {
   node: THREE.Object3D
-  rest: THREE.Quaternion
   stepShare: number
 }
 
@@ -54,12 +52,6 @@ export interface Chronometer {
 
 const FACING = new THREE.Vector3(0, 0, 1)
 const { degToRad, clamp } = THREE.MathUtils
-
-const restingTurns = new WeakMap<THREE.Object3D, THREE.Quaternion>()
-const _turn = new THREE.Quaternion()
-
-const restingTurnOf = (node: THREE.Object3D) =>
-  onceFor(restingTurns, node, () => node.quaternion.clone())
 
 function isWithin(mesh: THREE.Object3D, part: THREE.Object3D) {
   for (let node: THREE.Object3D | null = mesh; node; node = node.parent) {
@@ -108,7 +100,7 @@ function meshGears(ruin: THREE.Object3D, parts: THREE.Object3D[]): ClockGear[] {
     const driver = isDriver ? index : partner
     const direction = parts[driver].position.x < 0 ? -1 : 1
     const stepShare = isDriver ? direction : -direction * (reaches[driver] / reaches[index])
-    return { node: part, rest: restingTurnOf(part), stepShare }
+    return { node: part, stepShare }
   })
 }
 
@@ -117,7 +109,6 @@ export function findChronometer(ruin: THREE.Object3D): Chronometer {
     .filter((child) => child.userData.role === 'clock_hand')
     .map((node) => ({
       node,
-      rest: restingTurnOf(node),
       kind: handKindOf(node),
       authoredDegrees: farthestReach(ruin, node).degrees,
     }))
@@ -153,8 +144,8 @@ function tickEase(secondShare: number) {
   return 1 + (TICK_OVERSHOOT + 1) * progress ** 3 + TICK_OVERSHOOT * progress ** 2
 }
 
-const turnPart = (node: THREE.Object3D, rest: THREE.Quaternion, clockwiseDegrees: number) =>
-  node.quaternion.copy(rest).multiply(_turn.setFromAxisAngle(FACING, -degToRad(clockwiseDegrees)))
+const turnClockwise = (node: THREE.Object3D, degrees: number) =>
+  turnFromRest(node, FACING, -degToRad(degrees))
 
 export function tickClock(
   { hands, gears, timezoneSeconds, rewindTurns }: Chronometer,
@@ -174,11 +165,11 @@ export function tickClock(
       ((tickedSeconds / SECONDS_PER_HOUR) % HOURS_PER_FACE) * DEGREES_PER_HOUR_MARK -
       minuteRewindDegrees / HOURS_PER_FACE,
   }
-  for (const { node, rest, kind, authoredDegrees } of hands) {
-    turnPart(node, rest, handDegrees[kind] - authoredDegrees)
+  for (const { node, kind, authoredDegrees } of hands) {
+    turnClockwise(node, handDegrees[kind] - authoredDegrees)
   }
   const stepDegrees = ((tickedSeconds * ESCAPEMENT_STEP_DEGREES) % 360) - secondsRewindDegrees
-  for (const { node, rest, stepShare } of gears) turnPart(node, rest, stepDegrees * stepShare)
+  for (const { node, stepShare } of gears) turnClockwise(node, stepDegrees * stepShare)
 }
 
 export function listenForLanding(chronometer: Chronometer, isLanded: boolean, time: number) {

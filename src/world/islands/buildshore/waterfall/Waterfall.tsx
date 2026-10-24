@@ -1,7 +1,11 @@
-import { useEffect, useLayoutEffect, useMemo } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
+import type * as THREE from 'three'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
+import { quietLoop } from '@/audio/proximityLoop'
 import { useCycleStore } from '@/store/cycleStore'
+import { useShipStore } from '@/store/shipStore'
+import { isBelowSurface, useViewStore } from '@/store/viewStore'
 import { mix } from '@/utils/math'
 import { pixelsPerUnit } from '@/utils/screen'
 import type { IslandPlacement } from '@/world/islands/shared/islandTransform'
@@ -18,6 +22,7 @@ import {
   dressCascades,
   flowUniforms,
 } from './waterfallModel'
+import { createWaterfallSound, followWaterfallSound } from './waterfallSound'
 import { placeSplashSites } from './waterfallSplash'
 
 interface WaterfallProps {
@@ -37,6 +42,10 @@ export default function Waterfall({ cascades, placement, offsetY }: WaterfallPro
   const splashGeometry = useMemo(() => buildSplashGeometry(sites), [sites])
   const padMaterial = useMemo(() => createFoamPadMaterial(), [])
   const splashMaterial = useMemo(() => createSplashMaterial(), [])
+  const sound = useMemo(() => createWaterfallSound(), [])
+  const padsRef = useRef<THREE.Mesh>(null)
+
+  useEffect(() => () => quietLoop(sound), [sound])
 
   useEffect(
     () => () => {
@@ -61,11 +70,21 @@ export default function Waterfall({ cascades, placement, offsetY }: WaterfallPro
       .copyLinearToSRGB(useCycleStore.getState().foamColor)
       .multiplyScalar(mix(1, FOAM_NIGHT_SHARE, nightGlow()))
     flowUniforms.uPixelsPerUnit.value = pixelsPerUnit(camera, gl)
+    const pads = padsRef.current
+    if (!pads) return
+    const ship = useShipStore.getState()
+    const isAudible = !isBelowSurface(useViewStore.getState())
+    followWaterfallSound(sound, sites, pads.matrixWorld, ship.x, ship.z, isAudible)
   })
 
   return (
     <>
-      <mesh geometry={padGeometry} material={padMaterial} renderOrder={RENDER_LAYER.waterSurface} />
+      <mesh
+        ref={padsRef}
+        geometry={padGeometry}
+        material={padMaterial}
+        renderOrder={RENDER_LAYER.waterSurface}
+      />
       <points
         geometry={splashGeometry}
         material={splashMaterial}

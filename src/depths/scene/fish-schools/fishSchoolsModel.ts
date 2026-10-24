@@ -1,7 +1,6 @@
 import * as THREE from 'three'
 import { floatDefines } from '@/utils/glsl'
-import { mix } from '@/utils/math'
-import { seededRandom } from '@/utils/random'
+import { randomBetween, seededRandom } from '@/utils/random'
 import { patchShader } from '@/world/islands/shared/materialPatch'
 import { ARRIVAL_LEVEL } from '../constants'
 import { DEEPEST_LEVEL, levelDepth } from '../timeline/timeline'
@@ -90,7 +89,7 @@ function buildFishGeometry() {
 
 function placeSchools() {
   const random = seededRandom(FISH_SEED)
-  const between = (min: number, max: number) => mix(min, max, random())
+  const between = randomBetween(random)
   const matrices: THREE.Matrix4[] = []
   const lanes: number[] = []
   const seeds: number[] = []

@@ -35,11 +35,16 @@ function play(playback: MascotPlayback, animation: MascotAnimation | null, secon
   playback.startSeconds = seconds
 }
 
-function followPage(playback: MascotPlayback, page: DialoguePage | null, seconds: number) {
+function followPage(
+  playback: MascotPlayback,
+  page: DialoguePage | null,
+  isDismissed: boolean,
+  seconds: number
+) {
   if (page === playback.page) return
   const wasSpeaking = playback.page !== null
   playback.page = page
-  if (!page) play(playback, 'exit', seconds)
+  if (!page) play(playback, isDismissed ? null : 'exit', seconds)
   else play(playback, wasSpeaking ? page.mood : 'appear', seconds)
 }
 
@@ -64,9 +69,14 @@ function updateFrames(playback: MascotPlayback, seconds: number) {
   playback.blend = playback.nextFrame === playback.frame ? 0 : position - frame
 }
 
-export function stepPlayback(playback: MascotPlayback, page: DialoguePage | null, seconds: number) {
+export function stepPlayback(
+  playback: MascotPlayback,
+  page: DialoguePage | null,
+  isDismissed: boolean,
+  seconds: number
+) {
   const wasShown = playback.animation !== null
-  followPage(playback, page, seconds)
+  followPage(playback, page, isDismissed, seconds)
   moveOnWhenFinished(playback, seconds)
   updateFrames(playback, seconds)
   return wasShown || playback.animation !== null

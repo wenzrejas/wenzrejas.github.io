@@ -92,7 +92,7 @@ function watchWorld(watch: RemarkWatch, world: WorldReading, seconds: number, st
   return moment
 }
 
-type RemarkStep = RemarkKey | 'close' | null
+type RemarkStep = RemarkKey | 'close' | 'dismiss' | null
 
 export function stepRemarks(
   watch: RemarkWatch,
@@ -107,6 +107,8 @@ export function stepRemarks(
   const fitsStage = ({ remark }: WaitingRemark) => stageOf(remark) === stage
 
   if (dialogue !== null && dialogue === watch.shown) {
+    const isCoveredByMap = stageOf(watch.shown) === 'world' && world.isMapUnfolded
+    if (isCoveredByMap) return 'dismiss'
     if (stageOf(watch.shown) !== stage) return 'close'
     if (MODAL_DIALOGUES.includes(watch.shown)) return null
     if (seconds - watch.shownSince < REMARK_SHOW_SECONDS) return null
