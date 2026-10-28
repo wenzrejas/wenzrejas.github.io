@@ -1,0 +1,23 @@
+export const RIBBON_BOX = '0 0 190 54'
+
+export const RIBBON_TAILS = [
+  'M29 18 L5 15 L15 32 L3 48 L31 50 Z',
+  'M161 18 L186 15 L176 32 L188 48 L159 50 Z',
+]
+
+export const RIBBON_FOLDS = ['M20 44 L31 50 L30 42 Z', 'M170 44 L159 50 L160 42 Z']
+
+export const RIBBON_BAND = 'M18 14 Q95 4 172 14 L170 44 Q95 34 20 44 Z'
+
+export const RIBBON_HATCHES = [
+  'M9 20 L13 25',
+  'M8 40 L12 35',
+  'M20 22 L25 28',
+  'M19 38 L23 33',
+  'M181 20 L177 25',
+  'M182 42 L178 37',
+  'M169 22 L165 28',
+  'M170 38 L166 33',
+  'M24 48 L27 45',
+  'M163 48 L166 45',
+]

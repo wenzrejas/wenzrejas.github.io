@@ -1,13 +1,9 @@
-import KeyCap from './KeyCap'
-
-const KEY_MARK = /\[([^\]]+)\]/
+import KeyText from '@/panels/shared/key-cap/KeyText'
 
 export default function DialogueLine({ line }: { line: string }) {
   return (
     <p className="dialogue-box__line">
-      {line
-        .split(KEY_MARK)
-        .map((part, index) => (index % 2 === 1 ? <KeyCap key={index} label={part} /> : part))}
+      <KeyText text={line} />
     </p>
   )
 }

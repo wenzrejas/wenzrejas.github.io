@@ -1,8 +1,11 @@
+@use '@/styles/parchment' as *;
 @use '../motion' as *;
 
 $decoration-opacity: 0.88;
 $highlight-change: 0.35s ease;
 $dimmed-island-opacity: 0.5;
+$faded-rock-opacity: 0.75;
+$faded-rock-filter: grayscale(0.45) sepia(0.35) contrast(0.9);
 $raised-island-scale: 1.06;
 
 @property --mist-reveal {
@@ -23,6 +26,11 @@ $raised-island-scale: 1.06;
     background-repeat: no-repeat;
   }
 
+  &__rock {
+    opacity: $faded-rock-opacity;
+    filter: $faded-rock-filter;
+  }
+
   &__decoration {
     opacity: $decoration-opacity;
   }
@@ -38,9 +46,11 @@ $raised-island-scale: 1.06;
   }
 
   &__island {
+    filter: $parchment-art-filter;
     transition:
       opacity $highlight-change,
-      scale $highlight-change;
+      scale $highlight-change,
+      filter $highlight-change;
   }
 
   &--focused &__island {
@@ -50,6 +60,7 @@ $raised-island-scale: 1.06;
   &--focused &__island--selected {
     opacity: 1;
     scale: $raised-island-scale;
+    filter: none;
   }
 
   &--unfold {

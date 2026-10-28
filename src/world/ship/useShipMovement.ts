@@ -17,6 +17,7 @@ import { isCinematicPlaying } from '@/store/cinematicStore'
 import { useDebugStore } from '@/store/debugStore'
 import { isIntroductionPending } from '@/store/guideStore'
 import { isPanelOpen } from '@/store/panelStore'
+import { sailingPace } from '@/store/settingsStore'
 import { isWorldInView } from '@/store/viewStore'
 import { useWindStore } from '@/store/windStore'
 import { useWeatherStore } from '@/store/weatherStore'
@@ -78,8 +79,17 @@ export function useShipMovement(groupRef: RefObject<THREE.Group | null>) {
       isIntroductionPending() || isCinematicPlaying() || isPanelOpen() || !isWorldInView()
         ? IDLE_KEYS
         : pressedKeys.current
-    const { moveSpeed, turnSpeed, tiltMax, tiltSpeed, baseY, bobAmp, bobSpeed, modelSize } =
-      useDebugStore.getState().ship
+    const {
+      moveSpeed: baseMoveSpeed,
+      turnSpeed,
+      tiltMax,
+      tiltSpeed,
+      baseY,
+      bobAmp,
+      bobSpeed,
+      modelSize,
+    } = useDebugStore.getState().ship
+    const moveSpeed = baseMoveSpeed * sailingPace()
     const wind = useWindStore.getState()
     const weather = useWeatherStore.getState()
     const reveal = useRevealStore.getState()

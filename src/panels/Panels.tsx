@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useTransition } from '@react-spring/web'
 import { audio } from '@/audio/audioManager'
 import { usePanelStore } from '@/store/panelStore'
+import { isMapUnfolded, useViewStore } from '@/store/viewStore'
 import {
   SHEET_CLOSE_SPRING,
   SHEET_SLIDE_PIXELS,
@@ -27,16 +28,23 @@ export default function Panels() {
   useEffect(
     () =>
       usePanelStore.subscribe((state, previous) => {
-        if (state.activePanel !== previous.activePanel) audio.play('paperPanel')
+        const isPanelChange = state.activePanel !== previous.activePanel
+        if (isPanelChange && !isMapUnfolded(useViewStore.getState())) audio.play('paperPanel')
       }),
     []
   )
 
   return transitions((motion, key) => {
     if (!key) return null
-    const { title, subtitle, splashUrl, Content } = PANEL_SPECS[key]
+    const { title, subtitle, splashUrl, isCentered, Content } = PANEL_SPECS[key]
     return (
-      <IslandPanel title={title} subtitle={subtitle} splashUrl={splashUrl} motion={motion}>
+      <IslandPanel
+        title={title}
+        subtitle={subtitle}
+        splashUrl={splashUrl}
+        isCentered={isCentered}
+        motion={motion}
+      >
         <Content />
       </IslandPanel>
     )

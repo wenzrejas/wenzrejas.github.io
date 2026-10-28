@@ -1,6 +1,7 @@
 import type { IslandKey } from '../world/islands/shared/constants'
 
-export type Channel = 'music' | 'ambience' | 'sfx'
+export const CHANNELS = ['music', 'ambience', 'sfx'] as const
+export type Channel = (typeof CHANNELS)[number]
 
 export interface SoundDefinition {
   url: string

@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { closePanel } from './panelStore'
 
 type ScenePhase = 'world' | 'diving' | 'depths' | 'surfacing'
 type MapPhase = 'closed' | 'unfolding' | 'open' | 'folding'
@@ -30,12 +31,14 @@ export const isBelowSurface = ({ scenePhase }: ViewState) =>
 
 export const isDepthsMounted = ({ scenePhase }: ViewState) => scenePhase !== 'world'
 
-export const openWorldMap = () =>
-  useViewStore.setState((view) =>
-    isSceneChanging(view)
-      ? view
-      : { mapPhase: view.mapPhase === 'open' ? 'open' : 'unfolding', hasMapOpened: true }
-  )
+export function openWorldMap() {
+  if (isSceneChanging(useViewStore.getState())) return
+  useViewStore.setState(({ mapPhase }) => ({
+    mapPhase: mapPhase === 'open' ? 'open' : 'unfolding',
+    hasMapOpened: true,
+  }))
+  closePanel()
+}
 
 export const closeWorldMap = () =>
   useViewStore.setState(({ mapPhase }) => ({

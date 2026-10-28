@@ -14,6 +14,8 @@ $frame-path: 'M9 3.5H39A5.5 5.5 0 0 0 44.5 9V39A5.5 5.5 0 0 0 39 44.5H9A5.5 5.5 
 
 $diamond-ornament: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M5 1 L9 5 L5 9 L1 5 Z' fill='%23ead4ab' stroke='%235a4535' stroke-width='1'/%3E%3C/svg%3E";
 
+$parchment-art-filter: saturate(0.75) contrast(0.9) sepia(0.12);
+
 $short-screen: 820px;
 $state-change: 0.18s ease;
 
@@ -118,6 +120,39 @@ $cartouche-pressed-label-drop: 1px;
   inset: calc(-1 * $spill);
   mask-image: var(--splash);
   mask-size: 100% 100%;
+}
+
+@mixin scroll-mist($reach, $ramp) {
+  --top-wash: min(var(--hidden-above, 0px) * #{$ramp}, #{$reach});
+  --bottom-wash: min(var(--hidden-below, 0px) * #{$ramp}, #{$reach});
+
+  scrollbar-width: none;
+  mask-image:
+    var(--mist-top), var(--mist-bottom),
+    linear-gradient(
+      transparent var(--top-wash),
+      #000000 var(--top-wash),
+      #000000 calc(100% - var(--bottom-wash)),
+      transparent calc(100% - var(--bottom-wash))
+    );
+  mask-size:
+    100% $reach,
+    100% $reach,
+    100% 100%;
+  mask-position:
+    0 calc(var(--top-wash) - #{$reach}),
+    0 calc(100% + #{$reach} - var(--bottom-wash)),
+    0 0;
+  mask-repeat: no-repeat;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@mixin ink-focus-ring($offset) {
+  outline: 2px solid $ink;
+  outline-offset: $offset;
 }
 
 @mixin handwritten {

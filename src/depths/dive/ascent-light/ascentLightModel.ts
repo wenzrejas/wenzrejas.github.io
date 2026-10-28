@@ -45,6 +45,7 @@ export const buildAscentLight = (geometry: THREE.BufferGeometry) =>
         uFade: { value: 0 },
         uTime: { value: 0 },
         uAspect: { value: 1 },
+        uFlashStrength: { value: 1 },
         uDeep: { value: displayColorOf(ASCENT_DEEP_COLOR) },
         uLight: { value: displayColorOf(ASCENT_LIGHT_COLOR) },
       },

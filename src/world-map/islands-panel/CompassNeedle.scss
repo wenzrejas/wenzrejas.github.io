@@ -1,0 +1,52 @@
+@use '@/styles/parchment' as *;
+
+$needle-width: 44px;
+$needle-height: 30px;
+$needle-left: -10px;
+$needle-lit-red: #e8664c;
+$needle-shaded-red: #b2311b;
+$needle-outline: 0.75;
+
+$glide: 0.55s cubic-bezier(0.45, 0, 0.2, 1);
+$appear: 0.3s ease-out;
+
+.compass-needle {
+  position: absolute;
+  top: 0;
+  left: $needle-left;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  height: calc(100% / var(--island-count));
+  translate: 0 calc(var(--pointed-index) * 100%);
+  transition: translate $glide;
+  pointer-events: none;
+  animation: compass-needle-appear $appear both;
+
+  &__needle {
+    width: $needle-width;
+    height: $needle-height;
+    overflow: visible;
+  }
+
+  &__lit-face {
+    fill: $needle-lit-red;
+  }
+
+  &__shaded-face {
+    fill: $needle-shaded-red;
+  }
+
+  &__outline {
+    fill: none;
+    stroke: $ink;
+    stroke-width: $needle-outline;
+    stroke-linejoin: round;
+  }
+}
+
+@keyframes compass-needle-appear {
+  from {
+    opacity: 0;
+  }
+}

@@ -30,12 +30,10 @@ $item-padding: 5px;
 $separator-inset: 10px;
 $separator-ink: rgba(176, 128, 74, 0.28);
 
-$voyage-change: 0.3s ease;
-$voyage-rise: 6px;
-
 .islands-panel {
   position: relative;
   flex: none;
+  align-self: flex-start;
   width: $sheet-width;
   margin-right: $sheet-gap-right;
   border-style: solid;
@@ -52,10 +50,9 @@ $voyage-rise: 6px;
   }
 
   &__content {
-    position: absolute;
-    inset: $content-top $content-right $content-bottom $content-left;
     display: flex;
     flex-direction: column;
+    padding: $content-top $content-right $content-bottom $content-left;
   }
 
   &__header {
@@ -100,6 +97,7 @@ $voyage-rise: 6px;
   }
 
   &__list {
+    position: relative;
     flex: none;
     margin-top: $list-gap;
     padding: 0 3px;
@@ -119,32 +117,6 @@ $voyage-rise: 6px;
       height: 1px;
       background: $separator-ink;
     }
-  }
-
-  &__voyage {
-    display: flex;
-    justify-content: center;
-    margin: auto 0;
-    opacity: 0;
-    pointer-events: none;
-    translate: 0 $voyage-rise;
-    transition:
-      opacity $voyage-change,
-      translate $voyage-change;
-
-    &--ready {
-      opacity: 1;
-      pointer-events: auto;
-      translate: 0 0;
-    }
-  }
-
-  &__set-sail {
-    @include cartouche-button;
-  }
-
-  &__set-sail-label {
-    @include cartouche-label;
   }
 
   &--unfold {

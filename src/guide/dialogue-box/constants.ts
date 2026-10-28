@@ -9,11 +9,3 @@ export const HIDDEN_BOX_SCALE = 0.9
 export const PAPER_WIDTH = 680
 export const PAPER_MIN_HEIGHT = 360
 export const PAPER_STRETCH_FROM = 80
-
-// ── Key boxes (one arrow drawn pointing up, turned clockwise in degrees) ──────
-export const ARROW_KEY_TURNS: Partial<Record<string, number>> = {
-  '↑': 0,
-  '→': 90,
-  '↓': 180,
-  '←': 270,
-}

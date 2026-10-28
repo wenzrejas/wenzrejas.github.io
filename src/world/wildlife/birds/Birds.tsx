@@ -4,6 +4,7 @@ import * as THREE from 'three'
 import { eventDelta } from '@/store/cinematicStore'
 import { useCycleStore } from '@/store/cycleStore'
 import { useDebugStore } from '@/store/debugStore'
+import { wildlifePace } from '@/store/settingsStore'
 import { useShipStore } from '@/store/shipStore'
 import { isRaining } from '@/store/weatherStore'
 import { retain } from '@/utils/array'
@@ -72,9 +73,10 @@ export default function Birds() {
     const sunHeight = Math.max(sun.y, SHADOW_MIN_SUN_HEIGHT)
 
     const { birdDelayMin, birdDelayMax } = useDebugStore.getState().wildlife
-    spawnTimer.current = Math.min(spawnTimer.current, birdDelayMax) - eventDelta(dt)
+    const pace = wildlifePace()
+    spawnTimer.current = Math.min(spawnTimer.current, birdDelayMax / pace) - eventDelta(dt)
     if (spawnTimer.current <= 0) {
-      spawnTimer.current = rand(birdDelayMin, birdDelayMax)
+      spawnTimer.current = rand(birdDelayMin, birdDelayMax) / pace
       const active = flights.current.reduce((sum, flight) => sum + flight.birds.length, 0)
       const calm = useCycleStore.getState().nightFactor < NIGHT_CUTOFF && !isRaining()
       if (calm && active < MAX_BIRDS) {

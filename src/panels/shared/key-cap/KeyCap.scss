@@ -1,0 +1,31 @@
+$key-edge: #aa7344;
+$key-face: linear-gradient(#fbeed5, #efd6a8);
+$key-depth: #b98a55;
+
+.key-cap {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.75em;
+  height: 1.75em;
+  margin: 0 0.12em;
+  padding: 0 0.3em;
+  border: 1px solid $key-edge;
+  border-radius: 0.35em;
+  background: $key-face;
+  box-shadow: 0 0.14em 0 $key-depth;
+  font: inherit;
+  font-size: 0.78em;
+  font-weight: 500;
+  line-height: 1;
+  vertical-align: 0.05em;
+
+  &__arrow {
+    width: 0.9em;
+    height: 0.9em;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}

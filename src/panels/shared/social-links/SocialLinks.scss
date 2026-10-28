@@ -34,8 +34,7 @@ $kofi-ink: #c4473d;
   }
 
   &:focus-visible {
-    outline: 2px solid $ink;
-    outline-offset: 2px;
+    @include ink-focus-ring(2px);
   }
 
   &__badge {

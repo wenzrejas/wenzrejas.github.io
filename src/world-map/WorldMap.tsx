@@ -67,13 +67,12 @@ export default function WorldMap() {
       <MapPaper ref={paperRef} />
       <div className="world-map__creases" />
       <div className="world-map__chart">
-        <MapArt selectedIsland={selectedIsland} motion={motion} />
+        <MapArt selectedIsland={selectedIsland} motion={motion} onSetSail={setSail} />
       </div>
       <IslandsPanel
         selectedIsland={selectedIsland}
         motion={motion}
         onSelect={setSelectedIsland}
-        onSetSail={setSail}
         onClose={closeWorldMap}
       />
     </section>

@@ -117,6 +117,7 @@ class AudioManager {
   private context: AudioContext | null = null
   private master: GainNode | null = null
   private channels: Record<Channel, GainNode> | null = null
+  private visitorGains: Record<Channel, GainNode> | null = null
   private buffers = new Map<SoundName, Promise<AudioBuffer>>()
   private audibleRanges = new WeakMap<AudioBuffer, AudibleRange>()
   private pending: (() => void)[] = []
@@ -133,10 +134,21 @@ class AudioManager {
     master.connect(this.context.destination)
     this.master = master
 
+    const createVisitorGain = () => {
+      const gain = this.context!.createGain()
+      gain.connect(master)
+      return gain
+    }
+    this.visitorGains = {
+      music: createVisitorGain(),
+      ambience: createVisitorGain(),
+      sfx: createVisitorGain(),
+    }
+
     const createChannel = (channel: Channel) => {
       const gain = this.context!.createGain()
       gain.gain.value = CHANNEL_VOLUMES[channel]
-      gain.connect(master)
+      gain.connect(this.visitorGains![channel])
       return gain
     }
     this.channels = {
@@ -241,6 +253,12 @@ class AudioManager {
     if (!this.context || !this.master) return
     const volume = isMuted ? 0 : MASTER_VOLUME
     this.master.gain.setTargetAtTime(volume, this.context.currentTime, MUTE_SMOOTHING)
+  }
+
+  setVisitorVolume(channel: Channel, volume: number): void {
+    if (!this.context || !this.visitorGains) return
+    const { gain } = this.visitorGains[channel]
+    gain.setTargetAtTime(volume, this.context.currentTime, MUTE_SMOOTHING)
   }
 
   setChannelVolume(channel: Channel, volume: number, seconds = DEFAULT_FADE): void {

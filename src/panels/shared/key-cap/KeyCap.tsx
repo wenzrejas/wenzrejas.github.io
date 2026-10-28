@@ -1,15 +1,16 @@
 import { ARROW_KEY_TURNS } from './constants'
+import './KeyCap.scss'
 
 export default function KeyCap({ label }: { label: string }) {
   const turn = ARROW_KEY_TURNS[label]
 
   return (
-    <kbd className="dialogue-box__key">
+    <kbd className="key-cap">
       {turn === undefined ? (
         label
       ) : (
         <svg
-          className="dialogue-box__key-arrow"
+          className="key-cap__arrow"
           viewBox="0 0 16 16"
           role="img"
           aria-label={label}

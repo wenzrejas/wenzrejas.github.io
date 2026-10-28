@@ -2,6 +2,7 @@ import { useRef, type RefObject } from 'react'
 import { useFrame } from '@react-three/fiber'
 import type * as THREE from 'three'
 import { useDebugStore } from '@/store/debugStore'
+import { useSettingsStore } from '@/store/settingsStore'
 import { useWeatherStore } from '@/store/weatherStore'
 import { useWindStore } from '@/store/windStore'
 import { MAX_FRAME_SECONDS } from '@/utils/time'
@@ -28,7 +29,8 @@ export default function WeatherSystem({ shipRef }: WeatherSystemProps) {
 
   useFrame((_, delta) => {
     const dt = Math.min(delta, MAX_FRAME_SECONDS)
-    const { weatherEnabled, weatherType } = useDebugStore.getState().weather
+    const { weatherEnabled, weatherType: debugWeather } = useDebugStore.getState().weather
+    const weatherType = debugWeather === 'auto' ? useSettingsStore.getState().weather : debugWeather
     const weather = useWeatherStore.getState()
     const wantsClearSkies = weather.wantsClearSkies
     weather.wantsClearSkies = false

@@ -4,6 +4,7 @@ import { useCinematicStore } from '@/store/cinematicStore'
 import { useDebugStore } from '@/store/debugStore'
 import { usePanelStore } from '@/store/panelStore'
 import { useRevealStore } from '@/store/revealStore'
+import { isMotionReduced } from '@/store/settingsStore'
 import { mix } from '@/utils/math'
 import { MAX_FRAME_SECONDS } from '@/utils/time'
 import { REVEAL_STOP_SHORT, REVEAL_TITLE_ROOM, REVEAL_ZOOM } from '@/world/islands/shared/constants'
@@ -45,7 +46,7 @@ const _revealLook = new THREE.Vector2()
 const _revealFrame = new THREE.Vector2()
 
 function shakeCamera(camera: THREE.Camera, strength: number, time: number) {
-  if (strength <= 0) return
+  if (strength <= 0 || isMotionReduced()) return
   camera.translateX(strength * Math.sin(time * CAMERA_SHAKE_RATE_ACROSS))
   camera.translateY(strength * Math.sin(time * CAMERA_SHAKE_RATE_UP))
 }

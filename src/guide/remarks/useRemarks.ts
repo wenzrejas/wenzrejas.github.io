@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { isCinematicPlaying } from '@/store/cinematicStore'
 import { useCycleStore } from '@/store/cycleStore'
 import {
@@ -10,6 +10,7 @@ import {
 } from '@/store/guideStore'
 import { isPanelOpen } from '@/store/panelStore'
 import { isRevealPlaying, useRevealStore } from '@/store/revealStore'
+import { useSettingsStore } from '@/store/settingsStore'
 import { useShipStore } from '@/store/shipStore'
 import { isMapUnfolded, isWorldInView, isWorldPaused, useViewStore } from '@/store/viewStore'
 import { rememberedItems, rememberItem } from '@/store/visitorMemory'
@@ -50,10 +51,12 @@ function readStage(): RemarkStage {
 export function useRemarks() {
   const isIntroductionOver = useIsIntroductionOver()
   const isReturningVisitor = useGuideStore((state) => state.isReturningVisitor)
+  const areRemarksOn = useSettingsStore((state) => state.areRemarksOn)
+  const hasGreeted = useRef(false)
 
   useEffect(() => {
-    if (!isIntroductionOver) return
-    const opening = isReturningVisitor ? 'welcomeBack' : null
+    if (!isIntroductionOver || !areRemarksOn) return
+    const opening = isReturningVisitor && !hasGreeted.current ? 'welcomeBack' : null
     const heardBefore = rememberedItems('heardRemarks', ONCE_EVER_REMARKS)
     const watch = createRemarkWatch(performance.now() / 1000, opening, heardBefore)
     const followWorld = () => {
@@ -64,6 +67,7 @@ export function useRemarks() {
       else if (step === 'dismiss') dismissDialogue()
       else if (step) {
         startDialogue(step)
+        if (step === opening) hasGreeted.current = true
         if (ONCE_EVER_REMARKS.includes(step)) rememberItem('heardRemarks', step)
       }
     }
@@ -75,5 +79,5 @@ export function useRemarks() {
       window.clearInterval(poll)
       stopFollowingMap()
     }
-  }, [isIntroductionOver, isReturningVisitor])
+  }, [isIntroductionOver, isReturningVisitor, areRemarksOn])
 }

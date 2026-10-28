@@ -4,6 +4,7 @@ import * as THREE from 'three'
 import { eventDelta } from '@/store/cinematicStore'
 import { useCycleStore } from '@/store/cycleStore'
 import { useDebugStore } from '@/store/debugStore'
+import { wildlifePace } from '@/store/settingsStore'
 import { useShipStore } from '@/store/shipStore'
 import { retain } from '@/utils/array'
 import { rand } from '@/utils/math'
@@ -63,9 +64,10 @@ export default function Fish() {
     const phaseAttr = geometry.getAttribute('aPhase') as THREE.InstancedBufferAttribute
 
     const { fishDelayMin, fishDelayMax } = useDebugStore.getState().wildlife
-    spawnTimer.current = Math.min(spawnTimer.current, fishDelayMax) - eventDelta(dt)
+    const pace = wildlifePace()
+    spawnTimer.current = Math.min(spawnTimer.current, fishDelayMax / pace) - eventDelta(dt)
     if (spawnTimer.current <= 0) {
-      spawnTimer.current = rand(fishDelayMin, fishDelayMax)
+      spawnTimer.current = rand(fishDelayMin, fishDelayMax) / pace
       const active = schools.current.reduce((sum, school) => sum + school.fish.length, 0)
       const angle = Math.random() * Math.PI * 2
       const distance = rand(SPAWN_DISTANCE_MIN, SPAWN_DISTANCE_MAX)

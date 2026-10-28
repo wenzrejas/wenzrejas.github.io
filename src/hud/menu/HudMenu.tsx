@@ -1,29 +1,22 @@
 import { MENU_COPY } from '@/data/hudCopy'
 import { useIsIntroductionOver } from '@/store/guideStore'
-import { toggleHud, toggleSound, useHudStore } from '@/store/hudStore'
+import { toggleHud, useHudStore } from '@/store/hudStore'
+import { closePanel, openSettings, usePanelStore } from '@/store/panelStore'
 import { isWorldScene, openWorldMap, useViewStore } from '@/store/viewStore'
 import MenuIcon from './MenuIcon'
 import './HudMenu.scss'
 
 export default function HudMenu() {
   const isInWorld = useViewStore(isWorldScene)
-  const isSoundOn = useHudStore((state) => state.isSoundOn)
   const isHudVisible = useHudStore((state) => state.isHudVisible)
   const isIntroductionOver = useIsIntroductionOver()
+  const isSettingsOpen = usePanelStore((state) => state.activePanel === 'settings')
 
   return (
     <nav
       className={isIntroductionOver ? 'hud-menu' : 'hud-menu hud-menu--hidden'}
       aria-label={MENU_COPY.label}
     >
-      <button
-        type="button"
-        className="hud-menu__button"
-        aria-label={isSoundOn ? MENU_COPY.mute : MENU_COPY.unmute}
-        onClick={toggleSound}
-      >
-        <MenuIcon icon="music" isSlashed={!isSoundOn} />
-      </button>
       {isInWorld && (
         <>
           <button
@@ -32,7 +25,7 @@ export default function HudMenu() {
             aria-label={isHudVisible ? MENU_COPY.hideHud : MENU_COPY.showHud}
             onClick={toggleHud}
           >
-            <MenuIcon icon="eye" isSlashed={isHudVisible} />
+            <MenuIcon icon="spyglass" isSlashed={isHudVisible} />
           </button>
           <button
             type="button"
@@ -40,12 +33,18 @@ export default function HudMenu() {
             aria-label={MENU_COPY.worldMap}
             onClick={openWorldMap}
           >
-            <MenuIcon icon="map" />
+            <MenuIcon icon="chart" />
           </button>
         </>
       )}
-      <button type="button" className="hud-menu__button" aria-label={MENU_COPY.settings}>
-        <MenuIcon icon="gear" />
+      <button
+        type="button"
+        className="hud-menu__button"
+        aria-label={MENU_COPY.settings}
+        aria-expanded={isSettingsOpen}
+        onClick={isSettingsOpen ? closePanel : openSettings}
+      >
+        <MenuIcon icon="helm" />
       </button>
     </nav>
   )

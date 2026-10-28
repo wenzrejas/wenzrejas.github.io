@@ -1,3 +1,5 @@
+@use '@/styles/parchment' as *;
+
 .panel-art {
   display: block;
   width: 100%;
@@ -6,6 +8,7 @@
 
   &__painting {
     opacity: 0;
+    filter: $parchment-art-filter;
     transition: opacity 0.4s ease;
 
     &--loaded {

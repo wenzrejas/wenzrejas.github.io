@@ -1,9 +1,9 @@
 import { useId, type CSSProperties } from 'react'
 import { WORLD_MAP_COPY } from '@/data/worldMapCopy'
-import Cartouche from '@/panels/shared/cartouche/Cartouche'
 import CloseButton from '@/panels/shared/close-button/CloseButton'
 import type { IslandKey } from '@/world/islands/shared/constants'
 import type { MapMotion } from '../types'
+import CompassNeedle from './CompassNeedle'
 import { ISLAND_LIST_ORDER, MAP_SCROLL_URL, SHEET_URL } from './constants'
 import IslandCard from './IslandCard'
 import './IslandsPanel.scss'
@@ -12,7 +12,6 @@ interface IslandsPanelProps {
   selectedIsland: IslandKey | null
   motion: MapMotion | null
   onSelect: (island: IslandKey) => void
-  onSetSail: () => void
   onClose: () => void
 }
 
@@ -24,7 +23,6 @@ export default function IslandsPanel({
   selectedIsland,
   motion,
   onSelect,
-  onSetSail,
   onClose,
 }: IslandsPanelProps) {
   const headingId = useId()
@@ -58,25 +56,8 @@ export default function IslandsPanel({
               />
             </li>
           ))}
+          {selectedIsland && <CompassNeedle pointedIsland={selectedIsland} />}
         </ul>
-        <div
-          className={
-            selectedIsland
-              ? 'islands-panel__voyage islands-panel__voyage--ready'
-              : 'islands-panel__voyage'
-          }
-          aria-hidden={!selectedIsland}
-        >
-          <button
-            type="button"
-            className="islands-panel__set-sail"
-            onClick={onSetSail}
-            disabled={!selectedIsland}
-          >
-            <Cartouche />
-            <span className="islands-panel__set-sail-label">{WORLD_MAP_COPY.setSail}</span>
-          </button>
-        </div>
       </div>
     </aside>
   )

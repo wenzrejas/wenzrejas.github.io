@@ -2,7 +2,7 @@ import { CONTACT_COPY } from '@/data/panelCopy'
 import { SOCIAL_LINKS } from '@/data/socialLinks'
 import type { SocialLink } from '../shared/social-links/SocialLinks'
 
-export const CONTACT_SPLASH_URL = '/images/panels/lumina-point.webp'
+export const CONTACT_SPLASH_URL = '/images/splash-arts/lumina-point.webp'
 
 export const CONTACT_LINKS: SocialLink[] = [
   { label: CONTACT_COPY.links.email, href: SOCIAL_LINKS.email, glyph: 'email' },

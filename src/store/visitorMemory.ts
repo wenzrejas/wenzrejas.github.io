@@ -1,14 +1,22 @@
 import { IS_DEBUG } from '@/app/experience/constants'
-import { readStored, writeStored } from '@/utils/storage'
+import { forgetStored, readStored, writeStored } from '@/utils/storage'
 
 const MEMORY_KEYS = {
   returningVisitor: 'returning-visitor',
   revealedIslands: 'revealed-islands',
   heardRemarks: 'heard-remarks',
   heardDialogues: 'heard-dialogues',
+  settings: 'settings',
 }
 
 type Memory = keyof typeof MEMORY_KEYS
+
+const PROGRESS_MEMORIES: Memory[] = [
+  'returningVisitor',
+  'revealedIslands',
+  'heardRemarks',
+  'heardDialogues',
+]
 
 const storedItems = (memory: Memory) => (readStored(MEMORY_KEYS[memory]) ?? '').split(',')
 
@@ -23,6 +31,17 @@ export function rememberedItems<Item extends string>(memory: Memory, items: read
   if (IS_DEBUG) return []
   const stored = storedItems(memory)
   return items.filter((item) => stored.includes(item))
+}
+
+export const rememberedText = (memory: Memory) =>
+  IS_DEBUG ? null : readStored(MEMORY_KEYS[memory])
+
+export function rememberText(memory: Memory, text: string) {
+  if (!IS_DEBUG) writeStored(MEMORY_KEYS[memory], text)
+}
+
+export function forgetProgress() {
+  for (const memory of PROGRESS_MEMORIES) forgetStored(MEMORY_KEYS[memory])
 }
 
 export function rememberItem(memory: Memory, item: string) {

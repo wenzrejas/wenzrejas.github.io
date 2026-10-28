@@ -2,6 +2,9 @@
 @use '@/styles/parchment' as *;
 
 $close-size: 48px;
+$centered-inset: 6.25rem;
+$centered-sheet-width: 640px;
+$centered-sheet-height: 35rem;
 $heading-ornament-size: 9px;
 $wash-size: 2rem;
 $wash-reach: 7.5rem;
@@ -47,6 +50,44 @@ $content-width-share: 1 - $viewport-right-share - $viewport-left-share - $conten
   width: var(--sheet-width);
   pointer-events: none;
 
+  &--centered {
+    --sheet-width: min(#{$centered-sheet-width}, calc(100vw - 3rem));
+
+    top: $centered-inset;
+    right: auto;
+    bottom: $centered-inset;
+    left: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    translate: -50% 0;
+  }
+
+  &--centered &__sheet {
+    height: $centered-sheet-height;
+  }
+
+  &--centered &__viewport {
+    flex: 1;
+  }
+
+  &--centered &__content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &--centered &__page {
+    flex: 1;
+    grid-template-rows: minmax(0, 1fr);
+    min-height: 0;
+  }
+
+  &--centered &__body {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
   &__sheet {
     position: relative;
     display: flex;
@@ -71,36 +112,12 @@ $content-width-share: 1 - $viewport-right-share - $viewport-left-share - $conten
   }
 
   &__content {
-    --top-wash: min(var(--hidden-above, 0px) * #{$wash-ramp}, #{$wash-reach});
-    --bottom-wash: min(var(--hidden-below, 0px) * #{$wash-ramp}, #{$wash-reach});
-
     position: relative;
     min-height: 0;
     overflow-y: auto;
     padding: $wash-size calc(var(--sheet-width) * $content-right-share) $wash-size
       calc(var(--sheet-width) * $content-left-share);
-    scrollbar-width: none;
-    mask-image:
-      var(--mist-top), var(--mist-bottom),
-      linear-gradient(
-        transparent var(--top-wash),
-        #000000 var(--top-wash),
-        #000000 calc(100% - var(--bottom-wash)),
-        transparent calc(100% - var(--bottom-wash))
-      );
-    mask-size:
-      100% $wash-reach,
-      100% $wash-reach,
-      100% 100%;
-    mask-position:
-      0 calc(var(--top-wash) - #{$wash-reach}),
-      0 calc(100% + #{$wash-reach} - var(--bottom-wash)),
-      0 0;
-    mask-repeat: no-repeat;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
+    @include scroll-mist($wash-reach, $wash-ramp);
   }
 
   &__close {

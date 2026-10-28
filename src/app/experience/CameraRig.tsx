@@ -1,7 +1,7 @@
 import { useEffect, useRef, type RefObject } from 'react'
 import { useFrame } from '@react-three/fiber'
 import type * as THREE from 'three'
-import { isPanelOpen } from '@/store/panelStore'
+import { isFocusedPanelOpen } from '@/store/panelStore'
 import { onShipPlaced } from '@/store/shipStore'
 import { createPanelFraming, easePanelFraming, frameShip } from './cameraFraming'
 
@@ -23,7 +23,7 @@ export default function CameraRig({ shipRef }: CameraRigProps) {
   useFrame(({ camera, clock }, delta) => {
     const ship = shipRef.current
     if (!ship) return
-    easePanelFraming(panelFraming.current, isPanelOpen(), delta)
+    easePanelFraming(panelFraming.current, isFocusedPanelOpen(), delta)
     frameShip(
       camera,
       ship.position.x,

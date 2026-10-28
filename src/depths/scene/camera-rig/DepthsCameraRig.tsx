@@ -4,6 +4,8 @@ import type * as THREE from 'three'
 import { useKeyboardInput } from '@/hooks/useKeyboardInput'
 import { useDepthsStore } from '@/store/depthsStore'
 import { isTravelHeld, useGuideStore } from '@/store/guideStore'
+import { isPanelOpen } from '@/store/panelStore'
+import { isMotionReduced } from '@/store/settingsStore'
 import { isDepthsInView } from '@/store/viewStore'
 import type { WallClock } from '@/utils/time'
 import { DEPTHS_CAMERA_FRAME_PRIORITY } from '../constants'
@@ -34,7 +36,8 @@ interface DepthsCameraRigProps {
 const canTravel = () =>
   isDepthsInView() &&
   useDepthsStore.getState().isRevealed &&
-  !isTravelHeld(useGuideStore.getState())
+  !isTravelHeld(useGuideStore.getState()) &&
+  !isPanelOpen()
 
 export default function DepthsCameraRig({
   camera,
@@ -68,7 +71,7 @@ export default function DepthsCameraRig({
     const heldDirection = canTravel() ? Number(keys.backward) - Number(keys.forward) : 0
     stepTimeline(timeline, heldDirection, clock.delta)
     if (surfacing.isRewinding) rewindTimeline(timeline, surfacing.fromLevel, rewindShare(surfacing))
-    easeParallax(framing, clock.delta)
+    easeParallax(framing, clock.delta, isMotionReduced())
     frameDepths(camera, focus, timeline.viewedLevel, framing, surfacing)
   }, DEPTHS_CAMERA_FRAME_PRIORITY)
 

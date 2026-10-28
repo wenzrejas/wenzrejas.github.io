@@ -1,26 +1,28 @@
 import type { ComponentType } from 'react'
 import { ISLAND_COPY, PROJECT_COPY } from '@/data/islandCopy'
 import { TOOLKIT_COPY } from '@/data/panelCopy'
+import { SETTINGS_COPY } from '@/data/settingsCopy'
 import type { GroveKey, PanelKey, ProjectKey } from '@/store/panelStore'
 import { CONTACT_SPLASH_URL } from './contact/constants'
 import ContactContent from './contact/ContactContent'
 import { PROJECT_SPLASH_URL } from './project/constants'
+import SettingsContent from './settings/SettingsContent'
 import { SUPPORT_SPLASH_URL } from './support/constants'
 import SupportContent from './support/SupportContent'
-import { TOOLKIT_SPLASH_URL } from './toolkit/constants'
 import ToolkitContent from './toolkit/ToolkitContent'
 
 interface PanelSpec {
   title: string
   subtitle: string
   splashUrl?: string
+  isCentered?: boolean
   Content: ComponentType
 }
 
 const groveSpec = (grove: GroveKey): PanelSpec => ({
   title: TOOLKIT_COPY.groves[grove].title,
   subtitle: TOOLKIT_COPY.groves[grove].tagline,
-  splashUrl: TOOLKIT_SPLASH_URL,
+  splashUrl: TOOLKIT_COPY.groves[grove].splash,
   Content: () => <ToolkitContent grove={grove} />,
 })
 
@@ -43,6 +45,12 @@ export const PANEL_SPECS: Record<PanelKey, PanelSpec> = {
     subtitle: ISLAND_COPY.cozy.description,
     splashUrl: SUPPORT_SPLASH_URL,
     Content: SupportContent,
+  },
+  settings: {
+    title: SETTINGS_COPY.title,
+    subtitle: SETTINGS_COPY.subtitle,
+    isCentered: true,
+    Content: SettingsContent,
   },
   frontend: groveSpec('frontend'),
   creative: groveSpec('creative'),

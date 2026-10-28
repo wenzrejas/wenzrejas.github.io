@@ -1,0 +1,230 @@
+@use '@/styles/parchment' as *;
+
+$label-width: 9.5rem;
+$value-width: 2.4rem;
+$row-height: 2.6rem;
+$track-height: 4px;
+$thumb-size: 18px;
+$choice-min-width: 4.5rem;
+$pane-gap: 0.9rem;
+$pane-mist-reach: 3.5rem;
+$pane-mist-ramp: 3;
+
+$chosen-fill: 'f5dcbb';
+$chosen-edge: '704624';
+
+$tab-letter-spacing: 0.2em;
+$tab-faded-ink: rgba($ink-soft, 0.62);
+$tab-bar-height: 2px;
+
+.settings {
+  &__tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.1rem;
+    margin-top: 1.4rem;
+    border-bottom: 1px solid $ink-faint;
+  }
+
+  &__tab {
+    position: relative;
+    padding: 0.4rem 0 0.65rem;
+    border: none;
+    background: none;
+    font-family: var(--font-secondary);
+    font-size: 0.74rem;
+    font-weight: 600;
+    letter-spacing: $tab-letter-spacing;
+    text-transform: uppercase;
+    color: $tab-faded-ink;
+    cursor: pointer;
+    transition: color $state-change;
+
+    &:hover,
+    &[aria-selected='true'] {
+      color: $ink;
+    }
+
+    &:focus-visible {
+      @include ink-focus-ring(2px);
+    }
+  }
+
+  &__tab::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: calc(100% - #{$tab-letter-spacing});
+    height: $tab-bar-height;
+    background: $ink;
+    opacity: 0;
+    transition: opacity $state-change;
+  }
+
+  &__tab[aria-selected='true']::after {
+    opacity: 1;
+  }
+
+  &__pane {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: $pane-gap 0;
+    @include scroll-mist($pane-mist-reach, $pane-mist-ramp);
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: $label-width minmax(0, 1fr) $value-width;
+    align-items: center;
+    column-gap: 1rem;
+    min-height: $row-height;
+  }
+
+  &__label {
+    font-family: var(--font-secondary);
+    font-size: 0.95rem;
+    color: $ink;
+  }
+
+  &__choices {
+    grid-column: 2 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  &__keys {
+    grid-column: 2 / -1;
+    font-family: var(--font-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: $ink;
+  }
+
+  &__choice {
+    display: inline-grid;
+    justify-items: center;
+    min-width: $choice-min-width;
+    padding: 0.05rem 0.55rem;
+    @include card-frame;
+    background: none;
+    font-family: var(--font-secondary);
+    font-size: 0.85rem;
+    color: $ink-soft;
+    cursor: pointer;
+    transition: color $state-change;
+
+    &:hover {
+      border-image-source: card-frame-image($frame-hover-fill-opacity);
+      color: $ink;
+    }
+
+    &:focus-visible {
+      @include ink-focus-ring(2px);
+    }
+
+    &[aria-pressed='true'] {
+      border-image-source: card-frame-image(0.9, $chosen-fill, $chosen-edge, 0.95);
+      font-weight: 600;
+      color: $ink;
+    }
+
+    &--warning,
+    &--warning:hover {
+      font-weight: 600;
+      color: $error-ink;
+    }
+  }
+
+  &__choice-name,
+  &__choice-sizer {
+    grid-area: 1 / 1;
+  }
+
+  &__choice-sizer {
+    font-weight: 600;
+    visibility: hidden;
+  }
+
+  &__slider {
+    --filled: calc(var(--volume) * 100%);
+
+    width: 100%;
+    height: $thumb-size;
+    margin: 0;
+    background: none;
+    appearance: none;
+    cursor: pointer;
+
+    &::-webkit-slider-runnable-track {
+      height: $track-height;
+      border-radius: $track-height;
+      background: linear-gradient(90deg, $ink-soft var(--filled), $ink-faint var(--filled));
+    }
+
+    &::-webkit-slider-thumb {
+      width: $thumb-size;
+      height: $thumb-size;
+      margin-top: ($track-height - $thumb-size) * 0.5;
+      border: none;
+      background: url($diamond-ornament) center / contain no-repeat;
+      appearance: none;
+    }
+
+    &::-moz-range-track {
+      height: $track-height;
+      border-radius: $track-height;
+      background: $ink-faint;
+    }
+
+    &::-moz-range-progress {
+      height: $track-height;
+      border-radius: $track-height;
+      background: $ink-soft;
+    }
+
+    &::-moz-range-thumb {
+      width: $thumb-size;
+      height: $thumb-size;
+      border: none;
+      border-radius: 0;
+      background: url($diamond-ornament) center / contain no-repeat;
+    }
+
+    &:focus-visible {
+      @include ink-focus-ring(4px);
+    }
+  }
+
+  &__value {
+    font-family: var(--font-secondary);
+    font-size: 0.85rem;
+    font-variant-numeric: tabular-nums;
+    color: $ink-soft;
+  }
+
+  &__about {
+    margin-bottom: 0.5rem;
+    padding-bottom: 1rem;
+    font-family: var(--font-secondary);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: $ink;
+  }
+
+  &__credit {
+    align-items: baseline;
+    min-height: 0;
+    padding: 0.45rem 0;
+  }
+
+  &__credit-names {
+    grid-column: 2 / -1;
+    font-family: var(--font-secondary);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: $ink-soft;
+  }
+}

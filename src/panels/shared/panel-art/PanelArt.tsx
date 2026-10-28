@@ -4,6 +4,7 @@ import {
   ART_BOARD,
   PAINTING,
   WASH,
+  WASH_FADE_FROM,
   WASH_FEATHER,
   WASH_FREQUENCY,
   WASH_OCTAVES,
@@ -20,6 +21,7 @@ export default function PanelArt({ splashUrl }: PanelArtProps) {
   const baseId = useSvgId()
   const raggedId = `${baseId}-ragged`
   const washId = `${baseId}-wash`
+  const fadeId = `${baseId}-fade`
   const [isPaintingLoaded, setPaintingLoaded] = useState(false)
 
   return (
@@ -46,6 +48,10 @@ export default function PanelArt({ splashUrl }: PanelArtProps) {
           />
           <feGaussianBlur stdDeviation={WASH_FEATHER} />
         </filter>
+        <radialGradient id={fadeId}>
+          <stop offset={WASH_FADE_FROM} stopColor="#ffffff" />
+          <stop offset={1} stopColor="#000000" />
+        </radialGradient>
         <mask
           id={washId}
           maskUnits="userSpaceOnUse"
@@ -59,7 +65,7 @@ export default function PanelArt({ splashUrl }: PanelArtProps) {
             cy={WASH.y}
             rx={WASH.radiusX}
             ry={WASH.radiusY}
-            fill="#ffffff"
+            fill={`url(#${fadeId})`}
             filter={`url(#${raggedId})`}
           />
         </mask>

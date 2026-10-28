@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import { alphaMaskUrl } from '../procedural/alphaMask'
 import { MIST_HEIGHT, MIST_WIDTH } from './constants'
 import { mistAlphas, type MistAlphas } from './mist'
@@ -17,4 +18,9 @@ export function cacheMistMasks({ top, bottom }: MistAlphas): MistMasks {
   return masks
 }
 
-export const mistMasks = () => masks ?? cacheMistMasks(mistAlphas())
+const mistMasks = () => masks ?? cacheMistMasks(mistAlphas())
+
+export function mistMaskStyle(): CSSProperties {
+  const { top, bottom } = mistMasks()
+  return { '--mist-top': top, '--mist-bottom': bottom } as CSSProperties
+}

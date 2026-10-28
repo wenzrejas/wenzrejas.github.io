@@ -2,11 +2,17 @@ import { useEffect } from 'react'
 import { audio } from './audioManager'
 import { AMBIENCE_FADE_IN, DEFAULT_FADE, WEATHER_POLL_MS } from './constants'
 import { createMusicDirector } from './musicDirector'
+import { CHANNELS } from './sounds'
 import { createWeatherSounds } from './weatherSounds'
 import { useDebugStore } from '../store/debugStore'
 import { useHudStore } from '../store/hudStore'
 import { useLoadingStore } from '../store/loadingStore'
+import { useSettingsStore, type Settings } from '../store/settingsStore'
 import { isBelowSurface, useViewStore } from '../store/viewStore'
+
+function applyVolumes({ volumes }: Settings) {
+  for (const channel of CHANNELS) audio.setVisitorVolume(channel, volumes[channel])
+}
 
 export default function Soundscape() {
   const hasSetSail = useLoadingStore((state) => state.hasSetSail)
@@ -15,6 +21,10 @@ export default function Soundscape() {
   useEffect(() => {
     audio.install()
     audio.setMuted(true)
+    applyVolumes(useSettingsStore.getState())
+    return useSettingsStore.subscribe((state, previous) => {
+      if (state.volumes !== previous.volumes) applyVolumes(state)
+    })
   }, [])
 
   useEffect(() => {

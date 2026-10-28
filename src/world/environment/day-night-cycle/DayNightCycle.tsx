@@ -5,6 +5,7 @@ import { useCycleStore } from '@/store/cycleStore'
 import { useWeatherStore } from '@/store/weatherStore'
 import { useDebugStore } from '@/store/debugStore'
 import { isIntroductionPending } from '@/store/guideStore'
+import { dayPace, flashStrength, useSettingsStore } from '@/store/settingsStore'
 import { useSkyBeamStore } from '@/store/skyBeamStore'
 import { CYCLE_DURATION, DAY_CYCLE_FRAME_PRIORITY } from './constants'
 import { BRIGHTEST_MOON, PHASES, sampleKeyframes } from './dayNightKeyframes'
@@ -27,12 +28,15 @@ export default function DayNightCycle() {
   useFrame((_, delta) => {
     const { dayCycle } = useDebugStore.getState()
     const { isActive: isSkyBeamActive, darkness, flash } = useSkyBeamStore.getState()
-    if (dayCycle.timeOfDay === 'auto') {
+    const timeOfDay =
+      dayCycle.timeOfDay === 'auto' ? useSettingsStore.getState().timeOfDay : dayCycle.timeOfDay
+    if (timeOfDay === 'auto') {
       if (!isSkyBeamActive && !isIntroductionPending()) {
-        timeRef.current = (timeRef.current + (delta * dayCycle.cycleSpeed) / CYCLE_DURATION) % 1
+        const cycleSpeed = dayCycle.cycleSpeed * dayPace()
+        timeRef.current = (timeRef.current + (delta * cycleSpeed) / CYCLE_DURATION) % 1
       }
     } else {
-      timeRef.current = PHASES[dayCycle.timeOfDay]
+      timeRef.current = PHASES[timeOfDay]
     }
 
     const { lo, hi, a } = sampleKeyframes(timeRef.current)
@@ -92,10 +96,12 @@ export default function DayNightCycle() {
 
     // ── Sky beam darkness ─────────────────────────────────────────────────
     if (darkness > 0) darkenSky(darkness, { background: scene.background, hemi, sun, moon })
-    if (flash > 0) flashSky(flash, { background: scene.background, hemi, sun, moon })
+    if (flash > 0) {
+      flashSky(flash * flashStrength(), { background: scene.background, hemi, sun, moon })
+    }
 
     // ── Lightning flash ───────────────────────────────────────────────────
-    const f = weather.lightningFlash
+    const f = weather.lightningFlash * flashStrength()
     if (f > 0) {
       if (scene.background instanceof THREE.Color) scene.background.lerp(_white, f * 0.75)
       cycle.fogColor.lerp(_white, f * 0.65)

@@ -1,0 +1,127 @@
+@use '@/styles/parchment' as *;
+
+$pointer-size: 11px;
+$pointer-gap: 2px;
+$appear-rise: 8px;
+$appear: 0.3s ease-out;
+
+$ribbon-width: 190px;
+$ribbon-height: 54px;
+$band-red: #c9412b;
+$band-hover-red: #d9503a;
+$tail-red: #a53220;
+$fold-red: #7e2414;
+$ribbon-outline: 1.2;
+$hatch-width: 0.9;
+$hatch-opacity: 0.55;
+
+$label-size: 1.2rem;
+$label-cream: #fff3df;
+$label-lift: 6px;
+$label-shadow: rgba(90, 20, 10, 0.55);
+$pressed-scale: 0.96;
+
+.set-sail-tooltip {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $pointer-gap;
+  pointer-events: auto;
+  animation: set-sail-tooltip-appear $appear both;
+
+  &::after {
+    content: '';
+    width: $pointer-size;
+    height: $pointer-size;
+    background: url($diamond-ornament) center / contain no-repeat;
+  }
+
+  &--above {
+    translate: -50% -100%;
+  }
+
+  &--below {
+    flex-direction: column-reverse;
+    translate: -50% 0;
+  }
+
+  &__button {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: $ribbon-width;
+    height: $ribbon-height;
+    padding: 0 0 $label-lift;
+    border: none;
+    background: none;
+    cursor: pointer;
+    transition: scale $state-change;
+
+    &:active {
+      scale: $pressed-scale;
+    }
+
+    &:focus-visible {
+      @include ink-focus-ring(3px);
+    }
+  }
+
+  &__ribbon {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  &__tail,
+  &__fold,
+  &__band {
+    stroke: $ink;
+    stroke-width: $ribbon-outline;
+    stroke-linejoin: round;
+  }
+
+  &__tail {
+    fill: $tail-red;
+  }
+
+  &__fold {
+    fill: $fold-red;
+  }
+
+  &__band {
+    fill: $band-red;
+    transition: fill $state-change;
+  }
+
+  &__button:hover &__band {
+    fill: $band-hover-red;
+  }
+
+  &__hatch {
+    fill: none;
+    stroke: $ink;
+    stroke-width: $hatch-width;
+    stroke-linecap: round;
+    opacity: $hatch-opacity;
+  }
+
+  &__label {
+    position: relative;
+    @include handwritten;
+    font-size: $label-size;
+    color: $label-cream;
+    text-shadow: 0 1px 0 $label-shadow;
+    white-space: nowrap;
+  }
+}
+
+@keyframes set-sail-tooltip-appear {
+  from {
+    opacity: 0;
+    margin-top: $appear-rise;
+  }
+}

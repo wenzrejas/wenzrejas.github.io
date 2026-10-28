@@ -9,7 +9,7 @@ export type ProjectKey =
   | 'uiuxWorks'
   | 'gelify'
   | 'qoves'
-export type PanelKey = 'contact' | 'support' | GroveKey | ProjectKey
+export type PanelKey = 'contact' | 'support' | 'settings' | GroveKey | ProjectKey
 
 interface PanelState {
   activePanel: PanelKey | null
@@ -28,6 +28,8 @@ export function openPanel(key: PanelKey, focus: THREE.Vector3) {
   usePanelStore.setState({ activePanel: key })
 }
 
+export const openSettings = () => usePanelStore.setState({ activePanel: 'settings' })
+
 export const closePanel = () => usePanelStore.setState({ activePanel: null })
 
 export function centerFocusLeftOf(panelLeftPixels: number) {
@@ -35,3 +37,8 @@ export function centerFocusLeftOf(panelLeftPixels: number) {
 }
 
 export const isPanelOpen = () => usePanelStore.getState().activePanel !== null
+
+export function isFocusedPanelOpen() {
+  const { activePanel } = usePanelStore.getState()
+  return activePanel !== null && activePanel !== 'settings'
+}

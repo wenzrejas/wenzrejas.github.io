@@ -26,6 +26,8 @@ import {
   LINE_DECORATIONS,
   ROCK_SCALE,
   ROCK_SPOTS,
+  SET_SAIL_GAP,
+  SET_SAIL_ROOM,
   WORLD_ORIGIN_ON_CHART,
 } from './constants'
 import {
@@ -54,6 +56,12 @@ interface ChartPoint {
   y: number
 }
 
+export interface SetSailSpot {
+  left: number
+  top: number
+  side: 'above' | 'below'
+}
+
 type DecorationKind = 'compass' | 'line' | 'glyph'
 
 const DECORATION_SHEET: AtlasSheet = {
@@ -67,7 +75,6 @@ const ISLAND_SHEET: AtlasSheet = {
   height: ISLAND_ATLAS_HEIGHT,
 }
 
-const { clamp } = THREE.MathUtils
 const _eastNorth = new THREE.Vector2()
 
 export const MAP_ART_STYLE = mistMaskVariables() as CSSProperties
@@ -149,10 +156,17 @@ export function placeMapArt(width: number, height: number) {
   const islands = ISLAND_KEYS.map((island) => {
     const piece = ISLAND_PIECES[ISLAND_ART[island]]
     const anchor = { x: piece.anchorX, y: piece.anchorY }
+    const placed = placeAround(ISLAND_SHEET, piece, islandChartSpot(island), anchor, islandScale)
+    const centreX = placed.left + placed.width / 2
+    const setSailSpot: SetSailSpot =
+      placed.top >= SET_SAIL_ROOM
+        ? { left: centreX, top: placed.top - SET_SAIL_GAP, side: 'above' }
+        : { left: centreX, top: placed.top + placed.height + SET_SAIL_GAP, side: 'below' }
     return {
       island,
+      setSailSpot,
       style: {
-        ...placeAround(ISLAND_SHEET, piece, islandChartSpot(island), anchor, islandScale),
+        ...placed,
         transformOrigin: `${anchor.x * islandScale}px ${anchor.y * islandScale}px`,
       },
     }
@@ -167,13 +181,11 @@ export function thumbnailStyle(
   boxHeight: number
 ): CSSProperties {
   const piece = ISLAND_PIECES[ISLAND_ART[island]]
-  const scale = Math.max(boxWidth / piece.width, boxHeight / piece.height)
-  const cropX = clamp(piece.anchorX * scale - boxWidth / 2, 0, piece.width * scale - boxWidth)
-  const cropY = clamp(piece.anchorY * scale - boxHeight / 2, 0, piece.height * scale - boxHeight)
+  const scale = Math.min(boxWidth / piece.width, boxHeight / piece.height)
+  const insetX = (boxWidth - piece.width * scale) / 2
+  const insetY = (boxHeight - piece.height * scale) / 2
   return {
     ...atlasStyle(ISLAND_SHEET, piece, scale),
-    width: boxWidth,
-    height: boxHeight,
-    backgroundPosition: `${-(piece.atlasX * scale + cropX)}px ${-(piece.atlasY * scale + cropY)}px`,
+    margin: `${insetY}px ${insetX}px`,
   }
 }

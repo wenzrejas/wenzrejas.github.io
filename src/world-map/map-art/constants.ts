@@ -18,24 +18,28 @@ export const CHART_STRETCH_LIMIT = 1.3
 // ── Islands (true world positions, north up) ──────────────────────────────────
 export const WORLD_ORIGIN_ON_CHART = { x: 591, y: 470 }
 export const CHART_PX_PER_WORLD_UNIT = 0.45
-export const ISLAND_ART_SCALE = 0.8
+export const ISLAND_ART_SCALE = 0.45
 
 export const ISLAND_ART: Record<IslandKey, IslandArtKey> = {
-  timewell: 'islandPortal',
-  cozy: 'islandVillage',
+  timewell: 'islandRuins',
+  cozy: 'islandCafe',
   lumina: 'islandLighthouse',
-  buildshore: 'islandSpires',
-  tech: 'islandCubes',
+  buildshore: 'islandWaterfalls',
+  tech: 'islandStatues',
 }
 
+// ── Set Sail tooltip (screen px) ──────────────────────────────────────────────
+export const SET_SAIL_GAP = 6
+export const SET_SAIL_ROOM = 96
+
 // ── Rock outcrops (chart centre) ──────────────────────────────────────────────
-export const ROCK_SCALE = 0.85
+export const ROCK_SCALE = 0.65
 
 export const ROCK_SPOTS: Record<RockKey, ChartSpot> = {
   rockPairNorth: { x: 400, y: 295 },
   rockClusterCentre: { x: 560, y: 470 },
   rockTrioWest: { x: 325, y: 720 },
-  rockClusterEast: { x: 885, y: 470 },
+  rockClusterEast: { x: 1010, y: 545 },
   rockLoneEast: { x: 1095, y: 800 },
   rockClusterSouth: { x: 665, y: 670 },
   rockLoneWest: { x: 125, y: 740 },
@@ -45,7 +49,7 @@ export const ROCK_SPOTS: Record<RockKey, ChartSpot> = {
 }
 
 // ── Decorations (the loading screen's art, chart centre) ──────────────────────
-export const DECORATION_SCALE = 0.85
+export const DECORATION_SCALE = 0.65
 export const COMPASS_SCALE = 0.66
 
 export const DECORATION_SPOTS: Partial<Record<MapPieceKey, ChartSpot>> = {

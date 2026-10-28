@@ -5,6 +5,7 @@ import { buildFlatQuad } from '@/utils/geometry'
 import { eventDelta } from '@/store/cinematicStore'
 import { useCycleStore } from '@/store/cycleStore'
 import { useDebugStore } from '@/store/debugStore'
+import { wildlifePace } from '@/store/settingsStore'
 import { useShipStore } from '@/store/shipStore'
 import { isRaining } from '@/store/weatherStore'
 import { wrapAngle } from '@/utils/math'
@@ -104,9 +105,10 @@ export default function Dolphins() {
     sprayMaterial.color.copy(cycle.foamColor)
 
     const { dolphinChance, dolphinInterval } = useDebugStore.getState().wildlife
-    checkTimer.current = Math.min(checkTimer.current, dolphinInterval) - eventDelta(dt)
+    const checkInterval = dolphinInterval / wildlifePace()
+    checkTimer.current = Math.min(checkTimer.current, checkInterval) - eventDelta(dt)
     if (checkTimer.current <= 0) {
-      checkTimer.current = dolphinInterval
+      checkTimer.current = checkInterval
       if (
         !pod.current &&
         !raining &&

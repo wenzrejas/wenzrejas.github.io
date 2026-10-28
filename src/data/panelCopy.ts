@@ -33,21 +33,25 @@ export const TOOLKIT_COPY = {
   toolsHeading: 'Tools & Technologies',
   groves: {
     frontend: {
+      splash: '/images/splash-arts/tech-grove-frontend.webp',
       title: 'Frontend',
       tagline: 'Where ideas take shape',
       lead: "Ideas arrive on these shores as drawings and daydreams. In this grove I give them form, carving each one into an interface that's clear to read, quick to answer, and easy to love. Every layout, every motion, every small detail is placed so the people who use it never have to think twice.",
     },
     creative: {
+      splash: '/images/splash-arts/tech-grove-creative-ui.webp',
       title: 'Creative UI',
       tagline: 'Where interfaces come alive',
       lead: 'Lightning never strikes the same way twice, and neither should an interface. Here I bottle that spark into motion that guides the eye, data that tells its own story, and the small details that make a page feel alive.',
     },
     visuals: {
+      splash: '/images/splash-arts/tech-grove-3d-visuals.webp',
       title: '3D Visuals',
       tagline: 'Where pixels gain depth',
       lead: "Look closely and the stone begins to turn. This is where I bend light into depth, crafting real-time worlds you can wander through, like the very sea you're sailing now.",
     },
     design: {
+      splash: '/images/splash-arts/tech-grove-design.webp',
       title: 'Design',
       tagline: 'Where every build begins',
       lead: 'Every voyage starts on paper. Before a single line of code, I chart the course, sketching layouts and shaping each detail so the finished interface stays true to the first idea.',

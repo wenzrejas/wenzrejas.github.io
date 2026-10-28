@@ -6,6 +6,14 @@ export function readStored(key: string): string | null {
   }
 }
 
+export function forgetStored(key: string) {
+  try {
+    window.localStorage.removeItem(key)
+  } catch {
+    return
+  }
+}
+
 export function writeStored(key: string, value: string) {
   try {
     window.localStorage.setItem(key, value)

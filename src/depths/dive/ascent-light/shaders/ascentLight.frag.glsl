@@ -2,6 +2,7 @@ uniform float uRise;
 uniform float uFade;
 uniform float uTime;
 uniform float uAspect;
+uniform float uFlashStrength;
 uniform vec3 uDeep;
 uniform vec3 uLight;
 
@@ -27,7 +28,7 @@ void main() {
 
   float height = clamp(vUv.y, 0.0, 1.0);
   vec3 water = mix(uDeep, uLight, height * height) + uLight * shaftsAt(across) * SHAFT_GLOW * height;
-  float flash = max(smoothstep(FLASH_FROM, 1.0, uRise), uFade);
+  float flash = max(smoothstep(FLASH_FROM, 1.0, uRise), uFade) * uFlashStrength;
 
   float alpha = max(lit, wash);
   if (alpha <= 0.003) discard;

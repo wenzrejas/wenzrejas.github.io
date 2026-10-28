@@ -38,9 +38,12 @@ export function aimParallax(framing: DepthsFraming, clientX: number, clientY: nu
   framing.pointerY = 1 - (clientY / window.innerHeight) * 2
 }
 
-export function easeParallax(framing: DepthsFraming, dt: number) {
-  framing.shiftX = damp(framing.shiftX, framing.pointerX * PARALLAX_ACROSS, PARALLAX_EASE_RATE, dt)
-  framing.shiftY = damp(framing.shiftY, framing.pointerY * PARALLAX_UP, PARALLAX_EASE_RATE, dt)
+export function easeParallax(framing: DepthsFraming, dt: number, isMotionReduced: boolean) {
+  const reach = isMotionReduced ? 0 : 1
+  const targetX = framing.pointerX * PARALLAX_ACROSS * reach
+  const targetY = framing.pointerY * PARALLAX_UP * reach
+  framing.shiftX = damp(framing.shiftX, targetX, PARALLAX_EASE_RATE, dt)
+  framing.shiftY = damp(framing.shiftY, targetY, PARALLAX_EASE_RATE, dt)
 }
 
 export function fitLens(camera: THREE.PerspectiveCamera, width: number, height: number) {

@@ -5,6 +5,7 @@ import { buildFlatQuad } from '@/utils/geometry'
 import { eventDelta } from '@/store/cinematicStore'
 import { useCycleStore } from '@/store/cycleStore'
 import { useDebugStore } from '@/store/debugStore'
+import { wildlifePace } from '@/store/settingsStore'
 import { useShipStore } from '@/store/shipStore'
 import { useWhaleStore } from '@/store/whaleStore'
 import { isOnScreen } from '@/utils/screen'
@@ -93,9 +94,10 @@ export default function Whale() {
 
     const ship = useShipStore.getState()
     const { whaleChance, whaleInterval } = useDebugStore.getState().wildlife
-    checkTimer.current = Math.min(checkTimer.current, whaleInterval) - eventDelta(dt)
+    const checkInterval = whaleInterval / wildlifePace()
+    checkTimer.current = Math.min(checkTimer.current, checkInterval) - eventDelta(dt)
     if (checkTimer.current <= 0) {
-      checkTimer.current = whaleInterval
+      checkTimer.current = checkInterval
       if (!whale.current && isDaylight(cycle.timeOfDay) && Math.random() < whaleChance) {
         const candidate = createWhale(ship)
         if (hasClearRun(candidate)) whale.current = candidate

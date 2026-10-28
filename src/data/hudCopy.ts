@@ -35,8 +35,6 @@ export const WEATHER_COPY = {
 
 export const MENU_COPY = {
   label: 'Game menu',
-  mute: 'Mute sound',
-  unmute: 'Unmute sound',
   hideHud: 'Hide HUD',
   showHud: 'Show HUD',
   worldMap: 'World map',

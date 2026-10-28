@@ -11,8 +11,6 @@ $crease-ink: #a47a52;
 $tab-edge: #aa7344;
 $tab-face: linear-gradient(110deg, #ddae72, #edc994 60%, #ddb47f);
 $tab-shadow: rgba(152, 107, 50, 0.19);
-$key-face: linear-gradient(#fbeed5, #efd6a8);
-$key-depth: #b98a55;
 $turn-ink: #78502e;
 $turn-hover-ink: #ac5f20;
 $focus-ring: #d49b49;
@@ -120,33 +118,6 @@ $tail-lift: sizes.$box-min-height * 0.66;
   &__line {
     font-size: 1.05rem;
     line-height: 1.6;
-  }
-
-  &__key {
-    display: inline-grid;
-    place-items: center;
-    width: 1.75em;
-    height: 1.75em;
-    margin: 0 0.12em;
-    border: 1px solid $tab-edge;
-    border-radius: 0.35em;
-    background: $key-face;
-    box-shadow: 0 0.14em 0 $key-depth;
-    font: inherit;
-    font-size: 0.78em;
-    font-weight: 500;
-    line-height: 1;
-    vertical-align: 0.05em;
-  }
-
-  &__key-arrow {
-    width: 0.9em;
-    height: 0.9em;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
   }
 
   &__navigation {

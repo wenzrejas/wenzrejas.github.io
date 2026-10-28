@@ -1,4 +1,5 @@
 import type * as THREE from 'three'
+import { flashStrength } from '@/store/settingsStore'
 import { isRising, type DiveRun } from '../dive'
 
 export function paintAscentLight(
@@ -13,4 +14,5 @@ export function paintAscentLight(
   uniforms.uFade.value = isStillBelow ? 0 : run.cover
   uniforms.uTime.value = time
   uniforms.uAspect.value = aspect
+  uniforms.uFlashStrength.value = flashStrength()
 }

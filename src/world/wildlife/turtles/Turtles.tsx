@@ -4,6 +4,7 @@ import * as THREE from 'three'
 import { eventDelta } from '@/store/cinematicStore'
 import { useCycleStore } from '@/store/cycleStore'
 import { useDebugStore } from '@/store/debugStore'
+import { wildlifePace } from '@/store/settingsStore'
 import { useShipStore } from '@/store/shipStore'
 import { retain } from '@/utils/array'
 import { buildFlatQuad } from '@/utils/geometry'
@@ -72,9 +73,10 @@ export default function Turtles() {
     rippleMaterial.color.copy(cycle.foamColor)
 
     const { turtleChance, turtleInterval } = useDebugStore.getState().wildlife
-    checkTimer.current = Math.min(checkTimer.current, turtleInterval) - eventDelta(dt)
+    const checkInterval = turtleInterval / wildlifePace()
+    checkTimer.current = Math.min(checkTimer.current, checkInterval) - eventDelta(dt)
     if (checkTimer.current <= 0) {
-      checkTimer.current = turtleInterval
+      checkTimer.current = checkInterval
       spawnTurtles(turtles.current, ship.x, ship.z, camera, cycle.nightFactor, turtleChance)
     }
 
