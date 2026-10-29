@@ -1,0 +1,32 @@
+$visible-thumbnails: 3;
+$thumbnail-gap: 0.75rem;
+$focus-room: 4px;
+
+.screenshot-carousel {
+  position: relative;
+
+  &__track {
+    display: grid;
+    grid-auto-columns: calc(
+      (100% - #{$thumbnail-gap} * #{$visible-thumbnails - 1}) / #{$visible-thumbnails}
+    );
+    grid-auto-flow: column;
+    gap: $thumbnail-gap;
+    margin: calc(-1 * #{$focus-room});
+    padding: $focus-room;
+    overflow-x: auto;
+    scrollbar-width: none;
+    list-style: none;
+    cursor: grab;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    &--dragging,
+    &--dragging * {
+      cursor: grabbing;
+      user-select: none;
+    }
+  }
+}

@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react'
 import { TOOLKIT_COPY } from '@/data/panelCopy'
-import { splashMasks } from '../shared/splash/splashModel'
+import { splashMasks } from '../splash/splashModel'
 import { TOOL_LOGO_SPRITE_URL, TOOL_TINTS, WIDE_LOGO_TOOLS, type ToolKey } from './constants'
 import './ToolGrid.scss'
 

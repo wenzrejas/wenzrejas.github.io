@@ -69,7 +69,7 @@ $rule-ornament-size: 7px;
   &__name {
     margin-top: 0.6rem;
     font-family: var(--font-secondary);
-    font-size: 0.8rem;
+    font-size: $base-font-size;
     font-weight: 600;
     line-height: 1.2;
     white-space: nowrap;

@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import GLOW_POINT_FRAG from '@/shaders/glowPoint.frag.glsl'
 import { displayColorOf } from '@/utils/color'
-import { TOOL_LOGO_SPRITE_URL, type ToolKey } from '@/panels/toolkit/constants'
+import { TOOL_LOGO_SPRITE_URL, type ToolKey } from '@/panels/shared/tool-grid/constants'
 import { floatDefines } from '@/utils/glsl'
 import { rand } from '@/utils/math'
 import { createAdditiveGlowMaterial } from '@/world/islands/shared/glowMaterial'

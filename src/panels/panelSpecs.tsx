@@ -1,11 +1,13 @@
 import type { ComponentType } from 'react'
 import { ISLAND_COPY, PROJECT_COPY } from '@/data/islandCopy'
 import { TOOLKIT_COPY } from '@/data/panelCopy'
+import { PROJECT_STORIES } from '@/data/project-stories/projectStories'
 import { SETTINGS_COPY } from '@/data/settingsCopy'
 import type { GroveKey, PanelKey, ProjectKey } from '@/store/panelStore'
 import { CONTACT_SPLASH_URL } from './contact/constants'
 import ContactContent from './contact/ContactContent'
 import { PROJECT_SPLASH_URL } from './project/constants'
+import ProjectContent from './project/ProjectContent'
 import SettingsContent from './settings/SettingsContent'
 import { SUPPORT_SPLASH_URL } from './support/constants'
 import SupportContent from './support/SupportContent'
@@ -28,9 +30,9 @@ const groveSpec = (grove: GroveKey): PanelSpec => ({
 
 const projectSpec = (project: ProjectKey): PanelSpec => ({
   title: PROJECT_COPY[project],
-  subtitle: ISLAND_COPY.buildshore.description,
+  subtitle: PROJECT_STORIES[project].tagline,
   splashUrl: PROJECT_SPLASH_URL,
-  Content: () => null,
+  Content: () => <ProjectContent project={project} />,
 })
 
 export const PANEL_SPECS: Record<PanelKey, PanelSpec> = {

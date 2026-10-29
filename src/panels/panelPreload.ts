@@ -6,7 +6,7 @@ import { cacheMistMasks } from './shared/island-panel/mistModel'
 import { cacheReliefTile } from './shared/parchment/paperTexture'
 import { parchmentPixelRatio } from './shared/parchment/parchmentModel'
 import { cacheSplashMasks } from './shared/splash/splashModel'
-import { TOOL_LOGO_SPRITE_URL } from './toolkit/constants'
+import { TOOL_LOGO_SPRITE_URL } from './shared/tool-grid/constants'
 
 const PANEL_IMAGES = [
   ...new Set([

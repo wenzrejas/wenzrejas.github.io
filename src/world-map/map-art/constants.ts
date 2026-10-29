@@ -7,6 +7,10 @@ interface ChartSpot {
   y: number
 }
 
+interface RockSpot extends ChartSpot {
+  rock: RockKey
+}
+
 // ── Atlas ─────────────────────────────────────────────────────────────────────
 export const ISLAND_ATLAS_URL = '/images/world-map/island-atlas.webp'
 
@@ -35,18 +39,20 @@ export const SET_SAIL_ROOM = 96
 // ── Rock outcrops (chart centre) ──────────────────────────────────────────────
 export const ROCK_SCALE = 0.65
 
-export const ROCK_SPOTS: Record<RockKey, ChartSpot> = {
-  rockPairNorth: { x: 400, y: 295 },
-  rockClusterCentre: { x: 560, y: 470 },
-  rockTrioWest: { x: 325, y: 720 },
-  rockClusterEast: { x: 1010, y: 545 },
-  rockLoneEast: { x: 1095, y: 800 },
-  rockClusterSouth: { x: 665, y: 670 },
-  rockLoneWest: { x: 125, y: 740 },
-  rockSmallSoutheast: { x: 790, y: 835 },
-  rockLoneNorth: { x: 705, y: 225 },
-  rockSmallWest: { x: 455, y: 525 },
-}
+export const ROCK_SPOTS: RockSpot[] = [
+  { rock: 'rockPairNorth', x: 400, y: 295 },
+  { rock: 'rockClusterCentre', x: 560, y: 470 },
+  { rock: 'rockTrioWest', x: 325, y: 720 },
+  { rock: 'rockClusterEast', x: 1010, y: 545 },
+  { rock: 'rockLoneEast', x: 1095, y: 800 },
+  { rock: 'rockClusterSouth', x: 665, y: 670 },
+  { rock: 'rockLoneWest', x: 125, y: 740 },
+  { rock: 'rockSmallSoutheast', x: 790, y: 835 },
+  { rock: 'rockLoneNorth', x: 705, y: 225 },
+  { rock: 'rockSmallWest', x: 455, y: 525 },
+  { rock: 'rockTrioWest', x: 795, y: 712 },
+  { rock: 'rockSmallWest', x: 1000, y: 700 },
+]
 
 // ── Decorations (the loading screen's art, chart centre) ──────────────────────
 export const DECORATION_SCALE = 0.65
@@ -68,14 +74,12 @@ export const DECORATION_SPOTS: Partial<Record<MapPieceKey, ChartSpot>> = {
   cloudWest: { x: 150, y: 318 },
   cloudNorth: { x: 290, y: 420 },
   cloudEast: { x: 1048, y: 455 },
-  gullPair: { x: 568, y: 330 },
-  gullTrailing: { x: 640, y: 358 },
-  waveNorth: { x: 470, y: 378 },
-  waveEast: { x: 830, y: 405 },
-  waveWest: { x: 395, y: 470 },
-  waveFarEast: { x: 38, y: 690 },
-  waveSouthwest: { x: 235, y: 798 },
-  waveSouth: { x: 760, y: 975 },
+  waveNorth: { x: 600, y: 160 },
+  waveEast: { x: 720, y: 500 },
+  waveWest: { x: 470, y: 390 },
+  waveFarEast: { x: 530, y: 650 },
+  waveSouthwest: { x: 215, y: 820 },
+  waveSouth: { x: 730, y: 970 },
 }
 
 export const LINE_DECORATIONS: MapPieceKey[] = [

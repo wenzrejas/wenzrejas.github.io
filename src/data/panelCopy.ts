@@ -80,6 +80,7 @@ export const TOOLKIT_COPY = {
     photoshop: 'Photoshop',
     blender: 'Blender',
     uiux: 'UI/UX Design',
+    symfony: 'Symfony',
   },
 }
 
@@ -89,4 +90,15 @@ export const SUPPORT_COPY = {
   links: {
     kofi: 'Ko-fi',
   },
+}
+
+export const PROJECT_PANEL_COPY = {
+  previewHeading: 'Preview',
+  screenshot: 'Screenshot',
+  expandScreenshot: 'View larger',
+  previousScreenshots: 'Previous screenshots',
+  nextScreenshots: 'Next screenshots',
+  previousScreenshot: 'Previous screenshot',
+  nextScreenshot: 'Next screenshot',
+  toolsHeading: 'Built With',
 }

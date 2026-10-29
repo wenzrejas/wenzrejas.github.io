@@ -1,5 +1,6 @@
 import * as THREE from 'three'
-import { GROVE_TOOLS, type ToolKey } from '@/panels/toolkit/constants'
+import type { ToolKey } from '@/panels/shared/tool-grid/constants'
+import { GROVE_TOOLS } from '@/panels/toolkit/constants'
 import { isEngaged } from '@/interaction/hover'
 import { mix, rand } from '@/utils/math'
 import {

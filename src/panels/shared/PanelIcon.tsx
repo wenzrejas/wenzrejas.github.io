@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-export type PanelIconName = 'external' | 'mail' | 'pen' | 'person'
+export type PanelIconName = 'external' | 'mail' | 'next' | 'pen' | 'person' | 'previous' | 'star'
 
 const ICON_SHAPES: Record<PanelIconName, ReactNode> = {
   external: (
@@ -27,6 +27,11 @@ const ICON_SHAPES: Record<PanelIconName, ReactNode> = {
       <path d="M16.2 3.8 A2.1 2.1 0 0 1 19.2 3.8 L20.2 4.8 A2.1 2.1 0 0 1 20.2 7.8 L9.4 18.6 L4 20 L5.4 14.6 Z" />
       <path d="M14.6 5.4 L18.6 9.4 M5.4 14.6 L9.4 18.6" />
     </>
+  ),
+  previous: <path d="M14.5 5.5 L8 12 L14.5 18.5" />,
+  next: <path d="M9.5 5.5 L16 12 L9.5 18.5" />,
+  star: (
+    <path d="M12 3.2 L14.6 8.7 L20.6 9.4 L16.1 13.5 L17.3 19.4 L12 16.4 L6.7 19.4 L7.9 13.5 L3.4 9.4 L9.4 8.7 Z" />
   ),
 }
 

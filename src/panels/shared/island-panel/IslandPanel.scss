@@ -207,7 +207,7 @@ $content-width-share: 1 - $viewport-right-share - $viewport-left-share - $conten
     max-width: 25rem;
     margin-top: 1.4rem;
     font-family: var(--font-secondary);
-    font-size: 1rem;
+    font-size: $base-font-size;
     line-height: 1.5;
     color: $ink;
 

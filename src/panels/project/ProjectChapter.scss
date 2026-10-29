@@ -1,0 +1,61 @@
+@use '@/styles/parchment' as *;
+
+$highlight-ornament-size: 9px;
+
+.project-chapter {
+  &__title {
+    @include handwritten;
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1.25;
+    color: $ink;
+  }
+
+  &__paragraph {
+    margin-top: 0.6rem;
+    font-family: var(--font-secondary);
+    font-size: $base-font-size;
+    line-height: 1.6;
+    color: $ink;
+  }
+
+  &__highlights-title {
+    margin-top: 1.1rem;
+    @include handwritten;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: $ink;
+  }
+
+  &__highlights {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem 1.2rem;
+    margin-top: 0.7rem;
+    list-style: none;
+  }
+
+  &__highlight {
+    position: relative;
+    padding-left: 1.4rem;
+    font-family: var(--font-secondary);
+    font-size: $base-font-size;
+    line-height: 1.5;
+    color: $ink;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0.45em;
+      left: 0.2rem;
+      width: $highlight-ornament-size;
+      height: $highlight-ornament-size;
+      background: url($diamond-ornament) center / contain no-repeat;
+    }
+  }
+
+  &__highlight-label {
+    display: block;
+    font-weight: 600;
+  }
+}

@@ -68,7 +68,7 @@ $invalid-placeholder-ink: #c8644e;
     border: none;
     background: none;
     font-family: var(--font-secondary);
-    font-size: 0.92rem;
+    font-size: $base-font-size;
     color: $ink;
     outline: none;
 
@@ -95,14 +95,14 @@ $invalid-placeholder-ink: #c8644e;
 
   &__error {
     font-family: var(--font-secondary);
-    font-size: 0.75rem;
+    font-size: $base-font-size;
     color: $error-ink;
   }
 
   &__send-error {
     grid-column: 1 / -1;
     font-family: var(--font-secondary);
-    font-size: 0.75rem;
+    font-size: $base-font-size;
     text-align: center;
     color: $error-ink;
   }

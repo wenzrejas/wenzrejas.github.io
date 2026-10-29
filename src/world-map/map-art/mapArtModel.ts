@@ -35,7 +35,6 @@ import {
   ISLAND_ATLAS_WIDTH,
   ISLAND_PIECES,
   ROCK_PIECES,
-  type RockKey,
 } from './islandArtPieces'
 
 interface AtlasSheet {
@@ -141,13 +140,13 @@ export function placeMapArt(width: number, height: number) {
   })
 
   const rockScale = glyphScale * ROCK_SCALE
-  const rocks = (Object.keys(ROCK_SPOTS) as RockKey[]).map((key) => ({
-    key,
+  const rocks = ROCK_SPOTS.map((spot, index) => ({
+    key: `${spot.rock}-${index}`,
     style: placeAround(
       ISLAND_SHEET,
-      ROCK_PIECES[key],
-      ROCK_SPOTS[key],
-      centreOf(ROCK_PIECES[key]),
+      ROCK_PIECES[spot.rock],
+      spot,
+      centreOf(ROCK_PIECES[spot.rock]),
       rockScale
     ),
   }))

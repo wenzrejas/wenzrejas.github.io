@@ -1,0 +1,59 @@
+@use '@/styles/parchment' as *;
+
+$fact-rule-width: 2px;
+$fact-icon-size: 1.1rem;
+$fact-icon-fill: #e2a93c;
+$fact-icon-edge: #8c5a30;
+
+.project-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem 1rem;
+  margin-top: 1.4rem;
+
+  &__fact {
+    padding-left: 0.7rem;
+    border-left: $fact-rule-width solid $ink-faint;
+  }
+
+  &__label {
+    font-family: var(--font-secondary);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: $ink-soft;
+  }
+
+  &__value {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.2rem;
+    font-family: var(--font-secondary);
+    font-size: $base-font-size;
+    color: $ink;
+  }
+
+  &__icon {
+    flex: none;
+    font-size: $fact-icon-size;
+    fill: $fact-icon-fill;
+    color: $fact-icon-edge;
+  }
+}
+
+.project-visit {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.6rem;
+
+  &__link {
+    @include cartouche-button;
+    text-decoration: none;
+  }
+
+  &__label {
+    @include cartouche-label;
+  }
+}

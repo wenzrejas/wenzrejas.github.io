@@ -1,7 +1,7 @@
 import { TOOLKIT_COPY } from '@/data/panelCopy'
 import type { GroveKey } from '@/store/panelStore'
+import ToolGrid from '../shared/tool-grid/ToolGrid'
 import { GROVE_TOOLS } from './constants'
-import ToolGrid from './ToolGrid'
 
 interface ToolkitContentProps {
   grove: GroveKey

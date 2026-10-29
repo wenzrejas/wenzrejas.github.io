@@ -1,0 +1,59 @@
+@use '@/styles/parchment' as *;
+
+$layer: 92;
+$backdrop: rgba($ink, 0.78);
+$frame-fill: 'f5dcbb';
+$frame-padding: 0.5rem;
+$image-max-width: 90vw;
+$image-height: 82vh;
+$image-corner-radius: 3px;
+$close-size: 48px;
+$arrow-size: 2.75rem;
+$arrow-inset: 1rem;
+$fade-in: 0.18s ease;
+
+.screenshot-preview {
+  position: fixed;
+  inset: 0;
+  z-index: $layer;
+  display: grid;
+  place-items: center;
+  background: $backdrop;
+  cursor: zoom-out;
+  animation: screenshot-preview-fade-in $fade-in;
+
+  &__frame {
+    --arrow-button-size: #{$arrow-size};
+    --arrow-button-inset: #{$arrow-inset};
+
+    position: relative;
+    padding: $frame-padding;
+    @include card-frame;
+    border-image-source: card-frame-image(1, $frame-fill);
+    cursor: default;
+  }
+
+  &__image {
+    display: block;
+    width: auto;
+    height: $image-height;
+    max-width: $image-max-width;
+    border-radius: $image-corner-radius;
+    object-fit: contain;
+  }
+
+  &__close {
+    --close-button-size: #{$close-size};
+
+    position: absolute;
+    top: 0;
+    right: 0;
+    translate: 50% -50%;
+  }
+}
+
+@keyframes screenshot-preview-fade-in {
+  from {
+    opacity: 0;
+  }
+}

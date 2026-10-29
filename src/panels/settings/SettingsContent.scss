@@ -84,7 +84,7 @@ $tab-bar-height: 2px;
 
   &__label {
     font-family: var(--font-secondary);
-    font-size: 0.95rem;
+    font-size: $base-font-size;
     color: $ink;
   }
 
@@ -98,7 +98,7 @@ $tab-bar-height: 2px;
   &__keys {
     grid-column: 2 / -1;
     font-family: var(--font-secondary);
-    font-size: 0.95rem;
+    font-size: $base-font-size;
     line-height: 1.6;
     color: $ink;
   }
@@ -111,7 +111,7 @@ $tab-bar-height: 2px;
     @include card-frame;
     background: none;
     font-family: var(--font-secondary);
-    font-size: 0.85rem;
+    font-size: $base-font-size;
     color: $ink-soft;
     cursor: pointer;
     transition: color $state-change;
@@ -200,7 +200,7 @@ $tab-bar-height: 2px;
 
   &__value {
     font-family: var(--font-secondary);
-    font-size: 0.85rem;
+    font-size: $base-font-size;
     font-variant-numeric: tabular-nums;
     color: $ink-soft;
   }
@@ -209,7 +209,7 @@ $tab-bar-height: 2px;
     margin-bottom: 0.5rem;
     padding-bottom: 1rem;
     font-family: var(--font-secondary);
-    font-size: 0.95rem;
+    font-size: $base-font-size;
     line-height: 1.5;
     color: $ink;
   }
@@ -223,7 +223,7 @@ $tab-bar-height: 2px;
   &__credit-names {
     grid-column: 2 / -1;
     font-family: var(--font-secondary);
-    font-size: 0.95rem;
+    font-size: $base-font-size;
     line-height: 1.5;
     color: $ink-soft;
   }

@@ -1,0 +1,55 @@
+@use '@/styles/parchment' as *;
+
+$default-size: 2rem;
+$default-inset: 0.4rem;
+$icon-share: 0.55;
+$fill: #f5dcbb;
+$edge: rgba(140, 90, 48, 0.6);
+$shadow: 0 1.5px 0 rgba(120, 72, 36, 0.3);
+$hover-scale: 1.08;
+$disabled-opacity: 0.35;
+
+.arrow-button {
+  --size: var(--arrow-button-size, #{$default-size});
+  --inset: var(--arrow-button-inset, #{$default-inset});
+
+  position: absolute;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: var(--size);
+  height: var(--size);
+  padding: 0;
+  border: 1.5px solid $edge;
+  border-radius: 50%;
+  background: $fill;
+  box-shadow: $shadow;
+  font-size: calc(var(--size) * #{$icon-share});
+  color: $ink;
+  cursor: pointer;
+  translate: 0 -50%;
+  transition:
+    opacity $state-change,
+    scale $state-change;
+
+  &--previous {
+    left: var(--inset);
+  }
+
+  &--next {
+    right: var(--inset);
+  }
+
+  &:hover:not(:disabled) {
+    scale: $hover-scale;
+  }
+
+  &:focus-visible {
+    @include ink-focus-ring(2px);
+  }
+
+  &:disabled {
+    opacity: $disabled-opacity;
+    cursor: default;
+  }
+}
