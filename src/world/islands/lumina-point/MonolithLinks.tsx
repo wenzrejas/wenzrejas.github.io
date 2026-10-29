@@ -1,4 +1,5 @@
 import { useFrame } from '@react-three/fiber'
+import { earnAchievement } from '@/store/achievementStore'
 import { openInNewTab } from '@/utils/links'
 import { setHovered } from '@/interaction/hover'
 import InteractionMarker from '@/interaction/InteractionMarker'
@@ -18,7 +19,10 @@ export default function MonolithLinks({ monoliths }: MonolithLinksProps) {
       position={monolith.marker}
       label={monolith.label}
       onHover={(isHovered) => setHovered(monolith, isHovered)}
-      onActivate={() => openInNewTab(monolith.link)}
+      onActivate={() => {
+        openInNewTab(monolith.link)
+        earnAchievement('followingTheLights')
+      }}
       shipReach={MONOLITH_SHIP_REACH}
     />
   ))

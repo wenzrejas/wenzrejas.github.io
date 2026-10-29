@@ -106,6 +106,12 @@ export const SOUNDS = {
     channel: 'sfx',
     volume: 0.03,
   },
+  achievementPop: {
+    url: '/audio/sfx/achievement-pop.webm',
+    fallback: '/audio/sfx/achievement-pop.mp3',
+    channel: 'sfx',
+    volume: 0.05,
+  },
   pacificTune: {
     url: '/audio/bgm/pacific-melody.webm',
     fallback: '/audio/bgm/pacific-melody.mp3',

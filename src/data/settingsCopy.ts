@@ -101,7 +101,7 @@ export const SETTINGS_COPY = {
     tab: 'About',
     nameSeparator: ' · ',
     description:
-      'A hand-built sea to sail through. Each island holds a part of my story: the work I have made, the tools I use, and a lighthouse to send me a message.',
+      'Every island has a story, and every journey leaves something behind. This little world is a reflection of my journey as a developer — built with curiosity, shaped by experimentation, and brought to life through code. Take the helm and explore.',
     credits: [
       {
         heading: 'Built With',

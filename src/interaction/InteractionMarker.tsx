@@ -10,6 +10,7 @@ import { isWorldScene, useViewStore } from '../store/viewStore'
 import { uniformsOf } from '../utils/meshes'
 import {
   INTERACTION_LAYER,
+  MARKER_COLOR,
   MARKER_LABEL_SLIDE,
   MARKER_LABEL_SPRING,
   MARKER_PIXELS,
@@ -24,17 +25,22 @@ import './InteractionMarker.scss'
 interface InteractionMarkerProps {
   position: Vector3
   label: string
+  description?: string
   onHover?: (isHovered: boolean) => void
   onActivate?: (markerSpot: THREE.Vector3) => void
   shipReach?: number
   baseGap?: (x: number, z: number) => number
 }
 
-const LABEL_REACH = { '--marker-reach': `${MARKER_PIXELS * MARKER_RING_OUTER}px` } as CSSProperties
+const LABEL_STYLE = {
+  '--marker-reach': `${MARKER_PIXELS * MARKER_RING_OUTER}px`,
+  '--marker-color': MARKER_COLOR,
+} as CSSProperties
 
 export default function InteractionMarker({
   position,
   label,
+  description,
   onHover,
   onActivate,
   shipReach,
@@ -105,9 +111,15 @@ export default function InteractionMarker({
         renderOrder={RENDER_LAYER.markers}
       />
       <Html pointerEvents="none">
-        <div className="interaction-marker" style={LABEL_REACH}>
+        <div className="interaction-marker" style={LABEL_STYLE}>
           <animated.span className="interaction-marker__label" style={{ opacity, x }}>
             {label}
+            {description && (
+              <>
+                <span className="interaction-marker__separator" aria-hidden="true" />
+                <span className="interaction-marker__description">{description}</span>
+              </>
+            )}
           </animated.span>
         </div>
       </Html>

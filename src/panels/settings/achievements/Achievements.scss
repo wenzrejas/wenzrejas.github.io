@@ -1,0 +1,232 @@
+@use '@/styles/parchment' as *;
+
+$seal-size: 2.25rem;
+$bar-height: 4px;
+$group-gap: 1.25rem;
+$locked-opacity: 0.6;
+$eyebrow-letter-spacing: 0.2em;
+$tally-font-size: 0.8rem;
+$swatch-size: 2.5rem;
+$swatch-radius: 4px;
+$swatch-edge: rgba($ink, 0.45);
+$livery-gap: 0.5rem;
+$locked-livery-opacity: 0.4;
+$wax-light: #c24a3b;
+$wax-dark: #6b1a13;
+$wax-rim: rgba(255, 214, 196, 0.38);
+$seal-rim-inset: 16%;
+$seal-ornament-inset: 34%;
+$seal-line-weight: 1.5px;
+
+.achievements {
+  &__rank {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    row-gap: 0.35rem;
+    margin-bottom: 0.6rem;
+    padding: 1.5rem;
+  }
+
+  &__eyebrow,
+  &__heading {
+    font-family: var(--font-secondary);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: $eyebrow-letter-spacing;
+    text-transform: uppercase;
+    color: $ink-soft;
+  }
+
+  &__tally,
+  &__next-rank,
+  &__description {
+    font-family: var(--font-secondary);
+    font-size: $base-font-size;
+    color: $ink-soft;
+  }
+
+  &__tally {
+    font-size: $tally-font-size;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+  }
+
+  &__rank-name,
+  &__bar,
+  &__next-rank {
+    grid-column: 1 / -1;
+  }
+
+  &__rank-name {
+    @include handwritten;
+    font-size: 1.7rem;
+    font-weight: 400;
+    line-height: 1.15;
+    color: $ink;
+  }
+
+  &__bar {
+    --filled: calc(var(--rank-share) * 100%);
+
+    height: $bar-height;
+    margin-top: 0.2rem;
+    border-radius: $bar-height;
+    background: linear-gradient(90deg, $wax-red var(--filled), $ink-faint var(--filled));
+  }
+
+  &__livery-row {
+    padding: 0.4rem 1.5rem;
+  }
+
+  &__liveries {
+    grid-column: 2 / -1;
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: $livery-gap;
+  }
+
+  &__livery {
+    display: grid;
+    align-content: start;
+    justify-items: center;
+    row-gap: 0.35rem;
+    border: none;
+    background: none;
+    font-family: var(--font-secondary);
+    font-size: 0.78rem;
+    line-height: 1.2;
+    text-align: center;
+    color: $ink-soft;
+    cursor: pointer;
+    transition: color $state-change;
+
+    &:hover {
+      color: $ink;
+    }
+
+    &:focus-visible {
+      @include ink-focus-ring(2px);
+    }
+
+    &[aria-pressed='true'] {
+      font-weight: 600;
+      color: $wax-red;
+    }
+
+    &:disabled {
+      opacity: $locked-livery-opacity;
+      cursor: not-allowed;
+    }
+  }
+
+  &__swatch {
+    width: $swatch-size;
+    height: $swatch-size;
+    border: 1px solid $swatch-edge;
+    border-radius: $swatch-radius;
+    background: linear-gradient(135deg, var(--cloth) 50%, var(--accent) 50%);
+  }
+
+  &__livery[aria-pressed='true'] &__swatch {
+    outline: 2px solid $wax-red;
+    outline-offset: 2px;
+  }
+
+  &__note {
+    display: grid;
+    row-gap: 0.4rem;
+    margin-bottom: 0.6rem;
+    padding: 0.8rem 1rem;
+    @include card-frame;
+    font-family: var(--font-secondary);
+    font-size: $base-font-size;
+    line-height: 1.5;
+    color: $ink;
+  }
+
+  &__note-heading {
+    @include handwritten;
+    font-size: 1.3rem;
+    font-weight: 400;
+  }
+
+  &__group {
+    margin-top: $group-gap;
+  }
+
+  &__heading {
+    padding-bottom: 0.35rem;
+    border-bottom: 1px solid $ink-faint;
+  }
+
+  &__list {
+    list-style: none;
+  }
+
+  &__item {
+    display: grid;
+    grid-template-columns: $seal-size minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 0.9rem;
+    padding: 0.55rem 0;
+  }
+
+  &__seal {
+    position: relative;
+    width: $seal-size;
+    height: $seal-size;
+    border-radius: 50%;
+    background: radial-gradient(circle at 36% 32%, $wax-light, $wax-red 48%, $wax-dark);
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: $seal-rim-inset;
+      border: $seal-line-weight solid $wax-rim;
+      border-radius: 50%;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: $seal-ornament-inset;
+      background: url($diamond-ornament) center / contain no-repeat;
+    }
+
+    &--blank {
+      border: $seal-line-weight dashed $ink-faint;
+      background: none;
+
+      &::before {
+        border-color: $ink-faint;
+      }
+
+      &::after {
+        opacity: 0.4;
+      }
+    }
+  }
+
+  &__text {
+    display: grid;
+    row-gap: 0.1rem;
+  }
+
+  &__title {
+    font-family: var(--font-accent);
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    line-height: 1.25;
+    color: $ink;
+  }
+
+  &__description {
+    line-height: 1.4;
+  }
+
+  &__item--locked &__text {
+    opacity: $locked-opacity;
+  }
+}

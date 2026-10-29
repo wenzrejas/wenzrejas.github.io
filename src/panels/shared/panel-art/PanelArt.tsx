@@ -15,9 +15,17 @@ import './PanelArt.scss'
 
 interface PanelArtProps {
   splashUrl: string
+  zoom?: number
 }
 
-export default function PanelArt({ splashUrl }: PanelArtProps) {
+const zoomedPainting = (zoom: number) => ({
+  x: PAINTING.x - (PAINTING.width * (zoom - 1)) / 2,
+  y: PAINTING.y - (PAINTING.height * (zoom - 1)) / 2,
+  width: PAINTING.width * zoom,
+  height: PAINTING.height * zoom,
+})
+
+export default function PanelArt({ splashUrl, zoom = 1 }: PanelArtProps) {
   const baseId = useSvgId()
   const raggedId = `${baseId}-ragged`
   const washId = `${baseId}-wash`
@@ -77,7 +85,7 @@ export default function PanelArt({ splashUrl }: PanelArtProps) {
             : 'panel-art__painting'
         }
         href={splashUrl}
-        {...PAINTING}
+        {...zoomedPainting(zoom)}
         mask={isPaintingLoaded ? `url(#${washId})` : undefined}
         onLoad={() => setPaintingLoaded(true)}
       />

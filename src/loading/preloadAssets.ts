@@ -1,3 +1,4 @@
+import { ACHIEVEMENT_BADGE_URL } from '@/achievements/constants'
 import { audio } from '@/audio/audioManager'
 import { openingMusic } from '@/audio/musicDirector'
 import type { SoundName } from '@/audio/sounds'
@@ -35,6 +36,7 @@ async function preload() {
     preloadFonts(),
     preloadMascotSheets(),
     ...Object.values(CARTOUCHE_ART_URLS).map(decodeImage),
+    decodeImage(ACHIEVEMENT_BADGE_URL),
     audio.preloadBuffers(),
     ...openingStreams().map((name) => audio.preload(name)),
   ])

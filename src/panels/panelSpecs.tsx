@@ -6,7 +6,7 @@ import { SETTINGS_COPY } from '@/data/settingsCopy'
 import type { GroveKey, PanelKey, ProjectKey } from '@/store/panelStore'
 import { CONTACT_SPLASH_URL } from './contact/constants'
 import ContactContent from './contact/ContactContent'
-import { PROJECT_SPLASH_URL } from './project/constants'
+import { PROJECT_SHOWCASES, PROJECT_SPLASH_ZOOM } from './project/constants'
 import ProjectContent from './project/ProjectContent'
 import SettingsContent from './settings/SettingsContent'
 import { SUPPORT_SPLASH_URL } from './support/constants'
@@ -17,6 +17,7 @@ interface PanelSpec {
   title: string
   subtitle: string
   splashUrl?: string
+  splashZoom?: number
   isCentered?: boolean
   Content: ComponentType
 }
@@ -31,7 +32,8 @@ const groveSpec = (grove: GroveKey): PanelSpec => ({
 const projectSpec = (project: ProjectKey): PanelSpec => ({
   title: PROJECT_COPY[project],
   subtitle: PROJECT_STORIES[project].tagline,
-  splashUrl: PROJECT_SPLASH_URL,
+  splashUrl: PROJECT_SHOWCASES[project].splashUrl,
+  splashZoom: PROJECT_SPLASH_ZOOM,
   Content: () => <ProjectContent project={project} />,
 })
 

@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import { CAMERA_OFFSET } from '@/app/experience/constants'
+import { earnAchievement } from '@/store/achievementStore'
 import { useCoastStore } from '@/store/coastStore'
 import { useDebugStore } from '@/store/debugStore'
 import { closePanel } from '@/store/panelStore'
@@ -87,4 +88,5 @@ export function sailTo(island: IslandKey) {
   leaveDepths()
   placeShip(arrival.x, arrival.z, arrival.heading)
   closeWorldMap()
+  earnAchievement('chartedCourse')
 }

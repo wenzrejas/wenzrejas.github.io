@@ -43,5 +43,6 @@ export const ISLAND_REMARKS: Record<IslandKey, RemarkKey> = {
 export const ONCE_EVER_REMARKS: RemarkKey[] = [
   'openedWorldMap',
   'ridingTheWind',
+  'sentMessage',
   ...Object.values(ISLAND_REMARKS),
 ]

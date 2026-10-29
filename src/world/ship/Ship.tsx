@@ -7,6 +7,7 @@ import { useShipMovement } from './useShipMovement'
 import { useHullFoam } from './useHullFoam'
 import { useShipRig } from './useShipRig'
 import { useShipGlow } from './shipGlow'
+import { useShipLivery } from './useShipLivery'
 import { traceHullOutline, type HullOutline } from './hullOutline'
 import Slipstream from './Slipstream'
 
@@ -28,6 +29,7 @@ const Ship = forwardRef<THREE.Group, ShipProps>(({ hullOutlineRef }, ref) => {
   const foam = useHullFoam(groupRef, heading, lean, hullOutline)
   useShipRig(rig, heading, steering, tailwind)
   useShipGlow(glows)
+  useShipLivery()
 
   useEffect(() => {
     hullOutlineRef.current = hullOutline

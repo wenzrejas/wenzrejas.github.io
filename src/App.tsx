@@ -1,4 +1,5 @@
 import { lazy, Suspense } from 'react'
+import Achievements from './achievements/Achievements'
 import Experience from './app/experience/Experience'
 import IslandTitle from './world/islands/shared/IslandTitle'
 import { IS_DEBUG } from './app/experience/constants'
@@ -28,6 +29,7 @@ export default function App() {
       <Hud />
       <HudMenu />
       <Guide />
+      <Achievements />
       <Panels />
       <WorldMap />
       <LoadingScreen />

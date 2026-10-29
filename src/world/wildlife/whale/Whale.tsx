@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { buildFlatQuad } from '@/utils/geometry'
+import { earnAchievement } from '@/store/achievementStore'
 import { eventDelta } from '@/store/cinematicStore'
 import { useCycleStore } from '@/store/cycleStore'
 import { useDebugStore } from '@/store/debugStore'
@@ -125,6 +126,7 @@ export default function Whale() {
       const snoutAhead = Math.cos(current.pitch) * snoutReach
       const leaving = breaching && current.prevSnoutY < 0 && snoutY >= 0
       const entering = breaching && current.prevSnoutY > 0 && snoutY <= 0
+      if (leaving) earnAchievement('tharSheBlows')
       if (leaving || entering) {
         emitBreachSplash(
           foam,

@@ -44,6 +44,7 @@ export default function BuildshoreProjects({
           key={site.key}
           position={site.marker}
           label={site.label}
+          description={site.description}
           onHover={(isHovered) => setHovered(hovers[site.key], isHovered)}
           onActivate={(markerSpot) => openPanel(site.key, markerSpot)}
           baseGap={site.baseGap}

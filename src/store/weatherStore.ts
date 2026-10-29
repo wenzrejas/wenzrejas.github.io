@@ -39,6 +39,8 @@ export function requestClearSkies() {
   useWeatherStore.getState().wantsClearSkies = true
 }
 
+export const isRainyWeather = () => useWeatherStore.getState().type === 'rainy'
+
 export function isRaining(): boolean {
   const { type, rainIntensity } = useWeatherStore.getState()
   return type === 'rainy' || rainIntensity > RAIN_CUTOFF

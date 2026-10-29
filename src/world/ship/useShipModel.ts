@@ -5,6 +5,7 @@ import { MODEL_BOW_OFFSET, SHIP_MODEL_URL } from './constants'
 import { applyCloudShadow } from '../environment/weather/cloudShadow'
 import type { GlowTarget } from '../islands/shared/nightGlow'
 import { applyBrightness, type TintTarget } from '../islands/shared/islandModel'
+import { dressLivery } from './liveryModel'
 import { buildShipRig } from './shipRigModel'
 
 export function useShipModel(brightness: number) {
@@ -25,6 +26,7 @@ export function useShipModel(brightness: number) {
       if (cached) return cached
       const mat = m.clone() as THREE.MeshStandardMaterial
       applyCloudShadow(mat)
+      dressLivery(mat)
       if (mat.map) {
         mat.map.magFilter = THREE.NearestFilter
         mat.map.minFilter = THREE.NearestMipmapNearestFilter

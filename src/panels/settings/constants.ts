@@ -1,3 +1,5 @@
+import { RANKS } from '@/achievements/constants'
+import type { LiveryKey } from '@/world/ship/constants'
 import type {
   ChosenTime,
   ChosenWeather,
@@ -32,6 +34,7 @@ export const WEATHER_CHOICES: readonly ChosenWeather[] = [
 export const DAY_LENGTH_CHOICES: readonly DayLength[] = ['short', 'normal', 'long']
 export const WILDLIFE_CHOICES: readonly WildlifeActivity[] = ['calm', 'normal', 'lively']
 export const SAILING_CHOICES: readonly SailingSpeed[] = ['leisurely', 'normal', 'brisk']
+export const LIVERY_CHOICES: readonly LiveryKey[] = RANKS.map((step) => step.livery)
 
 // ── Volume ────────────────────────────────────────────────────────────────────
 export const VOLUME_STEP = 0.05

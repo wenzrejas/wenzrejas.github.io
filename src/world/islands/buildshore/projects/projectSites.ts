@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { PROJECT_COPY } from '@/data/islandCopy'
+import { PROJECT_COPY, PROJECT_MARKER_DESCRIPTIONS } from '@/data/islandCopy'
 import type { ProjectKey } from '@/store/panelStore'
 import { footprintGap, type Footprint } from '@/interaction/baseFootprint'
 import { BASE_FOOTPRINT_SECTORS } from '@/interaction/constants'
@@ -18,6 +18,7 @@ import {
 interface ProjectSite {
   key: ProjectKey
   label: string
+  description: string
   marker: THREE.Vector3
   baseGap: (x: number, z: number) => number
 }
@@ -114,6 +115,7 @@ export function findProjectSites(model: THREE.Object3D, coast: DistanceField): P
     return {
       key: landmark.key,
       label: PROJECT_COPY[landmark.key],
+      description: PROJECT_MARKER_DESCRIPTIONS[landmark.key],
       marker: landmark.marker,
       baseGap: (x, z) =>
         isClosestOnIsland(landmark, neighbours, model, x, z)

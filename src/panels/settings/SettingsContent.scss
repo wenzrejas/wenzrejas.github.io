@@ -1,8 +1,11 @@
+@use 'sass:meta';
+@use 'sass:string';
 @use '@/styles/parchment' as *;
 
 $label-width: 9.5rem;
 $value-width: 2.4rem;
 $row-height: 2.6rem;
+$row-padding: 0.4rem;
 $track-height: 4px;
 $thumb-size: 18px;
 $choice-min-width: 4.5rem;
@@ -11,7 +14,7 @@ $pane-mist-reach: 3.5rem;
 $pane-mist-ramp: 3;
 
 $chosen-fill: 'f5dcbb';
-$chosen-edge: '704624';
+$chosen-edge: string.slice(meta.inspect($wax-red), 2);
 
 $tab-letter-spacing: 0.2em;
 $tab-faded-ink: rgba($ink-soft, 0.62);
@@ -80,6 +83,7 @@ $tab-bar-height: 2px;
     align-items: center;
     column-gap: 1rem;
     min-height: $row-height;
+    padding-block: $row-padding;
   }
 
   &__label {
@@ -128,7 +132,7 @@ $tab-bar-height: 2px;
     &[aria-pressed='true'] {
       border-image-source: card-frame-image(0.9, $chosen-fill, $chosen-edge, 0.95);
       font-weight: 600;
-      color: $ink;
+      color: $wax-red;
     }
 
     &--warning,
@@ -161,7 +165,7 @@ $tab-bar-height: 2px;
     &::-webkit-slider-runnable-track {
       height: $track-height;
       border-radius: $track-height;
-      background: linear-gradient(90deg, $ink-soft var(--filled), $ink-faint var(--filled));
+      background: linear-gradient(90deg, $wax-red var(--filled), $ink-faint var(--filled));
     }
 
     &::-webkit-slider-thumb {
@@ -182,7 +186,7 @@ $tab-bar-height: 2px;
     &::-moz-range-progress {
       height: $track-height;
       border-radius: $track-height;
-      background: $ink-soft;
+      background: $wax-red;
     }
 
     &::-moz-range-thumb {

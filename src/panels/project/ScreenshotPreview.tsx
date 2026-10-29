@@ -57,28 +57,28 @@ export default function ScreenshotPreview({
           src={screenshots[index]}
           alt={PROJECT_PANEL_COPY.screenshot}
         />
-        {screenshots.length > 1 && (
-          <>
-            <ArrowButton
-              direction="previous"
-              label={PROJECT_PANEL_COPY.previousScreenshot}
-              isDisabled={!hasPrevious}
-              onClick={() => showNeighbor(-1)}
-            />
-            <ArrowButton
-              direction="next"
-              label={PROJECT_PANEL_COPY.nextScreenshot}
-              isDisabled={!hasNext}
-              onClick={() => showNeighbor(1)}
-            />
-          </>
-        )}
-        <CloseButton
-          className="screenshot-preview__close"
-          label={PANEL_COPY.close}
-          onClose={onClose}
-        />
       </figure>
+      <CloseButton
+        className="screenshot-preview__close"
+        label={PANEL_COPY.close}
+        onClose={onClose}
+      />
+      {screenshots.length > 1 && (
+        <>
+          <ArrowButton
+            direction="previous"
+            label={PROJECT_PANEL_COPY.previousScreenshot}
+            isDisabled={!hasPrevious}
+            onClick={() => showNeighbor(-1)}
+          />
+          <ArrowButton
+            direction="next"
+            label={PROJECT_PANEL_COPY.nextScreenshot}
+            isDisabled={!hasNext}
+            onClick={() => showNeighbor(1)}
+          />
+        </>
+      )}
     </div>,
     document.body
   )

@@ -4,7 +4,7 @@ $highlight-ornament-size: 9px;
 
 .project-chapter {
   &__title {
-    @include handwritten;
+    font-family: var(--font-primary);
     font-size: 1.4rem;
     font-weight: 700;
     line-height: 1.25;
@@ -21,7 +21,7 @@ $highlight-ornament-size: 9px;
 
   &__highlights-title {
     margin-top: 1.1rem;
-    @include handwritten;
+    font-family: var(--font-primary);
     font-size: 1.15rem;
     font-weight: 700;
     color: $ink;

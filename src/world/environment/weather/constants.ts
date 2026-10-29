@@ -101,3 +101,4 @@ export const SPARKLE_VISIBLE_LEVEL = 0.005
 // ── Rain ──────────────────────────────────────────────────────────────────────
 export const RAIN_DROPS = 600
 export const RAIN_VISIBLE_LEVEL = 0.01
+export const RAIN_SHOWN_INTENSITY = 0.15

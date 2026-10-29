@@ -6,6 +6,7 @@ import {
   CLEAR_SKIES_TRANSITION,
   CLEARED_WEATHER,
   CLOUD_DRIFT_SPEED,
+  RAIN_SHOWN_INTENSITY,
   STABLE_MIN,
   STARTING_WEATHER,
   TRANSITION,
@@ -106,12 +107,13 @@ export function blendWeather(weather: WeatherState, cycle: WeatherCycle) {
   const from = WEATHER_PARAMS[cycle.current]
   const to = WEATHER_PARAMS[cycle.next]
 
-  weather.type = progress > 0.5 ? cycle.next : cycle.current
   weather.lightMult = mix(from.lightMult, to.lightMult, eased)
   weather.moonMult = mix(from.moonMult, to.moonMult, eased)
   weather.waveAmpMult = mix(from.waveAmpMult, to.waveAmpMult, eased)
   weather.windMult = mix(from.windMult, to.windMult, eased)
   weather.rainIntensity = mix(from.rainIntensity, to.rainIntensity, eased)
+  const dominant = progress > 0.5 ? cycle.next : cycle.current
+  weather.type = weather.rainIntensity >= RAIN_SHOWN_INTENSITY ? 'rainy' : dominant
   weather.overcastAmount = mix(from.overcastAmount, to.overcastAmount, eased)
   weather.cloudShadow = mix(from.cloudShadow, to.cloudShadow, eased)
 }

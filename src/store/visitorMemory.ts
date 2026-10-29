@@ -6,6 +6,7 @@ const MEMORY_KEYS = {
   revealedIslands: 'revealed-islands',
   heardRemarks: 'heard-remarks',
   heardDialogues: 'heard-dialogues',
+  achievements: 'achievements',
   settings: 'settings',
 }
 
@@ -16,6 +17,7 @@ const PROGRESS_MEMORIES: Memory[] = [
   'revealedIslands',
   'heardRemarks',
   'heardDialogues',
+  'achievements',
 ]
 
 const storedItems = (memory: Memory) => (readStored(MEMORY_KEYS[memory]) ?? '').split(',')

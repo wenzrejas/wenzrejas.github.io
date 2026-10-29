@@ -6,7 +6,7 @@ $highlight-change: 0.35s ease;
 $dimmed-island-opacity: 0.5;
 $faded-rock-opacity: 0.75;
 $faded-rock-filter: grayscale(0.45) sepia(0.35) contrast(0.9);
-$muted-island-filter: saturate(0.45) contrast(0.88) sepia(0.24);
+$muted-island-filter: contrast(0.7) sepia(0.2);
 $raised-island-scale: 1.06;
 
 @property --mist-reveal {

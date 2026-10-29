@@ -257,6 +257,18 @@ const REACHED_COZY_ISLE: DialoguePage[] = [
   },
 ]
 
+// ── Remarks (Lumina Point) ────────────────────────────────────────────────────
+const SENT_MESSAGE: DialoguePage[] = [
+  {
+    mood: 'excited',
+    lines: [
+      'Look at that beam go!',
+      'Your message is on its way to Wenz.',
+      "I'm sure he'll be glad to hear from you.",
+    ],
+  },
+]
+
 // ── Depths ────────────────────────────────────────────────────────────────────
 const ARRIVED_IN_DEPTHS: DialoguePage[] = [
   {
@@ -289,7 +301,58 @@ const LANDED_AT_THE_CLOCK: DialoguePage[] = [
   },
 ]
 
+// ── Promotions (achievement ranks) ────────────────────────────────────────────
+const PROMOTED_TO_DECKHAND: DialoguePage[] = [
+  {
+    mood: 'achievement',
+    lines: ["You've made Deckhand!", 'Fresh sail colors are waiting in Settings.'],
+  },
+]
+
+const PROMOTED_TO_NAVIGATOR: DialoguePage[] = [
+  {
+    mood: 'achievement',
+    lines: ['Navigator, is it? Look at you go!', 'New sail colors are waiting in Settings.'],
+  },
+]
+
+const PROMOTED_TO_FIRST_MATE: DialoguePage[] = [
+  {
+    mood: 'achievement',
+    lines: [
+      'First Mate! I knew you had it in you.',
+      'Another set of sails is waiting in Settings.',
+    ],
+  },
+]
+
+const PROMOTED_TO_CAPTAIN: DialoguePage[] = [
+  {
+    mood: 'achievement',
+    lines: ['Captain on deck!', 'The finest sails are yours now. Have a look in Settings.'],
+  },
+]
+
+const PROMOTED_TO_LEGEND: DialoguePage[] = [
+  {
+    mood: 'achievement',
+    lines: [
+      'A Legend of the Seas!',
+      "You've found every secret out here.",
+      'Wenz left you something in Settings.',
+    ],
+  },
+]
+
 // ── Dialogues ─────────────────────────────────────────────────────────────────
+const PROMOTIONS = {
+  promotedToDeckhand: PROMOTED_TO_DECKHAND,
+  promotedToNavigator: PROMOTED_TO_NAVIGATOR,
+  promotedToFirstMate: PROMOTED_TO_FIRST_MATE,
+  promotedToCaptain: PROMOTED_TO_CAPTAIN,
+  promotedToLegend: PROMOTED_TO_LEGEND,
+} satisfies Record<string, DialoguePage[]>
+
 const REMARKS = {
   welcomeBack: WELCOME_BACK,
   sunrise: SUNRISE,
@@ -311,12 +374,14 @@ const REMARKS = {
   reachedTimewell: REACHED_TIMEWELL,
   reachedLuminaPoint: REACHED_LUMINA_POINT,
   reachedCozyIsle: REACHED_COZY_ISLE,
+  sentMessage: SENT_MESSAGE,
 } satisfies Record<string, DialoguePage[]>
 
 export const DIALOGUES = {
   introduction: [...A_NEW_VISITOR, ...MEET_THE_CREATOR, ...LEARN_TO_SAIL, ...SET_SAIL],
   arrivedInDepths: ARRIVED_IN_DEPTHS,
   landedAtTheClock: LANDED_AT_THE_CLOCK,
+  ...PROMOTIONS,
   ...REMARKS,
 } satisfies Record<string, DialoguePage[]>
 

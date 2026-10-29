@@ -1,0 +1,57 @@
+@use '@/styles/parchment' as *;
+@use '@/styles/typography';
+
+$toast-top: 5.5rem;
+$toast-width: 24rem;
+$badge-width: 3.75rem;
+$paper-fill: 'f3e2c0';
+$paper-edge: '8c5a30';
+
+.achievement-toast {
+  position: fixed;
+  top: $toast-top;
+  left: 50%;
+  z-index: 88;
+  display: grid;
+  grid-template-columns: $badge-width minmax(0, 1fr);
+  align-items: center;
+  column-gap: 0.9rem;
+  width: $toast-width;
+  padding: 0.55rem 0.9rem;
+  translate: -50% 0;
+  @include card-frame;
+  border-image-source: card-frame-image(0.97, $paper-fill, $paper-edge, 0.85);
+  pointer-events: none;
+
+  &__badge {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  &__text {
+    display: grid;
+    row-gap: 0.15rem;
+  }
+
+  &__eyebrow {
+    @include typography.spaced-caps;
+    color: $ink-soft;
+  }
+
+  &__title {
+    font-family: var(--font-accent);
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    line-height: 1.25;
+    color: $ink;
+  }
+
+  &__description {
+    font-family: var(--font-secondary);
+    font-size: 0.9rem;
+    line-height: 1.35;
+    color: $ink-soft;
+  }
+}

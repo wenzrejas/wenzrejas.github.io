@@ -59,6 +59,24 @@ export const LANTERN_PITCH_RATE = 1.6
 export const LANTERN_ROLL_ANGLE = 0.06
 export const LANTERN_ROLL_RATE = 1.1
 
+// ── Livery (red accents on canvas and hull, white cloth on canvas only) ──────
+export const CANVAS_MATERIAL = 'Canvas_VertexColor'
+export const SURFACE_MATERIAL = 'Surface_VertexColor'
+export const LIVERY_ACCENT_REDNESS = 0.4
+export const LIVERY_ACCENT_REFERENCE = 0.78
+export const LIVERY_CLOTH_WHITENESS = 0.8
+export const LIVERY_CLOTH_REFERENCE = 0.94
+export const ORIGINAL_CANVAS = { cloth: '#f8f8f5', accent: '#dd7266' }
+export const SHIP_LIVERIES = {
+  original: null,
+  seafoam: { cloth: '#f4f1e6', accent: '#2a9d8f' },
+  crimson: { cloth: '#2e2a2b', accent: '#a3231c' },
+  midnight: { cloth: '#22304f', accent: '#d9a63a' },
+  royal: { cloth: '#efe4c8', accent: '#2c4f9e' },
+  gilded: { cloth: '#e6bf55', accent: '#9a6a1c' },
+} satisfies Record<string, { cloth: string; accent: string } | null>
+export type LiveryKey = keyof typeof SHIP_LIVERIES
+
 // ── Ship physics ──────────────────────────────────────────────────────────────
 export const BASE_Y = -3
 export const BOB_AMP = 0.7

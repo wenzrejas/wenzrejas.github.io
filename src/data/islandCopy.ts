@@ -51,6 +51,15 @@ export const PROJECT_COPY: Record<ProjectKey, string> = {
   qoves: 'Qoves',
 }
 
+export const PROJECT_MARKER_DESCRIPTIONS: Record<ProjectKey, string> = {
+  beeSigned: 'An e-signature app for Australian businesses',
+  chooChooChain: 'A 3D arcade game built for Three.js Journey',
+  paymentsManager: 'A billing and payments app for businesses',
+  uiuxWorks: 'Interfaces I designed, from wireframe to final screen',
+  gelify: "Engagis's Angular framework and template builder",
+  qoves: 'A facial aesthetics platform and member portal',
+}
+
 export const DESIGN_CANVAS_COPY = {
   layerName: 'Gem',
   layerSize: '120 × 160',

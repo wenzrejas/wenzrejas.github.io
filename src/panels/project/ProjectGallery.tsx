@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { earnAchievement } from '@/store/achievementStore'
 import { GALLERY_MIN_SLOT_COUNT } from './constants'
 import GalleryShot from './GalleryShot'
 import ScreenshotCarousel from './ScreenshotCarousel'
@@ -14,14 +15,19 @@ export default function ProjectGallery({ screenshots }: ProjectGalleryProps) {
   const slotCount = Math.max(GALLERY_MIN_SLOT_COUNT, screenshots.length)
   const thumbnailUrls = Array.from({ length: slotCount - 1 }, (_, i) => screenshots[i + 1])
 
+  const expandShot = (index: number) => {
+    showPreview(index)
+    earnAchievement('closerLook')
+  }
+
   return (
     <>
       <div className="project-gallery">
-        <GalleryShot url={screenshots[0]} onExpand={() => showPreview(0)} />
+        <GalleryShot url={screenshots[0]} onExpand={() => expandShot(0)} />
         <ScreenshotCarousel>
           {thumbnailUrls.map((url, i) => (
             <li key={i}>
-              <GalleryShot url={url} onExpand={() => showPreview(i + 1)} />
+              <GalleryShot url={url} onExpand={() => expandShot(i + 1)} />
             </li>
           ))}
         </ScreenshotCarousel>

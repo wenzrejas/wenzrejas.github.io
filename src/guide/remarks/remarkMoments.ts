@@ -29,6 +29,9 @@ export interface WorldReading {
   nearbyIsland: IslandKey | null
   isMapUnfolded: boolean
   isWorldPaused: boolean
+  isSkyBeamActive: boolean
+  shipX: number
+  shipZ: number
   shipSpeed: number
   shipHeading: number
   shipPlacements: number
@@ -97,6 +100,7 @@ export function noticeMoment(
   const nearby = world.nearbyIsland
   if (island && island !== previous.revealingIsland) return ISLAND_REMARKS[island]
   if (world.isMapUnfolded && !previous.isMapUnfolded) return 'openedWorldMap'
+  if (world.isSkyBeamActive && !previous.isSkyBeamActive) return 'sentMessage'
   if (nearby && nearby !== previous.nearbyIsland && nearby !== island) return 'familiarIsland'
   if (passed(SUNRISE_TIME) && !world.isRaining) return 'sunrise'
   if (passed(SUNSET_TIME)) return 'sunset'

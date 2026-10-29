@@ -1,13 +1,14 @@
 import type { ProjectKey } from '@/store/panelStore'
 import type { ToolKey } from '../shared/tool-grid/constants'
 
-export const PROJECT_SPLASH_URL = '/images/panels/lumina-point.webp'
+export const PROJECT_SPLASH_ZOOM = 1.25
 
 export const GALLERY_MIN_SLOT_COUNT = 4
 export const CAROUSEL_EDGE_SLACK_PIXELS = 1
 export const CAROUSEL_DRAG_THRESHOLD_PIXELS = 5
 
 interface ProjectShowcase {
+  splashUrl: string
   tools: ToolKey[]
   url?: string
   screenshots: string[]
@@ -15,6 +16,7 @@ interface ProjectShowcase {
 
 export const PROJECT_SHOWCASES: Record<ProjectKey, ProjectShowcase> = {
   beeSigned: {
+    splashUrl: '/images/splash-arts/beesigned.webp',
     tools: ['vue', 'javascript', 'symfony', 'html', 'css'],
     screenshots: [
       '/images/projects/beesigned/demo.gif',
@@ -24,6 +26,7 @@ export const PROJECT_SHOWCASES: Record<ProjectKey, ProjectShowcase> = {
     ],
   },
   chooChooChain: {
+    splashUrl: '/images/splash-arts/choo-choo-chain.webp',
     tools: ['react', 'typescript', 'threejs', 'tailwind', 'gsap'],
     url: 'https://wenzrejas.github.io/choo-choo-chain/',
     screenshots: [
@@ -34,6 +37,7 @@ export const PROJECT_SHOWCASES: Record<ProjectKey, ProjectShowcase> = {
     ],
   },
   paymentsManager: {
+    splashUrl: '/images/splash-arts/payments-manager.webp',
     tools: ['angular', 'typescript', 'tailwind', 'scss', 'chartjs'],
     url: 'https://help.globalpayments.com/products/payments-manager-plus',
     screenshots: [
@@ -45,6 +49,7 @@ export const PROJECT_SHOWCASES: Record<ProjectKey, ProjectShowcase> = {
     ],
   },
   gelify: {
+    splashUrl: '/images/splash-arts/gelify.webp',
     tools: ['angular', 'typescript', 'scss', 'gsap', 'storybook'],
     url: 'https://engagis.com/impress-plus-software/',
     screenshots: [
@@ -57,10 +62,12 @@ export const PROJECT_SHOWCASES: Record<ProjectKey, ProjectShowcase> = {
     ],
   },
   uiuxWorks: {
+    splashUrl: '/images/splash-arts/uiux-works.webp',
     tools: ['figma', 'adobexd', 'illustrator', 'photoshop'],
     screenshots: [],
   },
   qoves: {
+    splashUrl: '/images/splash-arts/qoves.webp',
     tools: ['react', 'typescript', 'scss', 'gsap', 'recharts'],
     url: 'https://www.qoves.com/',
     screenshots: [

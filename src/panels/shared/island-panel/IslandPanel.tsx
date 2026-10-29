@@ -22,6 +22,7 @@ interface IslandPanelProps {
   title: string
   subtitle: string
   splashUrl?: string
+  splashZoom?: number
   isCentered?: boolean
   motion: SpringValues<SheetMotion>
   children: ReactNode
@@ -31,6 +32,7 @@ export default function IslandPanel({
   title,
   subtitle,
   splashUrl,
+  splashZoom,
   isCentered = false,
   motion,
   children,
@@ -84,7 +86,7 @@ export default function IslandPanel({
             >
               {splashUrl && (
                 <div className="island-panel__splash">
-                  <PanelArt splashUrl={splashUrl} />
+                  <PanelArt splashUrl={splashUrl} zoom={splashZoom} />
                 </div>
               )}
               <div className="island-panel__body">

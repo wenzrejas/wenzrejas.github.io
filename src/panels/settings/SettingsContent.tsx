@@ -5,6 +5,7 @@ import SettingsPane from './SettingsPane'
 import SettingsTabs from './SettingsTabs'
 import { SETTINGS_TABS, type SettingsTab } from './constants'
 import AboutTab from './tabs/AboutTab'
+import AchievementsTab from './tabs/AchievementsTab'
 import ControlsTab from './tabs/ControlsTab'
 import DisplayTab from './tabs/DisplayTab'
 import SoundTab from './tabs/SoundTab'
@@ -16,7 +17,7 @@ const TAB_PANES: Record<SettingsTab, ComponentType> = {
   display: DisplayTab,
   world: WorldTab,
   controls: ControlsTab,
-  achievements: () => null,
+  achievements: AchievementsTab,
   about: AboutTab,
 }
 

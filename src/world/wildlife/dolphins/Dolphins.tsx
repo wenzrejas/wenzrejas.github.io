@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { buildFlatQuad } from '@/utils/geometry'
+import { earnAchievement } from '@/store/achievementStore'
 import { eventDelta } from '@/store/cinematicStore'
 import { useCycleStore } from '@/store/cycleStore'
 import { useDebugStore } from '@/store/debugStore'
@@ -83,6 +84,7 @@ export default function Dolphins() {
   )
 
   const pod = useRef<Pod | null>(null)
+  const wasPresent = useRef(false)
   const checkTimer = useRef(FIRST_CHECK_DELAY)
   const foam = useMemo(() => new ParticlePool(FOAM_POOL), [])
   const drops = useMemo(() => new ParticlePool(DROP_POOL), [])
@@ -198,6 +200,8 @@ export default function Dolphins() {
       !pod.current.leaving &&
       pod.current.dolphins.some((dolphin) => dolphin.depth < FADE_START_DEPTH)
     updateDolphinCalls(present, dt)
+    if (present && !wasPresent.current) earnAchievement('podPals')
+    wasPresent.current = present
 
     body.count = count
     body.visible = count > 0

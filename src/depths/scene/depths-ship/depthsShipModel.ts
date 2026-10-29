@@ -3,6 +3,7 @@ import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { meshesOf } from '@/utils/meshes'
 import { applyBrightness } from '@/world/islands/shared/islandModel'
 import { MODEL_BOW_OFFSET, MODEL_BRIGHTNESS } from '@/world/ship/constants'
+import { dressLivery } from '@/world/ship/liveryModel'
 import { DEPTHS_SHIP_LENGTH } from './constants'
 
 export interface DepthsShipModel {
@@ -27,6 +28,7 @@ export function buildDepthsShip(source: THREE.Object3D): DepthsShipModel {
     const copy = material.clone() as THREE.MeshStandardMaterial
     copy.fog = false
     copy.transparent = true
+    dressLivery(copy)
     copies.set(material, copy)
     return copy
   }

@@ -36,12 +36,13 @@ export default function Panels() {
 
   return transitions((motion, key) => {
     if (!key) return null
-    const { title, subtitle, splashUrl, isCentered, Content } = PANEL_SPECS[key]
+    const { title, subtitle, splashUrl, splashZoom, isCentered, Content } = PANEL_SPECS[key]
     return (
       <IslandPanel
         title={title}
         subtitle={subtitle}
         splashUrl={splashUrl}
+        splashZoom={splashZoom}
         isCentered={isCentered}
         motion={motion}
       >

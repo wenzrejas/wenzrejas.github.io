@@ -6,6 +6,7 @@ import DialogueBox from './dialogue-box/DialogueBox'
 import Mascot from './mascot/Mascot'
 import { useRemarks } from './remarks/useRemarks'
 import { useDepthsDialogues } from './useDepthsDialogues'
+import { usePromotionRemarks } from './usePromotionRemarks'
 import './Guide.scss'
 
 export default function Guide() {
@@ -15,6 +16,7 @@ export default function Guide() {
 
   useRemarks()
   useDepthsDialogues()
+  usePromotionRemarks()
 
   useEffect(() => {
     if (!isLoaderGone || hasFinishedIntroduction) return
