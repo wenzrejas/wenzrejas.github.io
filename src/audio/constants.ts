@@ -52,3 +52,6 @@ export const SEAGULL_CHANCE = 0.4
 export const SEAGULL_COOLDOWN = 45
 export const SEAGULL_FADE_IN = 1.5
 export const SEAGULL_FADE_OUT = 2.5
+export const WHALE_JUMP_SPLASH_VOLUME = 0.5
+export const WHALE_JUMP_SPLASH_PITCH = 1.15
+export const WHALE_PLUNGE_SPLASH_PITCH = 0.8

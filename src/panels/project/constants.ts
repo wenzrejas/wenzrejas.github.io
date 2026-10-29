@@ -64,7 +64,12 @@ export const PROJECT_SHOWCASES: Record<ProjectKey, ProjectShowcase> = {
   uiuxWorks: {
     splashUrl: '/images/splash-arts/uiux-works.webp',
     tools: ['figma', 'adobexd', 'illustrator', 'photoshop'],
-    screenshots: [],
+    screenshots: [
+      '/images/projects/uiux-works/whodini.webp',
+      '/images/projects/uiux-works/dlist.webp',
+      '/images/projects/uiux-works/florakell.webp',
+      '/images/projects/uiux-works/schedrop.webp',
+    ],
   },
   qoves: {
     splashUrl: '/images/splash-arts/qoves.webp',

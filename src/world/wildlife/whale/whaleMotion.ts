@@ -2,54 +2,79 @@ import * as THREE from 'three'
 import { useShipStore } from '@/store/shipStore'
 import { rand, wrapAngle } from '@/utils/math'
 import { isOpenWater } from '@/world/islands/shared/islandZones'
+import { depthFade } from '../shared/wildlifeMaterial'
 import {
   ACCEL,
+  ARCH_SMOOTH,
   BANK_FACTOR,
   BANK_LIMIT,
   BANK_SMOOTH,
+  BLOW_COUNT,
+  BLOW_DEPTH,
+  BLOW_INTERVAL,
+  BLOW_LEAD,
+  BLOW_SPEED,
+  BLOWHOLE_OFFSET,
+  BREACH_ARCH,
   BREACH_CLEARANCE,
-  BREACH_DURATION,
+  BREACH_GRAVITY,
   BREACH_HEIGHT,
+  BREACH_PITCH_BOOST,
+  BREACH_PITCH_MAX,
   BREACH_ROLL,
   BREACH_SPEED,
   CHARGE_DEPTH,
   CHARGE_SPEED,
   CHARGE_TIME,
+  CROSSING_ANGLE_DEGREES,
+  CRUISE_PITCH_MAX,
   DAYLIGHT_FROM,
   DAYLIGHT_UNTIL,
+  DEPTH_GAIN,
+  DEPTH_REACHED,
+  DEPTH_SMOOTH,
   DIVE_RATE,
+  FADE_START_DEPTH,
+  FLIGHT_PITCH,
+  FLIGHT_PITCH_SMOOTH,
   GLIDE_DEPTH,
-  GLIDE_SPEED_MAX,
-  GLIDE_SPEED_MIN,
+  GLIDE_SPEED,
   HIDDEN_DEPTH,
   HOVER_TIME_MAX,
   HOVER_TIME_MIN,
   OFFSCREEN_GRACE,
   OPEN_WATER_GAP,
+  PITCH_SMOOTH,
   RISE_RATE,
+  ROLL_SMOOTH,
   RUN_LOOKAHEAD,
-  SPAWN_YAW_MAX,
-  SPAWN_YAW_MIN,
+  SPAWN_ASIDE,
+  SPAWN_BEHIND,
+  SINK_DEPTH,
+  SPAWN_LEAD_SECONDS,
+  SPOUT_DROPS,
   STROKE_FREQ_AIR,
   STROKE_FREQ_CHARGE,
   STROKE_FREQ_GLIDE,
+  WAKE_FADE_DEPTH,
   WANDER_FREQ,
   WANDER_RATE,
+  WHALE_LENGTH,
 } from './constants'
 
-type Stage = 'rise' | 'glide' | 'charge' | 'breach' | 'sound'
+type Stage = 'rise' | 'blow' | 'glide' | 'charge' | 'launch' | 'flight' | 'sound'
 
 export interface Whale {
   x: number
   z: number
-  y: number
   heading: number
   speed: number
-  glideSpeed: number
   depth: number
   climb: number
   pitch: number
   bank: number
+  roll: number
+  arch: number
   phase: number
   seed: number
   age: number
@@ -57,36 +82,49 @@ export interface Whale {
   stageTime: number
   hoverTime: number
   breachRoll: number
-  prevSnoutY: number
+  blows: number
+  spoutDrops: number
+  wakeX: number
+  wakeZ: number
+  emergence: number
 }
 
-interface Pose {
-  y: number
-  climb: number
-  roll: number
+export interface WhaleView {
+  isInFrame: boolean
+  isInView: boolean
 }
 
 type ShipMotion = ReturnType<typeof useShipStore.getState>
 
-const _pose: Pose = { y: 0, climb: 0, roll: 0 }
-const { clamp } = THREE.MathUtils
+const _blowhole = { x: 0, z: 0 }
+const { clamp, damp, degToRad } = THREE.MathUtils
+const LAUNCH_ACCEL = (BREACH_GRAVITY * BREACH_HEIGHT) / CHARGE_DEPTH
+const CROSSING_ANGLE = degToRad(CROSSING_ANGLE_DEGREES)
 
 export const isDaylight = (timeOfDay: number) =>
   timeOfDay >= DAYLIGHT_FROM && timeOfDay < DAYLIGHT_UNTIL
 
-export function createWhale(ship: ShipMotion): Whale {
-  const glideSpeed = rand(GLIDE_SPEED_MIN, GLIDE_SPEED_MAX)
+const isBreaching = (whale: Whale) => whale.stage === 'launch' || whale.stage === 'flight'
+
+export function createWhale(ship: ShipMotion, cameraPosition: THREE.Vector3): Whale {
+  const towardCamera = Math.atan2(cameraPosition.x - ship.x, cameraPosition.z - ship.z)
+  const heading = towardCamera + Math.sign(Math.random() - 0.5) * CROSSING_ANGLE
+  const lead = ship.speed * SPAWN_LEAD_SECONDS
+  const passX = ship.x + Math.sin(ship.heading) * lead + Math.sin(towardCamera) * SPAWN_ASIDE
+  const passZ = ship.z + Math.cos(ship.heading) * lead + Math.cos(towardCamera) * SPAWN_ASIDE
+  const x = passX - Math.sin(heading) * SPAWN_BEHIND
+  const z = passZ - Math.cos(heading) * SPAWN_BEHIND
   return {
-    x: ship.x,
-    z: ship.z,
-    y: -HIDDEN_DEPTH,
-    heading: ship.heading + Math.sign(Math.random() - 0.5) * rand(SPAWN_YAW_MIN, SPAWN_YAW_MAX),
-    speed: glideSpeed,
-    glideSpeed,
+    x,
+    z,
+    heading,
+    speed: GLIDE_SPEED,
     depth: HIDDEN_DEPTH,
     climb: 0,
     pitch: 0,
     bank: 0,
+    roll: 0,
+    arch: 0,
     phase: Math.random() * Math.PI * 2,
     seed: Math.random() * 100,
     age: 0,
@@ -94,7 +132,11 @@ export function createWhale(ship: ShipMotion): Whale {
     stageTime: 0,
     hoverTime: rand(HOVER_TIME_MIN, HOVER_TIME_MAX),
     breachRoll: BREACH_ROLL * Math.sign(Math.random() - 0.5),
-    prevSnoutY: -HIDDEN_DEPTH,
+    blows: 0,
+    spoutDrops: 0,
+    wakeX: x,
+    wakeZ: z,
+    emergence: 0,
   }
 }
 
@@ -106,12 +148,33 @@ export const hasClearRun = (whale: Whale) =>
     OPEN_WATER_GAP
   )
 
-export const isGone = (whale: Whale, visible: boolean) => {
-  if (whale.stage === 'sound') return whale.depth >= HIDDEN_DEPTH
-  if (whale.stage === 'rise' || whale.stage === 'glide')
-    return !visible && whale.age > OFFSCREEN_GRACE
-  return false
+const isNear = (depth: number, target: number) => Math.abs(depth - target) < DEPTH_REACHED
+
+const isCruising = (whale: Whale) =>
+  whale.stage === 'rise' || whale.stage === 'blow' || whale.stage === 'glide'
+
+export const isGone = (whale: Whale, isOutOfSight: boolean) =>
+  whale.stage === 'sound' && (isOutOfSight || isNear(whale.depth, SINK_DEPTH))
+
+export function bodyEndsOf(whale: Whale, snout: THREE.Vector3, tail: THREE.Vector3): void {
+  const halfLength = WHALE_LENGTH / 2
+  const along = Math.cos(whale.pitch) * halfLength
+  const rise = Math.sin(whale.pitch) * halfLength
+  const alongX = Math.sin(whale.heading) * along
+  const alongZ = Math.cos(whale.heading) * along
+  snout.set(whale.x + alongX, -whale.depth + rise, whale.z + alongZ)
+  tail.set(whale.x - alongX, -whale.depth - rise, whale.z - alongZ)
 }
+
+export function blowholeOf(whale: Whale) {
+  const reach = BLOWHOLE_OFFSET * WHALE_LENGTH
+  _blowhole.x = whale.x + Math.sin(whale.heading) * reach
+  _blowhole.z = whale.z + Math.cos(whale.heading) * reach
+  return _blowhole
+}
+
+export const wakeStrength = (whale: Whale) =>
+  isBreaching(whale) ? 0 : clamp(1 - (whale.depth - BLOW_DEPTH) / WAKE_FADE_DEPTH, 0, 1)
 
 // ── Stages ────────────────────────────────────────────────────────────────────
 
@@ -120,101 +183,135 @@ function enter(whale: Whale, stage: Stage): void {
   whale.stageTime = 0
 }
 
-function advanceStage(whale: Whale, inFrame: boolean, shipGap: number): void {
+function advanceStage(whale: Whale, view: WhaleView, shipGap: number): void {
+  if (isCruising(whale) && !view.isInView && whale.age > OFFSCREEN_GRACE) {
+    enter(whale, 'sound')
+    return
+  }
+
   switch (whale.stage) {
     case 'rise':
-      if (Math.abs(whale.depth - GLIDE_DEPTH) < 0.3) enter(whale, 'glide')
+      if (isNear(whale.depth, BLOW_DEPTH)) enter(whale, 'blow')
+      break
+    case 'blow':
+      if (whale.stageTime > BLOW_LEAD + BLOW_COUNT * BLOW_INTERVAL) enter(whale, 'glide')
       break
     case 'glide':
-      if (whale.stageTime > whale.hoverTime && inFrame && shipGap > BREACH_CLEARANCE)
+      if (whale.stageTime > whale.hoverTime && view.isInFrame && shipGap > BREACH_CLEARANCE)
         enter(whale, 'charge')
       break
     case 'charge':
-      if (whale.stageTime > CHARGE_TIME && Math.abs(whale.depth - CHARGE_DEPTH) < 0.5)
-        enter(whale, 'breach')
+      if (whale.stageTime > CHARGE_TIME && isNear(whale.depth, CHARGE_DEPTH)) enter(whale, 'launch')
       break
-    case 'breach':
-      if (whale.stageTime > BREACH_DURATION) enter(whale, 'sound')
+    case 'launch':
+      if (whale.depth <= 0) enter(whale, 'flight')
+      break
+    case 'flight':
+      if (whale.depth >= 0 && whale.climb < 0) enter(whale, 'sound')
       break
     case 'sound':
       break
   }
+}
+
+function startDueBlow(whale: Whale): void {
+  if (whale.stage !== 'blow' || whale.blows >= BLOW_COUNT) return
+  if (whale.stageTime < BLOW_LEAD + whale.blows * BLOW_INTERVAL) return
+  whale.blows++
+  whale.spoutDrops = SPOUT_DROPS
 }
 
 const targetDepth = (whale: Whale) => {
   switch (whale.stage) {
     case 'rise':
+    case 'blow':
+      return BLOW_DEPTH
     case 'glide':
       return GLIDE_DEPTH
     case 'charge':
       return CHARGE_DEPTH
-    case 'breach':
-      return whale.depth
-    case 'sound':
-      return HIDDEN_DEPTH
+    default:
+      return SINK_DEPTH
   }
 }
 
-const targetSpeed = (whale: Whale) => {
+const cruiseSpeed = (whale: Whale) => {
+  if (whale.stage === 'blow') return BLOW_SPEED
   if (whale.stage === 'charge') return CHARGE_SPEED
-  if (whale.stage === 'breach') return BREACH_SPEED
-  return whale.glideSpeed
+  if (isBreaching(whale)) return BREACH_SPEED
+  return GLIDE_SPEED
 }
 
 const strokeFrequency = (whale: Whale) => {
-  if (whale.y > 0) return STROKE_FREQ_AIR
-  return whale.stage === 'charge' || whale.stage === 'breach'
+  if (whale.depth < 0) return STROKE_FREQ_AIR
+  return whale.stage === 'charge' || whale.stage === 'launch'
     ? STROKE_FREQ_CHARGE
     : STROKE_FREQ_GLIDE
 }
 
 // ── Motion ────────────────────────────────────────────────────────────────────
 
+function moveVertically(whale: Whale, dt: number): void {
+  if (whale.stage === 'launch') whale.climb += LAUNCH_ACCEL * dt
+  else if (whale.stage === 'flight') whale.climb -= BREACH_GRAVITY * dt
+  else {
+    const wanted = clamp((whale.depth - targetDepth(whale)) * DEPTH_GAIN, -DIVE_RATE, RISE_RATE)
+    whale.climb = damp(whale.climb, wanted, DEPTH_SMOOTH, dt)
+  }
+  whale.depth -= whale.climb * dt
+}
+
+function pitchToClimb(whale: Whale, dt: number): void {
+  const isSteep = isBreaching(whale) || whale.stage === 'sound'
+  const pitchLimit = isSteep ? BREACH_PITCH_MAX : CRUISE_PITCH_MAX
+  const boost = isSteep ? BREACH_PITCH_BOOST : 1
+  const pitch = clamp(
+    Math.atan2(whale.climb, Math.max(whale.speed, 1)) * boost,
+    -pitchLimit,
+    pitchLimit
+  )
+  whale.pitch = damp(whale.pitch, pitch, PITCH_SMOOTH, dt)
+}
+
+function orientBody(whale: Whale, dt: number): void {
+  const isAirborne = whale.stage === 'flight'
+  if (isAirborne) whale.pitch = damp(whale.pitch, FLIGHT_PITCH, FLIGHT_PITCH_SMOOTH, dt)
+  else pitchToClimb(whale, dt)
+
+  whale.roll = damp(whale.roll, isAirborne ? whale.breachRoll : 0, ROLL_SMOOTH, dt)
+  whale.arch = damp(whale.arch, isAirborne ? BREACH_ARCH : 0, ARCH_SMOOTH, dt)
+}
+
 export function updateWhale(
   whale: Whale,
   ship: ShipMotion,
   time: number,
   dt: number,
-  inFrame: boolean
+  view: WhaleView
 ): void {
   whale.age += dt
   whale.stageTime += dt
-  advanceStage(whale, inFrame, Math.hypot(whale.x - ship.x, whale.z - ship.z))
+  advanceStage(whale, view, Math.hypot(whale.x - ship.x, whale.z - ship.z))
+  startDueBlow(whale)
 
   const previousHeading = whale.heading
-  if (whale.stage === 'rise' || whale.stage === 'glide') {
+  if (isCruising(whale)) {
     whale.heading += Math.sin(time * WANDER_FREQ + whale.seed) * WANDER_RATE * dt
   }
 
-  whale.speed += (targetSpeed(whale) - whale.speed) * Math.min(1, ACCEL * dt)
+  whale.speed = damp(whale.speed, cruiseSpeed(whale), ACCEL, dt)
   whale.x += Math.sin(whale.heading) * whale.speed * dt
   whale.z += Math.cos(whale.heading) * whale.speed * dt
-
-  const depth = targetDepth(whale)
-  const depthRate = depth < whale.depth ? RISE_RATE : DIVE_RATE
-  const step = clamp(depth - whale.depth, -depthRate * dt, depthRate * dt)
-  whale.depth += step
-  whale.climb = dt > 0 ? -step / dt : 0
+  moveVertically(whale, dt)
+  orientBody(whale, dt)
 
   const yawRate = dt > 0 ? wrapAngle(whale.heading - previousHeading) / dt : 0
   const bank = clamp(-yawRate * BANK_FACTOR, -BANK_LIMIT, BANK_LIMIT)
-  whale.bank += (bank - whale.bank) * Math.min(1, BANK_SMOOTH * dt)
+  whale.bank = damp(whale.bank, bank, BANK_SMOOTH, dt)
 
   whale.phase += dt * Math.PI * 2 * strokeFrequency(whale)
-}
-
-export function pose(whale: Whale): Pose {
-  if (whale.stage !== 'breach') {
-    _pose.y = -whale.depth
-    _pose.climb = whale.climb
-    _pose.roll = 0
-    return _pose
-  }
-
-  const t = Math.min(whale.stageTime / BREACH_DURATION, 1)
-  const rise = BREACH_HEIGHT + whale.depth
-  _pose.y = -whale.depth + rise * 4 * t * (1 - t)
-  _pose.climb = (rise * 4 * (1 - 2 * t)) / BREACH_DURATION
-  _pose.roll = whale.breachRoll * Math.sin(Math.PI * t)
-  return _pose
+  whale.emergence = Math.max(
+    whale.emergence,
+    depthFade(whale.depth, FADE_START_DEPTH, HIDDEN_DEPTH)
+  )
 }

@@ -31,6 +31,12 @@ export const SEPARATION_STRENGTH = 20
 export const SHIP_CLEARANCE = 24
 export const WHALE_CLEARANCE = 32
 
+// ── Scattering from a whale ───────────────────────────────────────────────────
+export const SCATTER_SPEED = 45
+export const SCATTER_SPREAD = 0.6
+export const SCATTER_YAW_RATE = 2.2
+export const SCATTER_DIVE_DELAY = 1.2
+
 // ── Roaming near islands ──────────────────────────────────────────────────────
 export const ROAM_START_GAP = 110
 export const ROAM_END_GAP = 140

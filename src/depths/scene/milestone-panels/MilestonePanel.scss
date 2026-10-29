@@ -1,4 +1,5 @@
 @use '@/styles/glass';
+@use '@/styles/parchment';
 
 $panel-ink: rgba(226, 238, 255, 0.88);
 $panel-soft-ink: rgba(190, 225, 255, 0.75);
@@ -75,7 +76,7 @@ $panel-edge: rgba(190, 225, 255, 0.35);
     margin: 0;
     color: $panel-ink;
     font-family: var(--font-secondary);
-    font-size: 0.95rem;
+    font-size: parchment.$base-font-size;
     line-height: 1.6;
   }
 
@@ -113,7 +114,7 @@ $panel-edge: rgba(190, 225, 255, 0.35);
     padding-left: 1.15rem;
     color: $panel-ink;
     font-family: var(--font-secondary);
-    font-size: 0.92rem;
+    font-size: parchment.$base-font-size;
     line-height: 1.5;
 
     &::before {

@@ -35,6 +35,10 @@ import {
   ROAM_END_GAP,
   ROAM_RATE,
   ROAM_START_GAP,
+  SCATTER_DIVE_DELAY,
+  SCATTER_SPEED,
+  SCATTER_SPREAD,
+  SCATTER_YAW_RATE,
   SEPARATION_RADIUS,
   SEPARATION_STRENGTH,
   SHIP_CLEARANCE,
@@ -76,12 +80,14 @@ interface Dolphin {
   prevY: number
   wakeX: number
   wakeZ: number
+  fleeHeading: number
 }
 
 export interface Pod {
   age: number
   followTime: number
   leaving: boolean
+  scatteredAt: number | null
   orbit: number
   roaming: boolean
   roamX: number
@@ -141,12 +147,14 @@ export function createPod(ship: ShipMotion): Pod {
       prevY: -HIDDEN_DEPTH,
       wakeX: x,
       wakeZ: z,
+      fleeHeading: 0,
     }
   })
   return {
     age: 0,
     followTime: rand(FOLLOW_TIME_MIN, FOLLOW_TIME_MAX),
     leaving: false,
+    scatteredAt: null,
     orbit: 0,
     roaming: false,
     roamX: 0,
@@ -186,6 +194,17 @@ export function updateRoaming(pod: Pod, ship: ShipMotion, dt: number): void {
   }
 }
 
+// ── Scattering ────────────────────────────────────────────────────────────────
+
+export function scatterPod(pod: Pod, fromX: number, fromZ: number): void {
+  pod.leaving = true
+  pod.scatteredAt = pod.age
+  for (const dolphin of pod.dolphins) {
+    const away = Math.atan2(dolphin.x - fromX, dolphin.z - fromZ)
+    dolphin.fleeHeading = away + rand(-SCATTER_SPREAD, SCATTER_SPREAD)
+  }
+}
+
 // ── Steering ──────────────────────────────────────────────────────────────────
 
 const _push = new THREE.Vector2()
@@ -221,12 +240,21 @@ export function swim(dolphin: Dolphin, pod: Pod, ship: ShipMotion, dt: number): 
   const whale = useWhaleStore.getState()
   if (whale.active) addRepulsion(dolphin, whale.x, whale.z, whale.radius + WHALE_CLEARANCE)
 
-  const desiredX = leadX + (targetX - dolphin.x) * FOLLOW_GAIN + _push.x
-  const desiredZ = leadZ + (targetZ - dolphin.z) * FOLLOW_GAIN + _push.y
+  const scatterSeconds = pod.scatteredAt === null ? null : pod.age - pod.scatteredAt
+  const isScattering = scatterSeconds !== null
+  if (isScattering && scatterSeconds >= SCATTER_DIVE_DELAY) dolphin.targetDepth = HIDDEN_DEPTH
+
+  const desiredX = isScattering
+    ? Math.sin(dolphin.fleeHeading) * SCATTER_SPEED + _push.x
+    : leadX + (targetX - dolphin.x) * FOLLOW_GAIN + _push.x
+  const desiredZ = isScattering
+    ? Math.cos(dolphin.fleeHeading) * SCATTER_SPEED + _push.y
+    : leadZ + (targetZ - dolphin.z) * FOLLOW_GAIN + _push.y
   const desiredSpeed = Math.min(Math.hypot(desiredX, desiredZ), MAX_SPEED)
 
+  const yawLimit = isScattering ? SCATTER_YAW_RATE : MAX_YAW_RATE
   const turn = wrapAngle(Math.atan2(desiredX, desiredZ) - dolphin.heading)
-  const targetYaw = clamp(turn * TURN_GAIN, -MAX_YAW_RATE, MAX_YAW_RATE)
+  const targetYaw = clamp(turn * TURN_GAIN, -yawLimit, yawLimit)
   dolphin.yawRate += (targetYaw - dolphin.yawRate) * Math.min(1, YAW_SMOOTH * dt)
   dolphin.heading += dolphin.yawRate * dt
 

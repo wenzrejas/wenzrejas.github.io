@@ -11,6 +11,9 @@ import {
   SEAGULL_CHANCE,
   SEAGULL_COOLDOWN,
   SEAGULL_FADE_IN,
+  WHALE_JUMP_SPLASH_PITCH,
+  WHALE_JUMP_SPLASH_VOLUME,
+  WHALE_PLUNGE_SPLASH_PITCH,
 } from './constants'
 
 let dolphinTimer = rand(DOLPHIN_FIRST_CALL_MIN, DOLPHIN_FIRST_CALL_MAX)
@@ -41,6 +44,21 @@ export function maybeSeagullCall(time: number): SoundHandle | null {
     return null
   lastSeagullCall = time
   return makeRoom(audio.play('seagulls', { volume: rand(0.8, 1), fadeIn: SEAGULL_FADE_IN }))
+}
+
+export function playWhaleCall(): void {
+  if (isBelowSurface(useViewStore.getState())) return
+  makeRoom(audio.play('whale'))
+}
+
+export function playWhaleSplash(moment: 'jump' | 'plunge'): void {
+  if (isBelowSurface(useViewStore.getState())) return
+  audio.play(
+    'dive',
+    moment === 'jump'
+      ? { volume: WHALE_JUMP_SPLASH_VOLUME, rate: WHALE_JUMP_SPLASH_PITCH }
+      : { rate: WHALE_PLUNGE_SPLASH_PITCH }
+  )
 }
 
 function makeRoom(call: SoundHandle): SoundHandle {

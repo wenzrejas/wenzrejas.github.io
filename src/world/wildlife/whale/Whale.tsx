@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
-import { buildFlatQuad } from '@/utils/geometry'
+import { playWhaleCall, playWhaleSplash } from '@/audio/wildlifeSounds'
 import { earnAchievement } from '@/store/achievementStore'
 import { eventDelta } from '@/store/cinematicStore'
 import { useCycleStore } from '@/store/cycleStore'
@@ -11,70 +11,51 @@ import { useShipStore } from '@/store/shipStore'
 import { useWhaleStore } from '@/store/whaleStore'
 import { isOnScreen } from '@/utils/screen'
 import { MAX_FRAME_SECONDS } from '@/utils/time'
-import { ParticlePool, updateDrops, updateFoam } from '@/world/effects/particlePool'
-import { RENDER_LAYER } from '@/app/experience/renderLayers'
-import { depthFade } from '../shared/wildlifeMaterial'
+import { ParticlePool } from '@/world/effects/particlePool'
+import Spray from '@/world/effects/Spray'
 import {
-  BREACH_PITCH_BOOST,
-  BREACH_PITCH_MAX,
   BREACH_VIEW_MARGIN,
-  CRUISE_PITCH_MAX,
-  DESPAWN_VIEW_MARGIN,
   DROP_GRAVITY,
   DROP_POOL,
-  ENTRY_DROPS,
-  EXIT_DROPS,
-  FADE_START_DEPTH,
   FIRST_CHECK_DELAY,
   FOAM_POOL,
-  HIDDEN_DEPTH,
-  NOSE_OFFSET,
-  PITCH_SMOOTH,
+  GONE_VIEW_MARGIN,
+  JUMP_SPLASH_STRENGTH,
+  LEAVE_VIEW_MARGIN,
+  PLUNGE_SPLASH_STRENGTH,
   PRESENCE_RADIUS,
   WHALE_LENGTH,
 } from './constants'
 import {
+  bodyEndsOf,
   createWhale,
   hasClearRun,
   isDaylight,
   isGone,
-  pose,
   updateWhale,
   type Whale,
+  type WhaleView,
 } from './whaleMotion'
 import { buildWhaleGeometry, createWhaleMaterial, whaleUniforms } from './whaleModel'
-import { emitBreachSplash } from './splash'
+import { emitSplash, trailWake } from './splash'
+import { emitSpout } from './spout'
 
-const _position = new THREE.Vector3()
-const { clamp } = THREE.MathUtils
+const _surfaceSpot = new THREE.Vector3()
+const _snout = new THREE.Vector3()
+const _tail = new THREE.Vector3()
+const _view: WhaleView = { isInFrame: false, isInView: false }
 
 export default function Whale() {
   const bodyRef = useRef<THREE.Mesh>(null)
-  const foamRef = useRef<THREE.InstancedMesh>(null)
-  const dropsRef = useRef<THREE.InstancedMesh>(null)
-
   const bodyGeometry = useMemo(() => buildWhaleGeometry(), [])
   const bodyMaterial = useMemo(() => createWhaleMaterial(), [])
-  const foamGeometry = useMemo(() => buildFlatQuad(), [])
-  const dropGeometry = useMemo(() => new THREE.BoxGeometry(1, 1, 1), [])
-  const sprayMaterial = useMemo(
-    () => new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.8, depthWrite: false }),
-    []
-  )
 
   useEffect(
     () => () => {
-      for (const resource of [
-        bodyGeometry,
-        bodyMaterial,
-        foamGeometry,
-        dropGeometry,
-        sprayMaterial,
-      ]) {
-        resource.dispose()
-      }
+      bodyGeometry.dispose()
+      bodyMaterial.dispose()
     },
-    [bodyGeometry, bodyMaterial, foamGeometry, dropGeometry, sprayMaterial]
+    [bodyGeometry, bodyMaterial]
   )
 
   const whale = useRef<Whale | null>(null)
@@ -84,14 +65,11 @@ export default function Whale() {
 
   useFrame(({ clock, camera }, delta) => {
     const body = bodyRef.current
-    const foamMesh = foamRef.current
-    const dropsMesh = dropsRef.current
-    if (!body || !foamMesh || !dropsMesh) return
+    if (!body) return
 
     const dt = Math.min(delta, MAX_FRAME_SECONDS)
     const time = clock.getElapsedTime()
     const cycle = useCycleStore.getState()
-    sprayMaterial.color.copy(cycle.foamColor)
 
     const ship = useShipStore.getState()
     const { whaleChance, whaleInterval } = useDebugStore.getState().wildlife
@@ -100,55 +78,47 @@ export default function Whale() {
     if (checkTimer.current <= 0) {
       checkTimer.current = checkInterval
       if (!whale.current && isDaylight(cycle.timeOfDay) && Math.random() < whaleChance) {
-        const candidate = createWhale(ship)
+        const candidate = createWhale(ship, camera.position)
         if (hasClearRun(candidate)) whale.current = candidate
       }
     }
 
     const current = whale.current
     if (current) {
-      _position.set(current.x, current.y, current.z)
-      const visible = isOnScreen(_position, camera, DESPAWN_VIEW_MARGIN)
-      updateWhale(current, ship, time, dt, isOnScreen(_position, camera, BREACH_VIEW_MARGIN))
+      _surfaceSpot.set(current.x, 0, current.z)
+      _view.isInFrame = isOnScreen(_surfaceSpot, camera, BREACH_VIEW_MARGIN)
+      _view.isInView = isOnScreen(_surfaceSpot, camera, LEAVE_VIEW_MARGIN)
+      const stageBefore = current.stage
+      updateWhale(current, ship, time, dt, _view)
+      if (current.stage === 'charge' && stageBefore !== 'charge') playWhaleCall()
 
-      const { y, climb, roll } = pose(current)
-      const breaching = current.stage === 'breach'
-      const pitchLimit = breaching ? BREACH_PITCH_MAX : CRUISE_PITCH_MAX
-      const targetPitch = clamp(
-        Math.atan2(climb, Math.max(current.speed, 1)) * (breaching ? BREACH_PITCH_BOOST : 1),
-        -pitchLimit,
-        pitchLimit
-      )
-      current.pitch += (targetPitch - current.pitch) * Math.min(1, PITCH_SMOOTH * dt)
-
-      const snoutReach = NOSE_OFFSET * WHALE_LENGTH
-      const snoutY = y + Math.sin(current.pitch) * snoutReach
-      const snoutAhead = Math.cos(current.pitch) * snoutReach
-      const leaving = breaching && current.prevSnoutY < 0 && snoutY >= 0
-      const entering = breaching && current.prevSnoutY > 0 && snoutY <= 0
-      if (leaving) earnAchievement('tharSheBlows')
-      if (leaving || entering) {
-        emitBreachSplash(
-          foam,
-          drops,
-          current.x + Math.sin(current.heading) * snoutAhead,
-          current.z + Math.cos(current.heading) * snoutAhead,
-          current.heading,
-          current.speed,
-          entering ? ENTRY_DROPS : EXIT_DROPS,
-          entering ? 1.4 : 1
-        )
+      const y = -current.depth
+      const jumping = stageBefore === 'launch' && current.stage === 'flight'
+      const plunging = stageBefore === 'flight' && current.stage === 'sound'
+      if (jumping) {
+        earnAchievement('tharSheBlows')
+        playWhaleSplash('jump')
+        emitSplash(foam, drops, current.x, current.z, JUMP_SPLASH_STRENGTH)
       }
-      current.prevSnoutY = snoutY
-      current.y = y
+      if (plunging) {
+        playWhaleSplash('plunge')
+        emitSplash(foam, drops, current.x, current.z, PLUNGE_SPLASH_STRENGTH)
+      }
+      emitSpout(drops, current, dt)
+      trailWake(foam, current)
 
       body.position.set(current.x, y, current.z)
-      body.rotation.set(-current.pitch, current.heading, current.bank + roll, 'YXZ')
+      body.rotation.set(-current.pitch, current.heading, current.bank + current.roll, 'YXZ')
       body.visible = true
       whaleUniforms.uPhase.value = current.phase
-      whaleUniforms.uFade.value = depthFade(-y, FADE_START_DEPTH, HIDDEN_DEPTH)
+      whaleUniforms.uArch.value = current.arch
+      whaleUniforms.uFade.value = current.emergence
 
-      if (isGone(current, visible)) whale.current = null
+      bodyEndsOf(current, _snout, _tail)
+      const isOutOfSight =
+        !isOnScreen(_snout, camera, GONE_VIEW_MARGIN) &&
+        !isOnScreen(_tail, camera, GONE_VIEW_MARGIN)
+      if (isGone(current, isOutOfSight)) whale.current = null
     } else {
       body.visible = false
     }
@@ -160,9 +130,6 @@ export default function Whale() {
       presence.z = whale.current.z
       presence.radius = WHALE_LENGTH * PRESENCE_RADIUS
     }
-
-    updateFoam(foam, foamMesh, dt)
-    updateDrops(drops, dropsMesh, dt, DROP_GRAVITY)
   })
 
   return (
@@ -174,20 +141,7 @@ export default function Whale() {
         frustumCulled={false}
         visible={false}
       />
-      <instancedMesh
-        ref={foamRef}
-        args={[foamGeometry, sprayMaterial, FOAM_POOL]}
-        frustumCulled={false}
-        visible={false}
-        renderOrder={RENDER_LAYER.effects}
-      />
-      <instancedMesh
-        ref={dropsRef}
-        args={[dropGeometry, sprayMaterial, DROP_POOL]}
-        frustumCulled={false}
-        visible={false}
-        renderOrder={RENDER_LAYER.effects}
-      />
+      <Spray foam={foam} drops={drops} gravity={DROP_GRAVITY} />
     </>
   )
 }

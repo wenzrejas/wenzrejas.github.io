@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
-import { buildFlatQuad } from '@/utils/geometry'
 import { earnAchievement } from '@/store/achievementStore'
 import { eventDelta } from '@/store/cinematicStore'
 import { useCycleStore } from '@/store/cycleStore'
@@ -9,10 +8,11 @@ import { useDebugStore } from '@/store/debugStore'
 import { wildlifePace } from '@/store/settingsStore'
 import { useShipStore } from '@/store/shipStore'
 import { isRaining } from '@/store/weatherStore'
+import { useWhaleStore } from '@/store/whaleStore'
 import { wrapAngle } from '@/utils/math'
 import { MAX_FRAME_SECONDS } from '@/utils/time'
-import { ParticlePool, updateDrops, updateFoam } from '@/world/effects/particlePool'
-import { RENDER_LAYER } from '@/app/experience/renderLayers'
+import { ParticlePool } from '@/world/effects/particlePool'
+import Spray from '@/world/effects/Spray'
 import { depthFade } from '../shared/wildlifeMaterial'
 import { isOpenWater } from '@/world/islands/shared/islandZones'
 import { buildDolphinGeometry, createDolphinMaterial } from './dolphinModel'
@@ -43,6 +43,7 @@ import {
 import {
   createPod,
   pose,
+  scatterPod,
   swim,
   timeOfDayChance,
   updateAction,
@@ -56,31 +57,15 @@ const { clamp } = THREE.MathUtils
 
 export default function Dolphins() {
   const bodyRef = useRef<THREE.InstancedMesh>(null)
-  const foamRef = useRef<THREE.InstancedMesh>(null)
-  const dropsRef = useRef<THREE.InstancedMesh>(null)
-
   const bodyGeometry = useMemo(() => buildDolphinGeometry(), [])
-  const foamGeometry = useMemo(() => buildFlatQuad(), [])
-  const dropGeometry = useMemo(() => new THREE.BoxGeometry(1, 1, 1), [])
   const bodyMaterial = useMemo(() => createDolphinMaterial(), [])
-  const sprayMaterial = useMemo(
-    () => new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.8, depthWrite: false }),
-    []
-  )
 
   useEffect(
     () => () => {
-      for (const resource of [
-        bodyGeometry,
-        foamGeometry,
-        dropGeometry,
-        bodyMaterial,
-        sprayMaterial,
-      ]) {
-        resource.dispose()
-      }
+      bodyGeometry.dispose()
+      bodyMaterial.dispose()
     },
-    [bodyGeometry, foamGeometry, dropGeometry, bodyMaterial, sprayMaterial]
+    [bodyGeometry, bodyMaterial]
   )
 
   const pod = useRef<Pod | null>(null)
@@ -91,9 +76,7 @@ export default function Dolphins() {
 
   useFrame((_, delta) => {
     const body = bodyRef.current
-    const foamMesh = foamRef.current
-    const dropsMesh = dropsRef.current
-    if (!body || !foamMesh || !dropsMesh) return
+    if (!body) return
 
     const dt = Math.min(delta, MAX_FRAME_SECONDS)
     const cycle = useCycleStore.getState()
@@ -103,8 +86,7 @@ export default function Dolphins() {
     const fadeAttr = bodyGeometry.getAttribute('aFade') as THREE.InstancedBufferAttribute
 
     const motion = useShipStore.getState()
-
-    sprayMaterial.color.copy(cycle.foamColor)
+    const whale = useWhaleStore.getState()
 
     const { dolphinChance, dolphinInterval } = useDebugStore.getState().wildlife
     const checkInterval = dolphinInterval / wildlifePace()
@@ -114,6 +96,7 @@ export default function Dolphins() {
       if (
         !pod.current &&
         !raining &&
+        !whale.active &&
         isOpenWater(motion.x, motion.z, OPEN_WATER_GAP) &&
         Math.random() < dolphinChance * timeOfDayChance(cycle.timeOfDay)
       ) {
@@ -126,6 +109,7 @@ export default function Dolphins() {
 
     if (current) {
       current.age += dt
+      if (whale.active && current.scatteredAt === null) scatterPod(current, whale.x, whale.z)
       if (!current.leaving && (raining || current.age > current.followTime)) {
         current.leaving = true
         for (const dolphin of current.dolphins) dolphin.targetDepth = HIDDEN_DEPTH
@@ -209,9 +193,6 @@ export default function Dolphins() {
     phaseAttr.needsUpdate = true
     archAttr.needsUpdate = true
     fadeAttr.needsUpdate = true
-
-    updateFoam(foam, foamMesh, dt)
-    updateDrops(drops, dropsMesh, dt, DROP_GRAVITY)
   })
 
   return (
@@ -222,20 +203,7 @@ export default function Dolphins() {
         frustumCulled={false}
         visible={false}
       />
-      <instancedMesh
-        ref={foamRef}
-        args={[foamGeometry, sprayMaterial, FOAM_POOL]}
-        frustumCulled={false}
-        visible={false}
-        renderOrder={RENDER_LAYER.effects}
-      />
-      <instancedMesh
-        ref={dropsRef}
-        args={[dropGeometry, sprayMaterial, DROP_POOL]}
-        frustumCulled={false}
-        visible={false}
-        renderOrder={RENDER_LAYER.effects}
-      />
+      <Spray foam={foam} drops={drops} gravity={DROP_GRAVITY} />
     </>
   )
 }
