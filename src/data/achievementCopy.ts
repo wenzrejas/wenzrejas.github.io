@@ -33,7 +33,6 @@ export const ACHIEVEMENT_COPY: Record<AchievementKey, AchievementText> = {
   },
   turnBackTime: { title: 'Turn Back Time', description: 'Surface by rewinding the clock' },
   podPals: { title: 'Pod Pals', description: 'Sail alongside a pod of dolphins' },
-  tharSheBlows: { title: 'Thar She Blows!', description: 'Witness a whale breach' },
   glowingWaters: { title: 'Glowing Waters', description: 'Sail through glowing algae' },
   weatheredTheStorm: { title: 'Weathered the Storm', description: 'Keep sailing through the rain' },
   stargazer: { title: 'Stargazer', description: 'Sail under a clear, starry night' },

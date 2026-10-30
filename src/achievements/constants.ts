@@ -39,7 +39,6 @@ const ACHIEVEMENT_SPECS = {
   journeysEnd: { category: 'depths' },
   turnBackTime: { category: 'depths' },
   podPals: { category: 'seaAndSky' },
-  tharSheBlows: { category: 'seaAndSky', isSecret: true },
   glowingWaters: { category: 'seaAndSky' },
   weatheredTheStorm: { category: 'seaAndSky' },
   stargazer: { category: 'seaAndSky' },

@@ -1,5 +1,6 @@
 import type { WeatherType } from '@/store/weatherStore'
 import { CYCLE_DURATION, DAY_CYCLE_FRAME_PRIORITY } from '../day-night-cycle/constants'
+import type { SparkleField } from './sparkleField'
 import type { WeatherParams } from './weatherCycle'
 
 // ── Weather cycle ─────────────────────────────────────────────────────────────
@@ -82,21 +83,43 @@ export const LIGHTNING_ECHO_FLASH = 0.55
 export const LIGHTNING_ECHO_SECONDS = 0.12
 export const LIGHTNING_ECHO_FADE = 6
 
-// ── Moon sparkles ─────────────────────────────────────────────────────────────
-export const SPARKLE_COUNT = 250
-export const SPARKLE_SPREAD = 325
+// ── Ocean sparkles ────────────────────────────────────────────────────────────
 export const SPARKLE_Y = 1.5
-export const SPARKLE_LIFE_MIN = 1
-export const SPARKLE_LIFE_MAX = 3.5
-export const SPARKLE_SIZE_MIN = 8
-export const SPARKLE_SIZE_MAX = 16
-export const SPARKLE_COLOR = '#c8f0ff'
-export const SPARKLE_ARM_SHARPNESS = 14
-export const SPARKLE_ARM_FALLOFF = 1.5
-export const SPARKLE_GLOW_RADIUS = 3.5
+export const SPARKLE_VISIBLE_LEVEL = 0.005
+
+// ── Moon sparkles (moonlit nights) ────────────────────────────────────────────
+export const MOON_SPARKLES: SparkleField = {
+  count: 250,
+  spread: 325,
+  lifeMin: 1,
+  lifeMax: 3.5,
+  sizeMin: 8,
+  sizeMax: 16,
+  color: '#c8f0ff',
+  armSharpness: 14,
+  armFalloff: 1.5,
+  glowRadius: 3.5,
+}
 export const SPARKLE_MOON_RANGE = 2
 export const SPARKLE_NIGHT_START = 0.6
-export const SPARKLE_VISIBLE_LEVEL = 0.005
+
+// ── Sun sparkles (clear days; cloud shadow and night factor fade them) ────────
+export const SUN_SPARKLES: SparkleField = {
+  count: 220,
+  spread: 325,
+  lifeMin: 0.5,
+  lifeMax: 1.6,
+  sizeMin: 5,
+  sizeMax: 10,
+  color: '#fff6dc',
+  armSharpness: 16,
+  armFalloff: 2.5,
+  glowRadius: 5,
+}
+export const SUN_SPARKLE_STRENGTH = 0.65
+export const SUN_SPARKLE_CLEAR_SHADOW = 0.15
+export const SUN_SPARKLE_GONE_SHADOW = 0.6
+export const SUN_SPARKLE_NIGHT_END = 0.3
 
 // ── Rain ──────────────────────────────────────────────────────────────────────
 export const RAIN_DROPS = 600

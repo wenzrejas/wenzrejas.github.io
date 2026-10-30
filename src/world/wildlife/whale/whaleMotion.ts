@@ -5,7 +5,6 @@ import { isOpenWater } from '@/world/islands/shared/islandZones'
 import { depthFade } from '../shared/wildlifeMaterial'
 import {
   ACCEL,
-  ARCH_SMOOTH,
   BANK_FACTOR,
   BANK_LIMIT,
   BANK_SMOOTH,
@@ -26,8 +25,11 @@ import {
   CHARGE_DEPTH,
   CHARGE_SPEED,
   CHARGE_TIME,
+  CLIMB_CURVE_GAIN,
   CROSSING_ANGLE_DEGREES,
   CRUISE_PITCH_MAX,
+  CURVE_LIMIT,
+  CURVE_SMOOTH,
   DAYLIGHT_FROM,
   DAYLIGHT_UNTIL,
   DEPTH_GAIN,
@@ -56,6 +58,9 @@ import {
   STROKE_FREQ_AIR,
   STROKE_FREQ_CHARGE,
   STROKE_FREQ_GLIDE,
+  STROKE_SMOOTH,
+  SURFACE_BOB,
+  TURN_CURVE_GAIN,
   WAKE_FADE_DEPTH,
   WANDER_FREQ,
   WANDER_RATE,
@@ -74,7 +79,9 @@ export interface Whale {
   pitch: number
   bank: number
   roll: number
-  arch: number
+  turnCurve: number
+  climbCurve: number
+  strokeRate: number
   phase: number
   seed: number
   age: number
@@ -124,7 +131,9 @@ export function createWhale(ship: ShipMotion, cameraPosition: THREE.Vector3): Wh
     pitch: 0,
     bank: 0,
     roll: 0,
-    arch: 0,
+    turnCurve: 0,
+    climbCurve: 0,
+    strokeRate: STROKE_FREQ_GLIDE,
     phase: Math.random() * Math.PI * 2,
     seed: Math.random() * 100,
     age: 0,
@@ -224,8 +233,12 @@ function startDueBlow(whale: Whale): void {
 const targetDepth = (whale: Whale) => {
   switch (whale.stage) {
     case 'rise':
-    case 'blow':
       return BLOW_DEPTH
+    case 'blow':
+      return (
+        BLOW_DEPTH -
+        SURFACE_BOB * Math.cos(((whale.stageTime - BLOW_LEAD) / BLOW_INTERVAL) * Math.PI * 2)
+      )
     case 'glide':
       return GLIDE_DEPTH
     case 'charge':
@@ -279,7 +292,16 @@ function orientBody(whale: Whale, dt: number): void {
   else pitchToClimb(whale, dt)
 
   whale.roll = damp(whale.roll, isAirborne ? whale.breachRoll : 0, ROLL_SMOOTH, dt)
-  whale.arch = damp(whale.arch, isAirborne ? BREACH_ARCH : 0, ARCH_SMOOTH, dt)
+}
+
+function flexBody(whale: Whale, yawRate: number, pitchRate: number, dt: number): void {
+  const turnCurve = clamp(yawRate * TURN_CURVE_GAIN, -CURVE_LIMIT, CURVE_LIMIT)
+  const climbCurve =
+    whale.stage === 'flight'
+      ? -BREACH_ARCH
+      : clamp(pitchRate * CLIMB_CURVE_GAIN, -CURVE_LIMIT, CURVE_LIMIT)
+  whale.turnCurve = damp(whale.turnCurve, turnCurve, CURVE_SMOOTH, dt)
+  whale.climbCurve = damp(whale.climbCurve, climbCurve, CURVE_SMOOTH, dt)
 }
 
 export function updateWhale(
@@ -295,6 +317,7 @@ export function updateWhale(
   startDueBlow(whale)
 
   const previousHeading = whale.heading
+  const previousPitch = whale.pitch
   if (isCruising(whale)) {
     whale.heading += Math.sin(time * WANDER_FREQ + whale.seed) * WANDER_RATE * dt
   }
@@ -306,10 +329,13 @@ export function updateWhale(
   orientBody(whale, dt)
 
   const yawRate = dt > 0 ? wrapAngle(whale.heading - previousHeading) / dt : 0
+  const pitchRate = dt > 0 ? (whale.pitch - previousPitch) / dt : 0
   const bank = clamp(-yawRate * BANK_FACTOR, -BANK_LIMIT, BANK_LIMIT)
   whale.bank = damp(whale.bank, bank, BANK_SMOOTH, dt)
+  flexBody(whale, yawRate, pitchRate, dt)
 
-  whale.phase += dt * Math.PI * 2 * strokeFrequency(whale)
+  whale.strokeRate = damp(whale.strokeRate, strokeFrequency(whale), STROKE_SMOOTH, dt)
+  whale.phase += dt * Math.PI * 2 * whale.strokeRate
   whale.emergence = Math.max(
     whale.emergence,
     depthFade(whale.depth, FADE_START_DEPTH, HIDDEN_DEPTH)

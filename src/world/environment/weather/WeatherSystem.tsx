@@ -6,7 +6,13 @@ import { useSettingsStore } from '@/store/settingsStore'
 import { useWeatherStore } from '@/store/weatherStore'
 import { useWindStore } from '@/store/windStore'
 import { MAX_FRAME_SECONDS } from '@/utils/time'
-import { CALM_WEATHER, WEATHER_FRAME_PRIORITY, WEATHER_PARAMS } from './constants'
+import {
+  CALM_WEATHER,
+  MOON_SPARKLES,
+  SUN_SPARKLES,
+  WEATHER_FRAME_PRIORITY,
+  WEATHER_PARAMS,
+} from './constants'
 import { advanceLightning, createLightning } from './lightning'
 import {
   advanceWeatherCycle,
@@ -16,6 +22,7 @@ import {
   driftClouds,
 } from './weatherCycle'
 import OceanSparkles from './OceanSparkles'
+import { moonSparkleIntensity, sunSparkleIntensity } from './sparkleField'
 import Rain from './Rain'
 import RainRipples from './RainRipples'
 
@@ -50,7 +57,8 @@ export default function WeatherSystem({ shipRef }: WeatherSystemProps) {
     <>
       <Rain shipRef={shipRef} />
       <RainRipples shipRef={shipRef} />
-      <OceanSparkles shipRef={shipRef} />
+      <OceanSparkles shipRef={shipRef} field={MOON_SPARKLES} intensityOf={moonSparkleIntensity} />
+      <OceanSparkles shipRef={shipRef} field={SUN_SPARKLES} intensityOf={sunSparkleIntensity} />
     </>
   )
 }

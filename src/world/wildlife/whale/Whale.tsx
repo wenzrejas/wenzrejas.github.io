@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { playWhaleCall, playWhaleSplash } from '@/audio/wildlifeSounds'
-import { earnAchievement } from '@/store/achievementStore'
 import { eventDelta } from '@/store/cinematicStore'
 import { useCycleStore } from '@/store/cycleStore'
 import { useDebugStore } from '@/store/debugStore'
@@ -96,7 +95,6 @@ export default function Whale() {
       const jumping = stageBefore === 'launch' && current.stage === 'flight'
       const plunging = stageBefore === 'flight' && current.stage === 'sound'
       if (jumping) {
-        earnAchievement('tharSheBlows')
         playWhaleSplash('jump')
         emitSplash(foam, drops, current.x, current.z, JUMP_SPLASH_STRENGTH)
       }
@@ -111,7 +109,8 @@ export default function Whale() {
       body.rotation.set(-current.pitch, current.heading, current.bank + current.roll, 'YXZ')
       body.visible = true
       whaleUniforms.uPhase.value = current.phase
-      whaleUniforms.uArch.value = current.arch
+      whaleUniforms.uTurnCurve.value = current.turnCurve
+      whaleUniforms.uClimbCurve.value = current.climbCurve
       whaleUniforms.uFade.value = current.emergence
 
       bodyEndsOf(current, _snout, _tail)

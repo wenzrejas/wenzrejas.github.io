@@ -16,6 +16,7 @@ import {
   HEAD_NOD,
   STROKE_AMPLITUDE,
   STROKE_LAG,
+  STROKE_SWAY,
 } from './constants'
 import BODY_VERT_GLSL from './shaders/whaleBody.vert.glsl'
 import BODY_FRAG_GLSL from './shaders/whaleBody.frag.glsl'
@@ -53,7 +54,8 @@ export const buildWhaleGeometry = () =>
 
 export const whaleUniforms = {
   uPhase: { value: 0 },
-  uArch: { value: 0 },
+  uTurnCurve: { value: 0 },
+  uClimbCurve: { value: 0 },
   uFade: { value: 1 },
 }
 
@@ -69,6 +71,7 @@ export function createWhaleMaterial(): THREE.MeshLambertMaterial {
       BEND_SPAN,
       STROKE_LAG,
       STROKE_AMPLITUDE,
+      STROKE_SWAY,
       HEAD_NOD,
       FLIPPER_FREQ,
       FLIPPER_SWEEP,

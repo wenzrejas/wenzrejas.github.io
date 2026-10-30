@@ -5,17 +5,19 @@ import { uniformsOf } from '@/utils/meshes'
 import { MAX_FRAME_SECONDS } from '@/utils/time'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { SPARKLE_VISIBLE_LEVEL } from './constants'
-import { respawnSparkles, sparkleIntensity } from './moonSparkles'
-import { buildSparkleGeometry, createSparkleMaterial } from './moonSparklesModel'
+import { respawnSparkles, type SparkleField } from './sparkleField'
+import { buildSparkleGeometry, createSparkleMaterial } from './sparkleFieldModel'
 
 interface OceanSparklesProps {
   shipRef: RefObject<THREE.Group | null>
+  field: SparkleField
+  intensityOf: () => number
 }
 
-export default function OceanSparkles({ shipRef }: OceanSparklesProps) {
+export default function OceanSparkles({ shipRef, field, intensityOf }: OceanSparklesProps) {
   const pointsRef = useRef<THREE.Points>(null)
-  const geometry = useMemo(() => buildSparkleGeometry(), [])
-  const material = useMemo(() => createSparkleMaterial(), [])
+  const geometry = useMemo(() => buildSparkleGeometry(field), [field])
+  const material = useMemo(() => createSparkleMaterial(field), [field])
 
   useEffect(
     () => () => {
@@ -29,13 +31,14 @@ export default function OceanSparkles({ shipRef }: OceanSparklesProps) {
     const points = pointsRef.current
     if (!points) return
 
-    const intensity = sparkleIntensity()
+    const intensity = intensityOf()
     uniformsOf(points).uIntensity.value = intensity
-    if (intensity <= SPARKLE_VISIBLE_LEVEL) return
+    points.visible = intensity > SPARKLE_VISIBLE_LEVEL
+    if (!points.visible) return
 
     const ship = shipRef.current
     const dt = Math.min(delta, MAX_FRAME_SECONDS)
-    respawnSparkles(points.geometry, ship?.position.x ?? 0, ship?.position.z ?? 0, dt)
+    respawnSparkles(points.geometry, field, ship?.position.x ?? 0, ship?.position.z ?? 0, dt)
   })
 
   return (

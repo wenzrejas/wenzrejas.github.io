@@ -19,4 +19,4 @@ export const PROMOTION_DIALOGUES: Partial<Record<RankKey, DialogueKey>> = {
 }
 
 // ── Modal dialogues (wait for Next or Skip, lock the screen behind) ───────────
-export const MODAL_DIALOGUES: DialogueKey[] = ['openedWorldMap', ...DEPTHS_DIALOGUES]
+export const MODAL_DIALOGUES: DialogueKey[] = [...DEPTHS_DIALOGUES]

@@ -22,10 +22,10 @@ Hi, I'm Wenz Louie Rejas, a frontend developer who loves turning creative ideas 
 
 - A full day–night cycle, with lamps and windows lighting up after dark.
 - Weather that drifts between clear skies, clouds, rain and wind.
-- Dolphins, sea turtles, fish, birds, the odd breaching whale, and algae that glows at night.
+- Dolphins, sea turtles, fish, birds, and algae that glows at night.
 - A world map you can fast-travel from, plus a compass, minimap and weather readout.
 - Wobbi, my "trusty little navigator. Well... mostly trusty.", who pops in with tips as you explore.
-- 28 achievements to collect. Every new rank unlocks a fresh sail livery for the ship.
+- 24 achievements to collect. Every new rank unlocks a fresh sail livery for the ship.
 - Settings for sound, graphics, frame rate, time of day, weather, day length, wildlife, sailing speed, reduced motion and reduced flashing.
 
 ## Controls
@@ -109,19 +109,6 @@ src/
 
 - Music and sound effects from [Pixabay](https://pixabay.com/)
 - Special thanks to [Three.js Journey](https://threejs-journey.com/) by Bruno Simon
-
-## License
-
-The source code is released under the [MIT License](LICENSE), so feel free to learn from it, borrow from it and build on it.
-
-The MIT License covers the source code only. The following aren't part of it, so please ask me before reusing them:
-
-- The 3D models in `public/models`
-- The artwork and images in `public/images`, such as Wobbi, the loading map and the splash art
-- The project screenshots in `public/images/projects`, which show products I worked on for clients and employers and belong to their owners
-- My personal writing, such as my career history and project stories
-
-The music and sound effects in `public/audio` are from Pixabay and stay under the [Pixabay Content License](https://pixabay.com/service/license-summary/).
 
 ## Say hello
 

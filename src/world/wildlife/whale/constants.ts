@@ -3,7 +3,7 @@ import { PHASES } from '@/world/environment/day-night-cycle/dayNightKeyframes'
 // ── Spawning ──────────────────────────────────────────────────────────────────
 export const FIRST_CHECK_DELAY = 30
 export const CHECK_INTERVAL = 20
-export const SPAWN_CHANCE = 0.15
+export const SPAWN_CHANCE = 0
 export const OPEN_WATER_GAP = 260
 export const SPAWN_BEHIND = 150
 export const SPAWN_LEAD_SECONDS = 8
@@ -55,6 +55,7 @@ export const DIVE_RATE = 16
 export const DEPTH_GAIN = 1
 export const DEPTH_SMOOTH = 2
 export const DEPTH_REACHED = 1.5
+export const SURFACE_BOB = 3
 
 // ── Blowing ───────────────────────────────────────────────────────────────────
 export const BLOW_COUNT = 2
@@ -87,7 +88,6 @@ export const FLIGHT_PITCH_SMOOTH = 1
 export const BREACH_ROLL = 1.1
 export const ROLL_SMOOTH = 1.5
 export const BREACH_ARCH = 0.25
-export const ARCH_SMOOTH = 2
 
 // ── Stroke ────────────────────────────────────────────────────────────────────
 export const STROKE_FREQ_GLIDE = 0.26
@@ -101,6 +101,14 @@ export const HEAD_NOD = 0.012
 export const FLIPPER_FREQ = 0.5
 export const FLIPPER_SWEEP = 0.05
 export const FLIPPER_LIFT = 0.03
+export const STROKE_SWAY = 0.025
+export const STROKE_SMOOTH = 1.5
+
+// ── Body flex (curve per rad/s of turning or pitching) ────────────────────────
+export const TURN_CURVE_GAIN = 2.5
+export const CLIMB_CURVE_GAIN = 0.6
+export const CURVE_LIMIT = 0.16
+export const CURVE_SMOOTH = 2.5
 
 // ── Splash ────────────────────────────────────────────────────────────────────
 export const FOAM_POOL = 120

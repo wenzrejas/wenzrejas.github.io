@@ -38,7 +38,7 @@ function recallRecord(): AchievementRecord {
   const record = readRecord()
   const revealed = rememberedItems('revealedIslands', ISLAND_KEYS)
   const charted = [...new Set([...(record.progress.cartographer ?? []), ...revealed])]
-  const earned = new Set(record.earned)
+  const earned = new Set(record.earned.filter((key) => ACHIEVEMENT_KEYS.includes(key)))
   if (charted.length > 0) earned.add('landHo')
   if (isComplete('cartographer', charted)) earned.add('cartographer')
   return { ...record, earned: [...earned], progress: { ...record.progress, cartographer: charted } }

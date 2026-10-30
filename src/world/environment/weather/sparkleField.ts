@@ -3,35 +3,54 @@ import { useCycleStore } from '@/store/cycleStore'
 import { useWeatherStore } from '@/store/weatherStore'
 import { rand } from '@/utils/math'
 import {
-  SPARKLE_COUNT,
-  SPARKLE_LIFE_MAX,
-  SPARKLE_LIFE_MIN,
   SPARKLE_MOON_RANGE,
   SPARKLE_NIGHT_START,
-  SPARKLE_SIZE_MAX,
-  SPARKLE_SIZE_MIN,
-  SPARKLE_SPREAD,
   SPARKLE_Y,
+  SUN_SPARKLE_CLEAR_SHADOW,
+  SUN_SPARKLE_GONE_SHADOW,
+  SUN_SPARKLE_NIGHT_END,
+  SUN_SPARKLE_STRENGTH,
 } from './constants'
 
-export const sparkleLife = () => rand(SPARKLE_LIFE_MIN, SPARKLE_LIFE_MAX)
-export const sparkleSize = () => rand(SPARKLE_SIZE_MIN, SPARKLE_SIZE_MAX)
-export const scatterAround = (center: number) => center + (Math.random() - 0.5) * SPARKLE_SPREAD * 2
+export interface SparkleField {
+  count: number
+  spread: number
+  lifeMin: number
+  lifeMax: number
+  sizeMin: number
+  sizeMax: number
+  color: string
+  armSharpness: number
+  armFalloff: number
+  glowRadius: number
+}
 
-export function sparkleIntensity(): number {
+const { clamp, smoothstep } = THREE.MathUtils
+
+export const sparkleLife = (field: SparkleField) => rand(field.lifeMin, field.lifeMax)
+export const sparkleSize = (field: SparkleField) => rand(field.sizeMin, field.sizeMax)
+export const scatterAround = (field: SparkleField, center: number) =>
+  center + (Math.random() - 0.5) * field.spread * 2
+
+export function moonSparkleIntensity(): number {
   const { moonMult } = useWeatherStore.getState()
   const { nightFactor } = useCycleStore.getState()
   const moonFactor = Math.max(0, (moonMult - 1) / SPARKLE_MOON_RANGE)
-  const nightGate = THREE.MathUtils.clamp(
-    (nightFactor - SPARKLE_NIGHT_START) / (1 - SPARKLE_NIGHT_START),
-    0,
-    1
-  )
+  const nightGate = clamp((nightFactor - SPARKLE_NIGHT_START) / (1 - SPARKLE_NIGHT_START), 0, 1)
   return moonFactor * nightGate
+}
+
+export function sunSparkleIntensity(): number {
+  const { cloudShadow } = useWeatherStore.getState()
+  const { nightFactor } = useCycleStore.getState()
+  const sunlight = 1 - smoothstep(cloudShadow, SUN_SPARKLE_CLEAR_SHADOW, SUN_SPARKLE_GONE_SHADOW)
+  const dayGate = 1 - smoothstep(nightFactor, 0, SUN_SPARKLE_NIGHT_END)
+  return SUN_SPARKLE_STRENGTH * sunlight * dayGate
 }
 
 export function respawnSparkles(
   geometry: THREE.BufferGeometry,
+  field: SparkleField,
   centerX: number,
   centerZ: number,
   dt: number
@@ -46,15 +65,15 @@ export function respawnSparkles(
   const sizes = size.array as Float32Array
   let hasRespawned = false
 
-  for (let i = 0; i < SPARKLE_COUNT; i++) {
+  for (let i = 0; i < field.count; i++) {
     lifetimes[i] += dt
     if (lifetimes[i] < maxLifetimes[i]) continue
-    positions[i * 3] = scatterAround(centerX)
+    positions[i * 3] = scatterAround(field, centerX)
     positions[i * 3 + 1] = SPARKLE_Y
-    positions[i * 3 + 2] = scatterAround(centerZ)
+    positions[i * 3 + 2] = scatterAround(field, centerZ)
     lifetimes[i] = 0
-    maxLifetimes[i] = sparkleLife()
-    sizes[i] = sparkleSize()
+    maxLifetimes[i] = sparkleLife(field)
+    sizes[i] = sparkleSize(field)
     hasRespawned = true
   }
 
