@@ -1,16 +1,15 @@
 import * as THREE from 'three'
-import { ARRIVAL_LEVEL } from '../constants'
 import { dimForNight } from '../surface-daylight/surfaceDaylight'
 import { depthShare, type Timeline } from '../timeline/timeline'
 import {
   LIGHT_COLUMN_ABYSS_STRENGTH,
   LIGHT_COLUMN_NIGHT_LEVEL,
   LIGHT_COLUMN_STRENGTH,
-  SURFACE_GLOW_LEVELS,
   SURFACE_GLOW_NIGHT_LEVEL,
   WATER_NIGHT_LEVEL,
 } from './constants'
 import type { DepthEnvironment } from './depthEnvironmentModel'
+import { surfaceGlowOf } from './surfaceGlow'
 
 export function fillWater(scene: THREE.Scene, { fog }: DepthEnvironment) {
   scene.fog = fog
@@ -19,9 +18,6 @@ export function fillWater(scene: THREE.Scene, { fog }: DepthEnvironment) {
 export function drainWater(scene: THREE.Scene) {
   scene.fog = null
 }
-
-const surfaceGlowOf = ({ viewedLevel }: Timeline) =>
-  Math.exp(-Math.max(viewedLevel - ARRIVAL_LEVEL, 0) / SURFACE_GLOW_LEVELS)
 
 export function tintWater(
   environment: DepthEnvironment,

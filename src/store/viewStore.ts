@@ -3,7 +3,7 @@ import { closePanel } from './panelStore'
 
 type ScenePhase = 'world' | 'diving' | 'depths' | 'surfacing'
 type MapPhase = 'closed' | 'unfolding' | 'open' | 'folding'
-type RenderedScene = 'world' | 'depths' | null
+export type RenderedScene = 'world' | 'depths' | null
 
 interface ViewState {
   scenePhase: ScenePhase

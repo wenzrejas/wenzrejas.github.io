@@ -1,7 +1,7 @@
 import { SETTINGS_COPY } from '@/data/settingsCopy'
 import { toggleHud, useHudStore } from '@/store/hudStore'
 import { isWorldScene, useViewStore } from '@/store/viewStore'
-import { GRAPHICS_CHOICES } from '../constants'
+import { FRAME_RATE_CHOICES, GRAPHICS_CHOICES } from '../constants'
 import SettingChoiceRow from '../rows/SettingChoiceRow'
 import SettingSwitchRow from '../rows/SettingSwitchRow'
 import SwitchRow from '../rows/SwitchRow'
@@ -19,6 +19,12 @@ export default function DisplayTab() {
         setting="graphicsQuality"
         choices={GRAPHICS_CHOICES}
         names={display.graphicsChoices}
+      />
+      <SettingChoiceRow
+        label={display.frameRateLimit}
+        setting="frameRateLimit"
+        choices={FRAME_RATE_CHOICES}
+        names={display.frameRateLimitChoices}
       />
       {isInWorld && <SwitchRow label={display.hud} isOn={isHudVisible} onToggle={toggleHud} />}
       <SettingSwitchRow label={display.reduceMotion} setting="isMotionReduced" />

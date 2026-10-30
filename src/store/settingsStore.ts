@@ -5,6 +5,7 @@ import type { WeatherType } from './weatherStore'
 import { rememberedText, rememberText } from './visitorMemory'
 
 export type GraphicsQuality = 'smooth' | 'sharp'
+export type FrameRateLimit = 'thirty' | 'sixty' | 'unlimited'
 export type ChosenTime = 'auto' | Extract<PhaseName, 'sunrise' | 'noon' | 'sunset' | 'night'>
 export type ChosenWeather = 'auto' | Exclude<WeatherType, 'moonlit'>
 export type DayLength = 'short' | 'normal' | 'long'
@@ -14,6 +15,7 @@ export type SailingSpeed = 'leisurely' | 'normal' | 'brisk'
 export interface Settings {
   volumes: Record<Channel, number>
   graphicsQuality: GraphicsQuality
+  frameRateLimit: FrameRateLimit
   isMotionReduced: boolean
   isFlashingReduced: boolean
   timeOfDay: ChosenTime
@@ -35,10 +37,16 @@ const REDUCED_FLASH_STRENGTH = 0.2
 const DAY_PACES: Record<DayLength, number> = { short: 2, normal: 1, long: 0.5 }
 const WILDLIFE_PACES: Record<WildlifeActivity, number> = { calm: 0.5, normal: 1, lively: 2 }
 const SAILING_PACES: Record<SailingSpeed, number> = { leisurely: 0.7, normal: 1, brisk: 1.35 }
+const FRAME_INTERVALS_MS: Record<FrameRateLimit, number | null> = {
+  thirty: 1000 / 30,
+  sixty: 1000 / 60,
+  unlimited: null,
+}
 
 const DEFAULT_SETTINGS: Settings = {
   volumes: { music: 1, ambience: 1, sfx: 1 },
   graphicsQuality: 'sharp',
+  frameRateLimit: 'unlimited',
   isMotionReduced: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
   isFlashingReduced: false,
   timeOfDay: 'auto',
@@ -70,6 +78,10 @@ export const changeVolume = (channel: Channel, volume: number) =>
   changeSetting('volumes', { ...useSettingsStore.getState().volumes, [channel]: volume })
 
 export const isMotionReduced = () => useSettingsStore.getState().isMotionReduced
+
+export const isGraphicsSharp = () => useSettingsStore.getState().graphicsQuality === 'sharp'
+
+export const frameIntervalMs = () => FRAME_INTERVALS_MS[useSettingsStore.getState().frameRateLimit]
 
 export const flashStrength = () =>
   useSettingsStore.getState().isFlashingReduced ? REDUCED_FLASH_STRENGTH : 1

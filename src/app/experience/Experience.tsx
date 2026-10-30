@@ -10,6 +10,8 @@ import {
   IS_DEBUG,
   PIXEL_RATIOS,
 } from './constants'
+import Bloom from './bloom/Bloom'
+import FramePacer from './frame-pacer/FramePacer'
 import CameraRig from './CameraRig'
 import TopView from './TopView'
 import SceneRenderer from './SceneRenderer'
@@ -47,7 +49,9 @@ export default function Experience() {
       }}
       gl={{ antialias: true }}
       dpr={PIXEL_RATIOS[graphicsQuality]}
+      frameloop="demand"
     >
+      <FramePacer />
       <Suspense fallback={null}>
         <color attach="background" args={['#1a7fa8']} />
         {IS_DEBUG && (
@@ -58,6 +62,7 @@ export default function Experience() {
         <DayNightCycle />
         <InteractionLayer />
         <SceneRenderer />
+        <Bloom />
         <DiveTransition />
         <WorldPause />
         <World ref={shipRef} />

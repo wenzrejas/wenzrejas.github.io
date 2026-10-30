@@ -4,6 +4,7 @@ import type {
   ChosenTime,
   ChosenWeather,
   DayLength,
+  FrameRateLimit,
   GraphicsQuality,
   SailingSpeed,
   WildlifeActivity,
@@ -23,6 +24,7 @@ export type SettingsTab = (typeof SETTINGS_TABS)[number]
 // ── Choices ───────────────────────────────────────────────────────────────────
 export const SWITCH_CHOICES = ['on', 'off'] as const
 export const GRAPHICS_CHOICES: readonly GraphicsQuality[] = ['smooth', 'sharp']
+export const FRAME_RATE_CHOICES: readonly FrameRateLimit[] = ['thirty', 'sixty', 'unlimited']
 export const TIME_CHOICES: readonly ChosenTime[] = ['auto', 'sunrise', 'noon', 'sunset', 'night']
 export const WEATHER_CHOICES: readonly ChosenWeather[] = [
   'auto',
