@@ -110,6 +110,19 @@ src/
 - Music and sound effects from [Pixabay](https://pixabay.com/)
 - Special thanks to [Three.js Journey](https://threejs-journey.com/) by Bruno Simon
 
+## License
+
+The source code is released under the [MIT License](LICENSE), so feel free to learn from it, borrow from it and build on it.
+
+The MIT License covers the source code only. The following aren't part of it, so please ask me before reusing them:
+
+- The 3D models in `public/models`
+- The artwork and images in `public/images`, such as Wobbi, the loading map and the splash art
+- The project screenshots in `public/images/projects`, which show products I worked on for clients and employers and belong to their owners
+- My personal writing, such as my career history and project stories
+
+The music and sound effects in `public/audio` are from Pixabay and stay under the [Pixabay Content License](https://pixabay.com/service/license-summary/).
+
 ## Say hello
 
 The best way to reach me is to sail to Lumina Point and send a signal from the lighthouse. You can also find me on [LinkedIn](https://linkedin.com/in/wenzlouierejas), email me at [wenz.rejas@gmail.com](mailto:wenz.rejas@gmail.com), or [buy me a coffee on Ko-fi](https://ko-fi.com/wenzrej).
