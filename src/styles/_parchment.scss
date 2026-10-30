@@ -72,7 +72,7 @@ $cartouche-pressed-label-drop: 1px;
   border: none;
   background: none;
   color: $cartouche-ink;
-  cursor: pointer;
+  cursor: var(--cursor-hand);
   transition: color $state-change;
 
   &:hover:not(:disabled),

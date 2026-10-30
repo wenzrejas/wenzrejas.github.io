@@ -12,7 +12,7 @@ $focus-ring: rgba(216, 66, 42, 0.75);
   border: none;
   border-radius: 50%;
   background: none;
-  cursor: pointer;
+  cursor: var(--cursor-hand);
 
   &:focus-visible {
     outline: 2px solid $focus-ring;

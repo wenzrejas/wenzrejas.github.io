@@ -23,14 +23,14 @@ $fade-in: 0.18s ease;
   display: grid;
   place-items: center;
   background: $backdrop;
-  cursor: zoom-out;
+  cursor: var(--cursor-magnify);
   animation: screenshot-preview-fade-in $fade-in;
 
   &__frame {
     padding: $frame-padding;
     @include card-frame;
     border-image-source: card-frame-image(1, $frame-fill);
-    cursor: default;
+    cursor: var(--cursor-default);
   }
 
   &__image {

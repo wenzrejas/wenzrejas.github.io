@@ -31,7 +31,7 @@ $hover-brightness: 1.06;
     border: none;
     border-radius: $image-corner-radius;
     background: none;
-    cursor: zoom-in;
+    cursor: var(--cursor-magnify);
 
     &:focus-visible {
       @include ink-focus-ring(2px);

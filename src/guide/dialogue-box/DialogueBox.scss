@@ -140,7 +140,7 @@ $tail-lift: sizes.$box-min-height * 0.66;
     background: transparent;
     color: $turn-ink;
     font: inherit;
-    cursor: pointer;
+    cursor: var(--cursor-hand);
 
     &--skip {
       margin-right: auto;
@@ -148,7 +148,7 @@ $tail-lift: sizes.$box-min-height * 0.66;
 
     &:disabled {
       opacity: 0.28;
-      cursor: default;
+      cursor: var(--cursor-default);
     }
 
     &:hover:not(:disabled) {

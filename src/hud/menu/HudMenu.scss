@@ -36,7 +36,7 @@ $button-size: 2.3rem;
     background: rgba(0, 0, 0, 0.2);
     color: #ffffff;
     font-size: 1.05rem;
-    cursor: pointer;
+    cursor: var(--cursor-hand);
     transition:
       background-color 0.15s ease,
       border-color 0.15s ease;

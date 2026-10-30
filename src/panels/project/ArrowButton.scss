@@ -26,7 +26,7 @@ $disabled-opacity: 0.35;
   box-shadow: $shadow;
   font-size: calc(var(--size) * #{$icon-share});
   color: $ink;
-  cursor: pointer;
+  cursor: var(--cursor-hand);
   translate: 0 -50%;
   transition:
     opacity $state-change,
@@ -50,6 +50,6 @@ $disabled-opacity: 0.35;
 
   &:disabled {
     opacity: $disabled-opacity;
-    cursor: default;
+    cursor: var(--cursor-default);
   }
 }

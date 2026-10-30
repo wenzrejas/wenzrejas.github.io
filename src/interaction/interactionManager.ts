@@ -117,7 +117,7 @@ class InteractionManager {
     this.hovered = hitArea
     this.refreshHighlight(previous)
     this.refreshHighlight(hitArea)
-    if (this.canvas) this.canvas.style.cursor = hitArea ? 'pointer' : ''
+    if (this.canvas) this.canvas.style.cursor = hitArea ? 'var(--cursor-hand)' : ''
   }
 
   private approach(hitArea: THREE.Object3D | null): void {

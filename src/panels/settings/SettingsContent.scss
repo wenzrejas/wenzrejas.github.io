@@ -40,7 +40,7 @@ $tab-bar-height: 2px;
     letter-spacing: $tab-letter-spacing;
     text-transform: uppercase;
     color: $tab-faded-ink;
-    cursor: pointer;
+    cursor: var(--cursor-hand);
     transition: color $state-change;
 
     &:hover,
@@ -117,7 +117,7 @@ $tab-bar-height: 2px;
     font-family: var(--font-secondary);
     font-size: $base-font-size;
     color: $ink-soft;
-    cursor: pointer;
+    cursor: var(--cursor-hand);
     transition: color $state-change;
 
     &:hover {
@@ -160,7 +160,7 @@ $tab-bar-height: 2px;
     margin: 0;
     background: none;
     appearance: none;
-    cursor: pointer;
+    cursor: var(--cursor-hand);
 
     &::-webkit-slider-runnable-track {
       height: $track-height;

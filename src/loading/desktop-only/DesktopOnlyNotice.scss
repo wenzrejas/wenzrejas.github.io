@@ -1,0 +1,13 @@
+@use '@/styles/parchment' as *;
+
+.desktop-only-message {
+  width: max-content;
+  max-width: calc(100vw - 3rem);
+  color: $ink;
+  @include handwritten;
+  font-size: 1.4rem;
+  line-height: 1.3;
+  text-align: center;
+  text-wrap: balance;
+  white-space: pre-line;
+}

@@ -11,4 +11,5 @@ export const LOADING_COPY = {
   setSail: 'Set Sail',
   soundOn: 'Sound on',
   soundOff: 'Sound off',
+  desktopOnly: 'The seas are too narrow here, traveller.\nFind a desktop screen to set sail.',
 }

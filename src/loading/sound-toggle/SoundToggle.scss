@@ -10,7 +10,7 @@
   color: $ink;
   @include handwritten;
   font-size: 1.2rem;
-  cursor: pointer;
+  cursor: var(--cursor-hand);
   min-width: 150px;
 
   svg {

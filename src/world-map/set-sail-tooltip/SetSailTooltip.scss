@@ -56,7 +56,7 @@ $pressed-scale: 0.96;
     padding: 0 0 $label-lift;
     border: none;
     background: none;
-    cursor: pointer;
+    cursor: var(--cursor-hand);
     transition: scale $state-change;
 
     &:active {

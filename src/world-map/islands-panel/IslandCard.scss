@@ -29,7 +29,7 @@ $selected-edge: rgba(214, 160, 110, 0.55);
   background: none;
   color: $ink;
   text-align: left;
-  cursor: pointer;
+  cursor: var(--cursor-hand);
   transition:
     background-color $state-change,
     box-shadow $state-change;

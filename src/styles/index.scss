@@ -1,3 +1,4 @@
+@use 'sass:map';
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=DM+Sans:wght@400;500;700&family=Fondamento:ital@1&family=Oxanium:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 $bg: #efd3a2;
@@ -8,6 +9,25 @@ $navy: #1e3a8a;
 $text: #0f172a;
 $muted: #475569;
 $dim: #94a3b8;
+
+$cursors: (
+  default: (
+    hotspot: 1 0,
+    fallback: default,
+  ),
+  hand: (
+    hotspot: 4 0,
+    fallback: pointer,
+  ),
+  grab: (
+    hotspot: 16 13,
+    fallback: grab,
+  ),
+  magnify: (
+    hotspot: 10 10,
+    fallback: zoom-in,
+  ),
+);
 
 *,
 *::before,
@@ -32,6 +52,24 @@ $dim: #94a3b8;
   --font-accent: 'Cinzel', serif;
   --font-hud: 'Oxanium', sans-serif;
   --font-handwritten: 'Fondamento', cursive;
+
+  @each $name, $cursor in $cursors {
+    $hotspot: map.get($cursor, hotspot);
+    $fallback: map.get($cursor, fallback);
+    --cursor-#{$name}: url('/images/cursors/#{$name}.png') #{$hotspot}, #{$fallback};
+  }
+}
+
+@supports (cursor: image-set(url('/images/cursors/default.png') 1x) 1 0, default) {
+  :root {
+    @each $name, $cursor in $cursors {
+      $hotspot: map.get($cursor, hotspot);
+      $fallback: map.get($cursor, fallback);
+      $image-1x: url('/images/cursors/#{$name}.png');
+      $image-2x: url('/images/cursors/#{$name}@2x.png');
+      --cursor-#{$name}: image-set(#{$image-1x} 1x, #{$image-2x} 2x) #{$hotspot}, #{$fallback};
+    }
+  }
 }
 
 html,
@@ -42,6 +80,16 @@ body {
   color: $text;
   font-family: var(--font-secondary);
   -webkit-font-smoothing: antialiased;
+  cursor: var(--cursor-default);
+}
+
+a:any-link {
+  cursor: var(--cursor-hand);
+}
+
+button,
+label {
+  cursor: inherit;
 }
 
 #root {

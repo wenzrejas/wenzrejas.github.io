@@ -24,7 +24,7 @@ $card-radius: 12px;
   line-height: 1;
   text-transform: uppercase;
   white-space: nowrap;
-  cursor: pointer;
+  cursor: var(--cursor-hand);
   pointer-events: auto;
   animation: rise-button-breathe 2.4s ease-in-out infinite;
   transition:

@@ -17,7 +17,7 @@ $focus-room: 4px;
     overflow-x: auto;
     scrollbar-width: none;
     list-style: none;
-    cursor: grab;
+    cursor: var(--cursor-grab);
 
     &::-webkit-scrollbar {
       display: none;
@@ -25,7 +25,7 @@ $focus-room: 4px;
 
     &--dragging,
     &--dragging * {
-      cursor: grabbing;
+      cursor: var(--cursor-grab);
       user-select: none;
     }
   }

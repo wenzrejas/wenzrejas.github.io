@@ -98,7 +98,7 @@ $seal-line-weight: 1.5px;
     line-height: 1.2;
     text-align: center;
     color: $ink-soft;
-    cursor: pointer;
+    cursor: var(--cursor-hand);
     transition: color $state-change;
 
     &:hover {
