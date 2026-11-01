@@ -1,0 +1,44 @@
+@use '@/styles/parchment' as *;
+
+$paper-edge-width: 1.6px;
+$paper-radius: 0.85rem;
+
+$rule-height: 11px;
+$rule-end-diamond: 8px;
+$rule-centre-diamond: 11px;
+$rule-line-ink: rgba(140, 95, 50, 0.32);
+
+$list-mist-reach: 2.5rem;
+$list-mist-ramp: 3;
+
+@mixin paper {
+  border: $paper-edge-width solid $note-edge;
+  border-radius: $paper-radius;
+  background: $note-paper;
+  box-shadow: 0 4px 10px $note-shadow;
+}
+
+@mixin three-diamonds {
+  flex: none;
+  height: $rule-height;
+  background-image:
+    url($diamond-ornament), url($diamond-ornament), url($diamond-ornament),
+    linear-gradient($rule-line-ink, $rule-line-ink);
+  background-position:
+    left center,
+    center,
+    right center,
+    center;
+  background-size:
+    $rule-end-diamond $rule-end-diamond,
+    $rule-centre-diamond $rule-centre-diamond,
+    $rule-end-diamond $rule-end-diamond,
+    calc(100% - #{$rule-end-diamond}) 1px;
+  background-repeat: no-repeat;
+}
+
+@mixin list-scroller {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  @include scroll-mist($list-mist-reach, $list-mist-ramp);
+}

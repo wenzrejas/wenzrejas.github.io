@@ -1,0 +1,14 @@
+@use 'sass:math';
+
+$panel-art-width: 395;
+$panel-width: $panel-art-width * 1px;
+$panel-close-centre-top: 86;
+$hanging-rise: 45;
+$hanging-panel-width: min(#{$panel-width}, 50vw);
+$hanging-close-centre: calc(
+  #{$hanging-panel-width} * #{math.div($panel-close-centre-top - $hanging-rise, $panel-art-width)}
+);
+
+$portrait-close-size: 48px;
+$portrait-close-inset: 0.5rem;
+$portrait-close-centre: calc(#{$portrait-close-inset} + #{$portrait-close-size} / 2);

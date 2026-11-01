@@ -4,8 +4,8 @@ import { SPAWN_HEADING } from '../store/shipStore'
 
 const NORTH_HEADING = SPAWN_HEADING
 
-export const NORTH_DIRECTION = new THREE.Vector2(Math.sin(NORTH_HEADING), Math.cos(NORTH_HEADING))
-export const EAST_DIRECTION = new THREE.Vector2(-NORTH_DIRECTION.y, NORTH_DIRECTION.x)
+const NORTH_DIRECTION = new THREE.Vector2(Math.sin(NORTH_HEADING), Math.cos(NORTH_HEADING))
+const EAST_DIRECTION = new THREE.Vector2(-NORTH_DIRECTION.y, NORTH_DIRECTION.x)
 
 export const toEastNorth = (x: number, z: number, out: THREE.Vector2) =>
   out.set(

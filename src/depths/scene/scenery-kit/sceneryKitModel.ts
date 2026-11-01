@@ -13,7 +13,7 @@ import {
 import type { KitDrift, KitPlacement } from './sceneryLayout'
 import SCENERY_HAZE from './shaders/sceneryHaze.frag.glsl'
 
-export interface DriftingStone extends KitPlacement {
+interface DriftingStone extends KitPlacement {
   drift: KitDrift
   mesh: THREE.InstancedMesh
   index: number

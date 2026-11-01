@@ -19,7 +19,7 @@ import ARC_FRAGMENT_PARS from './shaders/contactlessArcsPars.frag.glsl'
 import ARC_TINT from './shaders/contactlessArcsTint.frag.glsl'
 import ARC_GLOW from './shaders/contactlessArcsGlow.frag.glsl'
 
-export interface ContactlessArcs {
+interface ContactlessArcs {
   uArcClock: { value: number }
   uArcLevel: { value: number }
   uArcColor: { value: THREE.Color }

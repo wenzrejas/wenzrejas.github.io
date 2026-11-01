@@ -1,6 +1,6 @@
 import { CONTACT_COPY } from '@/data/panelCopy'
 
-export interface ContactDraft {
+interface ContactDraft {
   name: string
   email: string
   message: string

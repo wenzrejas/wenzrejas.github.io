@@ -9,7 +9,7 @@ import {
   ANGULAR_GEM_STEP_SECONDS,
 } from './constants'
 
-export interface AngularGem {
+interface AngularGem {
   mesh: THREE.Mesh
   rest: THREE.Vector3
   stepFrom: THREE.Quaternion

@@ -4,10 +4,10 @@
 @use '../sizes';
 
 $ink: #493021;
-$sheet-fill: #fff3dc;
-$sheet-edge: #77513b;
+$sheet-fill: parchment.$note-paper;
+$sheet-edge: parchment.$note-edge;
 $edge-width: 1.6;
-$sheet-shadow: rgba(21, 51, 71, 0.3);
+$sheet-shadow: parchment.$note-shadow;
 $crease-ink: #a47a52;
 $tab-edge: #aa7344;
 $tab-face: linear-gradient(110deg, #ddae72, #edc994 60%, #ddb47f);
@@ -37,6 +37,7 @@ $compact-mascot-room: sizes.$compact-mascot-size + sizes.$compact-mascot-inset +
   }
 
   &--tail-left {
+    width: min(33rem, calc(100vw - #{sizes.$over-map-sheet-width} - #{sizes.$mascot-size} - 1rem));
     margin-right: 0;
     margin-left: -1.25rem;
     padding-right: 2.4rem;

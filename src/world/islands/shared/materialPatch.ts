@@ -1,7 +1,7 @@
 import type * as THREE from 'three'
 import { applyCloudShadow } from '@/world/environment/weather/cloudShadow'
 
-export interface ShaderPatch {
+interface ShaderPatch {
   uniforms: Record<string, THREE.IUniform>
   defines?: Record<string, string>
   vertex?: Record<string, string>

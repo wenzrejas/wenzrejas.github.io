@@ -39,7 +39,7 @@ import {
 import { funnelDip, whirlpoolDip } from './whirlpoolFunnel'
 import { TIMEWELL_BASIN } from './shoreProfile'
 
-export interface SplashSite {
+interface SplashSite {
   x: number
   z: number
   awayX: number
@@ -49,7 +49,7 @@ export interface SplashSite {
   impact: number
 }
 
-export interface SpraySite {
+interface SpraySite {
   x: number
   y: number
   z: number

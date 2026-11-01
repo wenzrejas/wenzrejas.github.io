@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import { audio, type SoundHandle } from './audioManager'
 import type { SoundName } from './sounds'
 
-export interface LoopRamp {
+interface LoopRamp {
   rampSeconds: number
   fadeSeconds: number
   levelStep: number

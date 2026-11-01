@@ -1,6 +1,6 @@
 import { useId, type ReactNode } from 'react'
 
-export type MenuIconName = 'music' | 'spyglass' | 'chart' | 'helm'
+type MenuIconName = 'music' | 'spyglass' | 'chart' | 'helm'
 
 const SLASH = 'M4 4 L20 20'
 

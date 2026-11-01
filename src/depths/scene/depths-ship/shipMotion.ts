@@ -31,7 +31,7 @@ import {
   SHIP_YAW_RATE,
 } from './constants'
 
-export interface ShipMotion {
+interface ShipMotion {
   spot: THREE.Vector3
   keelDepth: number
   scrollTilt: number

@@ -17,7 +17,7 @@ import {
   WHALE_TURN_TO_CAMERA_DEGREES,
 } from './constants'
 
-export interface WhalePass {
+interface WhalePass {
   seconds: number
   passes: number
   isPassing: boolean

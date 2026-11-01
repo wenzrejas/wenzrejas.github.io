@@ -7,7 +7,7 @@ import {
   MONOLITH_GLOW_SECONDS,
 } from './constants'
 
-export interface CircuitPower {
+interface CircuitPower {
   poweredSeconds: number
   glow: number
   front: number

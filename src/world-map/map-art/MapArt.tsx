@@ -1,5 +1,7 @@
 import { useMemo, useRef } from 'react'
+import { ISLAND_COPY } from '@/data/islandCopy'
 import { useElementSize } from '@/hooks/useElementSize'
+import { useCompactLayout } from '@/utils/layout'
 import type { IslandKey } from '@/world/islands/shared/constants'
 import SetSailTooltip from '../set-sail-tooltip/SetSailTooltip'
 import type { MapMotion } from '../types'
@@ -9,15 +11,17 @@ import './MapArt.scss'
 interface MapArtProps {
   selectedIsland: IslandKey | null
   motion: MapMotion | null
-  onSetSail: () => void
+  onSetSail?: () => void
+  onSelectIsland: (island: IslandKey) => void
 }
 
-export default function MapArt({ selectedIsland, motion, onSetSail }: MapArtProps) {
+export default function MapArt({ selectedIsland, motion, onSetSail, onSelectIsland }: MapArtProps) {
   const frameRef = useRef<HTMLDivElement>(null)
   const { width, height } = useElementSize(frameRef)
+  const isCompact = useCompactLayout()
   const art = useMemo(
-    () => (width > 0 && height > 0 ? placeMapArt(width, height) : null),
-    [width, height]
+    () => (width > 0 && height > 0 ? placeMapArt(width, height, isCompact) : null),
+    [width, height, isCompact]
   )
   const setSailSpot = art?.islands.find(({ island }) => island === selectedIsland)?.setSailSpot
 
@@ -37,18 +41,21 @@ export default function MapArt({ selectedIsland, motion, onSetSail }: MapArtProp
       {art?.rocks.map(({ key, style }) => (
         <div key={key} className="map-art__rock" style={style} />
       ))}
-      {art?.islands.map(({ island, style }) => (
-        <div
-          key={island}
-          className={
-            island === selectedIsland
-              ? 'map-art__island map-art__island--selected'
-              : 'map-art__island'
-          }
-          style={style}
-        />
-      ))}
-      {setSailSpot && (
+      {art?.islands.map(({ island, style }) => {
+        const isSelected = island === selectedIsland
+        return (
+          <button
+            key={island}
+            type="button"
+            className={isSelected ? 'map-art__island map-art__island--selected' : 'map-art__island'}
+            style={style}
+            aria-label={ISLAND_COPY[island].label}
+            aria-pressed={isSelected}
+            onClick={() => onSelectIsland(island)}
+          />
+        )
+      })}
+      {setSailSpot && onSetSail && (
         <SetSailTooltip key={selectedIsland} spot={setSailSpot} onSetSail={onSetSail} />
       )}
     </div>

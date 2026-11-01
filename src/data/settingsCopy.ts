@@ -95,10 +95,10 @@ export const SETTINGS_COPY = {
   controls: {
     tab: 'Controls',
     hints: [
-      { keys: '[W][A][S][D], [Arrow] keys or [Drag] on the sea', action: 'Sail the ship' },
-      { keys: '[Click] or [Enter]', action: 'Open a marker' },
+      { keys: '[W][A][S][D] • [Arrow] keys • [Drag] on the sea', action: 'Sail the ship' },
+      { keys: '[Click] • [Enter]', action: 'Open a marker' },
       { keys: '[Esc]', action: 'Close a panel' },
-      { keys: '[Scroll], [W][S] or [↑][↓]', action: 'Travel the depths' },
+      { keys: '[Scroll] • [W][S] • [↑][↓]', action: 'Travel the depths' },
     ] satisfies ControlHint[],
     touchHints: [
       { keys: '[Drag] on the sea', action: 'Sail the ship' },

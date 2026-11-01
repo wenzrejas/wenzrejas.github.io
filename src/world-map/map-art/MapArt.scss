@@ -1,4 +1,6 @@
+@use '@/styles/breakpoints';
 @use '@/styles/parchment' as *;
+@use '../map-layout';
 @use '../motion' as *;
 
 $decoration-opacity: 0.88;
@@ -36,6 +38,21 @@ $raised-island-scale: 1.06;
     opacity: $decoration-opacity;
   }
 
+  &__decoration--compass {
+    @include breakpoints.compact {
+      left: map-layout.$portrait-close-inset;
+      translate: 0 -50%;
+
+      @include breakpoints.sheet-portrait {
+        top: map-layout.$portrait-close-centre;
+      }
+
+      @include breakpoints.sheet-landscape {
+        top: map-layout.$hanging-close-centre;
+      }
+    }
+  }
+
   &__decoration--line {
     --mist-size: calc(var(--mist-reveal) * var(--reach));
 
@@ -47,11 +64,20 @@ $raised-island-scale: 1.06;
   }
 
   &__island {
+    padding: 0;
+    border: none;
+    background-color: transparent;
     filter: $muted-island-filter;
+    cursor: var(--cursor-hand);
+    pointer-events: auto;
     transition:
       opacity $highlight-change,
       scale $highlight-change,
       filter $highlight-change;
+
+    &:focus-visible {
+      @include ink-focus-ring(2px);
+    }
   }
 
   &--focused &__island {
@@ -62,6 +88,14 @@ $raised-island-scale: 1.06;
     opacity: 1;
     scale: $raised-island-scale;
     filter: none;
+  }
+
+  @include breakpoints.hover-only {
+    &__island:hover {
+      opacity: 1;
+      scale: $raised-island-scale;
+      filter: none;
+    }
   }
 
   &--unfold {
@@ -78,6 +112,11 @@ $raised-island-scale: 1.06;
 
   &--fold {
     animation: map-art-fade $art-out-duration ease-in $art-out-delay both;
+  }
+
+  &--fold &__island,
+  &--fold .set-sail-tooltip {
+    pointer-events: none;
   }
 }
 

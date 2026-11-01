@@ -23,7 +23,7 @@ import {
 } from './constants'
 import { bandSeams, glowEnamel, ownRuneMaterial, type SeamBand } from './cubeStackModel'
 
-export interface CubeStack {
+interface CubeStack {
   ruin: THREE.Object3D
   band: SeamBand | null
   bottomY: number

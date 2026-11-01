@@ -40,7 +40,7 @@ interface ClockGear {
   stepShare: number
 }
 
-export interface Chronometer {
+interface Chronometer {
   hands: ClockHand[]
   gears: ClockGear[]
   cabochon: GlowLevel[]

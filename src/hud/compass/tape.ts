@@ -3,7 +3,7 @@ import { COMPASS_COPY } from '@/data/hudCopy'
 import { bearingDegrees, POINT_STEP_DEGREES } from '../north'
 import { PX_PER_DEGREE, TAPE_END_DEGREES, TAPE_START_DEGREES, TICK_STEP_DEGREES } from './constants'
 
-export interface TapeMark {
+interface TapeMark {
   x: number
   label: string | null
 }

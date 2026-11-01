@@ -1,6 +1,5 @@
-import { useEffect, useId, useLayoutEffect, useMemo, useRef, type ReactNode } from 'react'
+import { useEffect, useId, useLayoutEffect, useRef, type ReactNode } from 'react'
 import { animated, type SpringValues } from '@react-spring/web'
-import { useScrollOverflowVariables } from '@/hooks/useScrollOverflowVariables'
 import { PANEL_COPY } from '@/data/panelCopy'
 import { centerFocusLeftOf, closePanel } from '@/store/panelStore'
 import { isDepthsInView, isWorldInView } from '@/store/viewStore'
@@ -10,7 +9,7 @@ import CompassRose from '../compass-rose/CompassRose'
 import PanelArt from '../panel-art/PanelArt'
 import Parchment from '../parchment/Parchment'
 import { TITLE_UNDERLINE, TITLE_UNDERLINE_BOX } from './brushStrokeModel'
-import { mistMaskStyle } from './mistModel'
+import { useMistScroll } from './useMistScroll'
 import './IslandPanel.scss'
 
 interface SheetMotion {
@@ -43,8 +42,7 @@ export default function IslandPanel({
   const isSheet = useSheetLayout()
   const contentRef = useRef<HTMLDivElement>(null)
   const titleId = useId()
-  const mistStyle = useMemo(() => mistMaskStyle(), [])
-  useScrollOverflowVariables(contentRef)
+  const mistStyle = useMistScroll(contentRef)
 
   useLayoutEffect(() => {
     const layout = layoutRef.current

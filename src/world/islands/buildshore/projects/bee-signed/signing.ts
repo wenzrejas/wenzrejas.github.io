@@ -17,7 +17,7 @@ import {
 } from './constants'
 import { dressSignatureInk, updateInk, type InkUniforms } from './signingModel'
 
-export interface Signing {
+interface Signing {
   monument: THREE.Object3D
   ink: InkUniforms
   seal: THREE.Object3D

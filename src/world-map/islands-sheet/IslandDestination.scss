@@ -1,0 +1,87 @@
+@use '@/styles/breakpoints';
+@use '@/styles/parchment' as *;
+@use '../island-type';
+
+$change-size: 2.75rem;
+$change-icon-width: 2.5rem;
+$phone-ribbon-max-width: 22rem;
+
+.island-destination {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  grid-template-areas: 'thumbnail text ribbon change';
+  align-items: center;
+  column-gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  color: $ink;
+
+  .set-sail-ribbon {
+    grid-area: ribbon;
+  }
+
+  @include breakpoints.compact {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      'thumbnail text change'
+      'thumbnail ribbon ribbon';
+    column-gap: 0.5rem;
+    padding: 0.4rem 0.5rem;
+
+    .set-sail-ribbon {
+      justify-self: center;
+      width: 100%;
+      max-width: $phone-ribbon-max-width;
+
+      path {
+        vector-effect: non-scaling-stroke;
+      }
+    }
+  }
+
+  &__thumbnail {
+    grid-area: thumbnail;
+    background-repeat: no-repeat;
+  }
+
+  &__text {
+    display: flex;
+    grid-area: text;
+    flex-direction: column;
+    gap: 0.1rem;
+    min-width: 0;
+  }
+
+  &__name {
+    @include handwritten;
+    font-size: island-type.$fluid-name-size;
+    line-height: 1.1;
+  }
+
+  &__tagline {
+    color: $tagline-ink;
+    font-family: var(--font-secondary);
+    font-size: island-type.$fluid-tagline-size;
+  }
+
+  &__change {
+    display: grid;
+    grid-area: change;
+    place-items: center;
+    min-width: $change-size;
+    min-height: $change-size;
+    padding: 0.15rem;
+    border: none;
+    border-radius: 0.5rem;
+    background: none;
+    cursor: var(--cursor-hand);
+
+    &:focus-visible {
+      @include ink-focus-ring(0);
+    }
+  }
+
+  &__change-icon {
+    width: $change-icon-width;
+    user-select: none;
+  }
+}

@@ -23,6 +23,7 @@ export const CHART_STRETCH_LIMIT = 1.3
 export const WORLD_ORIGIN_ON_CHART = { x: 591, y: 470 }
 export const CHART_PX_PER_WORLD_UNIT = 0.45
 export const ISLAND_ART_SCALE = 0.45
+export const COMPACT_ISLAND_ZOOM = 1.3
 
 export const ISLAND_ART: Record<IslandKey, IslandArtKey> = {
   timewell: 'islandRuins',
@@ -32,9 +33,14 @@ export const ISLAND_ART: Record<IslandKey, IslandArtKey> = {
   tech: 'islandStatues',
 }
 
+// ── Thumbnails (screen px the water may pass each side of the box) ────────────
+export const THUMBNAIL_WATER_SPILL = 5
+
 // ── Set Sail tooltip (screen px) ──────────────────────────────────────────────
 export const SET_SAIL_GAP = 6
 export const SET_SAIL_ROOM = 96
+export const SET_SAIL_HALF_WIDTH = 95
+export const SET_SAIL_EDGE = 6
 
 // ── Rock outcrops (chart centre) ──────────────────────────────────────────────
 export const ROCK_SCALE = 0.65
@@ -57,6 +63,9 @@ export const ROCK_SPOTS: RockSpot[] = [
 // ── Decorations (the loading screen's art, chart centre) ──────────────────────
 export const DECORATION_SCALE = 0.65
 export const COMPASS_SCALE = 0.66
+export const COMPACT_COMPASS_HEIGHT = 52
+export const COMPACT_COMPASS_CLEAR_LEFT = 66
+export const COMPACT_COMPASS_CLEAR_TOP = 70
 
 export const DECORATION_SPOTS: Partial<Record<MapPieceKey, ChartSpot>> = {
   compass: { x: 128, y: 140 },

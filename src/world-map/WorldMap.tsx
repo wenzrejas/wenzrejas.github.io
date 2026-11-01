@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type AnimationEvent } from 'react'
+import { useCallback, useEffect, useRef, useState, type AnimationEvent } from 'react'
 import { audio } from '@/audio/audioManager'
 import { WORLD_MAP_COPY } from '@/data/worldMapCopy'
 import MapPaper from '@/loading/map-paper/MapPaper'
@@ -11,10 +11,12 @@ import {
   isMapUnfolded,
   useViewStore,
 } from '@/store/viewStore'
+import { useSheetPortrait } from '@/utils/layout'
 import type { IslandKey } from '@/world/islands/shared/constants'
 import { FOLD_ANIMATION, UNFOLD_ANIMATION } from './constants'
 import { sailTo } from './fastTravel'
 import IslandsPanel from './islands-panel/IslandsPanel'
+import IslandsSheet from './islands-sheet/IslandsSheet'
 import MapArt from './map-art/MapArt'
 import { preloadWorldMap } from './worldMapPreload'
 import './WorldMap.scss'
@@ -25,8 +27,15 @@ export default function WorldMap() {
   const isUnfolded = useViewStore(isMapUnfolded)
   const isLoaderGone = useLoadingStore((state) => state.isLoaderGone)
   const isGuideSpeaking = useGuideStore(isModalDialogue)
+  const isSheetPortrait = useSheetPortrait()
   const paperRef = useRef<HTMLCanvasElement>(null)
   const [selectedIsland, setSelectedIsland] = useState<IslandKey | null>(null)
+  const [isListOpen, setListOpen] = useState(false)
+
+  const selectIsland = useCallback((island: IslandKey) => {
+    setSelectedIsland(island)
+    setListOpen(false)
+  }, [])
 
   useEffect(() => {
     if (isLoaderGone) preloadWorldMap()
@@ -50,6 +59,7 @@ export default function WorldMap() {
     if (event.animationName === UNFOLD_ANIMATION) finishMapUnfold()
     if (event.animationName !== FOLD_ANIMATION) return
     setSelectedIsland(null)
+    setListOpen(false)
     finishMapFold()
   }
 
@@ -67,14 +77,31 @@ export default function WorldMap() {
       <MapPaper ref={paperRef} />
       <div className="world-map__creases" />
       <div className="world-map__chart">
-        <MapArt selectedIsland={selectedIsland} motion={motion} onSetSail={setSail} />
+        <MapArt
+          selectedIsland={selectedIsland}
+          motion={motion}
+          onSetSail={isSheetPortrait ? undefined : setSail}
+          onSelectIsland={selectIsland}
+        />
       </div>
-      <IslandsPanel
-        selectedIsland={selectedIsland}
-        motion={motion}
-        onSelect={setSelectedIsland}
-        onClose={closeWorldMap}
-      />
+      {isSheetPortrait ? (
+        <IslandsSheet
+          selectedIsland={selectedIsland}
+          isListOpen={isListOpen}
+          motion={motion}
+          onSelect={selectIsland}
+          onToggleList={() => setListOpen((isOpen) => !isOpen)}
+          onSetSail={setSail}
+          onClose={closeWorldMap}
+        />
+      ) : (
+        <IslandsPanel
+          selectedIsland={selectedIsland}
+          motion={motion}
+          onSelect={selectIsland}
+          onClose={closeWorldMap}
+        />
+      )}
     </section>
   )
 }

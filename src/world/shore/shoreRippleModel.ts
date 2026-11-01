@@ -7,7 +7,7 @@ import { SHORE_DEFAULTS, SHORE_MARGIN } from './constants'
 import SHORE_VERT from './shaders/shore.vert.glsl'
 import SHORE_FRAG from './shaders/shore.frag.glsl'
 
-export interface ShoreRipple {
+interface ShoreRipple {
   id: string
   key: IslandKey
   ring: ShoreRing

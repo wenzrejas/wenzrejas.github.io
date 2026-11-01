@@ -15,7 +15,7 @@ import {
   PEDESTAL_INSET_NODE,
 } from './constants'
 
-export interface GemAwakening {
+interface GemAwakening {
   gem: THREE.Mesh
   rest: THREE.Vector3
   spin: number

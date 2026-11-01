@@ -9,7 +9,7 @@ import { DAY_END_TIME, DAY_START_TIME } from './constants'
 
 const isDaytime = (timeOfDay: number) => timeOfDay >= DAY_START_TIME && timeOfDay < DAY_END_TIME
 
-export function shownWeather(type: WeatherType, timeOfDay: number): WeatherType {
+function shownWeather(type: WeatherType, timeOfDay: number): WeatherType {
   if (!isClearSky(type)) return type
   return isDaytime(timeOfDay) ? 'sunny' : 'moonlit'
 }
@@ -19,7 +19,7 @@ function windOriginBearing(direction: THREE.Vector2): number {
   return (downwindBearing + 180) % 360
 }
 
-export const windOriginName = (direction: THREE.Vector2) =>
+const windOriginName = (direction: THREE.Vector2) =>
   WEATHER_COPY.windDirections[nearestPointIndex(windOriginBearing(direction))]
 
 export const readWeather = () =>

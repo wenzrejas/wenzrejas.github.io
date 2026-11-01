@@ -37,7 +37,7 @@ export interface SwarmBuffers {
   trailFades: Float32Array
 }
 
-export interface SwarmState {
+interface SwarmState {
   isOut: boolean
   phaseSeconds: number
   seconds: number

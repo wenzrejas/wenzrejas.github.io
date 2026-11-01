@@ -14,9 +14,11 @@ export function useScrollOverflowVariables(ref: RefObject<HTMLElement | null>) {
     observer.observe(element)
     for (const child of element.children) observer.observe(child)
     element.addEventListener('scroll', measure, { passive: true })
+    element.addEventListener('animationend', measure)
     return () => {
       observer.disconnect()
       element.removeEventListener('scroll', measure)
+      element.removeEventListener('animationend', measure)
     }
   }, [ref])
 }

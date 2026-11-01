@@ -29,7 +29,7 @@ import { ascentShare, RISING_SECONDS } from './surfacingPace'
 
 type VeilStage = 'idle' | 'closing' | 'fading' | 'rising' | 'emerging'
 
-export type DiveEvent = 'arrived' | 'aborted' | 'surfaced' | 'settled' | null
+type DiveEvent = 'arrived' | 'aborted' | 'surfaced' | 'settled' | null
 
 interface DiveLook {
   focusBlend: number

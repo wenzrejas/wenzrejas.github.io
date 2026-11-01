@@ -91,7 +91,7 @@ export interface School {
   fish: FishState[]
 }
 
-export type Shoal = 'run' | 'school' | 'lone'
+type Shoal = 'run' | 'school' | 'lone'
 
 const SHOAL_SPEEDS: Record<Shoal, number> = {
   run: RUN_SPEED,

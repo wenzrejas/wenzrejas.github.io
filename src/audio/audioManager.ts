@@ -11,7 +11,7 @@ import {
 } from './constants'
 import { SOUNDS, type Channel, type SoundDefinition, type SoundName } from './sounds'
 
-export interface PlayOptions {
+interface PlayOptions {
   volume?: number
   rate?: number
   loop?: boolean

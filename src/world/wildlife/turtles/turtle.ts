@@ -92,7 +92,7 @@ const { clamp, smoothstep } = THREE.MathUtils
 const _awayFromShore = new THREE.Vector2()
 const _spawnPoint = new THREE.Vector3()
 
-export function createTurtle(x: number, z: number, heading: number): Turtle {
+function createTurtle(x: number, z: number, heading: number): Turtle {
   const cruiseSpeed = rand(CRUISE_SPEED_MIN, CRUISE_SPEED_MAX)
   return {
     x,
@@ -201,7 +201,7 @@ export function separate(turtles: Turtle[], dt: number): void {
   }
 }
 
-export const isClearOf = (turtles: Turtle[], x: number, z: number, spacing: number) =>
+const isClearOf = (turtles: Turtle[], x: number, z: number, spacing: number) =>
   turtles.every((turtle) => Math.hypot(turtle.x - x, turtle.z - z) >= spacing)
 
 // ── Spawning ──────────────────────────────────────────────────────────────────

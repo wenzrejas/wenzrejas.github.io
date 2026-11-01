@@ -1,0 +1,4 @@
+$name-size: 1.4rem;
+$tagline-size: 0.92rem;
+$fluid-name-size: clamp(1.15rem, 5.75vw, $name-size);
+$fluid-tagline-size: clamp(0.8rem, 3.75vw, $tagline-size);

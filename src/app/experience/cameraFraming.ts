@@ -21,7 +21,7 @@ import { baseZoom } from './worldZoom'
 
 type ViewCamera = THREE.OrthographicCamera | THREE.PerspectiveCamera
 
-export interface PanelFraming {
+interface PanelFraming {
   blend: number
 }
 

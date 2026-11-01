@@ -25,7 +25,7 @@ import SILHOUETTE_WATER from './shaders/silhouetteWater.frag.glsl'
 import WHALE_SWIM_PARS from './shaders/whaleSwimPars.vert.glsl'
 import WHALE_SWIM from './shaders/whaleSwim.vert.glsl'
 
-export interface WhaleSilhouette {
+interface WhaleSilhouette {
   body: THREE.Mesh
   swimTime: { value: number }
 }

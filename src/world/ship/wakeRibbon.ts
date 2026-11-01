@@ -16,7 +16,7 @@ interface TrailPoint {
   z: number
 }
 
-export interface WakeRibbon {
+interface WakeRibbon {
   points: TrailPoint[]
   head: number
   count: number

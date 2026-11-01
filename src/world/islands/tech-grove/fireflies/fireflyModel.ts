@@ -15,7 +15,7 @@ import FIREFLIES_VERT from './shaders/fireflies.vert.glsl'
 import FIREFLIES_FRAG from './shaders/fireflies.frag.glsl'
 import { islandLocalY } from '@/world/islands/shared/islandSpec'
 
-export interface Islet {
+interface Islet {
   x: number
   z: number
   radius: number

@@ -80,7 +80,7 @@ import {
   SPAWN_CHANCE as WHALE_CHANCE,
 } from '../world/wildlife/whale/constants'
 
-export interface DebugState {
+interface DebugState {
   ocean: OceanControls
   ship: ShipControls
   islands: Record<IslandKey, IslandControls>

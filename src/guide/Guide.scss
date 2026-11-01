@@ -56,4 +56,17 @@
       right: auto;
     }
   }
+
+  @include breakpoints.sheet-portrait {
+    &--left {
+      top: calc(var(--safe-top) + #{sizes.$over-map-top});
+      bottom: auto;
+    }
+  }
+
+  @include breakpoints.sheet-landscape {
+    &--left {
+      max-width: calc(100vw - var(--safe-left) - #{sizes.$over-map-sheet-room});
+    }
+  }
 }

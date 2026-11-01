@@ -16,7 +16,7 @@ interface ClockHand {
   facing: number
 }
 
-export interface StationClock {
+interface StationClock {
   hour: ClockHand
   minute: ClockHand
 }

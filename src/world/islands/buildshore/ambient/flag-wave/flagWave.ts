@@ -10,7 +10,7 @@ import {
   FLAG_WAVES_ALONG,
 } from './constants'
 
-export interface WavingFlag {
+interface WavingFlag {
   meshes: THREE.Mesh[]
   rest: Float32Array[]
   length: number

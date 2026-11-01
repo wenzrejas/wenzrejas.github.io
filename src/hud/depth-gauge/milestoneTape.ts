@@ -1,7 +1,7 @@
 import { ARRIVAL_LEVEL, DEPTH_LEVEL_COUNT } from '@/depths/scene/constants'
 import { PX_PER_LEVEL, TICKS_PER_LEVEL } from './constants'
 
-export interface MilestoneMark {
+interface MilestoneMark {
   y: number
   label: string | null
 }

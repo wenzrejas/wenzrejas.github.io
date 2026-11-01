@@ -18,7 +18,7 @@ import {
 } from './constants'
 import type { TrainMotion } from './trainMotion'
 
-export interface TrainSound {
+interface TrainSound {
   engine: ProximityLoop
   wasDwelling: boolean
 }

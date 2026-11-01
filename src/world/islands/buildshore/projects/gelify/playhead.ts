@@ -8,7 +8,7 @@ import {
   PLAYHEAD_SWEEP_SECONDS,
 } from './constants'
 
-export interface Playhead {
+interface Playhead {
   screen: THREE.Mesh
   vertices: number[]
   restX: Float32Array

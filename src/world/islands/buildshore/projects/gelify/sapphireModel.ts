@@ -14,7 +14,7 @@ import FACET_FRAGMENT_PARS from './shaders/sapphireFacetPars.frag.glsl'
 import FACET_SHADE from './shaders/sapphireFacetShade.frag.glsl'
 import FACET_GLOW from './shaders/sapphireGlow.frag.glsl'
 
-export interface SapphireGlow {
+interface SapphireGlow {
   uSapphireGlow: { value: number }
 }
 

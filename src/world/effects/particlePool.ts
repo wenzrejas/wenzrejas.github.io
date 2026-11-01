@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 
-export interface Particle {
+interface Particle {
   age: number
   life: number
   x: number

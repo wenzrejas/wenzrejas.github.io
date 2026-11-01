@@ -6,7 +6,7 @@ import { MODEL_BOW_OFFSET, MODEL_BRIGHTNESS } from '@/world/ship/constants'
 import { dressLivery } from '@/world/ship/liveryModel'
 import { DEPTHS_SHIP_LENGTH } from './constants'
 
-export interface DepthsShipModel {
+interface DepthsShipModel {
   root: THREE.Group
   materials: THREE.MeshStandardMaterial[]
   keelDepth: number

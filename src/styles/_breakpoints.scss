@@ -1,6 +1,8 @@
 $phone-landscape: '(max-height: 500px)';
 $compact: '(max-width: 767px), #{$phone-landscape}';
 $sheet-layout: '(max-width: 1023px), #{$phone-landscape}';
+$sheet-portrait: '(max-width: 1023px) and (orientation: portrait)';
+$sheet-landscape: '(max-width: 1023px) and (orientation: landscape), #{$phone-landscape} and (orientation: landscape)';
 
 @mixin phone-landscape {
   @media #{$phone-landscape} {
@@ -16,6 +18,18 @@ $sheet-layout: '(max-width: 1023px), #{$phone-landscape}';
 
 @mixin sheet-layout {
   @media #{$sheet-layout} {
+    @content;
+  }
+}
+
+@mixin sheet-portrait {
+  @media #{$sheet-portrait} {
+    @content;
+  }
+}
+
+@mixin sheet-landscape {
+  @media #{$sheet-landscape} {
     @content;
   }
 }

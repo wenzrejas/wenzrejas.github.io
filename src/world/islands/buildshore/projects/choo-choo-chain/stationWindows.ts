@@ -4,7 +4,7 @@ import { meshesNamed } from '@/utils/meshes'
 import { cloneLit } from '@/world/islands/shared/materialPatch'
 import { STATION_WINDOW_NODES } from './constants'
 
-export interface StationWindows {
+interface StationWindows {
   glass: THREE.MeshStandardMaterial
   baseIntensity: number
 }

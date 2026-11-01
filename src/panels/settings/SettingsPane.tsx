@@ -1,6 +1,5 @@
-import { useMemo, useRef, type ReactNode } from 'react'
-import { useScrollOverflowVariables } from '@/hooks/useScrollOverflowVariables'
-import { mistMaskStyle } from '../shared/island-panel/mistModel'
+import { useRef, type ReactNode } from 'react'
+import { useMistScroll } from '../shared/island-panel/useMistScroll'
 
 interface SettingsPaneProps {
   id: string
@@ -10,8 +9,7 @@ interface SettingsPaneProps {
 
 export default function SettingsPane({ id, label, children }: SettingsPaneProps) {
   const paneRef = useRef<HTMLDivElement>(null)
-  const mistStyle = useMemo(() => mistMaskStyle(), [])
-  useScrollOverflowVariables(paneRef)
+  const mistStyle = useMistScroll(paneRef)
 
   return (
     <div

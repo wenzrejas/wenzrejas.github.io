@@ -28,7 +28,7 @@ export interface SurfTuning {
   foamSize: number
 }
 
-export interface SurfSite {
+interface SurfSite {
   x: number
   z: number
   awayX: number

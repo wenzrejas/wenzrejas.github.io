@@ -17,6 +17,10 @@ import {
   CHART_PX_PER_WORLD_UNIT,
   CHART_STRETCH_LIMIT,
   CHART_WIDTH,
+  COMPACT_COMPASS_CLEAR_LEFT,
+  COMPACT_COMPASS_CLEAR_TOP,
+  COMPACT_COMPASS_HEIGHT,
+  COMPACT_ISLAND_ZOOM,
   COMPASS_SCALE,
   DECORATION_SCALE,
   DECORATION_SPOTS,
@@ -26,8 +30,11 @@ import {
   LINE_DECORATIONS,
   ROCK_SCALE,
   ROCK_SPOTS,
+  SET_SAIL_EDGE,
   SET_SAIL_GAP,
+  SET_SAIL_HALF_WIDTH,
   SET_SAIL_ROOM,
+  THUMBNAIL_WATER_SPILL,
   WORLD_ORIGIN_ON_CHART,
 } from './constants'
 import {
@@ -50,6 +57,11 @@ interface AtlasPiece {
   atlasY: number
 }
 
+interface AnchoredPiece extends AtlasPiece {
+  anchorX: number
+  anchorY: number
+}
+
 interface ChartPoint {
   x: number
   y: number
@@ -59,6 +71,7 @@ export interface SetSailSpot {
   left: number
   top: number
   side: 'above' | 'below'
+  shift: number
 }
 
 type DecorationKind = 'compass' | 'line' | 'glyph'
@@ -83,6 +96,11 @@ const atlasStyle = (sheet: AtlasSheet, piece: AtlasPiece, scale: number) => ({
   ...atlasSpriteStyle(sheet.width, sheet.height, piece, scale, scale),
 })
 
+const anchorOf = ({ anchorX, anchorY }: AnchoredPiece): ChartPoint => ({
+  x: anchorX,
+  y: anchorY,
+})
+
 const decorationKind = (key: MapPieceKey): DecorationKind =>
   key === COMPASS_PIECE ? 'compass' : LINE_DECORATIONS.includes(key) ? 'line' : 'glyph'
 
@@ -95,7 +113,7 @@ function islandChartSpot(island: IslandKey): ChartPoint {
   }
 }
 
-export function placeMapArt(width: number, height: number) {
+export function placeMapArt(width: number, height: number, isCompact: boolean) {
   const stretchY = height / CHART_HEIGHT
   const stretchX = Math.min(width / CHART_WIDTH, stretchY * CHART_STRETCH_LIMIT)
   const glyphScale = Math.min(stretchX, stretchY)
@@ -118,6 +136,10 @@ export function placeMapArt(width: number, height: number) {
     const spot = DECORATION_SPOTS[piece.key]
     if (!spot) return []
     const kind = decorationKind(piece.key)
+    if (isCompact && kind === 'compass') {
+      const compassScale = COMPACT_COMPASS_HEIGHT / piece.height
+      return { key: piece.key, kind, style: atlasStyle(DECORATION_SHEET, piece, compassScale) }
+    }
     const decorationScale = glyphScale * (kind === 'compass' ? COMPASS_SCALE : DECORATION_SCALE)
     const mist =
       kind === 'line'
@@ -140,27 +162,29 @@ export function placeMapArt(width: number, height: number) {
   })
 
   const rockScale = glyphScale * ROCK_SCALE
-  const rocks = ROCK_SPOTS.map((spot, index) => ({
-    key: `${spot.rock}-${index}`,
-    style: placeAround(
-      ISLAND_SHEET,
-      ROCK_PIECES[spot.rock],
-      spot,
-      centreOf(ROCK_PIECES[spot.rock]),
-      rockScale
-    ),
-  }))
+  const rocks = ROCK_SPOTS.map((spot, index) => {
+    const piece = ROCK_PIECES[spot.rock]
+    return {
+      key: `${spot.rock}-${index}`,
+      style: placeAround(ISLAND_SHEET, piece, spot, anchorOf(piece), rockScale),
+    }
+  })
 
-  const islandScale = glyphScale * ISLAND_ART_SCALE
+  const islandScale = glyphScale * ISLAND_ART_SCALE * (isCompact ? COMPACT_ISLAND_ZOOM : 1)
   const islands = ISLAND_KEYS.map((island) => {
     const piece = ISLAND_PIECES[ISLAND_ART[island]]
-    const anchor = { x: piece.anchorX, y: piece.anchorY }
+    const anchor = anchorOf(piece)
     const placed = placeAround(ISLAND_SHEET, piece, islandChartSpot(island), anchor, islandScale)
+    if (isCompact && placed.top < COMPACT_COMPASS_CLEAR_TOP) {
+      placed.left = Math.max(placed.left, COMPACT_COMPASS_CLEAR_LEFT)
+    }
     const centreX = placed.left + placed.width / 2
+    const ribbonInset = SET_SAIL_HALF_WIDTH + SET_SAIL_EDGE
+    const shift = THREE.MathUtils.clamp(centreX, ribbonInset, width - ribbonInset) - centreX
     const setSailSpot: SetSailSpot =
       placed.top >= SET_SAIL_ROOM
-        ? { left: centreX, top: placed.top - SET_SAIL_GAP, side: 'above' }
-        : { left: centreX, top: placed.top + placed.height + SET_SAIL_GAP, side: 'below' }
+        ? { left: centreX, top: placed.top - SET_SAIL_GAP, side: 'above', shift }
+        : { left: centreX, top: placed.top + placed.height + SET_SAIL_GAP, side: 'below', shift }
     return {
       island,
       setSailSpot,
@@ -180,7 +204,10 @@ export function thumbnailStyle(
   boxHeight: number
 ): CSSProperties {
   const piece = ISLAND_PIECES[ISLAND_ART[island]]
-  const scale = Math.min(boxWidth / piece.width, boxHeight / piece.height)
+  const scale = Math.min(
+    (boxWidth + THUMBNAIL_WATER_SPILL * 2) / piece.width,
+    (boxHeight + THUMBNAIL_WATER_SPILL * 2) / piece.height
+  )
   const insetX = (boxWidth - piece.width * scale) / 2
   const insetY = (boxHeight - piece.height * scale) / 2
   return {

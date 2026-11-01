@@ -3,7 +3,7 @@ import { positionIn } from '@/utils/meshes'
 import { FIRE_ANCHOR_NODE } from '../constants'
 import { FIRE_HEIGHT } from './constants'
 
-export interface FireSpot {
+interface FireSpot {
   origin: THREE.Vector3
   base: THREE.Vector3
 }

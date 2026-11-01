@@ -1,6 +1,6 @@
 import { NOTE_LIFETIME } from './constants'
 
-export interface Melody {
+interface Melody {
   seconds: number
   lastLaunchSeconds: number
 }

@@ -4,7 +4,7 @@ import { meshesOf, pointIn, positionIn } from '@/utils/meshes'
 import { CAFE_NODE, COUNTER_MARKER_SPOT, DOCK_NODE, NOTE_SPOT, TERRAIN_NODE } from './constants'
 import { COZY_MAIN_SHORE_RADIUS } from './shoreProfile'
 
-export interface CafeMarker {
+interface CafeMarker {
   position: THREE.Vector3
   baseGap: (x: number, z: number) => number
 }

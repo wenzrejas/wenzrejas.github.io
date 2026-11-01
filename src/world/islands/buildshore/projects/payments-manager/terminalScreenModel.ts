@@ -12,7 +12,7 @@ import {
 import TERMINAL_SCREEN_VERT from './shaders/terminalScreen.vert.glsl'
 import TERMINAL_SCREEN_FRAG from './shaders/terminalScreen.frag.glsl'
 
-export interface ScreenUniforms {
+interface ScreenUniforms {
   uCheck: { value: number }
   uStroke: { value: number }
 }

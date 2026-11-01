@@ -9,7 +9,7 @@ export interface IslandModelTuning {
   brightness: number
 }
 
-export interface CollisionCircle {
+interface CollisionCircle {
   x: number
   z: number
   radius: number

@@ -39,14 +39,14 @@ import {
   FOAM_WAKE_CARRY,
 } from './constants'
 
-export interface SprayLayer {
+interface SprayLayer {
   capacity: number
   owedParticles: number
   nextSlot: number
   lastPopTime: number
 }
 
-export interface SplashEmitter {
+interface SplashEmitter {
   lastShipY: number | null
   foam: SprayLayer
   bubbles: SprayLayer

@@ -10,7 +10,7 @@ import {
 import { FLOATING_CARD_NODES } from '@/world/islands/buildshore/projects/gelify/constants'
 import { SCREEN_DEPTH_STEPS, SCREEN_GLOW_MATERIAL, UIUX_SCREEN_NODES } from './constants'
 
-export interface ScreenGlows {
+interface ScreenGlows {
   screens: ColorGlow
   uiuxScreens: ColorGlow
 }

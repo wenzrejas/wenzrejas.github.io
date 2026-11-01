@@ -1,15 +1,17 @@
+@use '@/styles/breakpoints';
 @use 'motion' as *;
 
 $crease-shadow: rgba(92, 58, 28, 0.22);
 $crease-light: rgba(255, 244, 222, 0.4);
 $panel-shade: rgba(110, 72, 36, 0.13);
+$sheet-room: 8.25rem;
 
 .world-map {
   position: fixed;
   inset: 0;
   z-index: 95;
   display: flex;
-  overflow: hidden;
+  overflow: clip;
 
   &--closed {
     visibility: hidden;
@@ -74,6 +76,15 @@ $panel-shade: rgba(110, 72, 36, 0.13);
   &__chart {
     position: relative;
     flex: 1;
+
+    @include breakpoints.sheet-portrait {
+      margin: var(--safe-top) var(--safe-right) calc(var(--safe-bottom) + #{$sheet-room})
+        var(--safe-left);
+    }
+
+    @include breakpoints.sheet-landscape {
+      margin-left: var(--safe-left);
+    }
   }
 }
 

@@ -16,7 +16,7 @@ import {
   SURFACING_LIFT,
 } from './constants'
 
-export interface DepthsFraming {
+interface DepthsFraming {
   pointerX: number
   pointerY: number
   shiftX: number

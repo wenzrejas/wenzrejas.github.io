@@ -1,7 +1,7 @@
 import { useState, type RefObject } from 'react'
 import { useResizeEffect } from './useResizeEffect'
 
-export interface ElementSize {
+interface ElementSize {
   width: number
   height: number
 }

@@ -34,7 +34,7 @@ import SCREEN_BOX_VERT from './shaders/screenBox.vert.glsl'
 import SELECTION_BOX_FRAG from './shaders/selectionBox.frag.glsl'
 import SCREEN_LABEL_FRAG from './shaders/screenLabel.frag.glsl'
 
-export interface ScreenLabel {
+interface ScreenLabel {
   texture: THREE.CanvasTexture
   halfSize: THREE.Vector2
 }

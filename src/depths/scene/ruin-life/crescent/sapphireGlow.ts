@@ -19,7 +19,7 @@ import {
   SAPPHIRE_PULSE_RATE,
 } from './constants'
 
-export interface SapphireMoon {
+interface SapphireMoon {
   sapphire: GlowLevel[]
   halos: HaloGem[]
   glintGem: SparkleGem

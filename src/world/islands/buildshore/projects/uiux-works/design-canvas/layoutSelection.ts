@@ -9,7 +9,7 @@ import {
   SELECTION_SNAP_SECONDS,
 } from './constants'
 
-export interface SelectionFrame {
+interface SelectionFrame {
   gem: THREE.Mesh
   restOffsets: THREE.Vector3[]
 }

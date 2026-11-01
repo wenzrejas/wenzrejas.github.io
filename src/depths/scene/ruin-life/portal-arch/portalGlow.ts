@@ -24,7 +24,7 @@ import {
   RING_GLOW_STRENGTH,
 } from './constants'
 
-export interface PortalArch {
+interface PortalArch {
   diamond: GlowLevel[]
   portal: GlowLevel[]
   circle: THREE.Object3D | undefined

@@ -27,7 +27,7 @@ export interface Projection {
   color: THREE.Color
 }
 
-export interface LogoSurface {
+interface LogoSurface {
   mesh: THREE.Mesh
   color: THREE.Color
   opacity: number

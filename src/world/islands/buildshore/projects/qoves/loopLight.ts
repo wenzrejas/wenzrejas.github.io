@@ -12,7 +12,7 @@ import {
   QOVES_ROOT_NODE,
 } from './constants'
 
-export interface QovesLoop {
+interface QovesLoop {
   frame: THREE.Object3D
   stones: THREE.Mesh[]
   amberGlow: GlowTarget | null

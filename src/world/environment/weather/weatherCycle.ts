@@ -23,7 +23,7 @@ export interface WeatherParams {
   cloudShadow: number
 }
 
-export interface WeatherCycle {
+interface WeatherCycle {
   current: WeatherType
   next: WeatherType
   transition: number
@@ -36,7 +36,7 @@ const WEATHERS = Object.keys(WEATHER_PARAMS) as WeatherType[]
 
 export const isClearSky = (type: WeatherType) => type === 'sunny' || type === 'moonlit'
 
-export function pickOther(current: WeatherType): WeatherType {
+function pickOther(current: WeatherType): WeatherType {
   const others = WEATHERS.filter((weather) => weather !== current)
   return others[Math.floor(Math.random() * others.length)]
 }

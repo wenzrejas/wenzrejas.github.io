@@ -22,7 +22,7 @@ interface RestingPart {
   rotation: THREE.Euler
 }
 
-export interface EditorMotion {
+interface EditorMotion {
   cards: RestingPart[]
   accents: RestingPart[]
   accentSpin: number

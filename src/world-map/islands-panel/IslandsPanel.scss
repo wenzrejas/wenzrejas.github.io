@@ -1,18 +1,39 @@
+@use 'sass:math';
+@use '@/styles/breakpoints';
 @use '@/styles/parchment' as *;
+@use '../islands-look';
+@use '../map-layout' as *;
 @use '../motion' as *;
 
-$sheet-width: 395px;
-$sheet-gap-right: 4px;
-$sheet-top-slice: 170;
-$sheet-bottom-slice: 104;
+$panel-gap-right: 4px;
 
-$content-top: 112px;
-$content-right: 34px;
-$content-bottom: 72px;
-$content-left: 22px;
+$card-top: 86;
+$card-right: 19;
+$card-bottom: 24;
+$card-left: 7;
 
-$close-center-left: 345px;
-$close-center-top: 86px;
+$flag-top: 22;
+$flag-left: 52;
+$flag-width: 122;
+
+$rope-left: 335;
+$rope-width: 25;
+
+$content-top: 112;
+$content-right: 34;
+$content-bottom: 38;
+$content-left: 22;
+
+$close-center-left: 345;
+$close-size: 64;
+$min-close-size: 44px;
+
+$hanging-drop: 16;
+$hanging-header-height: 3rem;
+$hanging-header-inset: 1rem;
+$hanging-header-gap: 0.5rem;
+$hanging-icon-width: 3.25rem;
+$hanging-heading-size: 1.6rem;
 
 $header-height: 66px;
 $header-inset: 27px;
@@ -20,31 +41,68 @@ $header-gap: 13px;
 $icon-width: 76px;
 $heading-size: 2.2rem;
 
-$rule-height: 11px;
-$rule-end-diamond: 8px;
-$rule-centre-diamond: 11px;
-$rule-ink: rgba(140, 95, 50, 0.32);
-
 $list-gap: 9px;
+$needle-overhang: 12px;
 $item-padding: 5px;
 $separator-inset: 10px;
 $separator-ink: rgba(176, 128, 74, 0.28);
 
+@function panel-px($art-pixels) {
+  @return calc(var(--panel-width) * #{math.div($art-pixels, $panel-art-width)});
+}
+
 .islands-panel {
+  --panel-width: #{$panel-width};
+
   position: relative;
+  display: flex;
   flex: none;
+  flex-direction: column;
   align-self: flex-start;
-  width: $sheet-width;
-  margin-right: $sheet-gap-right;
-  border-style: solid;
-  border-width: 0;
-  border-image: var(--sheet) #{$sheet-top-slice} 0 #{$sheet-bottom-slice} 0 fill /
-    #{$sheet-top-slice}px 0 #{$sheet-bottom-slice}px 0 stretch;
+  width: var(--panel-width);
+  max-height: 100%;
+  margin-right: $panel-gap-right;
+  isolation: isolate;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: panel-px($card-top) panel-px($card-right) panel-px($card-bottom) panel-px($card-left);
+    z-index: -1;
+    @include islands-look.paper;
+  }
+
+  @include breakpoints.sheet-landscape {
+    --panel-width: #{$hanging-panel-width};
+    --close-button-size: max(#{$min-close-size}, #{panel-px($close-size)});
+
+    max-height: calc(100% + #{panel-px($hanging-rise + $hanging-drop)});
+    margin-top: calc(-1 * #{panel-px($hanging-rise)});
+    margin-right: calc(#{$panel-gap-right} + var(--safe-right));
+  }
+
+  &__flag {
+    position: absolute;
+    top: panel-px($flag-top);
+    left: panel-px($flag-left);
+    z-index: -2;
+    width: panel-px($flag-width);
+    user-select: none;
+  }
+
+  &__rope {
+    position: absolute;
+    top: 0;
+    left: panel-px($rope-left);
+    width: panel-px($rope-width);
+    pointer-events: none;
+    user-select: none;
+  }
 
   &__close {
     position: absolute;
-    top: $close-center-top;
-    left: $close-center-left;
+    top: panel-px($panel-close-centre-top);
+    left: panel-px($close-center-left);
     z-index: 1;
     translate: -50% -50%;
   }
@@ -52,7 +110,9 @@ $separator-ink: rgba(176, 128, 74, 0.28);
   &__content {
     display: flex;
     flex-direction: column;
-    padding: $content-top $content-right $content-bottom $content-left;
+    min-height: 0;
+    padding: panel-px($content-top) panel-px($content-right) panel-px($content-bottom)
+      panel-px($content-left);
   }
 
   &__header {
@@ -62,11 +122,21 @@ $separator-ink: rgba(176, 128, 74, 0.28);
     gap: $header-gap;
     height: $header-height;
     padding-left: $header-inset;
+
+    @include breakpoints.sheet-landscape {
+      gap: $hanging-header-gap;
+      height: $hanging-header-height;
+      padding-left: $hanging-header-inset;
+    }
   }
 
   &__icon {
     width: $icon-width;
     user-select: none;
+
+    @include breakpoints.sheet-landscape {
+      width: $hanging-icon-width;
+    }
   }
 
   &__heading {
@@ -74,32 +144,28 @@ $separator-ink: rgba(176, 128, 74, 0.28);
     @include handwritten;
     font-size: $heading-size;
     font-weight: 400;
+
+    @include breakpoints.sheet-landscape {
+      font-size: $hanging-heading-size;
+    }
   }
 
   &__rule {
-    flex: none;
-    height: $rule-height;
+    @include islands-look.three-diamonds;
     margin: 2px 15px 0 13px;
-    background-image:
-      url($diamond-ornament), url($diamond-ornament), url($diamond-ornament),
-      linear-gradient($rule-ink, $rule-ink);
-    background-position:
-      left center,
-      center,
-      right center,
-      center;
-    background-size:
-      $rule-end-diamond $rule-end-diamond,
-      $rule-centre-diamond $rule-centre-diamond,
-      $rule-end-diamond $rule-end-diamond,
-      calc(100% - #{$rule-end-diamond}) 1px;
-    background-repeat: no-repeat;
+  }
+
+  &__scroller {
+    flex: 0 1 auto;
+    min-height: 0;
+    margin-top: $list-gap;
+    margin-left: -$needle-overhang;
+    padding-left: $needle-overhang;
+    @include islands-look.list-scroller;
   }
 
   &__list {
     position: relative;
-    flex: none;
-    margin-top: $list-gap;
     padding: 0 3px;
     list-style: none;
   }
@@ -107,6 +173,10 @@ $separator-ink: rgba(176, 128, 74, 0.28);
   &__item {
     position: relative;
     padding: $item-padding 0;
+
+    .island-card {
+      scroll-margin-block: islands-look.$list-mist-reach;
+    }
 
     & + &::before {
       content: '';

@@ -1,0 +1,183 @@
+@use '@/styles/breakpoints';
+@use '@/styles/parchment' as *;
+@use '../islands-look';
+@use '../map-layout';
+@use '../motion' as *;
+
+$gutter: 0.5rem;
+$bar-width: 12rem;
+$wide-width: 40rem;
+$fold-change: 0.28s $rise-ease;
+
+$toggle-height: 3rem;
+$icon-width: 2.75rem;
+$heading-size: 1.5rem;
+$caret-gap: 0.4rem;
+$caret-width: 0.75rem;
+$caret-height: 0.5rem;
+$caret-stroke: 1.5;
+
+$list-reserve: 8.75rem;
+$card-gap: 0.25rem;
+
+.islands-sheet {
+  position: absolute;
+  right: calc(var(--safe-right) + #{$gutter});
+  bottom: calc(var(--safe-bottom) + #{$gutter});
+  left: calc(var(--safe-left) + #{$gutter});
+  z-index: 1;
+  max-width: $bar-width;
+  margin-inline: auto;
+  overflow: hidden;
+  @include islands-look.paper;
+  transition: max-width $fold-change;
+
+  &--wide {
+    max-width: $wide-width;
+  }
+
+  &--unfold {
+    animation: islands-sheet-rise $panel-duration $overshoot-ease $panel-delay both;
+  }
+
+  &--fold {
+    animation: islands-sheet-sink $panel-out-duration ease-in $panel-out-delay both;
+  }
+
+  &__fold {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows $fold-change;
+
+    &--open {
+      grid-template-rows: 1fr;
+    }
+  }
+
+  &__fold-inner {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  &__toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    height: $toggle-height;
+    padding: 0 0.75rem;
+    border: none;
+    background: none;
+    color: $ink;
+    cursor: var(--cursor-hand);
+
+    &:focus-visible {
+      @include ink-focus-ring(-4px);
+    }
+  }
+
+  &__icon {
+    width: $icon-width;
+    user-select: none;
+  }
+
+  &__heading {
+    @include handwritten;
+    font-size: $heading-size;
+  }
+
+  &__caret {
+    flex: none;
+    width: $caret-width;
+    height: $caret-height;
+    margin-left: $caret-gap;
+    fill: none;
+    stroke: $ink-soft;
+    stroke-width: $caret-stroke;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: rotate $fold-change;
+  }
+
+  &__toggle[aria-expanded='true'] &__caret {
+    rotate: 180deg;
+  }
+
+  &__rule {
+    @include islands-look.three-diamonds;
+    margin: 0 1rem 0.5rem;
+  }
+
+  &__scroller {
+    max-height: calc(100dvh - var(--safe-top) - var(--safe-bottom) - #{$list-reserve});
+    @include islands-look.list-scroller;
+  }
+
+  &__list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: $card-gap;
+    padding: 0 0.5rem 0.5rem;
+    list-style: none;
+  }
+
+  &__item {
+    flex: 0 0 calc((100% - #{$card-gap * 2}) / 3);
+    min-width: 0;
+
+    @include breakpoints.compact {
+      flex-basis: calc((100% - #{$card-gap}) / 2);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &,
+    &__fold,
+    &__caret {
+      transition: none;
+    }
+  }
+}
+
+.islands-sheet-close {
+  --close-button-size: #{map-layout.$portrait-close-size};
+
+  position: absolute;
+  top: calc(var(--safe-top) + #{map-layout.$portrait-close-inset});
+  right: calc(var(--safe-right) + #{map-layout.$portrait-close-inset});
+  z-index: 2;
+
+  &--unfold {
+    animation: islands-sheet-close-in $panel-duration ease-out $panel-delay both;
+  }
+
+  &--fold {
+    animation: islands-sheet-close-out $panel-out-duration ease-in $panel-out-delay both;
+  }
+}
+
+@keyframes islands-sheet-rise {
+  from {
+    translate: 0 $panel-travel;
+  }
+}
+
+@keyframes islands-sheet-sink {
+  to {
+    translate: 0 $panel-travel;
+  }
+}
+
+@keyframes islands-sheet-close-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes islands-sheet-close-out {
+  to {
+    opacity: 0;
+  }
+}

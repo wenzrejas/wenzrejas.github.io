@@ -19,7 +19,7 @@ import {
 } from './constants'
 import { WHIRLPOOL_FUNNEL_DEPTH } from '../constants'
 
-export interface MemoryFragment {
+interface MemoryFragment {
   slot: number
   orbitRadius: number
   height: number

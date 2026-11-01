@@ -17,7 +17,7 @@ import {
 
 type FlashPhase = 'idle' | 'strike' | 'gap' | 'echo'
 
-export interface Lightning {
+interface Lightning {
   untilNext: number
   phase: FlashPhase
   elapsed: number

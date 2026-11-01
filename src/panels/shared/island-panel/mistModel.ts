@@ -3,7 +3,7 @@ import { alphaMaskUrl } from '../procedural/alphaMask'
 import { MIST_HEIGHT, MIST_WIDTH } from './constants'
 import { mistAlphas, type MistAlphas } from './mist'
 
-export interface MistMasks {
+interface MistMasks {
   top: string
   bottom: string
 }

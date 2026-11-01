@@ -1,7 +1,7 @@
 import { isRaining } from '@/store/weatherStore'
 import { MAX_FRAME_SECONDS } from '@/utils/time'
 
-export interface FairWeatherPresence {
+interface FairWeatherPresence {
   level: number
   dryness: number
 }

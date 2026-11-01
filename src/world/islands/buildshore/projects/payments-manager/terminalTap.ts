@@ -17,7 +17,7 @@ import {
   SCREEN_NODE,
 } from './constants'
 
-export interface Terminal {
+interface Terminal {
   screen: THREE.Mesh
   icon: THREE.Object3D
   iconRest: THREE.Vector3

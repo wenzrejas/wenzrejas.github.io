@@ -1,4 +1,4 @@
-export interface KF {
+interface KF {
   t: number
   bg: string
   fog: string

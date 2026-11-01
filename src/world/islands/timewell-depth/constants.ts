@@ -17,7 +17,7 @@ export const TIMEWELL_SPEC: IslandSpec = {
 export const TIMEWELL_OVERHEAD_SHADOW_STRENGTH = 1.8
 
 // ── Whirlpool ─────────────────────────────────────────────────────────────────
-export const WHIRLPOOL_SPREAD = 2
+const WHIRLPOOL_SPREAD = 2
 export const WHIRLPOOL_RADIUS = TIMEWELL_BASIN.radius * WHIRLPOOL_SPREAD
 export const WHIRLPOOL_FADE_START = 0.8
 export const WHIRLPOOL_TWIST = 3

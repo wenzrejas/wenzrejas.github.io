@@ -15,7 +15,7 @@ import LOOP_LIGHT_FRAGMENT_PARS from './shaders/loopLightPars.frag.glsl'
 import LOOP_LIGHT_TINT from './shaders/loopLightTint.frag.glsl'
 import LOOP_LIGHT_GLOW from './shaders/loopLightGlow.frag.glsl'
 
-export interface LoopLightUniforms {
+interface LoopLightUniforms {
   uCometHead: { value: number }
   uCometLevel: { value: number }
   uCometColor: { value: THREE.Color }

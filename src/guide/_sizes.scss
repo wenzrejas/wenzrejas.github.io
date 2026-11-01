@@ -1,5 +1,10 @@
+@use '@/world-map/map-layout';
+
 $mascot-size: 16rem;
 $box-min-height: 13.25rem;
 $small-mascot-size: 8rem;
 $compact-mascot-size: 6.5rem;
 $compact-mascot-inset: 0.6rem;
+$over-map-top: 4rem;
+$over-map-sheet-width: map-layout.$panel-width;
+$over-map-sheet-room: calc(#{map-layout.$hanging-panel-width} + 1.5rem);
