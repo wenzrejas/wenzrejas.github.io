@@ -4,6 +4,7 @@ export interface DialoguePage {
   mood: MascotMood
   heading?: string
   lines: string[]
+  touchLines?: string[]
 }
 
 // ── Introduction ──────────────────────────────────────────────────────────────
@@ -49,6 +50,11 @@ const LEARN_TO_SAIL: DialoguePage[] = [
     mood: 'talking',
     lines: [
       'Use [W] or [↑] to move forward, [S] or [↓] to reverse, and [A] or [←] / [D] or [→] to steer.',
+      'Or drag on the sea, and the ship will sail the way you point.',
+    ],
+    touchLines: [
+      'Drag anywhere on the sea, and the ship will sail the way you point.',
+      'The farther you drag, the faster we go!',
     ],
   },
   {
@@ -387,6 +393,8 @@ export const DIALOGUES = {
 
 export type DialogueKey = keyof typeof DIALOGUES
 export type RemarkKey = keyof typeof REMARKS
+export type PromotionKey = keyof typeof PROMOTIONS
+export type QueuedRemark = RemarkKey | PromotionKey
 
 // ── Dialogue box ──────────────────────────────────────────────────────────────
 export const GUIDE_COPY = {

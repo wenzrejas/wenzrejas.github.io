@@ -11,14 +11,14 @@ const CANVAS_BLEED: CSSProperties = {
   height: `calc(100% + ${PARCHMENT_MARGIN * 2}px)`,
 }
 
-export default function Parchment() {
+export default function Parchment({ isFullBleed }: { isFullBleed: boolean }) {
   const frameRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useResizeEffect(frameRef, (width, height) => {
     const canvas = canvasRef.current
     if (!canvas || width === 0 || height === 0) return
-    paintParchment(canvas, width, height, parchmentPixelRatio())
+    paintParchment(canvas, width, height, parchmentPixelRatio(), isFullBleed)
   })
 
   return (

@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { PANEL_COPY, PROJECT_PANEL_COPY } from '@/data/panelCopy'
 import CloseButton from '../shared/close-button/CloseButton'
 import ArrowButton from './ArrowButton'
+import { useSwipe } from './useSwipe'
 import './ScreenshotPreview.scss'
 
 interface ScreenshotPreviewProps {
@@ -25,6 +26,7 @@ export default function ScreenshotPreview({
     const neighbor = index + shift
     if (neighbor >= 0 && neighbor < screenshots.length) onShow(neighbor)
   }
+  const swipeHandlers = useSwipe(showNeighbor)
 
   const handleKey = useEffectEvent((event: KeyboardEvent) => {
     if (event.key === 'Escape') onClose()
@@ -50,6 +52,7 @@ export default function ScreenshotPreview({
       aria-modal="true"
       aria-label={PROJECT_PANEL_COPY.screenshot}
       onClick={closeOnBackdrop}
+      {...swipeHandlers}
     >
       <figure className="screenshot-preview__frame">
         <img

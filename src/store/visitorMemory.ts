@@ -12,14 +12,6 @@ const MEMORY_KEYS = {
 
 type Memory = keyof typeof MEMORY_KEYS
 
-const PROGRESS_MEMORIES: Memory[] = [
-  'returningVisitor',
-  'revealedIslands',
-  'heardRemarks',
-  'heardDialogues',
-  'achievements',
-]
-
 const storedItems = (memory: Memory) => (readStored(MEMORY_KEYS[memory]) ?? '').split(',')
 
 export const isRemembered = (memory: Memory) =>
@@ -42,8 +34,8 @@ export function rememberText(memory: Memory, text: string) {
   if (!IS_DEBUG) writeStored(MEMORY_KEYS[memory], text)
 }
 
-export function forgetProgress() {
-  for (const memory of PROGRESS_MEMORIES) forgetStored(MEMORY_KEYS[memory])
+export function forgetVisitor() {
+  for (const key of Object.values(MEMORY_KEYS)) forgetStored(key)
 }
 
 export function rememberItem(memory: Memory, item: string) {

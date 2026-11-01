@@ -52,6 +52,12 @@ export const SETTINGS_COPY = {
   },
   world: {
     tab: 'World',
+    sailingSpeed: 'Sailing speed',
+    sailingChoices: {
+      leisurely: 'Leisurely',
+      normal: 'Normal',
+      brisk: 'Brisk',
+    } satisfies Record<SailingSpeed, string>,
     timeOfDay: 'Time of day',
     timeChoices: {
       auto: 'Auto',
@@ -81,24 +87,24 @@ export const SETTINGS_COPY = {
       lively: 'Lively',
     } satisfies Record<WildlifeActivity, string>,
     remarks: 'Wobbi remarks',
-    progress: 'Progress',
+    progress: 'Progress & settings',
     resetProgress: 'Reset',
     confirmReset: 'Reset & reload',
     cancelReset: 'Cancel',
   },
   controls: {
     tab: 'Controls',
-    sailingSpeed: 'Sailing speed',
-    sailingChoices: {
-      leisurely: 'Leisurely',
-      normal: 'Normal',
-      brisk: 'Brisk',
-    } satisfies Record<SailingSpeed, string>,
     hints: [
-      { keys: '[W][A][S][D] or [↑][←][↓][→]', action: 'Sail the ship' },
-      { keys: 'Click or [Enter]', action: 'Open a marker' },
+      { keys: '[W][A][S][D], [Arrow] keys or [Drag] on the sea', action: 'Sail the ship' },
+      { keys: '[Click] or [Enter]', action: 'Open a marker' },
       { keys: '[Esc]', action: 'Close a panel' },
-      { keys: 'Scroll, [W][S] or [↑][↓]', action: 'Travel the depths' },
+      { keys: '[Scroll], [W][S] or [↑][↓]', action: 'Travel the depths' },
+    ] satisfies ControlHint[],
+    touchHints: [
+      { keys: '[Drag] on the sea', action: 'Sail the ship' },
+      { keys: '[Tap] a marker', action: 'Open a marker' },
+      { keys: '[Tap] the close button', action: 'Close a panel' },
+      { keys: '[Swipe] up or down', action: 'Travel the depths' },
     ] satisfies ControlHint[],
   },
   achievements: {

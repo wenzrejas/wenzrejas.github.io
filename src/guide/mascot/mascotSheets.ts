@@ -49,7 +49,7 @@ function sheetCentroids(animation: MascotAnimation, image: HTMLImageElement) {
 }
 
 const dialogueMoods = Object.values(DIALOGUES).flatMap((pages) => pages.map(({ mood }) => mood))
-const playedAnimations = new Set<MascotAnimation>(['appear', 'idle', 'exit', ...dialogueMoods])
+const playedAnimations = new Set<MascotAnimation>(['appear', 'idle', ...dialogueMoods])
 
 export const preloadMascotSheets = () =>
   Promise.allSettled(

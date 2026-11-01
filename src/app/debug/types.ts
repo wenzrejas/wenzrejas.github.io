@@ -75,7 +75,6 @@ export interface BoundaryControls {
 
 export interface WindLineControls {
   windEnabled: boolean
-  windAngle: number
   windSpeed: number
   lineDuration: number
   lineLength: number

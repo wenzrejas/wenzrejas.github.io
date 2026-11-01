@@ -23,7 +23,21 @@ interface AudibleRange {
   end: number
 }
 
-const UNLOCK_EVENTS = ['pointerdown', 'keydown', 'touchstart'] as const
+interface StreamPlayer {
+  element: HTMLAudioElement
+  source: MediaElementAudioSourceNode
+}
+
+const UNLOCK_EVENTS = [
+  'pointerdown',
+  'pointerup',
+  'keydown',
+  'touchstart',
+  'touchend',
+  'click',
+] as const
+const GESTURE_EVENTS = ['touchend', 'click', 'keydown'] as const
+const STREAM_PLAYERS = 4
 
 const MEDIA_TYPES: Record<string, string> = {
   webm: 'audio/webm; codecs="opus"',
@@ -121,6 +135,7 @@ class AudioManager {
   private buffers = new Map<SoundName, Promise<AudioBuffer>>()
   private audibleRanges = new WeakMap<AudioBuffer, AudibleRange>()
   private pending: (() => void)[] = []
+  private idleStreamPlayers: StreamPlayer[] = []
   private unlocked = false
   private ducks = 0
   private silences = 0
@@ -158,6 +173,8 @@ class AudioManager {
     }
 
     for (const event of UNLOCK_EVENTS) window.addEventListener(event, this.unlock, true)
+    for (const event of GESTURE_EVENTS)
+      window.addEventListener(event, this.readyStreamPlayers, true)
     document.addEventListener('visibilitychange', this.syncVisibility)
   }
 
@@ -297,24 +314,35 @@ class AudioManager {
     if (!handle.active || !this.context || !this.channels) return
     const context = this.context
     const definition: SoundDefinition = SOUNDS[name]
-    const element = new Audio(preferredSource(definition))
+    const player = this.idleStreamPlayers.pop() ?? this.createStreamPlayer()
+    const { element, source } = player
+    element.src = preferredSource(definition)
     element.loop = options.loop ?? false
     element.playbackRate = options.rate ?? 1
 
-    const source = context.createMediaElementSource(element)
     const gain = this.createEnvelope(name, options)
     source.connect(gain).connect(this.channels[definition.channel])
 
+    const listening = new AbortController()
+    let released = false
     const release = () => {
+      if (released) return
+      released = true
+      listening.abort()
       element.pause()
       element.removeAttribute('src')
       element.load()
       source.disconnect()
+      this.idleStreamPlayers.push(player)
     }
-    element.addEventListener('ended', () => {
-      handle.finish()
-      release()
-    })
+    element.addEventListener(
+      'ended',
+      () => {
+        handle.finish()
+        release()
+      },
+      { signal: listening.signal }
+    )
 
     let swapped = false
     const start = () => {
@@ -335,9 +363,13 @@ class AudioManager {
       start()
       return true
     }
-    element.addEventListener('error', () => {
-      if (handle.active) swap()
-    })
+    element.addEventListener(
+      'error',
+      () => {
+        if (handle.active) swap()
+      },
+      { signal: listening.signal }
+    )
     start()
     handle.attach(context, gain, definition.volume, (at) => {
       window.setTimeout(release, Math.max(0, (at - context.currentTime) * 1000))
@@ -391,6 +423,21 @@ class AudioManager {
     const range = { start: first / buffer.sampleRate, end: (last + 1) / buffer.sampleRate }
     this.audibleRanges.set(buffer, range)
     return range
+  }
+
+  private createStreamPlayer(): StreamPlayer {
+    const element = new Audio()
+    return { element, source: this.context!.createMediaElementSource(element) }
+  }
+
+  private readyStreamPlayers = (): void => {
+    for (const event of GESTURE_EVENTS) {
+      window.removeEventListener(event, this.readyStreamPlayers, true)
+    }
+    while (this.idleStreamPlayers.length < STREAM_PLAYERS) {
+      this.idleStreamPlayers.push(this.createStreamPlayer())
+    }
+    for (const { element } of this.idleStreamPlayers) element.load()
   }
 
   private startPending = (): void => {

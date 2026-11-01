@@ -1,6 +1,8 @@
+@use '@/styles/breakpoints';
 @use '@/styles/parchment' as *;
 
 $default-size: 2rem;
+$touch-target: 2.75rem;
 $default-inset: 0.4rem;
 $icon-share: 0.55;
 $fill: #f5dcbb;
@@ -32,6 +34,14 @@ $disabled-opacity: 0.35;
     opacity $state-change,
     scale $state-change;
 
+  @include breakpoints.touch-input {
+    &::after {
+      content: '';
+      position: absolute;
+      inset: min(0px, calc((var(--size) - #{$touch-target}) / 2));
+    }
+  }
+
   &--previous {
     left: var(--inset);
   }
@@ -40,8 +50,10 @@ $disabled-opacity: 0.35;
     right: var(--inset);
   }
 
-  &:hover:not(:disabled) {
-    scale: $hover-scale;
+  @include breakpoints.hover-only {
+    &:hover:not(:disabled) {
+      scale: $hover-scale;
+    }
   }
 
   &:focus-visible {

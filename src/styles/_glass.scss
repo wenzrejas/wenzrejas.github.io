@@ -1,3 +1,5 @@
+@use 'breakpoints';
+
 $hud-drop-shadow: drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.45));
 $card-radius: 12px;
 
@@ -9,6 +11,13 @@ $card-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.15);
   background: rgba(0, 0, 0, 0.35);
   @include glass-backdrop;
+}
+
+@mixin rise-button-lit {
+  border-color: rgba(200, 245, 255, 0.95);
+  background: rgba(40, 120, 190, 0.5);
+  box-shadow: 0 0 1rem rgba(127, 220, 255, 0.6);
+  animation: none;
 }
 
 @mixin rise-button {
@@ -38,12 +47,14 @@ $card-radius: 12px;
     }
   }
 
-  &:hover,
   &:focus-visible {
-    border-color: rgba(200, 245, 255, 0.95);
-    background: rgba(40, 120, 190, 0.5);
-    box-shadow: 0 0 1rem rgba(127, 220, 255, 0.6);
-    animation: none;
+    @include rise-button-lit;
+  }
+
+  @include breakpoints.hover-only {
+    &:hover {
+      @include rise-button-lit;
+    }
   }
 
   &:focus-visible {

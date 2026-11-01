@@ -4,6 +4,7 @@ import { useScrollOverflowVariables } from '@/hooks/useScrollOverflowVariables'
 import { PANEL_COPY } from '@/data/panelCopy'
 import { centerFocusLeftOf, closePanel } from '@/store/panelStore'
 import { isDepthsInView, isWorldInView } from '@/store/viewStore'
+import { useSheetLayout } from '@/utils/layout'
 import CloseButton from '../close-button/CloseButton'
 import CompassRose from '../compass-rose/CompassRose'
 import PanelArt from '../panel-art/PanelArt'
@@ -15,6 +16,7 @@ import './IslandPanel.scss'
 interface SheetMotion {
   opacity: number
   x: number
+  y: number
   rotate: number
 }
 
@@ -38,6 +40,7 @@ export default function IslandPanel({
   children,
 }: IslandPanelProps) {
   const layoutRef = useRef<HTMLElement>(null)
+  const isSheet = useSheetLayout()
   const contentRef = useRef<HTMLDivElement>(null)
   const titleId = useId()
   const mistStyle = useMemo(() => mistMaskStyle(), [])
@@ -68,7 +71,7 @@ export default function IslandPanel({
       aria-labelledby={titleId}
     >
       <animated.div className="island-panel__sheet" style={motion}>
-        <Parchment />
+        <Parchment isFullBleed={isSheet} />
         <CloseButton
           className="island-panel__close"
           label={PANEL_COPY.close}

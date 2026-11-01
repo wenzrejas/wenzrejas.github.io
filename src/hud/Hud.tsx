@@ -1,5 +1,6 @@
 import { useIsIntroductionOver } from '../store/guideStore'
 import { useHudStore } from '../store/hudStore'
+import { useIsPanelCoveringScreen } from '../store/panelStore'
 import { isWorldScene, useViewStore } from '../store/viewStore'
 import Compass from './compass/Compass'
 import Minimap from './minimap/Minimap'
@@ -10,9 +11,11 @@ export default function Hud() {
   const isHudVisible = useHudStore((state) => state.isHudVisible)
   const isInWorld = useViewStore(isWorldScene)
   const isIntroductionOver = useIsIntroductionOver()
+  const isPanelCovering = useIsPanelCoveringScreen()
+  const isVisible = isHudVisible && isIntroductionOver && isInWorld && !isPanelCovering
 
   return (
-    <div className={isHudVisible && isIntroductionOver && isInWorld ? 'hud' : 'hud hud--hidden'}>
+    <div className={isVisible ? 'hud' : 'hud hud--hidden'}>
       <Compass />
       <Minimap />
       <WeatherPanel />

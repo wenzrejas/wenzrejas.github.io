@@ -1,5 +1,5 @@
 import type { RankKey } from '@/achievements/constants'
-import type { DialogueKey } from '@/data/guideCopy'
+import type { DialogueKey, PromotionKey } from '@/data/guideCopy'
 
 // ── Introduction (after the loader leaves) ────────────────────────────────────
 export const INTRODUCTION_DELAY_SECONDS = 0.6
@@ -10,7 +10,7 @@ export const ARRIVAL_DIALOGUE_DELAY_SECONDS = 0.6
 export const LANDING_DIALOGUE_DELAY_SECONDS = 1.2
 
 // ── Promotions (spoken once the world is calm after a new rank) ───────────────
-export const PROMOTION_DIALOGUES: Partial<Record<RankKey, DialogueKey>> = {
+export const PROMOTION_DIALOGUES: Partial<Record<RankKey, PromotionKey>> = {
   deckhand: 'promotedToDeckhand',
   navigator: 'promotedToNavigator',
   firstMate: 'promotedToFirstMate',

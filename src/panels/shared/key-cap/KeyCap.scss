@@ -5,10 +5,10 @@ $key-depth: #b98a55;
 .key-cap {
   display: inline-grid;
   place-items: center;
-  min-width: 1.75em;
-  height: 1.75em;
+  min-width: 2.75em;
+  height: 2.75em;
   margin: 0 0.12em;
-  padding: 0 0.3em;
+  padding: 0 0.6em;
   border: 1px solid $key-edge;
   border-radius: 0.35em;
   background: $key-face;

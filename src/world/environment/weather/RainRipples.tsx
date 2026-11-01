@@ -13,8 +13,8 @@ import RIPPLE_VERT from './shaders/rainRipple.vert.glsl'
 import RIPPLE_FRAG from './shaders/rainRipple.frag.glsl'
 
 const MAX_RIPPLES = 250
-const RIPPLE_LIFETIME = 1.8 // seconds per ring
-const SPAWN_RATE = 80 // ripples/second at full rain intensity
+const RIPPLE_LIFETIME = 1.8
+const SPAWN_RATE = 80
 const RIPPLE_SEGMENTS = 4
 const WHIRLPOOL_EYE_SHARE = 0.05
 const WHIRLPOOL_SWALLOW_SHARE = 0.2
@@ -24,7 +24,7 @@ export default function RainRipples({ shipRef }: { shipRef: React.RefObject<THRE
   const progress = useRef(new Float32Array(MAX_RIPPLES).fill(1))
   const spawnAcc = useRef(0)
   const nextSlot = useRef(0)
-  const activeCount = useRef(0) // ripples with progress < 1
+  const activeCount = useRef(0)
 
   const { geo, mat } = useMemo(() => {
     const quad = new THREE.PlaneGeometry(2, 2, RIPPLE_SEGMENTS, RIPPLE_SEGMENTS).rotateX(
@@ -80,7 +80,6 @@ export default function RainRipples({ shipRef }: { shipRef: React.RefObject<THRE
     uniforms.uWhirlpoolDrain.value = whirlpool.active ? whirlpool.drainRate : 0
 
     mesh.visible = intensity > 0.01 || activeCount.current > 0
-    // Skip all work when no rain and all ripples have already faded out
     if (!mesh.visible) return
 
     const dt = Math.min(delta, MAX_FRAME_SECONDS)
@@ -90,7 +89,6 @@ export default function RainRipples({ shipRef }: { shipRef: React.RefObject<THRE
 
     let progDirty = false
 
-    // Advance existing ripples
     for (let i = 0; i < MAX_RIPPLES; i++) {
       if (prog[i] < 1) {
         prog[i] = Math.min(1, prog[i] + dt / RIPPLE_LIFETIME)
@@ -108,10 +106,8 @@ export default function RainRipples({ shipRef }: { shipRef: React.RefObject<THRE
       const cx = ship?.position.x ?? 0
       const cz = ship?.position.z ?? 0
 
-      // Spawn in camera-aligned XZ so ripples cover the full visible ocean.
-      // Camera right XZ: (0.7071, -0.7071), camera depth XZ: (-0.7071, -0.7071)
       const cam = camera as THREE.OrthographicCamera
-      const hw = (cam.right / cam.zoom) * 1.15 // slight overflow margin
+      const hw = (cam.right / cam.zoom) * 1.15
 
       while (spawnAcc.current >= 1) {
         spawnAcc.current -= 1

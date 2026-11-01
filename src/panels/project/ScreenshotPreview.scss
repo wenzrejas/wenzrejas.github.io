@@ -1,10 +1,11 @@
+@use '@/styles/breakpoints';
 @use '@/styles/parchment' as *;
 
 $layer: 92;
 $backdrop: rgba($ink, 0.78);
 $frame-fill: 'f5dcbb';
 $frame-padding: 0.5rem;
-$image-height: 82vh;
+$image-height: 82dvh;
 $image-corner-radius: 3px;
 $close-size: 48px;
 $edge-inset: 1.5rem;
@@ -12,6 +13,9 @@ $arrow-size: 2.75rem;
 $arrow-gap: 1.5rem;
 $arrow-lane: $edge-inset + $arrow-size + $arrow-gap;
 $fade-in: 0.18s ease;
+
+$compact-inset: 1rem;
+$compact-image-room: 12rem;
 
 .screenshot-preview {
   --arrow-button-size: #{$arrow-size};
@@ -25,6 +29,7 @@ $fade-in: 0.18s ease;
   background: $backdrop;
   cursor: var(--cursor-magnify);
   animation: screenshot-preview-fade-in $fade-in;
+  touch-action: pan-y pinch-zoom;
 
   &__frame {
     padding: $frame-padding;
@@ -48,6 +53,35 @@ $fade-in: 0.18s ease;
     position: absolute;
     top: $edge-inset;
     right: $edge-inset;
+  }
+}
+
+@include breakpoints.compact {
+  .screenshot-preview {
+    --arrow-button-inset: #{$compact-inset};
+
+    &__close {
+      top: calc(var(--safe-top) + #{$compact-inset});
+      right: calc(var(--safe-right) + #{$compact-inset});
+    }
+
+    @media (orientation: portrait) {
+      &__frame {
+        max-width: calc(100vw - #{2 * $compact-inset});
+      }
+
+      &__image {
+        height: auto;
+        max-width: 100%;
+        max-height: calc(100dvh - #{$compact-image-room});
+      }
+
+      .arrow-button {
+        top: auto;
+        bottom: calc(var(--safe-bottom) + #{2 * $compact-inset});
+        translate: none;
+      }
+    }
   }
 }
 

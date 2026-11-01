@@ -1,19 +1,15 @@
-// World-space rain. Drops fall straight down (with slight wind tilt) in world Y
-// from sky to ocean surface. Each drop fades out as it reaches y=0.
-
 uniform float uTime;
 uniform float uIntensity;
-uniform vec2  uWindDir;  // XZ wind direction (worldX, worldZ)
-uniform vec2  uShipXZ;   // ship world position XZ
+uniform vec2  uWindDir;
+uniform vec2  uShipXZ;
 
-attribute vec3 aSeed;   // (xSeed, phaseSeed, zSeed)  all 0..1
-attribute vec2 aCorner; // (-0.5|+0.5  left/right,  0=tip | 1=tail)
+attribute vec3 aSeed;
+attribute vec2 aCorner;
 
 varying float vV;
 varying float vU;
 varying float vDistFade;
 
-// Camera right in world space (fixed: camera is always at ship+[200,140,200])
 const vec3 CAM_RIGHT = vec3(0.7071, 0.0, -0.7071);
 
 const float AREA      = 560.0;
@@ -30,11 +26,10 @@ const float CAM_DZ = 200.0;
 
 void main() {
   // ── Per-drop random values derived from seed ─────────────────────────────────
-  // Each gives an independent pseudo-random float in 0..1
-  float r1 = fract(aSeed.x * 73.6  + aSeed.z * 41.2);  // tilt X
-  float r2 = fract(aSeed.y * 113.5 + aSeed.x * 29.7);  // tilt Z
-  float r3 = fract(aSeed.z * 89.3  + aSeed.y * 67.1);  // speed
-  float r4 = fract(r1 * 57.4       + r3 * 31.8);       // length
+  float r1 = fract(aSeed.x * 73.6  + aSeed.z * 41.2);
+  float r2 = fract(aSeed.y * 113.5 + aSeed.x * 29.7);
+  float r3 = fract(aSeed.z * 89.3  + aSeed.y * 67.1);
+  float r4 = fract(r1 * 57.4       + r3 * 31.8);
 
   // ── World XZ position ─────────────────────────────────────────────────────────
   float wx = uShipXZ.x + (aSeed.x - 0.5) * AREA;

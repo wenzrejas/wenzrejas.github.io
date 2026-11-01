@@ -1,3 +1,4 @@
+@use '@/styles/breakpoints';
 @use '@/styles/parchment' as *;
 
 $card-height: 110px;
@@ -34,13 +35,15 @@ $selected-edge: rgba(214, 160, 110, 0.55);
     background-color $state-change,
     box-shadow $state-change;
 
-  &:hover,
-  &:focus-visible {
-    outline: none;
-    background-color: $hover-fill;
+  @include breakpoints.hover-only {
+    &:hover {
+      background-color: $hover-fill;
+    }
   }
 
   &:focus-visible {
+    outline: none;
+    background-color: $hover-fill;
     box-shadow: inset 0 0 0 1px $selected-edge;
   }
 

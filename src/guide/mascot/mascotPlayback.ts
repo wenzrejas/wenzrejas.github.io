@@ -2,6 +2,7 @@ import type { DialoguePage } from '@/data/guideCopy'
 import {
   EMOTE_FRAMES_PER_SECOND,
   IDLE_FRAMES_PER_SECOND,
+  MASCOT_LEAVE_SECONDS,
   MASCOT_SHEETS,
   type MascotAnimation,
 } from './constants'
@@ -10,6 +11,7 @@ export interface MascotPlayback {
   page: DialoguePage | null
   animation: MascotAnimation | null
   startSeconds: number
+  leftSeconds: number
   frame: number
   nextFrame: number
   blend: number
@@ -19,6 +21,7 @@ export const createPlayback = (): MascotPlayback => ({
   page: null,
   animation: null,
   startSeconds: 0,
+  leftSeconds: 0,
   frame: 0,
   nextFrame: 0,
   blend: 0,
@@ -44,16 +47,21 @@ function followPage(
   if (page === playback.page) return
   const wasSpeaking = playback.page !== null
   playback.page = page
-  if (!page) play(playback, isDismissed ? null : 'exit', seconds)
-  else play(playback, wasSpeaking ? page.mood : 'appear', seconds)
+  if (page) play(playback, wasSpeaking ? page.mood : 'appear', seconds)
+  else if (isDismissed) play(playback, null, seconds)
+  else playback.leftSeconds = seconds
 }
 
 function moveOnWhenFinished(playback: MascotPlayback, seconds: number) {
   const { animation, page } = playback
-  if (!animation || animation === 'idle') return
+  if (!animation) return
+  if (!page && seconds - playback.leftSeconds >= MASCOT_LEAVE_SECONDS) {
+    play(playback, null, seconds)
+    return
+  }
+  if (animation === 'idle') return
   if (seconds - playback.startSeconds < animationSeconds(animation)) return
-  if (animation === 'exit') play(playback, null, seconds)
-  else if (animation === 'appear' && page) play(playback, page.mood, seconds)
+  if (animation === 'appear' && page) play(playback, page.mood, seconds)
   else play(playback, 'idle', seconds)
 }
 

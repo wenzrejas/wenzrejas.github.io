@@ -13,11 +13,11 @@ import {
   CAMERA_OFFSET,
   CAMERA_SHAKE_RATE_ACROSS,
   CAMERA_SHAKE_RATE_UP,
-  CAMERA_ZOOM,
   PANEL_FRAMING_EASE_RATE,
   PANEL_FRAMING_SNAP_GAP,
   PANEL_FRAMING_ZOOM,
 } from './constants'
+import { baseZoom } from './worldZoom'
 
 type ViewCamera = THREE.OrthographicCamera | THREE.PerspectiveCamera
 
@@ -25,7 +25,7 @@ export interface PanelFraming {
   blend: number
 }
 
-const SCREEN_RIGHT = new THREE.Vector3(CAMERA_OFFSET[2], 0, -CAMERA_OFFSET[0]).normalize()
+export const SCREEN_RIGHT = new THREE.Vector3(CAMERA_OFFSET[2], 0, -CAMERA_OFFSET[0]).normalize()
 const VIEW_DIRECTION = new THREE.Vector3(
   -CAMERA_OFFSET[0],
   CAMERA_LOOK_Y_OFFSET - CAMERA_OFFSET[1],
@@ -34,8 +34,8 @@ const VIEW_DIRECTION = new THREE.Vector3(
 const SCREEN_UP = new THREE.Vector3(0, 1, 0)
   .addScaledVector(VIEW_DIRECTION, -VIEW_DIRECTION.y)
   .normalize()
-const GROUND_FORWARD = new THREE.Vector2(VIEW_DIRECTION.x, VIEW_DIRECTION.z).normalize()
-const FORWARD_RISE = GROUND_FORWARD.x * SCREEN_UP.x + GROUND_FORWARD.y * SCREEN_UP.z
+export const GROUND_FORWARD = new THREE.Vector2(VIEW_DIRECTION.x, VIEW_DIRECTION.z).normalize()
+export const FORWARD_RISE = GROUND_FORWARD.x * SCREEN_UP.x + GROUND_FORWARD.y * SCREEN_UP.z
 const BASE_OFFSET = new THREE.Vector3(...CAMERA_OFFSET)
 const UP = new THREE.Vector3(0, 1, 0)
 const _offset = new THREE.Vector3()
@@ -66,9 +66,10 @@ function keepTitleClear(
   island: THREE.Vector3,
   islandScreenTop: number,
   lookY: number,
-  camera: THREE.OrthographicCamera
+  camera: THREE.OrthographicCamera,
+  zoom: number
 ) {
-  const viewHeight = (camera.top - camera.bottom) / (CAMERA_ZOOM * arrivalZoom() * REVEAL_ZOOM)
+  const viewHeight = (camera.top - camera.bottom) / (zoom * arrivalZoom() * REVEAL_ZOOM)
   const titleLine = (0.5 - REVEAL_TITLE_ROOM) * viewHeight
   const islandTop =
     (island.x - frame.x) * SCREEN_UP.x -
@@ -98,8 +99,10 @@ export function frameShip(
   shipX: number,
   shipZ: number,
   time: number,
-  panelBlend: number
+  panelBlend: number,
+  size: { width: number; height: number }
 ) {
+  const worldZoom = baseZoom(size.width, size.height)
   const y = useDebugStore.getState().ship.baseY
   const { blend, target, islandScreenTop } = useRevealStore.getState()
   const { focus, focusBlend, focusZoom, shake, spin } = useCinematicStore.getState()
@@ -114,10 +117,17 @@ export function frameShip(
   const reach = gap > 0 ? Math.max(gap - REVEAL_STOP_SHORT, 0) / gap : 0
   _revealFrame.set(shipX + dx * reach, shipZ + dz * reach)
   if (islandScreenTop !== null) {
-    keepTitleClear(_revealFrame, target, islandScreenTop, lookY, camera as THREE.OrthographicCamera)
+    keepTitleClear(
+      _revealFrame,
+      target,
+      islandScreenTop,
+      lookY,
+      camera as THREE.OrthographicCamera,
+      worldZoom
+    )
   }
 
-  const panelShift = -panel.focusOffsetPixels / (CAMERA_ZOOM * PANEL_FRAMING_ZOOM)
+  const panelShift = -panel.focusOffsetPixels / (worldZoom * PANEL_FRAMING_ZOOM)
   _panelCenter.copy(panel.focus).addScaledVector(SCREEN_RIGHT, panelShift)
   const panelLook = lookPointThrough(_panelCenter, lookY, offset, _panelLook)
   const framedX = mix(mix(shipX, _revealFrame.x, blend), panelLook.x, panelBlend)
@@ -133,7 +143,7 @@ export function frameShip(
 
   const panelZoom = mix(1, PANEL_FRAMING_ZOOM, panelBlend)
   const zoom =
-    CAMERA_ZOOM * arrivalZoom() * mix(1, REVEAL_ZOOM, blend) * mix(panelZoom, focusZoom, focusBlend)
+    worldZoom * arrivalZoom() * mix(1, REVEAL_ZOOM, blend) * mix(panelZoom, focusZoom, focusBlend)
   if (camera.zoom !== zoom) {
     camera.zoom = zoom
     camera.updateProjectionMatrix()

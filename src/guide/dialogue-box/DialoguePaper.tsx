@@ -1,12 +1,14 @@
 import { useMemo, useRef, useState } from 'react'
 import { useResizeEffect } from '@/hooks/useResizeEffect'
+import { useCompactLayout } from '@/utils/layout'
 import { PAPER_MIN_HEIGHT, PAPER_WIDTH } from './constants'
 import { paperOutlines, paperStretch, tabFoldOf } from './paperOutline'
 
 export default function DialoguePaper({ isTailLeft }: { isTailLeft: boolean }) {
   const paperRef = useRef<SVGSVGElement>(null)
   const [stretch, setStretch] = useState(0)
-  const outlines = useMemo(() => paperOutlines(stretch), [stretch])
+  const hasTail = !useCompactLayout()
+  const outlines = useMemo(() => paperOutlines(stretch, hasTail), [stretch, hasTail])
 
   useResizeEffect(paperRef, (_, height) => {
     const box = paperRef.current?.parentElement

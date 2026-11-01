@@ -4,6 +4,7 @@ import { Html } from '@react-three/drei'
 import { animated, useSpring } from '@react-spring/web'
 import * as THREE from 'three'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
+import { useInputStore } from '../store/inputStore'
 import { isPanelOpen } from '../store/panelStore'
 import { isRevealPlaying } from '../store/revealStore'
 import { isWorldScene, useViewStore } from '../store/viewStore'
@@ -50,6 +51,7 @@ export default function InteractionMarker({
   const motion = useRef<MarkerMotion>({ hover: 0, velocity: 0, presence: 1 })
   const [pulseOffset] = useState(Math.random)
   const [isHovered, setHovered] = useState(false)
+  const isTouch = useInputStore((state) => state.mode === 'touch')
   const reportHover = useEffectEvent((next: boolean) => {
     setHovered(next)
     onHover?.(next)
@@ -110,19 +112,21 @@ export default function InteractionMarker({
         material={material}
         renderOrder={RENDER_LAYER.markers}
       />
-      <Html pointerEvents="none">
-        <div className="interaction-marker" style={LABEL_STYLE}>
-          <animated.span className="interaction-marker__label" style={{ opacity, x }}>
-            {label}
-            {description && (
-              <>
-                <span className="interaction-marker__separator" aria-hidden="true" />
-                <span className="interaction-marker__description">{description}</span>
-              </>
-            )}
-          </animated.span>
-        </div>
-      </Html>
+      {!isTouch && (
+        <Html pointerEvents="none">
+          <div className="interaction-marker" style={LABEL_STYLE}>
+            <animated.span className="interaction-marker__label" style={{ opacity, x }}>
+              {label}
+              {description && (
+                <>
+                  <span className="interaction-marker__separator" aria-hidden="true" />
+                  <span className="interaction-marker__description">{description}</span>
+                </>
+              )}
+            </animated.span>
+          </div>
+        </Html>
+      )}
     </group>
   )
 }

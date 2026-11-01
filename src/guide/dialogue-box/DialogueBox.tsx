@@ -2,6 +2,8 @@ import { useId } from 'react'
 import { animated, useTransition } from '@react-spring/web'
 import { DIALOGUES, GUIDE_COPY } from '@/data/guideCopy'
 import { endDialogue, showNextPage, showPreviousPage, useGuideStore } from '@/store/guideStore'
+import { useInputStore } from '@/store/inputStore'
+import { useCompactLayout } from '@/utils/layout'
 import { MODAL_DIALOGUES } from '../constants'
 import { animationSeconds } from '../mascot/mascotPlayback'
 import { BOX_CLOSE_SPRING, BOX_SPRING, HIDDEN_BOX_SCALE } from './constants'
@@ -10,7 +12,8 @@ import DialoguePaper from './DialoguePaper'
 import './DialogueBox.scss'
 
 const HIDDEN_BOX = { opacity: 0, scale: HIDDEN_BOX_SCALE }
-const SHOWN_BOX = { opacity: 1, scale: 1, delay: animationSeconds('appear') * 1000 }
+const SHOWN_BOX = { opacity: 1, scale: 1 }
+const SHOWN_BOX_AFTER_MASCOT = { ...SHOWN_BOX, delay: animationSeconds('appear') * 1000 }
 const CLOSING_BOX = { ...HIDDEN_BOX, config: BOX_CLOSE_SPRING }
 
 const visibilityAt = (opacity: number) => (opacity > 0 ? 'visible' : 'hidden')
@@ -21,11 +24,13 @@ export default function DialogueBox({ isTailLeft }: { isTailLeft: boolean }) {
   const dialogue = useGuideStore((state) => state.dialogue)
   const pageIndex = useGuideStore((state) => state.pageIndex)
   const isDismissed = useGuideStore((state) => state.isDismissed)
+  const isTouch = useInputStore((state) => state.mode === 'touch')
+  const isCompact = useCompactLayout()
   const nameId = useId()
   const transitions = useTransition(dialogue ? [dialogue] : [], {
     keys: openBoxKey,
     from: HIDDEN_BOX,
-    enter: SHOWN_BOX,
+    enter: isCompact ? SHOWN_BOX : SHOWN_BOX_AFTER_MASCOT,
     leave: CLOSING_BOX,
     config: BOX_SPRING,
     immediate: isDismissed,
@@ -36,6 +41,7 @@ export default function DialogueBox({ isTailLeft }: { isTailLeft: boolean }) {
   return transitions((motion, shownDialogue) => {
     const pages = DIALOGUES[shownDialogue]
     const page = pages[pageIndex]
+    const lines = (isTouch && page.touchLines) || page.lines
     const isPaged = pages.length > 1
     const hasButtons = isPaged || MODAL_DIALOGUES.includes(shownDialogue)
     const className = [
@@ -59,7 +65,7 @@ export default function DialogueBox({ isTailLeft }: { isTailLeft: boolean }) {
         <div className="dialogue-box__copy" aria-live="polite">
           <div key={`${shownDialogue}-${pageIndex}`} className="dialogue-box__page">
             {page.heading && <h2 className="dialogue-box__heading">{page.heading}</h2>}
-            {page.lines.map((line) => (
+            {lines.map((line) => (
               <DialogueLine key={line} line={line} />
             ))}
           </div>

@@ -5,7 +5,6 @@ uniform float uFalloff;
 uniform vec3 uColor;
 varying vec2 vWorldXZ;
 
-// sin-free hash — avoids GPU precision banding artifacts
 float hash(vec2 p) {
   p = fract(p * vec2(0.1031, 0.1030));
   p += dot(p, p.yx + 33.33);

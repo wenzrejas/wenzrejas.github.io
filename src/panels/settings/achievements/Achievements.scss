@@ -1,3 +1,4 @@
+@use '@/styles/breakpoints';
 @use '@/styles/parchment' as *;
 
 $seal-size: 2.25rem;
@@ -31,7 +32,7 @@ $seal-line-weight: 1.5px;
   &__eyebrow,
   &__heading {
     font-family: var(--font-secondary);
-    font-size: 0.72rem;
+    font-size: panel-font(0.72rem);
     font-weight: 600;
     letter-spacing: $eyebrow-letter-spacing;
     text-transform: uppercase;
@@ -47,7 +48,7 @@ $seal-line-weight: 1.5px;
   }
 
   &__tally {
-    font-size: $tally-font-size;
+    font-size: panel-font($tally-font-size);
     font-variant-numeric: tabular-nums;
     font-weight: 600;
   }
@@ -60,7 +61,7 @@ $seal-line-weight: 1.5px;
 
   &__rank-name {
     @include handwritten;
-    font-size: 1.7rem;
+    font-size: panel-font(1.7rem);
     font-weight: 400;
     line-height: 1.15;
     color: $ink;
@@ -94,15 +95,17 @@ $seal-line-weight: 1.5px;
     border: none;
     background: none;
     font-family: var(--font-secondary);
-    font-size: 0.78rem;
+    font-size: panel-font(0.78rem);
     line-height: 1.2;
     text-align: center;
     color: $ink-soft;
     cursor: var(--cursor-hand);
     transition: color $state-change;
 
-    &:hover {
-      color: $ink;
+    @include breakpoints.hover-only {
+      &:hover {
+        color: $ink;
+      }
     }
 
     &:focus-visible {
@@ -147,7 +150,7 @@ $seal-line-weight: 1.5px;
 
   &__note-heading {
     @include handwritten;
-    font-size: 1.3rem;
+    font-size: panel-font(1.3rem);
     font-weight: 400;
   }
 
@@ -215,7 +218,7 @@ $seal-line-weight: 1.5px;
 
   &__title {
     font-family: var(--font-accent);
-    font-size: 1.05rem;
+    font-size: panel-font(1.05rem);
     font-weight: 700;
     letter-spacing: 0.02em;
     line-height: 1.25;
@@ -228,5 +231,22 @@ $seal-line-weight: 1.5px;
 
   &__item--locked &__text {
     opacity: $locked-opacity;
+  }
+
+  @include breakpoints.compact {
+    &__liveries {
+      grid-column: 1 / -1;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    &__rank,
+    &__livery-row {
+      padding-inline: 0.5rem;
+    }
+
+    &__text {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
   }
 }

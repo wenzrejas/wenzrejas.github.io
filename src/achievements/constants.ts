@@ -69,7 +69,6 @@ export type RankKey = (typeof RANKS)[number]['rank']
 export const ACHIEVEMENT_POLL_SECONDS = 0.5
 export const EDGE_OF_WORLD_MARGIN = 60
 export const DAWN_ENDS_TIME = PHASES.morning
-export const NIGHT_ENDS_TIME = PHASES['first light']
 
 // ── Toast ─────────────────────────────────────────────────────────────────────
 export const ACHIEVEMENT_BADGE_URL = '/images/achievements/badge.webp'

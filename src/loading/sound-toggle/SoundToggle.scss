@@ -1,24 +1,30 @@
+@use '@/styles/breakpoints';
 @use '@/styles/parchment' as *;
 
 .sound-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.25rem 0.8rem 0.25rem 0.65rem;
+  gap: panel-font(0.5rem);
+  padding: panel-font(0.25rem) panel-font(0.8rem) panel-font(0.25rem) panel-font(0.65rem);
   @include card-frame;
   background: none;
   color: $ink;
   @include handwritten;
-  font-size: 1.2rem;
+  font-size: $label-font-size;
   cursor: var(--cursor-hand);
-  min-width: 150px;
+  min-width: panel-font(9.375rem);
 
   svg {
     flex: none;
-    font-size: 1.3rem;
+    font-size: panel-font(1.3rem);
   }
 
-  &:hover,
+  @include breakpoints.hover-only {
+    &:hover {
+      border-image-source: card-frame-image($frame-hover-fill-opacity);
+    }
+  }
+
   &:focus-visible {
     border-image-source: card-frame-image($frame-hover-fill-opacity);
     outline: none;

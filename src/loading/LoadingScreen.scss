@@ -1,4 +1,5 @@
 @use '@/styles/parchment' as *;
+@use '@/styles/breakpoints';
 
 $ship-width: 204px;
 $ship-shift-x: -3px;
@@ -8,6 +9,7 @@ $course-drop: 158px;
 $set-sail-drop: 12px;
 
 .loading-screen {
+  --loader-scale: 1;
   position: fixed;
   inset: 0;
   z-index: 100;
@@ -20,9 +22,9 @@ $set-sail-drop: 12px;
 
   &__ship {
     position: absolute;
-    top: calc(50% + #{$ship-shift-y});
+    top: calc(50% + #{$ship-shift-y} * var(--loader-scale));
     left: calc(50% + #{$ship-shift-x});
-    width: $ship-width;
+    width: calc(#{$ship-width} * var(--loader-scale));
     translate: -50% -50%;
     pointer-events: none;
     user-select: none;
@@ -48,11 +50,11 @@ $set-sail-drop: 12px;
   }
 
   &__caption {
-    top: calc(50% + #{$caption-drop});
+    top: calc(50% + #{$caption-drop} * var(--loader-scale));
   }
 
   &__course {
-    top: calc(50% + #{$course-drop});
+    top: calc(50% + #{$course-drop} * var(--loader-scale));
     display: grid;
     place-items: center;
 
@@ -62,7 +64,7 @@ $set-sail-drop: 12px;
   }
 
   &__set-sail {
-    margin-top: $set-sail-drop;
+    margin-top: calc(#{$set-sail-drop} * var(--loader-scale));
     animation: raise-set-sail 0.7s ease backwards;
 
     @include cartouche-button;
@@ -91,6 +93,22 @@ $set-sail-drop: 12px;
     --cartouche-art-filter: none;
 
     color: $cartouche-ink;
+  }
+
+  @include breakpoints.sheet-layout {
+    &__sound {
+      top: calc(var(--safe-top) + 0.75rem);
+      right: calc(var(--safe-right) + 0.75rem);
+    }
+
+    &__caption {
+      width: calc(var(--safe-width) - 2rem);
+      text-align: center;
+    }
+  }
+
+  @include breakpoints.phone-landscape {
+    --loader-scale: 0.58;
   }
 }
 

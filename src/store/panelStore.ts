@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import * as THREE from 'three'
+import { isSheetLayout, useSheetLayout } from '@/utils/layout'
 
 export type GroveKey = 'frontend' | 'creative' | 'visuals' | 'design'
 export type ProjectKey =
@@ -33,10 +34,18 @@ export const openSettings = () => usePanelStore.setState({ activePanel: 'setting
 export const closePanel = () => usePanelStore.setState({ activePanel: null })
 
 export function centerFocusLeftOf(panelLeftPixels: number) {
-  usePanelStore.getState().focusOffsetPixels = panelLeftPixels / 2 - window.innerWidth / 2
+  usePanelStore.getState().focusOffsetPixels = isSheetLayout()
+    ? 0
+    : panelLeftPixels / 2 - window.innerWidth / 2
 }
 
 export const isPanelOpen = () => usePanelStore.getState().activePanel !== null
+
+export function useIsPanelCoveringScreen() {
+  const isSheet = useSheetLayout()
+  const isOpen = usePanelStore((state) => state.activePanel !== null)
+  return isSheet && isOpen
+}
 
 export function isFocusedPanelOpen() {
   const { activePanel } = usePanelStore.getState()

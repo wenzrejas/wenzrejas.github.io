@@ -1,0 +1,33 @@
+$phone-landscape: '(max-height: 500px)';
+$compact: '(max-width: 767px), #{$phone-landscape}';
+$sheet-layout: '(max-width: 1023px), #{$phone-landscape}';
+
+@mixin phone-landscape {
+  @media #{$phone-landscape} {
+    @content;
+  }
+}
+
+@mixin compact {
+  @media #{$compact} {
+    @content;
+  }
+}
+
+@mixin sheet-layout {
+  @media #{$sheet-layout} {
+    @content;
+  }
+}
+
+@mixin hover-only {
+  @media (hover: hover) {
+    @content;
+  }
+}
+
+@mixin touch-input {
+  :root[data-input='touch'] & {
+    @content;
+  }
+}

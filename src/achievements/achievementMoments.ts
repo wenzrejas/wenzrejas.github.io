@@ -1,7 +1,7 @@
 import {
   ALGAE_REMARK_GLOW,
   CIRCLE_TURN_RADIANS,
-  NIGHTFALL_TIME,
+  MOONLIT_SPARKLE_LEVEL,
   RAIN_CONTINUES_AFTER_SECONDS,
   SAILING_SPEED,
   STAYING_IDLE_SECONDS,
@@ -16,12 +16,7 @@ import {
   type WorldReading,
 } from '@/guide/remarks/remarkMoments'
 import { BOUNDARY_RADIUS } from '@/world/environment/boundary/constants'
-import {
-  DAWN_ENDS_TIME,
-  EDGE_OF_WORLD_MARGIN,
-  NIGHT_ENDS_TIME,
-  type AchievementKey,
-} from './constants'
+import { DAWN_ENDS_TIME, EDGE_OF_WORLD_MARGIN, type AchievementKey } from './constants'
 
 type MomentReached = (world: WorldReading, counters: MomentCounters) => boolean
 
@@ -35,7 +30,7 @@ const isSailing = (world: WorldReading) => world.shipSpeed >= SAILING_SPEED
 
 const isDawn = (timeOfDay: number) => timeOfDay >= SUNRISE_TIME && timeOfDay < DAWN_ENDS_TIME
 
-const isNight = (timeOfDay: number) => timeOfDay >= NIGHTFALL_TIME || timeOfDay < NIGHT_ENDS_TIME
+const isMoonlit = (world: WorldReading) => world.moonSparkle >= MOONLIT_SPARKLE_LEVEL
 
 const MOMENTS: [AchievementKey, MomentReached][] = [
   ['anchorsAweigh', isSailing],
@@ -46,7 +41,7 @@ const MOMENTS: [AchievementKey, MomentReached][] = [
   ],
   ['glowingWaters', (world) => world.algaeGlow >= ALGAE_REMARK_GLOW],
   ['weatheredTheStorm', (_, counters) => counters.rainSeconds >= RAIN_CONTINUES_AFTER_SECONDS],
-  ['stargazer', (world) => world.isClearSky && isNight(world.timeOfDay) && isSailing(world)],
+  ['stargazer', (world) => isMoonlit(world) && isSailing(world)],
   ['dawnPatrol', (world) => isDawn(world.timeOfDay)],
   ['scenicRoute', (_, counters) => Math.abs(counters.turnedRadians) >= CIRCLE_TURN_RADIANS],
   ['becalmed', (_, counters) => counters.idleSeconds >= STAYING_IDLE_SECONDS],

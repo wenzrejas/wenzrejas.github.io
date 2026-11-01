@@ -371,7 +371,8 @@ export function paintParchment(
   canvas: HTMLCanvasElement,
   width: number,
   height: number,
-  pixelRatio: number
+  pixelRatio: number,
+  isFullBleed: boolean
 ) {
   canvas.width = Math.round((width + PARCHMENT_MARGIN * 2) * pixelRatio)
   canvas.height = Math.round((height + PARCHMENT_MARGIN * 2) * pixelRatio)
@@ -382,11 +383,15 @@ export function paintParchment(
   context.setTransform(pixelRatio, 0, 0, pixelRatio, margin, margin)
   const random = seededRandom(SURFACE_SEED)
   const frame = frameSheet(width, height)
-  const outlinePoints = placeOnFrame(frame, TRACED_OUTLINE)
+  const outlinePoints = isFullBleed
+    ? [0, 0, width, 0, width, height, 0, height]
+    : placeOnFrame(frame, TRACED_OUTLINE)
   const outline = linePath(outlinePoints, true)
 
-  strokeShadow(context, outline, SHADOW_RGB, SHADOW_STEPS, SHADOW_DROP)
-  paintBackSheet(context, frame, outline, pixelRatio)
-  paintRod(context, frame, outline, random)
+  if (!isFullBleed) {
+    strokeShadow(context, outline, SHADOW_RGB, SHADOW_STEPS, SHADOW_DROP)
+    paintBackSheet(context, frame, outline, pixelRatio)
+    paintRod(context, frame, outline, random)
+  }
   paintSheet(context, frame, outline, outlinePoints, random, pixelRatio)
 }

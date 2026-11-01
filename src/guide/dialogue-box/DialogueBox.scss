@@ -1,4 +1,5 @@
 @use 'sass:math';
+@use '@/styles/breakpoints';
 @use '@/styles/parchment';
 @use '../sizes';
 
@@ -16,6 +17,7 @@ $turn-hover-ink: #ac5f20;
 $focus-ring: #d49b49;
 $box-bottom-lift: math.div(sizes.$mascot-size - sizes.$box-min-height, 2);
 $tail-lift: sizes.$box-min-height * 0.66;
+$compact-mascot-room: sizes.$compact-mascot-size + sizes.$compact-mascot-inset + 0.4rem;
 
 .dialogue-box {
   position: relative;
@@ -118,6 +120,11 @@ $tail-lift: sizes.$box-min-height * 0.66;
   &__line {
     font-size: 1.05rem;
     line-height: 1.6;
+
+    .key-cap {
+      min-width: 2em;
+      height: 2em;
+    }
   }
 
   &__navigation {
@@ -151,13 +158,64 @@ $tail-lift: sizes.$box-min-height * 0.66;
       cursor: var(--cursor-default);
     }
 
-    &:hover:not(:disabled) {
-      color: $turn-hover-ink;
+    @include breakpoints.hover-only {
+      &:hover:not(:disabled) {
+        color: $turn-hover-ink;
+      }
     }
 
     &:focus-visible {
       outline: 2px solid $focus-ring;
       outline-offset: 3px;
+    }
+  }
+
+  @include breakpoints.sheet-layout {
+    width: min(28rem, calc(var(--safe-width) - 9rem));
+    min-height: 8rem;
+    margin-bottom: 0;
+    padding: 1.6rem 1.65rem 0.75rem;
+
+    &__name {
+      left: 1.5rem;
+      min-width: 4.5rem;
+      padding: 0.15rem 0.7rem 0.25rem;
+      font-size: 1.1rem;
+    }
+
+    &__copy {
+      max-height: min(38dvh, 14rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+
+    &__heading {
+      font-size: 1.25rem;
+      margin-bottom: 0.2rem;
+    }
+    &__line {
+      font-size: 0.85rem;
+      line-height: 1.45;
+    }
+    &__page {
+      gap: 0.3rem;
+    }
+    &__navigation {
+      margin-top: 0.25rem;
+      font-size: 0.8rem;
+    }
+    &__turn {
+      min-height: 2.75rem;
+    }
+  }
+
+  @include breakpoints.compact {
+    &,
+    &--tail-left {
+      width: 100%;
+      margin: 0;
+      padding: 1.5rem $compact-mascot-room 0.6rem 1.4rem;
+      transform-origin: 100% 100%;
     }
   }
 }

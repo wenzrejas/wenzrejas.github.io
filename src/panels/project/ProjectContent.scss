@@ -18,7 +18,7 @@ $fact-icon-edge: #8c5a30;
 
   &__label {
     font-family: var(--font-secondary);
-    font-size: 0.7rem;
+    font-size: panel-font(0.7rem);
     font-weight: 600;
     letter-spacing: 0.24em;
     text-transform: uppercase;

@@ -3,6 +3,7 @@ import { useTransition } from '@react-spring/web'
 import { audio } from '@/audio/audioManager'
 import { usePanelStore } from '@/store/panelStore'
 import { isMapUnfolded, useViewStore } from '@/store/viewStore'
+import { useSheetLayout } from '@/utils/layout'
 import {
   SHEET_CLOSE_SPRING,
   SHEET_SLIDE_PIXELS,
@@ -12,16 +13,18 @@ import {
 import { PANEL_SPECS } from './panelSpecs'
 import IslandPanel from './shared/island-panel/IslandPanel'
 
-const HIDDEN_SHEET = { opacity: 0, x: SHEET_SLIDE_PIXELS, rotate: SHEET_TILT_DEGREES }
-const SHOWN_SHEET = { opacity: 1, x: 0, rotate: 0 }
-const CLOSING_SHEET = { ...HIDDEN_SHEET, config: SHEET_CLOSE_SPRING }
+const HIDDEN_SHEET = { opacity: 0, x: SHEET_SLIDE_PIXELS, y: 0, rotate: SHEET_TILT_DEGREES }
+const HIDDEN_BOTTOM_SHEET = { opacity: 0, x: 0, y: SHEET_SLIDE_PIXELS, rotate: 0 }
+const SHOWN_SHEET = { opacity: 1, x: 0, y: 0, rotate: 0 }
 
 export default function Panels() {
   const activePanel = usePanelStore((state) => state.activePanel)
+  const isSheet = useSheetLayout()
+  const hidden = isSheet ? HIDDEN_BOTTOM_SHEET : HIDDEN_SHEET
   const transitions = useTransition(activePanel, {
-    from: HIDDEN_SHEET,
+    from: hidden,
     enter: SHOWN_SHEET,
-    leave: CLOSING_SHEET,
+    leave: { ...hidden, config: SHEET_CLOSE_SPRING },
     config: SHEET_SPRING,
   })
 

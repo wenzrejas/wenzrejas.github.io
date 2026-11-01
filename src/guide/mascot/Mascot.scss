@@ -1,4 +1,5 @@
 @use '../sizes';
+@use '@/styles/breakpoints';
 
 .mascot {
   flex: none;
@@ -7,5 +8,19 @@
 
   &--mirrored {
     transform: scaleX(-1);
+  }
+
+  @include breakpoints.sheet-layout {
+    width: sizes.$small-mascot-size;
+    height: sizes.$small-mascot-size;
+  }
+
+  @include breakpoints.compact {
+    width: sizes.$compact-mascot-size;
+    height: sizes.$compact-mascot-size;
+
+    &--mirrored {
+      transform: none;
+    }
   }
 }

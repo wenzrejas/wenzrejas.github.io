@@ -23,11 +23,24 @@ export function useKeyboardInput(): React.RefObject<Keys> {
       if (e.key === 'a' || e.key === 'A' || e.key === 'ArrowLeft') keys.current.left = false
       if (e.key === 'd' || e.key === 'D' || e.key === 'ArrowRight') keys.current.right = false
     }
+    const release = () => {
+      keys.current.forward = false
+      keys.current.backward = false
+      keys.current.left = false
+      keys.current.right = false
+    }
+    const releaseWhenHidden = () => {
+      if (document.hidden) release()
+    }
     window.addEventListener('keydown', down)
     window.addEventListener('keyup', up)
+    window.addEventListener('blur', release)
+    document.addEventListener('visibilitychange', releaseWhenHidden)
     return () => {
       window.removeEventListener('keydown', down)
       window.removeEventListener('keyup', up)
+      window.removeEventListener('blur', release)
+      document.removeEventListener('visibilitychange', releaseWhenHidden)
     }
   }, [])
 

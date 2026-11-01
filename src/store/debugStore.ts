@@ -50,7 +50,6 @@ import type { IslandKey } from '../world/islands/shared/constants'
 import { ISLAND_MODEL_DEFAULTS } from '../world/islands/shared/islandSpecs'
 import {
   WIND_ENABLED,
-  WIND_ANGLE,
   WIND_SPEED,
   LINE_DURATION,
   LINE_LENGTH,
@@ -129,7 +128,6 @@ export const useDebugStore = create<DebugState>(() => ({
   },
   windLines: {
     windEnabled: WIND_ENABLED,
-    windAngle: WIND_ANGLE,
     windSpeed: WIND_SPEED,
     lineDuration: LINE_DURATION,
     lineLength: LINE_LENGTH,

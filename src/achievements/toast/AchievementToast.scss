@@ -1,5 +1,6 @@
 @use '@/styles/parchment' as *;
 @use '@/styles/typography';
+@use '@/styles/breakpoints';
 
 $toast-top: 5.5rem;
 $toast-width: 24rem;
@@ -53,5 +54,29 @@ $paper-edge: '8c5a30';
     font-size: 0.9rem;
     line-height: 1.35;
     color: $ink-soft;
+  }
+}
+
+@include breakpoints.sheet-layout {
+  .achievement-toast {
+    top: calc(5rem + var(--safe-top));
+    width: min(24rem, calc(var(--safe-width) - 2rem));
+  }
+}
+
+@include breakpoints.compact {
+  .achievement-toast {
+    width: min(20rem, calc(var(--safe-width) - 2rem));
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    column-gap: 0.5rem;
+    padding: 0.4rem 0.65rem;
+
+    &__title {
+      font-size: 1rem;
+    }
+
+    &__description {
+      font-size: 0.8rem;
+    }
   }
 }

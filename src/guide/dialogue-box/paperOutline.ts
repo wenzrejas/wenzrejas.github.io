@@ -2,6 +2,9 @@ import { PAPER_MIN_HEIGHT, PAPER_STRETCH_FROM } from './constants'
 
 type OutlineStep = ['M' | 'L', number, number] | ['Q', number, number, number, number]
 
+const SHADOW_TAIL_TIP: OutlineStep = ['L', 4, 125]
+const SHEET_TAIL_TIP: OutlineStep = ['L', 1, 120]
+
 const SHADOW_OUTLINE: OutlineStep[] = [
   ['M', 44, 19],
   ['L', 645, 22],
@@ -11,7 +14,7 @@ const SHADOW_OUTLINE: OutlineStep[] = [
   ['L', 43, 342],
   ['Q', 21, 342, 21, 318],
   ['L', 23, 142],
-  ['L', 4, 125],
+  SHADOW_TAIL_TIP,
   ['L', 24, 116],
   ['L', 25, 44],
   ['Q', 23, 24, 44, 19],
@@ -33,11 +36,14 @@ const SHEET_OUTLINE: OutlineStep[] = [
   ['Q', 20, 330, 19, 308],
   ['L', 22, 201],
   ['L', 20, 138],
-  ['L', 1, 120],
+  SHEET_TAIL_TIP,
   ['L', 22, 109],
   ['L', 23, 41],
   ['Q', 22, 18, 40, 10],
 ]
+
+const TAILLESS_SHADOW_OUTLINE = SHADOW_OUTLINE.filter((step) => step !== SHADOW_TAIL_TIP)
+const TAILLESS_SHEET_OUTLINE = SHEET_OUTLINE.filter((step) => step !== SHEET_TAIL_TIP)
 
 const TAB_FOLD_WHEN_TAIL_LEFT = 'M40 11L35 30L23 34'
 const TAB_FOLD_WHEN_TAIL_RIGHT = 'M644 18L642 34L661 42'
@@ -57,7 +63,7 @@ function traceOutline(outline: OutlineStep[], stretch: number) {
   return `${steps.join('')}Z`
 }
 
-export const paperOutlines = (stretch: number) => ({
-  shadow: traceOutline(SHADOW_OUTLINE, stretch),
-  sheet: traceOutline(SHEET_OUTLINE, stretch),
+export const paperOutlines = (stretch: number, hasTail: boolean) => ({
+  shadow: traceOutline(hasTail ? SHADOW_OUTLINE : TAILLESS_SHADOW_OUTLINE, stretch),
+  sheet: traceOutline(hasTail ? SHEET_OUTLINE : TAILLESS_SHEET_OUTLINE, stretch),
 })

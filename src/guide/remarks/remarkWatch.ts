@@ -1,4 +1,4 @@
-import type { RemarkKey } from '@/data/guideCopy'
+import type { PromotionKey, QueuedRemark, RemarkKey } from '@/data/guideCopy'
 import { MODAL_DIALOGUES } from '../constants'
 import {
   MAP_REMARKS,
@@ -20,7 +20,7 @@ import {
 } from './remarkMoments'
 
 interface WaitingRemark {
-  remark: RemarkKey
+  remark: QueuedRemark
   since: number
   isFirstTime: boolean
 }
@@ -30,15 +30,17 @@ interface RemarkWatch {
   lastSeconds: number
   counters: MomentCounters
   waiting: WaitingRemark[]
-  shown: RemarkKey | null
+  shown: QueuedRemark | null
   shownSince: number
-  remarkedAt: Partial<Record<RemarkKey, number>>
+  remarkedAt: Partial<Record<QueuedRemark, number>>
 }
+
+const WAITS_FOREVER = Infinity
 
 export const createRemarkWatch = (
   seconds: number,
   opening: RemarkKey | null,
-  heardBefore: RemarkKey[]
+  heardBefore: QueuedRemark[]
 ): RemarkWatch => ({
   previous: null,
   lastSeconds: seconds,
@@ -49,7 +51,12 @@ export const createRemarkWatch = (
   remarkedAt: Object.fromEntries(heardBefore.map((remark) => [remark, -Infinity])),
 })
 
-const stageOf = (remark: RemarkKey): RemarkStage => (MAP_REMARKS.includes(remark) ? 'map' : 'world')
+const stageOf = (remark: QueuedRemark): RemarkStage =>
+  MAP_REMARKS.includes(remark) ? 'map' : 'world'
+
+export function queuePromotion(watch: RemarkWatch, promotion: PromotionKey) {
+  watch.waiting.push({ remark: promotion, since: WAITS_FOREVER, isFirstTime: true })
+}
 
 function queueMoment(watch: RemarkWatch, moment: RemarkKey, seconds: number) {
   if (watch.waiting.some(({ remark }) => remark === moment)) return
@@ -92,7 +99,7 @@ function watchWorld(watch: RemarkWatch, world: WorldReading, seconds: number, st
   return moment
 }
 
-type RemarkStep = RemarkKey | 'close' | 'dismiss' | null
+type RemarkStep = QueuedRemark | 'close' | 'dismiss' | null
 
 export function stepRemarks(
   watch: RemarkWatch,
@@ -112,8 +119,7 @@ export function stepRemarks(
     if (stageOf(watch.shown) !== stage) return 'close'
     if (MODAL_DIALOGUES.includes(watch.shown)) return null
     if (seconds - watch.shownSince < REMARK_SHOW_SECONDS) return null
-    const next = takeRemark(watch, seconds, (waiting) => waiting.isFirstTime && fitsStage(waiting))
-    return next ?? 'close'
+    return takeRemark(watch, seconds, fitsStage) ?? 'close'
   }
   if (dialogue !== null || stage === 'none') return null
   return takeRemark(

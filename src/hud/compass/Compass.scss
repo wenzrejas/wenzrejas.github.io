@@ -1,4 +1,5 @@
 @use '@/styles/glass';
+@use '@/styles/breakpoints';
 
 $ink: rgba(236, 240, 244, 0.9);
 $line-weight: 1px;
@@ -20,6 +21,16 @@ $pointer-gap: 1.4rem;
   z-index: 80;
   pointer-events: none;
   filter: glass.$hud-drop-shadow;
+
+  @include breakpoints.sheet-layout {
+    bottom: calc(var(--safe-bottom) + 1rem);
+    width: min(22rem, 60vw);
+    top: unset;
+  }
+
+  @include breakpoints.compact {
+    width: min(20rem, 80vw);
+  }
 
   &__window {
     position: absolute;

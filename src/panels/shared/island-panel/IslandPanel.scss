@@ -1,4 +1,5 @@
 @use 'sass:math';
+@use '@/styles/breakpoints';
 @use '@/styles/parchment' as *;
 
 $close-size: 48px;
@@ -21,7 +22,7 @@ $title-share: 0.06;
 $compass-size-share: 0.28;
 $compass-center-left-share: 0.011;
 $compass-center-top-share: 0.036;
-$compass-opacity: 0.3;
+$compass-opacity: 0.2;
 $close-center-top-share: 0.0638;
 $close-center-right-share: 0.0695;
 
@@ -41,6 +42,7 @@ $content-width-share: 1 - $viewport-right-share - $viewport-left-share - $conten
 
 .island-panel {
   --sheet-width: min(800px, calc(100vw - 3rem));
+  --panel-body-font-size: #{panel-font(1rem)};
 
   position: fixed;
   top: 6.25rem;
@@ -196,7 +198,7 @@ $content-width-share: 1 - $viewport-right-share - $viewport-left-share - $conten
   &__subtitle {
     margin-top: 0.55rem;
     font-family: var(--font-secondary);
-    font-size: 0.82rem;
+    font-size: panel-font(0.82rem);
     font-weight: 600;
     letter-spacing: 0.32em;
     text-transform: uppercase;
@@ -230,7 +232,7 @@ $content-width-share: 1 - $viewport-right-share - $viewport-left-share - $conten
     gap: 0.9rem;
     margin-bottom: 0.9rem;
     font-family: var(--font-secondary);
-    font-size: 0.74rem;
+    font-size: panel-font(0.74rem);
     font-weight: 600;
     letter-spacing: 0.26em;
     text-transform: uppercase;
@@ -246,6 +248,88 @@ $content-width-share: 1 - $viewport-right-share - $viewport-left-share - $conten
     &--ornate::after {
       background-color: transparent;
       @include diamond-rule($heading-ornament-size);
+    }
+  }
+}
+
+@include breakpoints.sheet-layout {
+  .island-panel,
+  .island-panel--centered {
+    --sheet-width: 100vw;
+
+    inset: 0;
+    width: 100%;
+    height: 100dvh;
+    translate: none;
+
+    .island-panel__sheet {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .island-panel__viewport {
+      flex: 1;
+      margin: calc(2rem + var(--safe-top)) calc(1rem + var(--safe-right))
+        calc(0.75rem + var(--safe-bottom)) calc(1rem + var(--safe-left));
+    }
+
+    .island-panel__content {
+      padding: 0.5rem;
+      overscroll-behavior: contain;
+    }
+
+    .island-panel__close {
+      top: calc(0.8rem + var(--safe-top));
+      right: calc(0.8rem + var(--safe-right));
+      translate: none;
+      width: 40px;
+      height: 40px;
+    }
+
+    .island-panel__page {
+      --splash-clearance: 0px;
+
+      grid-template-rows: auto;
+      gap: 1rem;
+    }
+
+    .island-panel__splash {
+      grid-area: auto;
+      justify-self: end;
+      width: min(22rem, 100%);
+      margin: 0;
+      opacity: 0.5;
+      position: absolute;
+      top: -2.5rem;
+      z-index: -1;
+      filter: sepia(0.4) contrast(0.6);
+    }
+
+    .island-panel__body {
+      grid-area: auto;
+    }
+
+    .island-panel__title {
+      font-size: panel-font(2.75rem);
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+
+    .island-panel__titles {
+      max-width: 100%;
+      padding-right: 2.75rem;
+    }
+
+    .island-panel__subtitle {
+      letter-spacing: 0.18em;
+    }
+
+    .island-panel__lead {
+      max-width: none;
+    }
+
+    .island-panel__compass {
+      display: none;
     }
   }
 }

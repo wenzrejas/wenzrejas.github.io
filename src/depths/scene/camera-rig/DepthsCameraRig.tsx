@@ -5,6 +5,7 @@ import { useKeyboardInput } from '@/hooks/useKeyboardInput'
 import { useDepthsStore } from '@/store/depthsStore'
 import { isTravelHeld, useGuideStore } from '@/store/guideStore'
 import { isPanelOpen } from '@/store/panelStore'
+import { useInputStore } from '@/store/inputStore'
 import { isMotionReduced } from '@/store/settingsStore'
 import { isDepthsInView } from '@/store/viewStore'
 import type { WallClock } from '@/utils/time'
@@ -24,6 +25,7 @@ import {
   fitLens,
   frameDepths,
 } from './depthsCameraFraming'
+import { bindDepthsTouch, createTouchTravel, stepTouchTravel } from './depthsTouchModel'
 
 interface DepthsCameraRigProps {
   camera: THREE.PerspectiveCamera
@@ -48,30 +50,46 @@ export default function DepthsCameraRig({
 }: DepthsCameraRigProps) {
   const pressedKeys = useKeyboardInput()
   const size = useThree((state) => state.size)
+  const canvas = useThree((state) => state.gl.domElement)
   const framing = useMemo(() => createDepthsFraming(), [])
+  const touchTravel = useMemo(() => createTouchTravel(), [])
+
+  useEffect(
+    () => bindDepthsTouch(canvas, touchTravel, timeline, canTravel),
+    [canvas, touchTravel, timeline]
+  )
 
   useLayoutEffect(() => fitLens(camera, size.width, size.height), [camera, size])
 
   useEffect(() => {
     const scrollLevel = (event: WheelEvent) => {
+      touchTravel.stop()
       if (canTravel()) scrollTimeline(timeline, wheelLevels(event))
     }
-    const followPointer = (event: PointerEvent) =>
-      aimParallax(framing, event.clientX, event.clientY)
+    const followPointer = (event: PointerEvent) => {
+      if (event.pointerType === 'mouse') aimParallax(framing, event.clientX, event.clientY)
+    }
     window.addEventListener('wheel', scrollLevel, { passive: true })
     window.addEventListener('pointermove', followPointer)
     return () => {
       window.removeEventListener('wheel', scrollLevel)
       window.removeEventListener('pointermove', followPointer)
     }
-  }, [timeline, framing])
+  }, [timeline, framing, touchTravel])
 
   useFrame(() => {
     const keys = pressedKeys.current
-    const heldDirection = canTravel() ? Number(keys.backward) - Number(keys.forward) : 0
+    const isTravelFree = canTravel()
+    const heldDirection = isTravelFree ? Number(keys.backward) - Number(keys.forward) : 0
+    if (!isTravelFree || heldDirection !== 0 || surfacing.isRewinding) touchTravel.stop()
+    else stepTouchTravel(touchTravel, timeline, clock.delta)
     stepTimeline(timeline, heldDirection, clock.delta)
     if (surfacing.isRewinding) rewindTimeline(timeline, surfacing.fromLevel, rewindShare(surfacing))
-    easeParallax(framing, clock.delta, isMotionReduced())
+    easeParallax(
+      framing,
+      clock.delta,
+      isMotionReduced() || useInputStore.getState().mode === 'touch'
+    )
     frameDepths(camera, focus, timeline.viewedLevel, framing, surfacing)
   }, DEPTHS_CAMERA_FRAME_PRIORITY)
 

@@ -1,4 +1,5 @@
 @use '@/styles/glass';
+@use '@/styles/breakpoints';
 
 $panel-height: 3.5rem;
 $dial-width: 2.75rem;
@@ -140,6 +141,31 @@ $muted-ink: rgba(228, 232, 240, 0.65);
       inset: 0;
       background: #ffffff;
       clip-path: polygon(0 0, 100% 50%, 0 100%);
+    }
+  }
+
+  @include breakpoints.sheet-layout {
+    top: calc(var(--safe-top) + 0.5rem);
+    left: calc(var(--safe-left) + 0.5rem);
+  }
+
+  @include breakpoints.compact {
+    width: min(11rem, calc(var(--safe-width) - 11rem));
+
+    &__icon {
+      width: 1.3rem;
+      height: 1.3rem;
+      margin: 0 0.4rem 0 0.65rem;
+    }
+
+    &__readout {
+      margin-right: 0.4rem;
+    }
+    &__name {
+      font-size: 0.85rem;
+    }
+    &__wind-label {
+      display: none;
     }
   }
 }

@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { SETTINGS_COPY } from '@/data/settingsCopy'
-import { forgetProgress } from '@/store/visitorMemory'
+import { forgetVisitor } from '@/store/visitorMemory'
 
 const { world } = SETTINGS_COPY
 
 function resetAndReload() {
-  forgetProgress()
+  forgetVisitor()
   window.location.reload()
 }
 

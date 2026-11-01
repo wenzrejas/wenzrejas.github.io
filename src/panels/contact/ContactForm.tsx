@@ -3,6 +3,7 @@ import { CONTACT_COPY } from '@/data/panelCopy'
 import { closePanel } from '@/store/panelStore'
 import { startSkyBeam } from '@/store/skyBeamStore'
 import { scrollAncestorToEnd } from '@/utils/scroll'
+import { isSheetLayout } from '@/utils/layout'
 import Cartouche from '../shared/cartouche/Cartouche'
 import { deliverContact } from './contactDelivery'
 import {
@@ -20,6 +21,25 @@ export default function ContactForm() {
   const [isSending, setSending] = useState(false)
   const [hasSendFailed, setSendFailed] = useState(false)
   const sendErrorRef = useRef<HTMLParagraphElement>(null)
+  const formRef = useRef<HTMLFormElement>(null)
+
+  useEffect(() => {
+    const viewport = window.visualViewport
+    let frame = 0
+    const keepFieldVisible = () => {
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(() => {
+        const field = document.activeElement
+        if (isSheetLayout() && field instanceof HTMLElement && formRef.current?.contains(field))
+          field.scrollIntoView({ block: 'center', inline: 'nearest' })
+      })
+    }
+    viewport?.addEventListener('resize', keepFieldVisible)
+    return () => {
+      cancelAnimationFrame(frame)
+      viewport?.removeEventListener('resize', keepFieldVisible)
+    }
+  }, [])
 
   useEffect(() => {
     if (hasSendFailed && sendErrorRef.current) scrollAncestorToEnd(sendErrorRef.current)
@@ -50,7 +70,7 @@ export default function ContactForm() {
   }
 
   return (
-    <form className="contact-form" noValidate onSubmit={send}>
+    <form ref={formRef} className="contact-form" noValidate onSubmit={send}>
       <ContactInput
         field="name"
         icon="person"

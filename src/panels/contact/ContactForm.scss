@@ -1,4 +1,5 @@
 @use '@/styles/parchment' as *;
+@use '@/styles/breakpoints';
 
 $placeholder-ink: #b39072;
 $invalid-placeholder-ink: #c8644e;
@@ -12,6 +13,7 @@ $invalid-placeholder-ink: #c8644e;
     display: flex;
     flex-direction: column;
     gap: 0.35rem;
+    min-width: 0;
 
     &--wide {
       grid-column: 1 / -1;
@@ -20,7 +22,7 @@ $invalid-placeholder-ink: #c8644e;
 
   &__label {
     font-family: var(--font-secondary);
-    font-size: 0.7rem;
+    font-size: panel-font(0.7rem);
     font-weight: 600;
     letter-spacing: 0.24em;
     text-transform: uppercase;
@@ -68,7 +70,7 @@ $invalid-placeholder-ink: #c8644e;
     border: none;
     background: none;
     font-family: var(--font-secondary);
-    font-size: $base-font-size;
+    font-size: 1rem;
     color: $ink;
     outline: none;
 
@@ -124,5 +126,48 @@ $invalid-placeholder-ink: #c8644e;
 
   &__send-label {
     @include cartouche-label;
+  }
+}
+
+@include breakpoints.sheet-layout {
+  .contact-form {
+    gap: clamp(0.75rem, 2vw, 1.25rem);
+
+    &__frame {
+      min-width: 0;
+      align-items: center;
+    }
+
+    &__icon {
+      align-self: flex-start;
+      margin: 0.6rem 0 0 0.35rem;
+      font-size: clamp(1.1rem, 3vw, 1.3rem);
+    }
+
+    &__input {
+      width: 100%;
+      padding: 0.5rem clamp(0.35rem, 1.5vw, 0.75rem);
+      scroll-margin-block: 3rem;
+    }
+
+    &__input.contact-form__input--message {
+      min-height: clamp(7rem, 24dvh, 12rem);
+    }
+
+    &__error,
+    &__send-error {
+      overflow-wrap: anywhere;
+    }
+
+    &__actions {
+      min-width: 0;
+      padding-block: 0.5rem;
+    }
+  }
+}
+
+@include breakpoints.compact {
+  .contact-form {
+    grid-template-columns: minmax(0, 1fr);
   }
 }

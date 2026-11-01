@@ -1,11 +1,13 @@
 import * as THREE from 'three'
 import { useShipStore } from '../store/shipStore'
-import { hullGap } from '../world/ship/hullCollision'
+import { useInputStore } from '../store/inputStore'
+import { hullGap } from '@/world/ship/hullCollision'
 import {
   BASE_TOUCH_REACH,
   INTERACTION_LAYER,
   KEYBOARD_TARGETS,
   SHIP_HOVER_REACH,
+  TOUCH_PICK_RADIUS,
 } from './constants'
 
 interface InteractionHandlers {
@@ -14,6 +16,8 @@ interface InteractionHandlers {
   shipReach?: number
   baseGap?: (x: number, z: number) => number
 }
+
+const isTouchPointer = ({ pointerType }: PointerEvent) => pointerType !== 'mouse'
 
 class InteractionManager {
   private raycaster = new THREE.Raycaster()
@@ -30,6 +34,8 @@ class InteractionManager {
   private approached: THREE.Object3D | null = null
   private highlighted = new Set<THREE.Object3D>()
   private pressed: THREE.Object3D | null = null
+  private pressedPointerId: number | null = null
+  private isTouchPress = false
 
   constructor() {
     this.raycaster.layers.set(INTERACTION_LAYER)
@@ -40,6 +46,7 @@ class InteractionManager {
     canvas.addEventListener('pointermove', this.trackPointer)
     canvas.addEventListener('pointerdown', this.press)
     canvas.addEventListener('pointerleave', this.leave)
+    canvas.addEventListener('pointercancel', this.cancelPress)
     canvas.addEventListener('click', this.activate)
     window.addEventListener('keydown', this.activateApproached)
 
@@ -47,10 +54,12 @@ class InteractionManager {
       canvas.removeEventListener('pointermove', this.trackPointer)
       canvas.removeEventListener('pointerdown', this.press)
       canvas.removeEventListener('pointerleave', this.leave)
+      canvas.removeEventListener('pointercancel', this.cancelPress)
       canvas.removeEventListener('click', this.activate)
       window.removeEventListener('keydown', this.activateApproached)
-      this.hover(null)
+      this.hold()
       this.canvas = null
+      this.camera = null
     }
   }
 
@@ -71,6 +80,7 @@ class InteractionManager {
     this.isHeld = true
     this.hasPointerMoved = false
     this.pressed = null
+    this.pressedPointerId = null
     this.hover(null)
     this.approach(null)
   }
@@ -78,10 +88,17 @@ class InteractionManager {
   update(camera: THREE.Camera): void {
     this.isHeld = false
     this.camera = camera
-    if (this.hasPointerMoved) this.hover(this.pick())
+    if (useInputStore.getState().joystick.isActive) this.hover(null)
+    else if (this.hasPointerMoved) this.hover(this.pick())
     else if (this.hovered && this.pick() !== this.hovered) this.hover(null)
     this.hasPointerMoved = false
     this.approach(this.closestToShip())
+  }
+
+  isMarkerAt(event: PointerEvent): boolean {
+    if (this.isHeld) return false
+    this.locatePointer(event.clientX, event.clientY)
+    return this.pick(isTouchPointer(event)) !== null
   }
 
   private closestToShip(): THREE.Object3D | null {
@@ -103,12 +120,32 @@ class InteractionManager {
     return Math.hypot(x - shipX, z - shipZ)
   }
 
-  private pick(): THREE.Object3D | null {
+  private pick(allowTouchFallback = false): THREE.Object3D | null {
     if (!this.camera) return null
     this.raycaster.setFromCamera(this.pointer, this.camera)
     this.hits.length = 0
     this.raycaster.intersectObjects(this.hitAreas, false, this.hits)
-    return this.hits[0]?.object ?? null
+    const direct = this.hits[0]?.object
+    if (direct) return direct
+    if (!allowTouchFallback || !this.canvas) return null
+
+    const bounds = this.canvas.getBoundingClientRect()
+    let nearest: THREE.Object3D | null = null
+    let nearestDistance = TOUCH_PICK_RADIUS
+    for (const hitArea of this.hitAreas) {
+      if (!hitArea.visible) continue
+      const projected = hitArea.getWorldPosition(this.hitAreaPosition).project(this.camera)
+      if (Math.abs(projected.x) > 1 || Math.abs(projected.y) > 1 || Math.abs(projected.z) > 1)
+        continue
+      const distance = Math.hypot(
+        ((projected.x - this.pointer.x) * bounds.width) / 2,
+        ((projected.y - this.pointer.y) * bounds.height) / 2
+      )
+      if (distance > nearestDistance) continue
+      nearest = hitArea
+      nearestDistance = distance
+    }
+    return nearest
   }
 
   private hover(hitArea: THREE.Object3D | null): void {
@@ -137,31 +174,42 @@ class InteractionManager {
     this.handlers.get(hitArea)?.onHover(isHighlighted)
   }
 
-  private locatePointer(event: MouseEvent): void {
+  private locatePointer(clientX: number, clientY: number): void {
     if (!this.canvas) return
+    const bounds = this.canvas.getBoundingClientRect()
     this.pointer.set(
-      (event.offsetX / this.canvas.clientWidth) * 2 - 1,
-      -(event.offsetY / this.canvas.clientHeight) * 2 + 1
+      ((clientX - bounds.left) / bounds.width) * 2 - 1,
+      -((clientY - bounds.top) / bounds.height) * 2 + 1
     )
   }
 
   private trackPointer = (event: PointerEvent): void => {
-    this.locatePointer(event)
+    this.locatePointer(event.clientX, event.clientY)
     this.hasPointerMoved = true
   }
 
   private press = (event: PointerEvent): void => {
     if (this.isHeld) return
     this.trackPointer(event)
-    this.pressed = this.pick()
+    this.isTouchPress = isTouchPointer(event)
+    this.pressedPointerId = event.pointerId
+    this.pressed = this.pick(this.isTouchPress)
   }
 
   private activate = (event: MouseEvent): void => {
     if (this.isHeld) return
-    this.locatePointer(event)
-    const hitArea = this.pick()
+    if (event instanceof PointerEvent && event.pointerId !== this.pressedPointerId) return
+    this.locatePointer(event.clientX, event.clientY)
+    const hitArea = this.pick(this.isTouchPress)
     if (hitArea && hitArea === this.pressed) this.handlers.get(hitArea)?.onActivate?.()
     this.pressed = null
+    this.pressedPointerId = null
+  }
+
+  private cancelPress = (event: PointerEvent): void => {
+    if (event.pointerId !== this.pressedPointerId) return
+    this.pressed = null
+    this.pressedPointerId = null
   }
 
   private activateApproached = (event: KeyboardEvent): void => {

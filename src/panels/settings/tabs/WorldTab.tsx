@@ -1,5 +1,11 @@
 import { SETTINGS_COPY } from '@/data/settingsCopy'
-import { DAY_LENGTH_CHOICES, TIME_CHOICES, WEATHER_CHOICES, WILDLIFE_CHOICES } from '../constants'
+import {
+  SAILING_CHOICES,
+  DAY_LENGTH_CHOICES,
+  TIME_CHOICES,
+  WEATHER_CHOICES,
+  WILDLIFE_CHOICES,
+} from '../constants'
 import ResetProgressRow from '../rows/ResetProgressRow'
 import SettingChoiceRow from '../rows/SettingChoiceRow'
 import SettingSwitchRow from '../rows/SettingSwitchRow'
@@ -9,6 +15,18 @@ const { world } = SETTINGS_COPY
 export default function WorldTab() {
   return (
     <>
+      <SettingChoiceRow
+        label={world.sailingSpeed}
+        setting="sailingSpeed"
+        choices={SAILING_CHOICES}
+        names={world.sailingChoices}
+      />
+      <SettingChoiceRow
+        label={world.dayLength}
+        setting="dayLength"
+        choices={DAY_LENGTH_CHOICES}
+        names={world.dayLengthChoices}
+      />
       <SettingChoiceRow
         label={world.timeOfDay}
         setting="timeOfDay"
@@ -20,12 +38,6 @@ export default function WorldTab() {
         setting="weather"
         choices={WEATHER_CHOICES}
         names={world.weatherChoices}
-      />
-      <SettingChoiceRow
-        label={world.dayLength}
-        setting="dayLength"
-        choices={DAY_LENGTH_CHOICES}
-        names={world.dayLengthChoices}
       />
       <SettingChoiceRow
         label={world.wildlife}

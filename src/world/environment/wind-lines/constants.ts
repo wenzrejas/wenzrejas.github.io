@@ -1,14 +1,13 @@
 import { CYCLE_DURATION } from '../day-night-cycle/constants'
 
 export const WIND_ENABLED = true
-export const WIND_ANGLE = 0 // degrees
-export const WIND_SPEED = 8 // world units / second
-export const LINE_DURATION = 5 // seconds
-export const LINE_LENGTH = 80 // world units
-export const LINE_Y = 35 // world-space height
-export const WAVE_AMPLITUDE = 3 // world units
-export const LINE_WIDTH = 0.8 // ribbon thickness (world units)
-export const SPAWN_INTERVAL = 2 // seconds
+export const WIND_SPEED = 8
+export const LINE_DURATION = 5
+export const LINE_LENGTH = 80
+export const LINE_Y = 35
+export const WAVE_AMPLITUDE = 3
+export const LINE_WIDTH = 0.8
+export const SPAWN_INTERVAL = 2
 export const WIND_OPACITY = 0.4
 
 // ── Streak pool ───────────────────────────────────────────────────────────────

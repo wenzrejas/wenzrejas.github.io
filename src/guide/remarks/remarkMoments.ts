@@ -1,14 +1,15 @@
 import type { RemarkKey } from '@/data/guideCopy'
+import { wrapAngle } from '@/utils/math'
 import type { IslandKey } from '@/world/islands/shared/constants'
 import {
   ALGAE_REMARK_GLOW,
   CIRCLE_TURN_RADIANS,
   ISLAND_REMARKS,
+  MOONLIT_SPARKLE_LEVEL,
   NIGHTFALL_TIME,
   RAIN_CONTINUES_AFTER_SECONDS,
   SAILING_FOR_A_WHILE_SECONDS,
   SAILING_SPEED,
-  STARRY_NIGHT_TIME,
   STAYING_IDLE_SECONDS,
   STOPPED_SPEED,
   SUNRISE_TIME,
@@ -22,7 +23,7 @@ export type RemarkStage = 'world' | 'map' | 'none'
 export interface WorldReading {
   timeOfDay: number
   isRaining: boolean
-  isClearSky: boolean
+  moonSparkle: number
   algaeGlow: number
   tailwind: number
   revealingIsland: IslandKey | null
@@ -53,9 +54,6 @@ export const createMomentCounters = (): MomentCounters => ({
   turnedRadians: 0,
 })
 
-const headingChange = (from: number, to: number) =>
-  Math.atan2(Math.sin(to - from), Math.cos(to - from))
-
 export function countMoments(
   counters: MomentCounters,
   previous: WorldReading,
@@ -72,7 +70,7 @@ export function countMoments(
     sailingSeconds: world.shipSpeed >= SAILING_SPEED ? counters.sailingSeconds + dt : 0,
     idleSeconds: !isMoving && stage === 'world' ? counters.idleSeconds + dt : 0,
     turnedRadians: isSameCourse
-      ? counters.turnedRadians + headingChange(previous.shipHeading, world.shipHeading)
+      ? counters.turnedRadians + wrapAngle(world.shipHeading - previous.shipHeading)
       : 0,
   }
 }
@@ -105,7 +103,8 @@ export function noticeMoment(
   if (passed(SUNRISE_TIME) && !world.isRaining) return 'sunrise'
   if (passed(SUNSET_TIME)) return 'sunset'
   if (passed(NIGHTFALL_TIME)) return 'nightfall'
-  if (passed(STARRY_NIGHT_TIME) && world.isClearSky) return 'starryNight'
+  if (hasReached(previous.moonSparkle, world.moonSparkle, MOONLIT_SPARKLE_LEVEL))
+    return 'starryNight'
   if (world.isRaining && !previous.isRaining) return 'rainBegins'
   if (!world.isRaining && previous.isRaining) return 'rainStops'
   if (hasReached(before.rainSeconds, after.rainSeconds, RAIN_CONTINUES_AFTER_SECONDS))

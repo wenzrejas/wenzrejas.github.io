@@ -1,3 +1,5 @@
+@use '@/styles/breakpoints';
+
 $visible-thumbnails: 3;
 $thumbnail-gap: 0.75rem;
 $focus-room: 4px;
@@ -21,6 +23,15 @@ $focus-room: 4px;
 
     &::-webkit-scrollbar {
       display: none;
+    }
+
+    @include breakpoints.touch-input {
+      scroll-snap-type: x mandatory;
+      scroll-padding-inline: $focus-room;
+
+      > * {
+        scroll-snap-align: start;
+      }
     }
 
     &--dragging,

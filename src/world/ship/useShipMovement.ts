@@ -1,7 +1,8 @@
 import { useEffect, useRef, type RefObject } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
-import { useKeyboardInput, type Keys } from '@/hooks/useKeyboardInput'
+import { useKeyboardInput } from '@/hooks/useKeyboardInput'
+import { sailingInput } from '@/controls/sailingInput'
 import {
   INITIAL_HEADING,
   TAILWIND_ALIGN_FULL,
@@ -13,12 +14,8 @@ import { BOUNDARY_RADIUS } from '../environment/boundary/constants'
 import { REVEAL_SPEED } from '../islands/shared/constants'
 import { ISLAND_KEYS, ISLAND_SPECS } from '../islands/shared/islandSpecs'
 import { createIslandTransform, islandTransform, toWorld } from '../islands/shared/islandTransform'
-import { isCinematicPlaying } from '@/store/cinematicStore'
 import { useDebugStore } from '@/store/debugStore'
-import { isIntroductionPending } from '@/store/guideStore'
-import { isPanelOpen } from '@/store/panelStore'
 import { sailingPace } from '@/store/settingsStore'
-import { isWorldInView } from '@/store/viewStore'
 import { useWindStore } from '@/store/windStore'
 import { useWeatherStore } from '@/store/weatherStore'
 import { useRevealStore } from '@/store/revealStore'
@@ -35,7 +32,6 @@ const WIND_ASSIST = 0.3
 const WIND_ASSIST_CAP = 2.5
 
 const BLOCKERS = ISLAND_KEYS.filter((key) => ISLAND_SPECS[key].collision.length > 0)
-const IDLE_KEYS: Keys = { forward: false, backward: false, left: false, right: false }
 
 const _transform = createIslandTransform()
 const _centre = new THREE.Vector2()
@@ -75,10 +71,7 @@ export function useShipMovement(groupRef: RefObject<THREE.Group | null>) {
     const dt =
       isFinite(delta) && delta >= 0 ? Math.min(delta, MAX_FRAME_SECONDS) : FALLBACK_FRAME_SECONDS
     const time = clock.getElapsedTime()
-    const keys =
-      isIntroductionPending() || isCinematicPlaying() || isPanelOpen() || !isWorldInView()
-        ? IDLE_KEYS
-        : pressedKeys.current
+    const { throttle, turn, steering: helm } = sailingInput(pressedKeys.current, heading.current)
     const {
       moveSpeed: baseMoveSpeed,
       turnSpeed,
@@ -95,8 +88,7 @@ export function useShipMovement(groupRef: RefObject<THREE.Group | null>) {
     const reveal = useRevealStore.getState()
 
     // ── Turning ───────────────────────────────────────────────────────────
-    if (keys.left) heading.current += turnSpeed * dt
-    if (keys.right) heading.current -= turnSpeed * dt
+    heading.current += turnSpeed * turn * dt
 
     // ── Velocity with wind assist ─────────────────────────────────────────
     const fwdX = -Math.sin(heading.current)
@@ -105,13 +97,12 @@ export function useShipMovement(groupRef: RefObject<THREE.Group | null>) {
 
     let targetVelX = 0
     let targetVelZ = 0
-    if (keys.forward || keys.backward) {
-      const direction = keys.forward ? 1 : -1
+    if (throttle !== 0) {
       const windMult =
         1 + Math.max(0, alignment) * WIND_ASSIST * Math.min(weather.windMult, WIND_ASSIST_CAP)
       const speed = moveSpeed * mix(1, REVEAL_SPEED, reveal.blend)
-      targetVelX = fwdX * speed * windMult * direction
-      targetVelZ = fwdZ * speed * windMult * direction
+      targetVelX = fwdX * speed * windMult * throttle
+      targetVelZ = fwdZ * speed * windMult * throttle
     }
 
     const lerp = Math.min(1, VELOCITY_LERP * dt)
@@ -160,7 +151,7 @@ export function useShipMovement(groupRef: RefObject<THREE.Group | null>) {
     keepHullOffCoasts(group.position, heading.current, modelSize, collisions)
 
     // ── Tilt and bob ──────────────────────────────────────────────────────
-    steering.current = keys.left ? 1 : keys.right ? -1 : 0
+    steering.current = helm
     const tiltTarget = steering.current * tiltMax
     tilt.current += (tiltTarget - tilt.current) * Math.min(1, tiltSpeed * dt)
 

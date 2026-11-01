@@ -3,6 +3,7 @@ import { useProgress } from '@react-three/drei'
 import { LOADING_COPY } from '@/data/loadingCopy'
 import Cartouche from '@/panels/shared/cartouche/Cartouche'
 import { setSail, useLoadingStore } from '@/store/loadingStore'
+import { useSheetLayout } from '@/utils/layout'
 import { useCloudDescent } from './cloud-descent/useCloudDescent'
 import { HANDWRITING_FONT, SHIP_IMAGE_URL } from './constants'
 import CourseBar from './course-bar/CourseBar'
@@ -19,6 +20,7 @@ import { useLoadingPace } from './useLoadingPace'
 import './LoadingScreen.scss'
 
 export default function LoadingScreen() {
+  const isSmallScreen = useSheetLayout()
   const screenRef = useRef<HTMLDivElement>(null)
   const paperRef = useRef<HTMLCanvasElement>(null)
   const shipRef = useRef<HTMLImageElement>(null)
@@ -40,11 +42,12 @@ export default function LoadingScreen() {
   useEffect(() => startPreloads(), [])
 
   useEffect(() => {
-    if (canSetSail && paperRef.current) prepareMistDissolve(paperRef.current, shipRef.current)
-  }, [canSetSail])
+    if (canSetSail && paperRef.current)
+      prepareMistDissolve(paperRef.current, shipRef.current, !isSmallScreen)
+  }, [canSetSail, isSmallScreen])
 
   const sail = () => {
-    if (paperRef.current) prepareMistDissolve(paperRef.current, shipRef.current)
+    if (paperRef.current) prepareMistDissolve(paperRef.current, shipRef.current, !isSmallScreen)
     setSail()
   }
 
@@ -57,7 +60,7 @@ export default function LoadingScreen() {
     >
       <div className="loading-screen__map">
         <MapPaper ref={paperRef} />
-        <MapImagery isCharted={hasArrived} />
+        {!isSmallScreen && <MapImagery isCharted={hasArrived} />}
         <img
           ref={shipRef}
           className="loading-screen__ship"

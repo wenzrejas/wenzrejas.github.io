@@ -2,13 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=DM+Sans:wght@400;500;700&family=Fondamento:ital@1&family=Oxanium:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 $bg: #efd3a2;
-$blue: #4169e1;
-$sky: #38bdf8;
-$gold: #f59e0b;
-$navy: #1e3a8a;
 $text: #0f172a;
-$muted: #475569;
-$dim: #94a3b8;
 
 $cursors: (
   default: (
@@ -38,14 +32,11 @@ $cursors: (
 }
 
 :root {
-  --bg: #{$bg};
-  --blue: #{$blue};
-  --sky: #{$sky};
-  --gold: #{$gold};
-  --navy: #{$navy};
-  --text: #{$text};
-  --muted: #{$muted};
-  --dim: #{$dim};
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-width: calc(100vw - var(--safe-left) - var(--safe-right));
 
   --font-primary: 'Space Grotesk', sans-serif;
   --font-secondary: 'DM Sans', sans-serif;
@@ -81,6 +72,7 @@ body {
   font-family: var(--font-secondary);
   -webkit-font-smoothing: antialiased;
   cursor: var(--cursor-default);
+  touch-action: manipulation;
 }
 
 a:any-link {

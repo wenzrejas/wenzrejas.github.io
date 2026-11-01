@@ -1,4 +1,5 @@
 @use 'sass:math';
+@use 'breakpoints';
 
 $ink: #3a291d;
 $ink-soft: #5a4535;
@@ -17,7 +18,13 @@ $diamond-ornament: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'
 
 $parchment-art-filter: saturate(0.75) contrast(0.9) sepia(0.12);
 
-$base-font-size: 1rem;
+@function panel-font($size, $floor: $size * 0.875) {
+  $range: $size - $floor;
+  @return clamp($floor, calc(#{$floor - $range} + #{math.div($range, 1rem) * 4}vw), $size);
+}
+
+$base-font-size: var(--panel-body-font-size, 1rem);
+$label-font-size: panel-font(1.2rem, 1rem);
 
 $short-screen: 820px;
 $state-change: 0.18s ease;
@@ -35,7 +42,6 @@ $cartouche-label-inset-left: 144;
 $cartouche-label-inset-right: 107;
 $cartouche-label-lift: 12;
 
-$cartouche-label-size: 1.2rem;
 $cartouche-label-stroke: 0.45px;
 $cartouche-ink: #4b2e10;
 $cartouche-disabled-ink: rgba(75, 46, 16, 0.5);
@@ -48,7 +54,7 @@ $cartouche-pressed-art-scale: math.div($cartouche-pressed-shrink, $cartouche-pre
 $cartouche-pressed-label-drop: 1px;
 
 @function cartouche-px($art-pixels) {
-  @return $art-pixels * $cartouche-art-scale * 1px;
+  @return calc(#{$art-pixels} * var(--cartouche-unit, #{$cartouche-art-scale * 1px}));
 }
 
 @function card-frame-image($fill-opacity, $fill: 'fff6e4', $edge: '8c5a30', $edge-opacity: 0.6) {
@@ -75,11 +81,32 @@ $cartouche-pressed-label-drop: 1px;
   cursor: var(--cursor-hand);
   transition: color $state-change;
 
-  &:hover:not(:disabled),
+  @include breakpoints.sheet-layout {
+    --cartouche-unit: clamp(0.36px, calc(0.2px + 0.04vw), 0.5px);
+
+    min-width: min(100%, #{cartouche-px($cartouche-scroll-width)});
+    max-width: min(24rem, calc(100vw - 3rem));
+    min-height: max(44px, #{cartouche-px($cartouche-scroll-height)});
+    height: auto;
+    padding-top: 0.5rem;
+    padding-bottom: max(0.85rem, #{cartouche-px($cartouche-label-lift)});
+
+    .island-panel & {
+      width: fit-content;
+      max-width: calc(100% - 1.5rem);
+    }
+  }
+
   &:focus-visible {
     --cartouche-hover-art: 1;
 
     outline: none;
+  }
+
+  @include breakpoints.hover-only {
+    &:hover:not(:disabled) {
+      --cartouche-hover-art: 1;
+    }
   }
 
   &:active:not(:disabled) {
@@ -166,8 +193,11 @@ $cartouche-pressed-label-drop: 1px;
 @mixin cartouche-label {
   position: relative;
   @include handwritten;
-  font-size: $cartouche-label-size;
+  font-size: $label-font-size;
   font-weight: 400;
+  min-width: 0;
+  text-align: center;
+  overflow-wrap: anywhere;
   -webkit-text-stroke: $cartouche-label-stroke currentColor;
   scale: var(--cartouche-label-scale, 1);
   translate: 0 var(--cartouche-label-drop, 0);

@@ -1,3 +1,4 @@
+@use '@/styles/breakpoints';
 @use '@/styles/parchment' as *;
 
 $default-size: 64px;
@@ -27,7 +28,12 @@ $focus-ring: rgba(216, 66, 42, 0.75);
     user-select: none;
   }
 
-  &:hover &__art,
+  @include breakpoints.hover-only {
+    &:hover &__art {
+      scale: $hover-scale;
+    }
+  }
+
   &:focus-visible &__art {
     scale: $hover-scale;
   }

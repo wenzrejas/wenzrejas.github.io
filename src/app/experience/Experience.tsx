@@ -2,17 +2,11 @@ import { lazy, Suspense, useRef } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import type * as THREE from 'three'
-import {
-  CAMERA_FAR,
-  CAMERA_NEAR,
-  CAMERA_OFFSET,
-  CAMERA_ZOOM,
-  IS_DEBUG,
-  PIXEL_RATIOS,
-} from './constants'
+import { CAMERA_FAR, CAMERA_NEAR, CAMERA_OFFSET, IS_DEBUG, PIXEL_RATIOS } from './constants'
 import Bloom from './bloom/Bloom'
 import FramePacer from './frame-pacer/FramePacer'
 import CameraRig from './CameraRig'
+import { baseZoom } from './worldZoom'
 import TopView from './TopView'
 import SceneRenderer from './SceneRenderer'
 import WorldPause from './WorldPause'
@@ -27,6 +21,7 @@ import DayNightCycle from '@/world/environment/day-night-cycle/DayNightCycle'
 import { useDebugStore } from '@/store/debugStore'
 import { useLoadingStore } from '@/store/loadingStore'
 import { useSettingsStore } from '@/store/settingsStore'
+import './Experience.scss'
 
 const Perf = lazy(() => import('r3f-perf').then((module) => ({ default: module.Perf })))
 
@@ -39,10 +34,11 @@ export default function Experience() {
 
   return (
     <Canvas
+      className="experience"
       orthographic
       flat
       camera={{
-        zoom: CAMERA_ZOOM,
+        zoom: baseZoom(window.innerWidth, window.innerHeight),
         position: CAMERA_OFFSET,
         near: CAMERA_NEAR,
         far: CAMERA_FAR,

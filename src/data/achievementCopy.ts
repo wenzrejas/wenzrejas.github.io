@@ -35,7 +35,7 @@ export const ACHIEVEMENT_COPY: Record<AchievementKey, AchievementText> = {
   podPals: { title: 'Pod Pals', description: 'Sail alongside a pod of dolphins' },
   glowingWaters: { title: 'Glowing Waters', description: 'Sail through glowing algae' },
   weatheredTheStorm: { title: 'Weathered the Storm', description: 'Keep sailing through the rain' },
-  stargazer: { title: 'Stargazer', description: 'Sail under a clear, starry night' },
+  stargazer: { title: 'Stargazer', description: 'Sail under a starry night' },
   dawnPatrol: { title: 'Dawn Patrol', description: 'Watch the sun rise at sea' },
   scenicRoute: { title: 'Scenic Route', description: 'Sail a full circle' },
   becalmed: { title: 'Becalmed', description: 'Let the ship sit still for a while' },

@@ -7,6 +7,9 @@ import {
   CAMERA_FOCUS_FORWARD,
   CAMERA_FOCUS_LIFT,
   CAMERA_TILT_UP_DEGREES,
+  DEPTHS_CAMERA_FOV,
+  DEPTHS_CAMERA_MAX_FOV,
+  DEPTHS_CAMERA_REFERENCE_ASPECT,
   PARALLAX_ACROSS,
   PARALLAX_EASE_RATE,
   PARALLAX_UP,
@@ -48,6 +51,14 @@ export function easeParallax(framing: DepthsFraming, dt: number, isMotionReduced
 
 export function fitLens(camera: THREE.PerspectiveCamera, width: number, height: number) {
   camera.aspect = width / height
+  const horizontalHalfSpan =
+    Math.tan(degToRad(DEPTHS_CAMERA_FOV) / 2) * DEPTHS_CAMERA_REFERENCE_ASPECT
+  camera.fov = Math.min(
+    DEPTHS_CAMERA_MAX_FOV,
+    THREE.MathUtils.radToDeg(
+      2 * Math.atan(horizontalHalfSpan / Math.min(camera.aspect, DEPTHS_CAMERA_REFERENCE_ASPECT))
+    )
+  )
   camera.updateProjectionMatrix()
 }
 

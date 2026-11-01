@@ -4,6 +4,7 @@ import Experience from './app/experience/Experience'
 import IslandTitle from './world/islands/shared/IslandTitle'
 import { IS_DEBUG } from './app/experience/constants'
 import Soundscape from './audio/Soundscape'
+import Joystick from './controls/joystick/Joystick'
 import DepthsOverlay from './depths/DepthsOverlay'
 import Guide from './guide/Guide'
 import Hud from './hud/Hud'
@@ -27,6 +28,7 @@ export default function App() {
       <DepthsOverlay />
       <IslandTitle />
       <Hud />
+      <Joystick />
       <HudMenu />
       <Guide />
       <Achievements />

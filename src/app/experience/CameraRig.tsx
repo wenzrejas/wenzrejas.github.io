@@ -20,7 +20,7 @@ export default function CameraRig({ shipRef }: CameraRigProps) {
     []
   )
 
-  useFrame(({ camera, clock }, delta) => {
+  useFrame(({ camera, clock, size }, delta) => {
     const ship = shipRef.current
     if (!ship) return
     easePanelFraming(panelFraming.current, isFocusedPanelOpen(), delta)
@@ -29,7 +29,8 @@ export default function CameraRig({ shipRef }: CameraRigProps) {
       ship.position.x,
       ship.position.z,
       clock.getElapsedTime(),
-      panelFraming.current.blend
+      panelFraming.current.blend,
+      size
     )
   })
   return null

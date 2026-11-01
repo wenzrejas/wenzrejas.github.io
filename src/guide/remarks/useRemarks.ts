@@ -1,4 +1,6 @@
 import { useEffect, useRef } from 'react'
+import { rankOf } from '@/achievements/ranks'
+import { useAchievementStore } from '@/store/achievementStore'
 import {
   dismissDialogue,
   endDialogue,
@@ -9,8 +11,9 @@ import {
 import { useSettingsStore } from '@/store/settingsStore'
 import { useViewStore } from '@/store/viewStore'
 import { rememberedItems, rememberItem } from '@/store/visitorMemory'
+import { PROMOTION_DIALOGUES } from '../constants'
 import { ONCE_EVER_REMARKS, REMARK_POLL_SECONDS } from './constants'
-import { createRemarkWatch, stepRemarks } from './remarkWatch'
+import { createRemarkWatch, queuePromotion, stepRemarks } from './remarkWatch'
 import { readStage, readWorld } from './worldReading'
 
 export function useRemarks() {
@@ -40,9 +43,16 @@ export function useRemarks() {
     const stopFollowingMap = useViewStore.subscribe((view, previous) => {
       if (view.mapPhase !== previous.mapPhase) followWorld()
     })
+    const stopFollowingRanks = useAchievementStore.subscribe(({ earned }, previous) => {
+      const { rank } = rankOf(earned.length)
+      const promotion = PROMOTION_DIALOGUES[rank]
+      if (promotion && rank !== rankOf(previous.earned.length).rank)
+        queuePromotion(watch, promotion)
+    })
     return () => {
       window.clearInterval(poll)
       stopFollowingMap()
+      stopFollowingRanks()
     }
   }, [isIntroductionOver, isReturningVisitor, areRemarksOn])
 }

@@ -1,3 +1,6 @@
+@use '@/styles/breakpoints';
+@use 'sizes';
+
 .guide {
   position: fixed;
   right: 1.5rem;
@@ -11,5 +14,46 @@
     right: auto;
     left: 1.5rem;
     flex-direction: row-reverse;
+  }
+
+  &--hidden {
+    visibility: hidden;
+  }
+
+  @include breakpoints.sheet-layout {
+    right: calc(var(--safe-right) + 0.5rem);
+    bottom: calc(var(--safe-bottom) + 0.5rem);
+    max-width: calc(var(--safe-width) - 1.5rem);
+
+    &--left {
+      right: auto;
+      left: calc(var(--safe-left) + 0.75rem);
+    }
+  }
+
+  @include breakpoints.compact {
+    &,
+    &--left {
+      right: var(--safe-right);
+      left: var(--safe-left);
+      bottom: var(--safe-bottom);
+      max-width: none;
+    }
+
+    .mascot {
+      position: absolute;
+      right: sizes.$compact-mascot-inset;
+      bottom: sizes.$compact-mascot-inset;
+    }
+  }
+
+  @include breakpoints.phone-landscape {
+    left: auto;
+    width: min(30rem, calc(var(--safe-width) - 1.5rem));
+
+    &--left {
+      left: calc(var(--safe-left) + 0.75rem);
+      right: auto;
+    }
   }
 }

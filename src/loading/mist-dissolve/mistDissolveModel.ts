@@ -12,6 +12,7 @@ import { createDissolveField, fieldBytes, type DissolveField } from './dissolveF
 import MIST_DISSOLVE_FRAG from './shaders/mistDissolve.frag.glsl'
 
 interface DissolvePlan {
+  includeMapArt: boolean
   width: number
   height: number
   field: DissolveField
@@ -28,7 +29,11 @@ export interface DissolveTextures {
 
 let plan: DissolvePlan | null = null
 
-function paintSnapshot(paper: HTMLCanvasElement, ship: HTMLImageElement | null) {
+function paintSnapshot(
+  paper: HTMLCanvasElement,
+  ship: HTMLImageElement | null,
+  includeMapArt: boolean
+) {
   const snapshot = document.createElement('canvas')
   snapshot.width = paper.width
   snapshot.height = paper.height
@@ -36,7 +41,7 @@ function paintSnapshot(paper: HTMLCanvasElement, ship: HTMLImageElement | null) 
   const pixelRatio = paper.width / paper.clientWidth
   context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0)
   context.drawImage(paper, 0, 0, paper.clientWidth, paper.clientHeight)
-  paintMapPieces(context, paper.clientWidth, paper.clientHeight)
+  if (includeMapArt) paintMapPieces(context, paper.clientWidth, paper.clientHeight)
   if (ship) {
     const box = ship.getBoundingClientRect()
     context.drawImage(ship, box.left, box.top, box.width, box.height)
@@ -44,17 +49,28 @@ function paintSnapshot(paper: HTMLCanvasElement, ship: HTMLImageElement | null) 
   return snapshot
 }
 
-export function prepareMistDissolve(paper: HTMLCanvasElement, ship: HTMLImageElement | null) {
+export function prepareMistDissolve(
+  paper: HTMLCanvasElement,
+  ship: HTMLImageElement | null,
+  includeMapArt: boolean
+) {
   const width = paper.clientWidth
   const height = paper.clientHeight
-  if (plan?.width === width && plan.height === height) return plan
+  if (plan?.width === width && plan.height === height && plan.includeMapArt === includeMapArt)
+    return plan
   const field = createDissolveField(
     width,
     height,
     width / 2 + VOYAGE_SHIFT_X,
     height / 2 + VOYAGE_SHIFT_Y
   )
-  plan = { width, height, field, snapshot: paintSnapshot(paper, ship) }
+  plan = {
+    width,
+    height,
+    field,
+    includeMapArt,
+    snapshot: paintSnapshot(paper, ship, includeMapArt),
+  }
   return plan
 }
 

@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import type { Channel } from '@/audio/sounds'
 import type { PhaseName } from '@/world/environment/day-night-cycle/dayNightKeyframes'
 import type { WeatherType } from './weatherStore'
+import { hasFinePointer } from './inputStore'
 import { rememberedText, rememberText } from './visitorMemory'
 
 export type GraphicsQuality = 'smooth' | 'sharp'
@@ -43,17 +44,19 @@ const FRAME_INTERVALS_MS: Record<FrameRateLimit, number | null> = {
   unlimited: null,
 }
 
+const isTouchOnly = !hasFinePointer()
+
 const DEFAULT_SETTINGS: Settings = {
   volumes: { music: 1, ambience: 1, sfx: 1 },
   graphicsQuality: 'sharp',
-  frameRateLimit: 'unlimited',
+  frameRateLimit: isTouchOnly ? 'sixty' : 'unlimited',
   isMotionReduced: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
   isFlashingReduced: false,
   timeOfDay: 'auto',
   weather: 'auto',
   dayLength: 'normal',
   wildlife: 'normal',
-  sailingSpeed: 'normal',
+  sailingSpeed: isTouchOnly ? 'brisk' : 'normal',
   areRemarksOn: true,
 }
 

@@ -46,7 +46,7 @@ export default function WeatherPanel() {
           <span className="weather-panel__wind-icon">
             <WindCurvesIcon />
           </span>
-          {WEATHER_COPY.wind} {windPoint}
+          <span className="weather-panel__wind-label">{WEATHER_COPY.wind}</span> {windPoint}
         </span>
       </div>
       <div className="weather-panel__dial">

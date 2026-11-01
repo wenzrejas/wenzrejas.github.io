@@ -5,8 +5,8 @@ import { isRevealPlaying, useRevealStore } from '@/store/revealStore'
 import { useShipStore } from '@/store/shipStore'
 import { useSkyBeamStore } from '@/store/skyBeamStore'
 import { isMapUnfolded, isWorldInView, isWorldPaused, useViewStore } from '@/store/viewStore'
-import { isRainyWeather, useWeatherStore } from '@/store/weatherStore'
-import { isClearSky } from '@/world/environment/weather/weatherCycle'
+import { isRainyWeather } from '@/store/weatherStore'
+import { moonSparkleIntensity } from '@/world/environment/weather/sparkleField'
 import { algaeAt } from '@/world/wildlife/algae/algaeField'
 import type { RemarkStage, WorldReading } from './remarkMoments'
 
@@ -17,7 +17,7 @@ export function readWorld(): WorldReading {
   return {
     timeOfDay: useCycleStore.getState().timeOfDay,
     isRaining: isRainyWeather(),
-    isClearSky: isClearSky(useWeatherStore.getState().type),
+    moonSparkle: moonSparkleIntensity(),
     algaeGlow: algaeAt(ship.x, ship.z),
     tailwind: ship.tailwind,
     revealingIsland: reveal.activeKey,

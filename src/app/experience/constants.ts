@@ -4,6 +4,9 @@ import type { GraphicsQuality } from '@/store/settingsStore'
 export const CAMERA_OFFSET: [number, number, number] = [200, 140, 200]
 export const CAMERA_LOOK_Y_OFFSET = 20
 export const CAMERA_ZOOM = 5
+export const CAMERA_ZOOM_REFERENCE_SIDE = 720
+export const CAMERA_HANDHELD_MAX_ZOOM = 3.3
+export const CAMERA_MIN_ZOOM_SHARE = 0.32
 export const CAMERA_SHAKE_RATE_ACROSS = 47
 export const CAMERA_SHAKE_RATE_UP = 59
 

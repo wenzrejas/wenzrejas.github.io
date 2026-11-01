@@ -15,7 +15,7 @@ function notePanel(panel: PanelKey) {
     if (ACHIEVEMENTS[achievement].items?.includes(panel)) recordProgress(achievement, panel)
 }
 
-function noteReveal(island: IslandKey) {
+export function noteReveal(island: IslandKey) {
   earnAchievement('landHo')
   recordProgress('cartographer', island)
 }

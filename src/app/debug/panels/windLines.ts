@@ -6,7 +6,6 @@ import {
   LINE_Y,
   SPAWN_INTERVAL,
   WAVE_AMPLITUDE,
-  WIND_ANGLE,
   WIND_ENABLED,
   WIND_OPACITY,
   WIND_SPEED,
@@ -18,7 +17,6 @@ export function useWindLinesControls() {
     'Wind Lines',
     {
       windEnabled: { value: WIND_ENABLED, label: 'enabled' },
-      windAngle: { value: WIND_ANGLE, min: 0, max: 360, step: 1, label: 'angle (deg)' },
       windSpeed: { value: WIND_SPEED, min: 0, max: 60, step: 0.5, label: 'speed' },
       lineDuration: { value: LINE_DURATION, min: 0.5, max: 10, step: 0.1, label: 'duration' },
       lineLength: { value: LINE_LENGTH, min: 10, max: 300, step: 1, label: 'length' },

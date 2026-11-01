@@ -1,3 +1,4 @@
+@use '@/styles/breakpoints';
 @use '@/styles/parchment' as *;
 
 $badge-size: 2.25rem;
@@ -29,8 +30,10 @@ $kofi-ink: #c4473d;
   text-decoration: none;
   transition: translate 0.15s ease;
 
-  &:hover {
-    border-image-source: card-frame-image($frame-hover-fill-opacity);
+  @include breakpoints.hover-only {
+    &:hover {
+      border-image-source: card-frame-image($frame-hover-fill-opacity);
+    }
   }
 
   &:focus-visible {
@@ -56,7 +59,7 @@ $kofi-ink: #c4473d;
     flex: 1;
     min-width: 0;
     font-family: var(--font-secondary);
-    font-size: 0.8rem;
+    font-size: panel-font(0.8rem);
     white-space: nowrap;
   }
 
@@ -67,8 +70,10 @@ $kofi-ink: #c4473d;
     transition: translate 0.15s ease;
   }
 
-  &:hover &__arrow {
-    translate: $arrow-nudge (-$arrow-nudge);
+  @include breakpoints.hover-only {
+    &:hover &__arrow {
+      translate: $arrow-nudge (-$arrow-nudge);
+    }
   }
 
   &--email {
