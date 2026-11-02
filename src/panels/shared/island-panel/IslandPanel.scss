@@ -213,7 +213,7 @@ $content-width-share: 1 - $viewport-right-share - $viewport-left-share - $conten
     line-height: 1.5;
     color: $ink;
 
-    @media (max-height: $short-screen) {
+    @include breakpoints.short-screen {
       margin-top: 1rem;
     }
   }
@@ -221,7 +221,7 @@ $content-width-share: 1 - $viewport-right-share - $viewport-left-share - $conten
   &__section {
     margin-top: 1.6rem;
 
-    @media (max-height: $short-screen) {
+    @include breakpoints.short-screen {
       margin-top: 1.1rem;
     }
   }

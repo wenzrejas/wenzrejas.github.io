@@ -10,6 +10,8 @@ export const CAMERA_DISTANCE = 130
 export const CAMERA_TILT_UP_DEGREES = 6
 export const CAMERA_FOCUS_LIFT = -4
 export const CAMERA_FOCUS_FORWARD = 30
+export const RUIN_FIT_HALF_WIDTH = 105
+export const FITTED_VIEW_RAISE = 0.1
 
 // ── Parallax ──────────────────────────────────────────────────────────────────
 export const PARALLAX_ACROSS = 8

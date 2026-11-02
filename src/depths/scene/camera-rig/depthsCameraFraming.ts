@@ -10,9 +10,11 @@ import {
   DEPTHS_CAMERA_FOV,
   DEPTHS_CAMERA_MAX_FOV,
   DEPTHS_CAMERA_REFERENCE_ASPECT,
+  FITTED_VIEW_RAISE,
   PARALLAX_ACROSS,
   PARALLAX_EASE_RATE,
   PARALLAX_UP,
+  RUIN_FIT_HALF_WIDTH,
   SURFACING_LIFT,
 } from './constants'
 
@@ -21,6 +23,8 @@ interface DepthsFraming {
   pointerY: number
   shiftX: number
   shiftY: number
+  cameraDrop: number
+  cameraBack: number
 }
 
 const { damp, degToRad } = THREE.MathUtils
@@ -34,6 +38,8 @@ export const createDepthsFraming = (): DepthsFraming => ({
   pointerY: 0,
   shiftX: 0,
   shiftY: 0,
+  cameraDrop: CAMERA_DROP,
+  cameraBack: CAMERA_BACK,
 })
 
 export function aimParallax(framing: DepthsFraming, clientX: number, clientY: number) {
@@ -49,7 +55,13 @@ export function easeParallax(framing: DepthsFraming, dt: number, isMotionReduced
   framing.shiftY = damp(framing.shiftY, targetY, PARALLAX_EASE_RATE, dt)
 }
 
-export function fitLens(camera: THREE.PerspectiveCamera, width: number, height: number) {
+export function fitLens(
+  camera: THREE.PerspectiveCamera,
+  framing: DepthsFraming,
+  width: number,
+  height: number,
+  isRaised: boolean
+) {
   camera.aspect = width / height
   const horizontalHalfSpan =
     Math.tan(degToRad(DEPTHS_CAMERA_FOV) / 2) * DEPTHS_CAMERA_REFERENCE_ASPECT
@@ -59,7 +71,16 @@ export function fitLens(camera: THREE.PerspectiveCamera, width: number, height: 
       2 * Math.atan(horizontalHalfSpan / Math.min(camera.aspect, DEPTHS_CAMERA_REFERENCE_ASPECT))
     )
   )
-  camera.updateProjectionMatrix()
+  const widthPerDistance = Math.tan(degToRad(camera.fov) / 2) * camera.aspect
+  const fittingDistance = RUIN_FIT_HALF_WIDTH / widthPerDistance - CAMERA_FOCUS_FORWARD
+  const reach = Math.max(1, fittingDistance / CAMERA_DISTANCE)
+  framing.cameraDrop = CAMERA_DROP * reach
+  framing.cameraBack = CAMERA_BACK * reach
+  if (isRaised) {
+    camera.setViewOffset(width, height, 0, height * FITTED_VIEW_RAISE, width, height)
+  } else {
+    camera.clearViewOffset()
+  }
 }
 
 export function frameDepths(
@@ -74,8 +95,8 @@ export function frameDepths(
   focus.set(0, focusY, CAMERA_FOCUS_FORWARD)
   camera.position.set(
     framing.shiftX,
-    focusY - CAMERA_DROP + framing.shiftY,
-    CAMERA_FOCUS_FORWARD + CAMERA_BACK
+    focusY - framing.cameraDrop + framing.shiftY,
+    CAMERA_FOCUS_FORWARD + framing.cameraBack
   )
   camera.lookAt(focus)
 }

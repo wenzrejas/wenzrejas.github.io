@@ -2,7 +2,6 @@
 @use '@/styles/parchment' as *;
 
 $default-size: 2rem;
-$touch-target: 2.75rem;
 $default-inset: 0.4rem;
 $icon-share: 0.55;
 $fill: #f5dcbb;
@@ -38,7 +37,7 @@ $disabled-opacity: 0.35;
     &::after {
       content: '';
       position: absolute;
-      inset: min(0px, calc((var(--size) - #{$touch-target}) / 2));
+      inset: min(0px, calc((var(--size) - #{breakpoints.$touch-target}) / 2));
     }
   }
 

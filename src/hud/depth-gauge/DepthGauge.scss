@@ -1,5 +1,16 @@
 @use '@/styles/breakpoints';
 @use '@/styles/glass';
+@use '../menu/menu-spot';
+
+$gauge-width: 4rem;
+$gauge-height: min(26rem, 60dvh);
+$gauge-fade: depth-gauge-in 0.8s ease;
+$gauge-z-index: 80;
+$frame-left: 2.5rem;
+$fitted-frame-left: 0.5rem;
+$fitted-tape-z-index: 30;
+$portrait-centre: 30%;
+$portrait-height: 34dvh;
 
 $ink: rgba(236, 240, 244, 0.9);
 $line-weight: 1px;
@@ -12,10 +23,8 @@ $label-gap: 0.75rem;
 $pointer-gap: 1.4rem;
 $arrow-width: 0.55rem;
 $arrow-height: 0.45rem;
-$surface-lift: 0.5rem;
-$surface-padding-block: 0.7rem;
-$surface-padding-start: 0.9rem;
-$surface-padding-end: 1.1rem;
+$surface-padding-start: 1.25rem;
+$surface-padding-end: 1.45rem;
 
 @keyframes depth-gauge-in {
   from {
@@ -24,26 +33,54 @@ $surface-padding-end: 1.1rem;
 }
 
 .depth-gauge {
-  position: fixed;
-  top: 50%;
-  left: 2.5rem;
-  width: 4rem;
-  height: min(26rem, 60dvh);
-  translate: 0 -50%;
-  z-index: 80;
+  display: contents;
   pointer-events: none;
-  filter: glass.$hud-drop-shadow;
-  animation: depth-gauge-in 0.8s ease both;
+
+  &__surface-spot {
+    position: fixed;
+    top: menu-spot.$menu-edge;
+    left: menu-spot.$menu-edge;
+    z-index: $gauge-z-index;
+    display: flex;
+    animation: $gauge-fade;
+
+    @include breakpoints.sheet-layout {
+      top: calc(var(--safe-top) + #{menu-spot.$sheet-menu-edge});
+      left: calc(var(--safe-left) + #{menu-spot.$sheet-menu-edge});
+    }
+  }
 
   &__surface {
     @include glass.rise-button;
-    position: absolute;
-    bottom: calc(100% + $surface-lift);
-    left: calc($line-inset - $surface-padding-start - $arrow-width / 2);
-    padding: $surface-padding-block $surface-padding-end $surface-padding-block
-      $surface-padding-start;
+    height: menu-spot.$menu-height;
+    padding: 0 $surface-padding-end 0 $surface-padding-start;
+    border-radius: 999px;
     font-size: 0.65rem;
     letter-spacing: 0.18em;
+    filter: glass.$hud-drop-shadow;
+    @include glass.glass-backdrop;
+  }
+
+  &__frame {
+    position: fixed;
+    top: 50%;
+    left: $frame-left;
+    z-index: $gauge-z-index;
+    width: $gauge-width;
+    height: $gauge-height;
+    translate: 0 -50%;
+    filter: glass.$hud-drop-shadow;
+    animation: $gauge-fade;
+
+    @include breakpoints.depths-fitted {
+      left: calc(var(--safe-left) + #{$fitted-frame-left});
+      z-index: $fitted-tape-z-index;
+    }
+
+    @include breakpoints.sheet-portrait {
+      top: $portrait-centre;
+      height: $portrait-height;
+    }
   }
 
   &__surface-arrow {

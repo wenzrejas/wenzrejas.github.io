@@ -10,7 +10,6 @@ $row-padding: 0.4rem;
 $track-height: 4px;
 $thumb-size: 18px;
 $touch-thumb-size: 26px;
-$touch-slider-height: 2.75rem;
 $choice-min-width: 4.5rem;
 $pane-gap: 0.9rem;
 $pane-mist-reach: 3.5rem;
@@ -212,7 +211,7 @@ $tab-bar-height: 2px;
     }
 
     @include breakpoints.touch-input {
-      height: $touch-slider-height;
+      height: breakpoints.$touch-target;
 
       &::-webkit-slider-thumb {
         width: $touch-thumb-size;
@@ -295,7 +294,7 @@ $tab-bar-height: 2px;
     }
 
     &__slider {
-      height: $touch-slider-height;
+      height: breakpoints.$touch-target;
     }
   }
 }

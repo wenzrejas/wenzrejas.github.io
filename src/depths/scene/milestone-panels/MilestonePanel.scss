@@ -1,9 +1,33 @@
+@use '@/styles/breakpoints';
 @use '@/styles/glass';
 @use '@/styles/parchment';
+@use '@/hud/menu/menu-spot';
 
 $panel-ink: rgba(226, 238, 255, 0.88);
 $panel-soft-ink: rgba(190, 225, 255, 0.75);
 $panel-edge: rgba(190, 225, 255, 0.35);
+
+$panel-width: 30rem;
+$anchored-reach: 18.6dvh;
+$anchored-gauge-room: 7rem;
+
+$under-max-width: 40rem;
+$under-tablet-gutter: 5rem;
+$under-phone-gutter: 0.5rem;
+
+$dock-min-width: 17rem;
+$dock-screen-share: 44vw;
+$dock-gauge-room: 3.25rem;
+
+@mixin tight-type {
+  @include breakpoints.compact {
+    @content;
+  }
+
+  @include breakpoints.sheet-landscape {
+    @content;
+  }
+}
 
 .milestone-panel {
   position: absolute;
@@ -11,10 +35,7 @@ $panel-edge: rgba(190, 225, 255, 0.35);
   display: flex;
   flex-direction: column;
   gap: 1.1rem;
-  width: 30rem;
-  max-height: 70dvh;
-  overflow-y: auto;
-  overscroll-behavior: contain;
+  width: $panel-width;
   padding: 1.4rem 1.6rem 1.6rem;
   border: 1px solid $panel-edge;
   border-radius: glass.$card-radius;
@@ -24,9 +45,16 @@ $panel-edge: rgba(190, 225, 255, 0.35);
   translate: 0 -50%;
   visibility: hidden;
   opacity: 0;
-  scrollbar-width: thin;
-  scrollbar-color: $panel-edge transparent;
   will-change: opacity, transform;
+
+  @include tight-type {
+    gap: 0.8rem;
+    padding: 1rem 1.1rem 1.1rem;
+  }
+
+  @include breakpoints.touch-input {
+    pointer-events: none;
+  }
 
   &--right {
     left: 0;
@@ -34,6 +62,49 @@ $panel-edge: rgba(190, 225, 255, 0.35);
 
   &--left {
     right: 0;
+    width: min($panel-width, calc(50vw - #{$anchored-reach} - #{$anchored-gauge-room}));
+  }
+
+  &--docked {
+    --dock-edge: #{menu-spot.$menu-edge};
+
+    right: auto;
+    width: var(--dock-width);
+
+    @include breakpoints.sheet-layout {
+      --dock-edge: #{menu-spot.$sheet-menu-edge};
+    }
+  }
+
+  &--docked.milestone-panel--right {
+    --dock-width: max(
+      #{$dock-min-width},
+      min(#{$panel-width}, calc(#{$dock-screen-share} - var(--dock-edge)))
+    );
+
+    left: calc(100vw - var(--safe-right) - var(--dock-edge) - var(--dock-width));
+  }
+
+  &--docked.milestone-panel--left {
+    --dock-width: max(
+      #{$dock-min-width},
+      min(#{$panel-width}, calc(#{$dock-screen-share} - #{$dock-gauge-room}))
+    );
+
+    left: calc(var(--safe-left) + #{$dock-gauge-room});
+  }
+
+  &--under {
+    --under-width: min(#{$under-max-width}, calc(var(--safe-width) - #{$under-tablet-gutter * 2}));
+
+    right: auto;
+    left: calc(var(--safe-left) + (var(--safe-width) - var(--under-width)) / 2);
+    width: var(--under-width);
+    translate: none;
+
+    @include breakpoints.compact {
+      --under-width: calc(var(--safe-width) - #{$under-phone-gutter * 2});
+    }
   }
 
   &__header {
@@ -63,6 +134,10 @@ $panel-edge: rgba(190, 225, 255, 0.35);
     font-size: 1.5rem;
     font-weight: 600;
     letter-spacing: 0.01em;
+
+    @include tight-type {
+      font-size: 1.3rem;
+    }
   }
 
   &__place {
@@ -78,6 +153,11 @@ $panel-edge: rgba(190, 225, 255, 0.35);
     font-family: var(--font-secondary);
     font-size: parchment.$base-font-size;
     line-height: 1.6;
+
+    @include tight-type {
+      font-size: 0.875rem;
+      line-height: 1.45;
+    }
   }
 
   &__section {
@@ -107,6 +187,10 @@ $panel-edge: rgba(190, 225, 255, 0.35);
   &__highlights {
     flex-direction: column;
     gap: 0.5rem;
+
+    @include tight-type {
+      gap: 0.35rem;
+    }
   }
 
   &__highlight {
@@ -116,6 +200,11 @@ $panel-edge: rgba(190, 225, 255, 0.35);
     font-family: var(--font-secondary);
     font-size: parchment.$base-font-size;
     line-height: 1.5;
+
+    @include tight-type {
+      font-size: 0.875rem;
+      line-height: 1.45;
+    }
 
     &::before {
       position: absolute;
@@ -143,5 +232,10 @@ $panel-edge: rgba(190, 225, 255, 0.35);
     color: $panel-ink;
     font-family: var(--font-secondary);
     font-size: 0.78rem;
+
+    @include tight-type {
+      padding: 0.2rem 0.6rem;
+      font-size: 0.72rem;
+    }
   }
 }

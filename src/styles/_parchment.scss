@@ -31,7 +31,6 @@ $parchment-art-filter: saturate(0.75) contrast(0.9) sepia(0.12);
 $base-font-size: var(--panel-body-font-size, 1rem);
 $label-font-size: panel-font(1.2rem, 1rem);
 
-$short-screen: 820px;
 $state-change: 0.18s ease;
 
 $cartouche-art-scale: 0.5;
@@ -91,7 +90,7 @@ $cartouche-pressed-label-drop: 1px;
 
     min-width: min(100%, #{cartouche-px($cartouche-scroll-width)});
     max-width: min(24rem, calc(100vw - 3rem));
-    min-height: max(44px, #{cartouche-px($cartouche-scroll-height)});
+    min-height: max(#{breakpoints.$touch-target}, #{cartouche-px($cartouche-scroll-height)});
     height: auto;
     padding-top: 0.5rem;
     padding-bottom: max(0.85rem, #{cartouche-px($cartouche-label-lift)});

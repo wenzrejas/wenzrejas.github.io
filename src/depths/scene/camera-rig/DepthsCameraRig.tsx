@@ -8,6 +8,7 @@ import { isPanelOpen } from '@/store/panelStore'
 import { useInputStore } from '@/store/inputStore'
 import { isMotionReduced } from '@/store/settingsStore'
 import { isDepthsInView } from '@/store/viewStore'
+import { useDepthsFitted } from '@/utils/layout'
 import type { WallClock } from '@/utils/time'
 import { DEPTHS_CAMERA_FRAME_PRIORITY } from '../constants'
 import { rewindShare, type Surfacing } from '../surfacing/surfacing'
@@ -51,6 +52,7 @@ export default function DepthsCameraRig({
   const pressedKeys = useKeyboardInput()
   const size = useThree((state) => state.size)
   const canvas = useThree((state) => state.gl.domElement)
+  const isFitted = useDepthsFitted()
   const framing = useMemo(() => createDepthsFraming(), [])
   const touchTravel = useMemo(() => createTouchTravel(), [])
 
@@ -59,7 +61,10 @@ export default function DepthsCameraRig({
     [canvas, touchTravel, timeline]
   )
 
-  useLayoutEffect(() => fitLens(camera, size.width, size.height), [camera, size])
+  useLayoutEffect(
+    () => fitLens(camera, framing, size.width, size.height, isFitted),
+    [camera, framing, size, isFitted]
+  )
 
   useEffect(() => {
     const scrollLevel = (event: WheelEvent) => {

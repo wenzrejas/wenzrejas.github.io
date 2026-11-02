@@ -85,7 +85,7 @@ $invalid-placeholder-ink: #c8644e;
       line-height: 1.5;
       resize: none;
 
-      @media (max-height: $short-screen) {
+      @include breakpoints.short-screen {
         min-height: 4.5rem;
       }
     }

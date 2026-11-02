@@ -1,18 +1,20 @@
-import { useMemo, useRef } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { Html } from '@react-three/drei'
 import { DEPTHS_COPY, type MilestoneCopy } from '@/data/depthsCopy'
 import type { WallClock } from '@/utils/time'
 import type { Timeline } from '../timeline/timeline'
-import { PANEL_Z_INDEX_RANGE } from './constants'
+import { FITTED_Z_INDEX_RANGE, PANEL_Z_INDEX_RANGE } from './constants'
 import {
+  createPanelReveal,
+  measurePanel,
+  panelPosition,
   panelSide,
   panelSpot,
   showPanel,
   stepPanelReveal,
-  type PanelReveal,
+  type PanelLayout,
 } from './panelPlacement'
-import { keepWheelInside } from './panelWheel'
 import './MilestonePanel.scss'
 
 interface MilestonePanelProps {
@@ -20,27 +22,49 @@ interface MilestonePanelProps {
   milestone: MilestoneCopy
   timeline: Timeline
   clock: WallClock
+  layout: PanelLayout
 }
 
-export default function MilestonePanel({ level, milestone, timeline, clock }: MilestonePanelProps) {
+export default function MilestonePanel({
+  level,
+  milestone,
+  timeline,
+  clock,
+  layout,
+}: MilestonePanelProps) {
   const cardRef = useRef<HTMLElement>(null)
-  const reveal = useRef<PanelReveal>({ presence: 0 })
+  const reveal = useMemo(() => createPanelReveal(), [])
   const side = panelSide(level)
   const spot = useMemo(() => panelSpot(level), [level])
+  const position = useMemo(
+    () => panelPosition(layout, level, timeline, reveal),
+    [layout, level, timeline, reveal]
+  )
+
+  const trackCard = useCallback(
+    (card: HTMLElement | null) => {
+      cardRef.current = card
+      return card ? measurePanel(reveal, card) : undefined
+    },
+    [reveal]
+  )
 
   useFrame(() => {
     const card = cardRef.current
     if (!card) return
-    stepPanelReveal(reveal.current, timeline, level, clock.delta)
-    showPanel(card, side, reveal.current.presence)
+    stepPanelReveal(reveal, layout, timeline, level, clock.delta)
+    showPanel(card, layout === 'under' ? 0 : side, reveal.presence)
   })
 
   return (
-    <Html position={spot} zIndexRange={PANEL_Z_INDEX_RANGE}>
+    <Html
+      position={spot}
+      zIndexRange={layout === 'anchored' ? PANEL_Z_INDEX_RANGE : FITTED_Z_INDEX_RANGE}
+      calculatePosition={position}
+    >
       <article
-        ref={cardRef}
-        className={`milestone-panel milestone-panel--${side > 0 ? 'right' : 'left'}`}
-        onWheel={keepWheelInside}
+        ref={trackCard}
+        className={`milestone-panel milestone-panel--${side > 0 ? 'right' : 'left'} milestone-panel--${layout}`}
       >
         <header className="milestone-panel__header">
           <p className="milestone-panel__chapter">

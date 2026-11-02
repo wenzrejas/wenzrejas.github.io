@@ -65,7 +65,7 @@ $compact-image-room: 12rem;
       right: calc(var(--safe-right) + #{$compact-inset});
     }
 
-    @media (orientation: portrait) {
+    @include breakpoints.portrait {
       &__frame {
         max-width: calc(100vw - #{2 * $compact-inset});
       }

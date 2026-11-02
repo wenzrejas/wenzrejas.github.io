@@ -3,6 +3,10 @@ $compact: '(max-width: 767px), #{$phone-landscape}';
 $sheet-layout: '(max-width: 1023px), #{$phone-landscape}';
 $sheet-portrait: '(max-width: 1023px) and (orientation: portrait)';
 $sheet-landscape: '(max-width: 1023px) and (orientation: landscape), #{$phone-landscape} and (orientation: landscape)';
+$depths-fitted: '(max-width: 1365px), (max-height: 639px)';
+$short-screen: '(max-height: 820px)';
+$portrait: '(orientation: portrait)';
+$touch-target: 2.75rem;
 
 @mixin phone-landscape {
   @media #{$phone-landscape} {
@@ -30,6 +34,24 @@ $sheet-landscape: '(max-width: 1023px) and (orientation: landscape), #{$phone-la
 
 @mixin sheet-landscape {
   @media #{$sheet-landscape} {
+    @content;
+  }
+}
+
+@mixin depths-fitted {
+  @media #{$depths-fitted} {
+    @content;
+  }
+}
+
+@mixin short-screen {
+  @media #{$short-screen} {
+    @content;
+  }
+}
+
+@mixin portrait {
+  @media #{$portrait} {
     @content;
   }
 }

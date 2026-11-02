@@ -41,6 +41,10 @@ $rule-shadow: 0 1px 3px rgba(5, 15, 35, 0.9);
     padding: 1rem 1.6rem 1rem 1.35rem;
     font-size: 0.8rem;
     letter-spacing: 0.22em;
+
+    @include breakpoints.touch-input {
+      min-height: breakpoints.$touch-target;
+    }
   }
 
   &__arrow {

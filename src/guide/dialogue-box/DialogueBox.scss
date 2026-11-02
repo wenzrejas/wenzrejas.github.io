@@ -206,7 +206,7 @@ $compact-mascot-room: sizes.$compact-mascot-size + sizes.$compact-mascot-inset +
       font-size: 0.8rem;
     }
     &__turn {
-      min-height: 2.75rem;
+      min-height: breakpoints.$touch-target;
     }
   }
 

@@ -1,19 +1,19 @@
 @use '@/styles/breakpoints';
 @use '@/styles/glass';
+@use 'menu-spot';
 
-$menu-height: 3.5rem;
 $menu-padding: 0.55rem;
 $button-size: 2.3rem;
 
 .hud-menu {
   position: fixed;
-  top: 1.5rem;
-  right: 1.5rem;
+  top: menu-spot.$menu-edge;
+  right: menu-spot.$menu-edge;
   z-index: 80;
   display: flex;
   align-items: center;
   gap: 0.45rem;
-  height: $menu-height;
+  height: menu-spot.$menu-height;
   padding: 0 $menu-padding;
   border-radius: 999px;
   @include glass.glass-panel;
@@ -28,14 +28,14 @@ $button-size: 2.3rem;
 
   @include breakpoints.touch-input {
     &__button {
-      width: 2.75rem;
-      height: 2.75rem;
+      width: breakpoints.$touch-target;
+      height: breakpoints.$touch-target;
     }
   }
 
   @include breakpoints.sheet-layout {
-    top: calc(var(--safe-top) + 0.5rem);
-    right: calc(var(--safe-right) + 0.5rem);
+    top: calc(var(--safe-top) + #{menu-spot.$sheet-menu-edge});
+    right: calc(var(--safe-right) + #{menu-spot.$sheet-menu-edge});
     gap: 0.25rem;
     padding: 0.4rem;
   }

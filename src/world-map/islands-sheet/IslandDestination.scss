@@ -2,7 +2,6 @@
 @use '@/styles/parchment' as *;
 @use '../island-type';
 
-$change-size: 2.75rem;
 $change-icon-width: 2.5rem;
 $phone-ribbon-max-width: 22rem;
 
@@ -67,8 +66,8 @@ $phone-ribbon-max-width: 22rem;
     display: grid;
     grid-area: change;
     place-items: center;
-    min-width: $change-size;
-    min-height: $change-size;
+    min-width: breakpoints.$touch-target;
+    min-height: breakpoints.$touch-target;
     padding: 0.15rem;
     border: none;
     border-radius: 0.5rem;

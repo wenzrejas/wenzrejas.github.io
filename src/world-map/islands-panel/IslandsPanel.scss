@@ -26,7 +26,6 @@ $content-left: 22;
 
 $close-center-left: 345;
 $close-size: 64;
-$min-close-size: 44px;
 
 $hanging-drop: 16;
 $hanging-header-height: 3rem;
@@ -74,7 +73,7 @@ $separator-ink: rgba(176, 128, 74, 0.28);
 
   @include breakpoints.sheet-landscape {
     --panel-width: #{$hanging-panel-width};
-    --close-button-size: max(#{$min-close-size}, #{panel-px($close-size)});
+    --close-button-size: max(#{breakpoints.$touch-target}, #{panel-px($close-size)});
 
     max-height: calc(100% + #{panel-px($hanging-rise + $hanging-drop)});
     margin-top: calc(-1 * #{panel-px($hanging-rise)});

@@ -33,26 +33,30 @@ export default function DepthGauge({ isTapeShown, isLocked }: DepthGaugeProps) {
 
   return (
     <div className={isTapeShown ? 'depth-gauge' : 'depth-gauge depth-gauge--bare'} inert={isLocked}>
-      <button
-        type="button"
-        className="depth-gauge__surface"
-        aria-label={DEPTHS_COPY.surface}
-        onClick={beginSurfacing}
-      >
-        <span className="depth-gauge__surface-arrow" />
-        <span className="depth-gauge__surface-label">{DEPTH_GAUGE_COPY.surface}</span>
-      </button>
-      <div className="depth-gauge__window">
-        <div className="depth-gauge__tape" ref={tapeRef}>
-          {MILESTONE_MARKS.map(({ y, label }) => (
-            <span key={y} className="depth-gauge__mark" style={{ top: y }}>
-              {label}
-            </span>
-          ))}
-        </div>
+      <div className="depth-gauge__surface-spot">
+        <button
+          type="button"
+          className="depth-gauge__surface"
+          aria-label={DEPTHS_COPY.surface}
+          onClick={beginSurfacing}
+        >
+          <span className="depth-gauge__surface-arrow" />
+          <span className="depth-gauge__surface-label">{DEPTH_GAUGE_COPY.surface}</span>
+        </button>
       </div>
-      <span className="depth-gauge__line" />
-      <span className="depth-gauge__pointer" />
+      <div className="depth-gauge__frame">
+        <div className="depth-gauge__window">
+          <div className="depth-gauge__tape" ref={tapeRef}>
+            {MILESTONE_MARKS.map(({ y, label }) => (
+              <span key={y} className="depth-gauge__mark" style={{ top: y }}>
+                {label}
+              </span>
+            ))}
+          </div>
+        </div>
+        <span className="depth-gauge__line" />
+        <span className="depth-gauge__pointer" />
+      </div>
     </div>
   )
 }

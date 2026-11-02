@@ -4,6 +4,7 @@ import type * as THREE from 'three'
 import { DEPTHS_COPY } from '@/data/depthsCopy'
 import { chooseRewind, useDepthsStore } from '@/store/depthsStore'
 import { hasHeard, useGuideStore } from '@/store/guideStore'
+import { isPanelOpen } from '@/store/panelStore'
 import { beginSurfacing, isDepthsInView, isDepthsScene, useViewStore } from '@/store/viewStore'
 import { CAPTION_Z_INDEX_RANGE, CLOCK_CAPTION_SPOT } from './constants'
 import './SurfaceCaption.scss'
@@ -13,7 +14,7 @@ interface SurfaceCaptionProps {
 }
 
 function rewindToSurface() {
-  if (!isDepthsInView()) return
+  if (!isDepthsInView() || isPanelOpen()) return
   chooseRewind()
   beginSurfacing()
 }
