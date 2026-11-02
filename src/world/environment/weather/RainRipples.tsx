@@ -7,7 +7,7 @@ import { useWhirlpoolStore } from '@/store/whirlpoolStore'
 import { floatDefines } from '@/utils/glsl'
 import { MAX_FRAME_SECONDS } from '@/utils/time'
 import { whirlpoolFunnelUniforms } from '@/world/islands/timewell-depth/whirlpoolFunnel'
-import { algaeAt, queueRainHit } from '@/world/wildlife/algae/algaeField'
+import { algaeAt, queueGlowHit } from '@/world/wildlife/algae/algaeField'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import RIPPLE_VERT from './shaders/rainRipple.vert.glsl'
 import RIPPLE_FRAG from './shaders/rainRipple.frag.glsl'
@@ -128,7 +128,7 @@ export default function RainRipples({ shipRef }: { shipRef: React.RefObject<THRE
         aCenter.array[slot * 2] = rx
         aCenter.array[slot * 2 + 1] = rz
         centerDirty = true
-        if (Math.random() < algaeAt(rx, rz)) queueRainHit(rx, rz)
+        if (Math.random() < algaeAt(rx, rz)) queueGlowHit(rx, rz)
       }
     }
 

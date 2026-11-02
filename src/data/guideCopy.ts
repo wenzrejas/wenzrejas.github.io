@@ -275,6 +275,34 @@ const SENT_MESSAGE: DialoguePage[] = [
   },
 ]
 
+// ── Remarks (bottles) ─────────────────────────────────────────────────────────
+const SPOTTED_BOTTLE: DialoguePage[] = [
+  {
+    mood: 'surprised',
+    lines: ['Is that a bottle?', "Sail over and let's see what's inside!"],
+  },
+]
+
+const KEPT_A_BOTTLE: DialoguePage[] = [
+  {
+    mood: 'happy',
+    lines: [
+      'I tucked that note away for you.',
+      'You can read it again under Keepsakes in Settings.',
+    ],
+  },
+]
+
+const LAST_BOTTLE_WASHED_UP: DialoguePage[] = [
+  {
+    mood: 'curious',
+    lines: [
+      'One more bottle just washed up by the lighthouse at Lumina Point.',
+      "I wonder who it's for.",
+    ],
+  },
+]
+
 // ── Depths ────────────────────────────────────────────────────────────────────
 const ARRIVED_IN_DEPTHS: DialoguePage[] = [
   {
@@ -381,6 +409,9 @@ const REMARKS = {
   reachedLuminaPoint: REACHED_LUMINA_POINT,
   reachedCozyIsle: REACHED_COZY_ISLE,
   sentMessage: SENT_MESSAGE,
+  spottedBottle: SPOTTED_BOTTLE,
+  keptABottle: KEPT_A_BOTTLE,
+  lastBottleWashedUp: LAST_BOTTLE_WASHED_UP,
 } satisfies Record<string, DialoguePage[]>
 
 export const DIALOGUES = {

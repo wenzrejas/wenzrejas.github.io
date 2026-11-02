@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { IS_DEBUG } from '@/app/experience/constants'
 import {
   ACHIEVEMENT_KEYS,
   ACHIEVEMENTS,
@@ -48,6 +49,11 @@ export const useAchievementStore = create<AchievementState>(() => ({
   ...recallRecord(),
   announcements: [],
 }))
+
+export function useAchievementsInSettings() {
+  const earned = useAchievementStore((state) => state.earned)
+  return IS_DEBUG ? ACHIEVEMENT_KEYS : earned
+}
 
 function rememberRecord() {
   const { earned, progress, livery } = useAchievementStore.getState()

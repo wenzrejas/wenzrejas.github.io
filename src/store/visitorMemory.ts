@@ -7,6 +7,7 @@ const MEMORY_KEYS = {
   heardRemarks: 'heard-remarks',
   heardDialogues: 'heard-dialogues',
   achievements: 'achievements',
+  foundBottles: 'found-bottles',
   settings: 'settings',
 }
 

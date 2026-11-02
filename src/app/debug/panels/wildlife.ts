@@ -1,4 +1,9 @@
-import { useControls } from 'leva'
+import { button, useControls } from 'leva'
+import {
+  CHECK_INTERVAL as ALGAE_INTERVAL,
+  SPAWN_CHANCE as ALGAE_CHANCE,
+} from '@/world/wildlife/algae/constants'
+import { orderPatch } from '@/world/wildlife/algae/algaeField'
 import {
   SPAWN_DELAY_MAX as BIRD_DELAY_MAX,
   SPAWN_DELAY_MIN as BIRD_DELAY_MIN,
@@ -83,6 +88,23 @@ export function useWildlifeControls() {
         step: 1,
         label: 'whale check (s)',
       },
+      algaeChance: {
+        value: ALGAE_CHANCE,
+        min: 0,
+        max: 1,
+        step: 0.01,
+        label: 'algae chance',
+      },
+      algaeInterval: {
+        value: ALGAE_INTERVAL,
+        min: 1,
+        max: 60,
+        step: 1,
+        label: 'algae check (s)',
+      },
+      algaeAnyTime: { value: false, label: 'algae any time' },
+      'algae at ship': button(() => orderPatch('atShip')),
+      'clear algae': button(() => orderPatch('clear')),
     },
     { collapsed: true }
   ) as WildlifeControls

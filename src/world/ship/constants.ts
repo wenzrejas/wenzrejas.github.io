@@ -74,6 +74,7 @@ export const SHIP_LIVERIES = {
   midnight: { cloth: '#22304f', accent: '#d9a63a' },
   royal: { cloth: '#efe4c8', accent: '#2c4f9e' },
   gilded: { cloth: '#e6bf55', accent: '#9a6a1c' },
+  seaGlass: { cloth: '#bfe5d6', accent: '#1f6f5f' },
 } satisfies Record<string, { cloth: string; accent: string } | null>
 export type LiveryKey = keyof typeof SHIP_LIVERIES
 

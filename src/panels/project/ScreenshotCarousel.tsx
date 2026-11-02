@@ -1,9 +1,10 @@
 import { useRef, useState, type ReactNode } from 'react'
 import { PROJECT_PANEL_COPY } from '@/data/panelCopy'
 import { useResizeEffect } from '@/hooks/useResizeEffect'
+import { scrollBehavior } from '@/store/settingsStore'
+import { useDragToScroll } from '../shared/drag-to-scroll/useDragToScroll'
 import ArrowButton from './ArrowButton'
 import { CAROUSEL_EDGE_SLACK_PIXELS } from './constants'
-import { useDragToScroll } from './useDragToScroll'
 import './ScreenshotCarousel.scss'
 
 interface ScreenshotCarouselProps {
@@ -39,7 +40,7 @@ export default function ScreenshotCarousel({ children }: ScreenshotCarouselProps
     if (!track || !(thumbnail instanceof HTMLElement)) return
     const step = thumbnail.offsetWidth + parseFloat(getComputedStyle(track).columnGap)
     const index = Math.round(track.scrollLeft / step) + shift
-    track.scrollTo({ left: index * step, behavior: 'smooth' })
+    track.scrollTo({ left: index * step, behavior: scrollBehavior() })
   }
 
   const { isDragging, dragHandlers } = useDragToScroll(trackRef, () => scrollToThumbnail(0))

@@ -9,6 +9,7 @@ import {
   ACTION_DELAY_MIN,
   ACTIVE_FROM,
   ACTIVE_UNTIL,
+  ALGAE_LURE_GLOW,
   CRUISE_DEPTH_MAX,
   CRUISE_DEPTH_MIN,
   DIVE_RATE,
@@ -108,7 +109,8 @@ interface Pose {
 const _pose: Pose = { y: 0, climb: 0, arch: 0, roll: 0 }
 const { clamp } = THREE.MathUtils
 
-export function timeOfDayChance(time: number): number {
+export function podChance(time: number, algaeGlow: number): number {
+  if (algaeGlow >= ALGAE_LURE_GLOW) return 1
   if (time >= ACTIVE_FROM && time < ACTIVE_UNTIL) return 1
   if (time >= ACTIVE_UNTIL && time < NOON_UNTIL) return NOON_CHANCE
   return 0

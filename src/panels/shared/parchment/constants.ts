@@ -4,6 +4,21 @@ import type { EdgeTint, ShadowStep } from './parchmentModel'
 // ── Sheet shape (traced units) ────────────────────────────────────────────────
 export const SHEET_CORNER_REACH = 72
 
+// ── Loose sheet: top edge with its climb taken out (traced units) ─────────────
+export const TOP_EDGE_CLIMB: [number, number][] = [
+  [0, 32],
+  [130, 31],
+  [200, 26],
+  [300, 28.5],
+  [350, 21],
+  [465, 20],
+  [500, 9],
+  [590, 0],
+]
+export const LOOSE_TOP_LEVEL = 4
+export const LOOSE_TOP_FULL_UNTIL = 40
+export const LOOSE_TOP_FADE_UNTIL = 110
+
 // ── Canvas ────────────────────────────────────────────────────────────────────
 export const PARCHMENT_MARGIN = 48
 export const MAX_PIXEL_RATIO = 2

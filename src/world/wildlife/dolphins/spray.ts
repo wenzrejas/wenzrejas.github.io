@@ -1,11 +1,15 @@
 import { rand } from '@/utils/math'
 import type { ParticlePool } from '@/world/effects/particlePool'
+import { algaeAt, queueGlowHit } from '../algae/algaeField'
+import { recordTrail } from '../algae/scatterTrail'
 import {
   DROP_SIZE,
   FIN_WAKE_DRIFT,
   FOAM_LIFE,
   FOAM_SIZE,
   FOAM_Y,
+  SPLASH_GLOW_FLASHES,
+  SPLASH_GLOW_REACH,
   SPLASH_RING,
   SPLASH_RING_SPEED,
 } from './constants'
@@ -69,5 +73,17 @@ export function emitSplash(
       FOAM_SIZE * rand(1, 1.6) * strength,
       FOAM_LIFE * rand(0.9, 1.3)
     )
+  }
+}
+
+export function flashGlowingWater(x: number, z: number, time: number): void {
+  const glow = algaeAt(x, z)
+  if (glow <= 0) return
+  recordTrail(x, z, time)
+  for (let i = 0; i < SPLASH_GLOW_FLASHES; i++) {
+    if (Math.random() >= glow) continue
+    const angle = Math.random() * Math.PI * 2
+    const reach = rand(0, SPLASH_GLOW_REACH)
+    queueGlowHit(x + Math.cos(angle) * reach, z + Math.sin(angle) * reach)
   }
 }

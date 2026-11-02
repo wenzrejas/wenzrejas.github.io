@@ -8,6 +8,7 @@ import AboutTab from './tabs/AboutTab'
 import AchievementsTab from './tabs/AchievementsTab'
 import ControlsTab from './tabs/ControlsTab'
 import DisplayTab from './tabs/DisplayTab'
+import KeepsakesTab from './tabs/KeepsakesTab'
 import SoundTab from './tabs/SoundTab'
 import WorldTab from './tabs/WorldTab'
 import './SettingsContent.scss'
@@ -18,6 +19,7 @@ const TAB_PANES: Record<SettingsTab, ComponentType> = {
   world: WorldTab,
   controls: ControlsTab,
   achievements: AchievementsTab,
+  keepsakes: KeepsakesTab,
   about: AboutTab,
 }
 

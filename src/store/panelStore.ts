@@ -10,7 +10,8 @@ export type ProjectKey =
   | 'uiuxWorks'
   | 'gelify'
   | 'qoves'
-export type PanelKey = 'contact' | 'support' | 'settings' | GroveKey | ProjectKey
+export type IslandPanelKey = 'contact' | 'support' | 'settings' | GroveKey | ProjectKey
+export type PanelKey = IslandPanelKey | 'bottle'
 
 interface PanelState {
   activePanel: PanelKey | null
@@ -31,6 +32,8 @@ export function openPanel(key: PanelKey, focus: THREE.Vector3) {
 
 export const openSettings = () => usePanelStore.setState({ activePanel: 'settings' })
 
+export const openBottleNote = () => usePanelStore.setState({ activePanel: 'bottle' })
+
 export const closePanel = () => usePanelStore.setState({ activePanel: null })
 
 export function centerFocusLeftOf(panelLeftPixels: number) {
@@ -43,11 +46,13 @@ export const isPanelOpen = () => usePanelStore.getState().activePanel !== null
 
 export function useIsPanelCoveringScreen() {
   const isSheet = useSheetLayout()
-  const isOpen = usePanelStore((state) => state.activePanel !== null)
+  const isOpen = usePanelStore(
+    (state) => state.activePanel !== null && state.activePanel !== 'bottle'
+  )
   return isSheet && isOpen
 }
 
 export function isFocusedPanelOpen() {
   const { activePanel } = usePanelStore.getState()
-  return activePanel !== null && activePanel !== 'settings'
+  return activePanel !== null && activePanel !== 'settings' && activePanel !== 'bottle'
 }

@@ -60,6 +60,10 @@ import {
   WIND_OPACITY,
 } from '../world/environment/wind-lines/constants'
 import {
+  CHECK_INTERVAL as ALGAE_INTERVAL,
+  SPAWN_CHANCE as ALGAE_CHANCE,
+} from '../world/wildlife/algae/constants'
+import {
   SPAWN_DELAY_MAX as BIRD_DELAY_MAX,
   SPAWN_DELAY_MIN as BIRD_DELAY_MIN,
 } from '../world/wildlife/birds/constants'
@@ -168,6 +172,9 @@ export const useDebugStore = create<DebugState>(() => ({
     turtleInterval: TURTLE_INTERVAL,
     whaleChance: WHALE_CHANCE,
     whaleInterval: WHALE_INTERVAL,
+    algaeChance: ALGAE_CHANCE,
+    algaeInterval: ALGAE_INTERVAL,
+    algaeAnyTime: false,
   },
   music: {
     enabled: true,

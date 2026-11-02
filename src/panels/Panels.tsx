@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useTransition } from '@react-spring/web'
 import { audio } from '@/audio/audioManager'
+import BottleNote from '@/minigames/message-in-a-bottle/note-card/BottleNote'
 import { usePanelStore } from '@/store/panelStore'
 import { isMapUnfolded, useViewStore } from '@/store/viewStore'
 import { useSheetLayout } from '@/utils/layout'
@@ -39,6 +40,7 @@ export default function Panels() {
 
   return transitions((motion, key) => {
     if (!key) return null
+    if (key === 'bottle') return <BottleNote motion={motion} />
     const { title, subtitle, splashUrl, splashZoom, isCentered, Content } = PANEL_SPECS[key]
     return (
       <IslandPanel

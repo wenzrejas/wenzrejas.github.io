@@ -5,12 +5,11 @@ $seal-size: 2.25rem;
 $bar-height: 4px;
 $group-gap: 1.25rem;
 $locked-opacity: 0.6;
-$eyebrow-letter-spacing: 0.2em;
-$tally-font-size: 0.8rem;
 $swatch-size: 2.5rem;
 $swatch-radius: 4px;
 $swatch-edge: rgba($ink, 0.45);
 $livery-gap: 0.5rem;
+$livery-min-width: 3.1rem;
 $locked-livery-opacity: 0.4;
 $wax-light: #c24a3b;
 $wax-dark: #6b1a13;
@@ -31,15 +30,9 @@ $seal-line-weight: 1.5px;
 
   &__eyebrow,
   &__heading {
-    font-family: var(--font-secondary);
-    font-size: panel-font(0.72rem);
-    font-weight: 600;
-    letter-spacing: $eyebrow-letter-spacing;
-    text-transform: uppercase;
-    color: $ink-soft;
+    @include eyebrow-label;
   }
 
-  &__tally,
   &__next-rank,
   &__description {
     font-family: var(--font-secondary);
@@ -48,9 +41,7 @@ $seal-line-weight: 1.5px;
   }
 
   &__tally {
-    font-size: panel-font($tally-font-size);
-    font-variant-numeric: tabular-nums;
-    font-weight: 600;
+    @include tally-count;
   }
 
   &__rank-name,
@@ -83,7 +74,7 @@ $seal-line-weight: 1.5px;
   &__liveries {
     grid-column: 2 / -1;
     display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax($livery-min-width, 1fr));
     gap: $livery-gap;
   }
 
@@ -217,12 +208,8 @@ $seal-line-weight: 1.5px;
   }
 
   &__title {
-    font-family: var(--font-accent);
-    font-size: panel-font(1.05rem);
-    font-weight: 700;
-    letter-spacing: 0.02em;
+    @include entry-title;
     line-height: 1.25;
-    color: $ink;
   }
 
   &__description {

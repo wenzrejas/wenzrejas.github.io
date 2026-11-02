@@ -25,7 +25,8 @@ Hi, I'm Wenz Louie Rejas, a frontend developer who loves turning creative ideas 
 - Dolphins, sea turtles, fish, birds, and algae that glows at night.
 - A world map you can fast-travel from, plus a compass, minimap and weather readout.
 - Wobbi, my "trusty little navigator. Well... mostly trusty.", who pops in with tips as you explore.
-- 24 achievements to collect. Every new rank unlocks a fresh sail livery for the ship.
+- Messages in bottles scattered across the sea, with notes about me and this world, saved to a Keepsakes tab in Settings.
+- 26 achievements to collect. Every new rank unlocks a fresh sail livery for the ship.
 - Settings for sound, graphics, frame rate, time of day, weather, day length, wildlife, sailing speed, reduced motion and reduced flashing.
 
 ## Controls
@@ -78,7 +79,7 @@ npm run dev
 | `npm run lint` | Runs ESLint |
 | `npm run format` | Formats the source with Prettier |
 
-Add `#debug` to the URL to skip the loading screen and open my debug tools (Leva controls and the r3f-perf monitor).
+On the dev server, add `#debug` to the URL to skip the loading screen and open my debug tools (Leva controls and the r3f-perf monitor). Production builds leave them out.
 
 Every push to `main` builds the site and deploys it to GitHub Pages through [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml).
 
@@ -95,6 +96,7 @@ src/
 ├── loading/        The parchment-map loading screen
 ├── guide/          Wobbi, the guide
 ├── achievements/   Achievements, ranks and sail liveries
+├── minigames/      Message in a Bottle
 ├── interaction/    Island markers and hover handling
 ├── audio/          Music, ambience and sound effects
 ├── store/          Zustand stores

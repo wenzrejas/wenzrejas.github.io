@@ -1,0 +1,1 @@
+export const DRAG_THRESHOLD_PIXELS = 5

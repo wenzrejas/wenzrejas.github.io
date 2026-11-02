@@ -1,9 +1,11 @@
 import * as THREE from 'three'
 import { rand } from '@/utils/math'
 import { ISLAND_ZONES, shoreGap } from '@/world/islands/shared/islandZones'
+import type { PatchOrder } from './algaeField'
 import {
   AVOID_ISLAND_GAP,
   AVOID_ISLANDS,
+  MAX_PATCHES,
   NIGHT_FROM,
   NIGHT_UNTIL,
   PATCH_EDGE_REACH,
@@ -66,4 +68,13 @@ export function createPatch(shipX: number, shipZ: number, reach: number): Patch 
     if (!isBlockedByIsland(x, z, radius)) return { x, z, radius, age: 0 }
   }
   return null
+}
+
+export function applyPatchOrder(patches: Patch[], order: PatchOrder, shipX: number, shipZ: number) {
+  if (order === 'clear') {
+    patches.length = 0
+    return
+  }
+  if (patches.length >= MAX_PATCHES) patches.shift()
+  patches.push({ x: shipX, z: shipZ, radius: PATCH_RADIUS_MAX, age: 0 })
 }

@@ -1,4 +1,5 @@
 import type { SpringConfig } from '@react-spring/web'
+import { COLLECTED_BOTTLES } from '@/minigames/message-in-a-bottle/bottleSpots'
 import { PHASES } from '@/world/environment/day-night-cycle/dayNightKeyframes'
 import { PROJECT_KEYS } from '@/world/islands/buildshore/projects/projectSites'
 import { ISLAND_KEYS } from '@/world/islands/shared/islandSpecs'
@@ -11,6 +12,7 @@ export const ACHIEVEMENT_CATEGORIES = [
   'islands',
   'depths',
   'seaAndSky',
+  'keepsakes',
   'oddMoments',
 ] as const
 export type AchievementCategory = (typeof ACHIEVEMENT_CATEGORIES)[number]
@@ -43,6 +45,8 @@ const ACHIEVEMENT_SPECS = {
   weatheredTheStorm: { category: 'seaAndSky' },
   stargazer: { category: 'seaAndSky' },
   dawnPatrol: { category: 'seaAndSky' },
+  messageInABottle: { category: 'keepsakes' },
+  beachcomber: { category: 'keepsakes', items: COLLECTED_BOTTLES },
   scenicRoute: { category: 'oddMoments', isSecret: true },
   becalmed: { category: 'oddMoments', isSecret: true },
   oldFriend: { category: 'oddMoments' },
@@ -64,6 +68,11 @@ export const RANKS = [
   { rank: 'legend', earned: ACHIEVEMENT_KEYS.length, livery: 'gilded' },
 ] as const satisfies readonly { rank: string; earned: number; livery: LiveryKey }[]
 export type RankKey = (typeof RANKS)[number]['rank']
+
+// ── Liveries unlocked by an achievement instead of a rank ─────────────────────
+export const ACHIEVEMENT_LIVERIES: Partial<Record<LiveryKey, AchievementKey>> = {
+  seaGlass: 'beachcomber',
+}
 
 // ── World watch (seconds; times of day as cycle shares) ───────────────────────
 export const ACHIEVEMENT_POLL_SECONDS = 0.5

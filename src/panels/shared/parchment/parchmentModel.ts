@@ -73,11 +73,14 @@ import {
   boundsOf,
   foldLines,
   frameSheet,
+  levelTopEdge,
   linePath,
   placeOnFrame,
   upwardFacing,
   type SheetFrame,
 } from './sheetShape'
+
+export type ParchmentShape = 'rolled' | 'loose' | 'fullBleed'
 
 export interface EdgeTint {
   reachPixels: number
@@ -367,12 +370,19 @@ function paintRod(
 // ── Parchment ─────────────────────────────────────────────────────────────────
 export const parchmentPixelRatio = () => Math.min(window.devicePixelRatio, MAX_PIXEL_RATIO)
 
+const LOOSE_OUTLINE = levelTopEdge(TRACED_OUTLINE)
+
+function outlineOf(shape: ParchmentShape, frame: SheetFrame, width: number, height: number) {
+  if (shape === 'fullBleed') return [0, 0, width, 0, width, height, 0, height]
+  return placeOnFrame(frame, shape === 'loose' ? LOOSE_OUTLINE : TRACED_OUTLINE)
+}
+
 export function paintParchment(
   canvas: HTMLCanvasElement,
   width: number,
   height: number,
   pixelRatio: number,
-  isFullBleed: boolean
+  shape: ParchmentShape
 ) {
   canvas.width = Math.round((width + PARCHMENT_MARGIN * 2) * pixelRatio)
   canvas.height = Math.round((height + PARCHMENT_MARGIN * 2) * pixelRatio)
@@ -383,13 +393,11 @@ export function paintParchment(
   context.setTransform(pixelRatio, 0, 0, pixelRatio, margin, margin)
   const random = seededRandom(SURFACE_SEED)
   const frame = frameSheet(width, height)
-  const outlinePoints = isFullBleed
-    ? [0, 0, width, 0, width, height, 0, height]
-    : placeOnFrame(frame, TRACED_OUTLINE)
+  const outlinePoints = outlineOf(shape, frame, width, height)
   const outline = linePath(outlinePoints, true)
 
-  if (!isFullBleed) {
-    strokeShadow(context, outline, SHADOW_RGB, SHADOW_STEPS, SHADOW_DROP)
+  if (shape !== 'fullBleed') strokeShadow(context, outline, SHADOW_RGB, SHADOW_STEPS, SHADOW_DROP)
+  if (shape === 'rolled') {
     paintBackSheet(context, frame, outline, pixelRatio)
     paintRod(context, frame, outline, random)
   }

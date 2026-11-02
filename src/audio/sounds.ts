@@ -30,7 +30,7 @@ export const SOUNDS = {
     url: '/audio/sfx/dolphin.webm',
     fallback: '/audio/sfx/dolphin.mp3',
     channel: 'sfx',
-    volume: 0.08,
+    volume: 0.06,
   },
   seagulls: {
     url: '/audio/sfx/seagulls.webm',
@@ -64,6 +64,13 @@ export const SOUNDS = {
     volume: 0.15,
     hasLeadIn: true,
   },
+  click: {
+    url: '/audio/sfx/click.webm',
+    fallback: '/audio/sfx/click.mp3',
+    channel: 'sfx',
+    volume: 0.06,
+    hasLeadIn: true,
+  },
   dive: {
     url: '/audio/sfx/dive.webm',
     fallback: '/audio/sfx/dive.mp3',
@@ -93,6 +100,12 @@ export const SOUNDS = {
     fallback: '/audio/sfx/waterfall.mp3',
     channel: 'ambience',
     volume: 1.4,
+  },
+  crickets: {
+    url: '/audio/sfx/crickets.webm',
+    fallback: '/audio/sfx/crickets.mp3',
+    channel: 'ambience',
+    volume: 0.06,
   },
   trainEngine: {
     url: '/audio/sfx/steam-engine.webm',

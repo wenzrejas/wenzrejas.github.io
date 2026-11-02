@@ -31,6 +31,9 @@ export interface WorldReading {
   isMapUnfolded: boolean
   isWorldPaused: boolean
   isSkyBeamActive: boolean
+  isNearBottle: boolean
+  hasLastBottleWashedUp: boolean
+  hasKeptABottle: boolean
   shipX: number
   shipZ: number
   shipSpeed: number
@@ -87,11 +90,18 @@ const hasPassed = (from: number, to: number, time: number) =>
 
 const hasReached = (from: number, to: number, level: number) => from < level && to >= level
 
+const BOTTLE_MOMENTS = [
+  ['hasLastBottleWashedUp', 'lastBottleWashedUp'],
+  ['hasKeptABottle', 'keptABottle'],
+  ['isNearBottle', 'spottedBottle'],
+] as const
+
 export function noticeMoment(
   previous: WorldReading,
   world: WorldReading,
   before: MomentCounters,
-  after: MomentCounters
+  after: MomentCounters,
+  isHeard: (remark: RemarkKey) => boolean
 ): RemarkKey | null {
   const passed = (time: number) => hasPassed(previous.timeOfDay, world.timeOfDay, time)
   const island = world.revealingIsland
@@ -99,6 +109,9 @@ export function noticeMoment(
   if (island && island !== previous.revealingIsland) return ISLAND_REMARKS[island]
   if (world.isMapUnfolded && !previous.isMapUnfolded) return 'openedWorldMap'
   if (world.isSkyBeamActive && !previous.isSkyBeamActive) return 'sentMessage'
+  for (const [reading, remark] of BOTTLE_MOMENTS) {
+    if (world[reading] && !previous[reading] && !isHeard(remark)) return remark
+  }
   if (nearby && nearby !== previous.nearbyIsland && nearby !== island) return 'familiarIsland'
   if (passed(SUNRISE_TIME) && !world.isRaining) return 'sunrise'
   if (passed(SUNSET_TIME)) return 'sunset'

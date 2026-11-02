@@ -1,0 +1,137 @@
+@use '@/styles/breakpoints';
+@use '@/styles/parchment' as *;
+@use '@/styles/typography';
+
+$sheet-width: 38rem;
+$sheet-gutter: 2rem;
+$close-size: 2.5rem;
+$close-center-top: 2.4rem;
+$close-center-right: 2.6rem;
+$rule-ornament-size: 9px;
+$rule-width: 70%;
+$signature-height: 4rem;
+$short-signature-height: 2.4rem;
+$short-cartouche-unit: 0.38px;
+
+.bottle-note {
+  --sheet-width: min(#{$sheet-width}, calc(100vw - #{$sheet-gutter}));
+  --panel-body-font-size: #{panel-font(1rem)};
+
+  position: fixed;
+  inset: 0;
+  z-index: 85;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  pointer-events: none;
+
+  &__sheet {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: var(--sheet-width);
+    max-height: 100%;
+    pointer-events: auto;
+    transform-origin: 50% 0;
+    will-change: transform, opacity;
+  }
+
+  &__close {
+    --close-button-size: #{$close-size};
+
+    position: absolute;
+    top: $close-center-top;
+    right: $close-center-right;
+    z-index: 2;
+    translate: 50% -50%;
+
+    @include breakpoints.touch-input {
+      --close-button-size: #{breakpoints.$touch-target};
+    }
+  }
+
+  &__content {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    justify-items: center;
+    row-gap: 0.6rem;
+    min-height: 0;
+    margin: calc(var(--sheet-width) * $viewport-bottom-share)
+      calc(var(--sheet-width) * $viewport-right-share)
+      calc(var(--sheet-width) * $viewport-bottom-share)
+      calc(var(--sheet-width) * $viewport-left-share);
+    padding: 0.3rem 1rem 1rem;
+    overflow-y: auto;
+    scrollbar-width: none;
+    text-align: center;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  &__count {
+    @include typography.spaced-caps;
+    color: $ink-soft;
+  }
+
+  &__title {
+    @include handwritten;
+    font-size: panel-font(1.9rem);
+    font-weight: 400;
+    line-height: 1.15;
+    color: $ink;
+  }
+
+  &__rule {
+    width: $rule-width;
+    @include diamond-rule($rule-ornament-size);
+  }
+
+  &__text {
+    font-family: var(--font-secondary);
+    font-size: $base-font-size;
+    line-height: 1.55;
+    text-align: left;
+    color: $ink;
+  }
+
+  &__signature {
+    justify-self: end;
+    height: $signature-height;
+    margin-right: 1rem;
+  }
+
+  &__primary {
+    @include cartouche-button;
+    text-decoration: none;
+  }
+
+  &__primary-label {
+    @include cartouche-label;
+  }
+
+  @include breakpoints.phone-landscape {
+    &__content {
+      row-gap: 0.25rem;
+      padding: 0 0.75rem 0.8rem;
+    }
+
+    &__title {
+      font-size: panel-font(1.5rem);
+    }
+
+    &__text {
+      line-height: 1.4;
+    }
+
+    &__signature {
+      height: $short-signature-height;
+    }
+
+    &__primary {
+      --cartouche-unit: #{$short-cartouche-unit};
+    }
+  }
+}

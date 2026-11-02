@@ -94,7 +94,13 @@ function watchWorld(watch: RemarkWatch, world: WorldReading, seconds: number, st
   watch.lastSeconds = seconds
   if (!previous) return null
   const counted = countMoments(counters, previous, world, seconds - lastSeconds, stage)
-  const moment = noticeMoment(previous, world, counters, counted)
+  const moment = noticeMoment(
+    previous,
+    world,
+    counters,
+    counted,
+    (remark) => watch.remarkedAt[remark] !== undefined
+  )
   watch.counters = moment ? restartCounterOf(moment, counted) : counted
   return moment
 }

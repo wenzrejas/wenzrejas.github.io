@@ -82,6 +82,8 @@ export const changeVolume = (channel: Channel, volume: number) =>
 
 export const isMotionReduced = () => useSettingsStore.getState().isMotionReduced
 
+export const scrollBehavior = (): ScrollBehavior => (isMotionReduced() ? 'auto' : 'smooth')
+
 export const isGraphicsSharp = () => useSettingsStore.getState().graphicsQuality === 'sharp'
 
 export const frameIntervalMs = () => FRAME_INTERVALS_MS[useSettingsStore.getState().frameRateLimit]

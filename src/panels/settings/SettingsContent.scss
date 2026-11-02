@@ -21,18 +21,38 @@ $chosen-edge: string.slice(meta.inspect($wax-red), 2);
 $tab-letter-spacing: 0.2em;
 $tab-faded-ink: rgba($ink-soft, 0.62);
 $tab-bar-height: 2px;
+$tab-rule-height: 1px;
+$tab-focus-room: 4px;
+$tabs-gap-above: 1.4rem;
+$tabs-gap-above-short: 0.5rem;
 
 .settings {
   &__tabs {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem 1.1rem;
-    margin-top: 1.4rem;
-    border-bottom: 1px solid $ink-faint;
+    flex: none;
+    gap: 1rem;
+    margin: calc(#{$tabs-gap-above} - #{$tab-focus-room}) calc(-1 * #{$tab-focus-room}) 0;
+    padding: $tab-focus-room $tab-focus-room $tab-rule-height;
+    overflow: auto hidden;
+    scrollbar-width: none;
+    scroll-padding-inline: $tab-focus-room;
+    background: linear-gradient($ink-faint, $ink-faint) center bottom /
+      calc(100% - #{$tab-focus-room * 2}) $tab-rule-height no-repeat;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    &--dragging,
+    &--dragging * {
+      cursor: var(--cursor-grab);
+      user-select: none;
+    }
   }
 
   &__tab {
     position: relative;
+    flex: none;
     padding: 0.4rem 0 0.65rem;
     border: none;
     background: none;
@@ -259,20 +279,7 @@ $tab-bar-height: 2px;
 
 @include breakpoints.compact {
   .settings {
-    &__tabs {
-      flex: none;
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      scrollbar-width: none;
-      gap: 1rem;
-
-      &::-webkit-scrollbar {
-        display: none;
-      }
-    }
-
     &__tab {
-      flex: none;
       letter-spacing: 0.1em;
     }
 
@@ -289,7 +296,7 @@ $tab-bar-height: 2px;
 @include breakpoints.phone-landscape {
   .settings {
     &__tabs {
-      margin-top: 0.5rem;
+      margin-top: calc(#{$tabs-gap-above-short} - #{$tab-focus-room});
     }
   }
 }

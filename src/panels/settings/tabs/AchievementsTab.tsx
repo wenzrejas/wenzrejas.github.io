@@ -5,7 +5,7 @@ import {
   CROWNING_ACHIEVEMENT,
 } from '@/achievements/constants'
 import { ACHIEVEMENTS_TAB_COPY } from '@/data/achievementCopy'
-import { useAchievementStore } from '@/store/achievementStore'
+import { useAchievementsInSettings, useAchievementStore } from '@/store/achievementStore'
 import AchievementRow from '../achievements/AchievementRow'
 import LiveryRow from '../achievements/LiveryRow'
 import RankHeader from '../achievements/RankHeader'
@@ -19,7 +19,7 @@ const CATEGORY_GROUPS = ACHIEVEMENT_CATEGORIES.map((category) => ({
 }))
 
 export default function AchievementsTab() {
-  const earned = useAchievementStore((state) => state.earned)
+  const earned = useAchievementsInSettings()
   const progress = useAchievementStore((state) => state.progress)
 
   return (
@@ -33,7 +33,7 @@ export default function AchievementsTab() {
           ))}
         </aside>
       )}
-      <LiveryRow earnedCount={earned.length} />
+      <LiveryRow earned={earned} />
       {CATEGORY_GROUPS.map(({ category, achievements }) => (
         <section key={category} className="achievements__group">
           <h3 className="achievements__heading">{copy.categories[category]}</h3>

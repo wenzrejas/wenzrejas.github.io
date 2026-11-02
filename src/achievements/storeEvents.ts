@@ -1,4 +1,6 @@
+import { LAST_BOTTLE, type BottleKey } from '@/minigames/message-in-a-bottle/bottleSpots'
 import { earnAchievement, recordProgress } from '@/store/achievementStore'
+import { useBottleStore } from '@/store/bottleStore'
 import { useDepthsStore } from '@/store/depthsStore'
 import { usePanelStore, type PanelKey } from '@/store/panelStore'
 import { useRevealStore } from '@/store/revealStore'
@@ -13,6 +15,11 @@ function notePanel(panel: PanelKey) {
   if (panel === 'support') earnAchievement('coffeeBreak')
   for (const achievement of PANEL_COLLECTIONS)
     if (ACHIEVEMENTS[achievement].items?.includes(panel)) recordProgress(achievement, panel)
+}
+
+function noteBottles(found: BottleKey[]) {
+  earnAchievement('messageInABottle')
+  for (const bottle of found) if (bottle !== LAST_BOTTLE) recordProgress('beachcomber', bottle)
 }
 
 export function noteReveal(island: IslandKey) {
@@ -37,6 +44,9 @@ export function followStoreEvents() {
     useDepthsStore.subscribe(({ isShipLanded, surfacingStyle }) => {
       if (isShipLanded) earnAchievement('journeysEnd')
       if (surfacingStyle === 'rewind') earnAchievement('turnBackTime')
+    }),
+    useBottleStore.subscribe(({ found }, previous) => {
+      if (found !== previous.found) noteBottles(found)
     }),
   ]
   return () => {

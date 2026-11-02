@@ -8,7 +8,11 @@ import {
   BAND_WANDER,
   BAND_WANDER_WAVELENGTH,
   FOLD_RIDGE_GAP,
+  LOOSE_TOP_FADE_UNTIL,
+  LOOSE_TOP_FULL_UNTIL,
+  LOOSE_TOP_LEVEL,
   SHEET_CORNER_REACH,
+  TOP_EDGE_CLIMB,
 } from './constants'
 import { TRACED_SHEET_HEIGHT, TRACED_SHEET_WIDTH } from './sheetOutline'
 
@@ -40,6 +44,24 @@ export function placeOnFrame(frame: SheetFrame, traced: readonly number[]) {
     placed[i + 1] = frameY(frame, traced[i + 1])
   }
   return placed
+}
+
+function topEdgeClimbAt(x: number) {
+  const next = TOP_EDGE_CLIMB.findIndex(([knotX]) => knotX >= x)
+  if (next === -1) return TOP_EDGE_CLIMB[TOP_EDGE_CLIMB.length - 1][1]
+  if (next === 0) return TOP_EDGE_CLIMB[0][1]
+  const [fromX, fromY] = TOP_EDGE_CLIMB[next - 1]
+  const [toX, toY] = TOP_EDGE_CLIMB[next]
+  return mix(fromY, toY, (x - fromX) / (toX - fromX))
+}
+
+export function levelTopEdge(traced: readonly number[]) {
+  const leveled = [...traced]
+  for (let i = 0; i < traced.length; i += 2) {
+    const reach = 1 - smoothstep(traced[i + 1], LOOSE_TOP_FULL_UNTIL, LOOSE_TOP_FADE_UNTIL)
+    leveled[i + 1] += (LOOSE_TOP_LEVEL - topEdgeClimbAt(traced[i])) * reach
+  }
+  return leveled
 }
 
 export function linePath(points: readonly number[], isClosed: boolean) {

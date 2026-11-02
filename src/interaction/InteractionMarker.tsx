@@ -4,6 +4,7 @@ import { Html } from '@react-three/drei'
 import { animated, useSpring } from '@react-spring/web'
 import * as THREE from 'three'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
+import { audio } from '@/audio/audioManager'
 import { useIsTouchInput } from '../store/inputStore'
 import { isPanelOpen } from '../store/panelStore'
 import { isRevealPlaying } from '../store/revealStore'
@@ -58,7 +59,9 @@ export default function InteractionMarker({
   })
   const activate = useEffectEvent(() => {
     const mesh = meshRef.current
-    if (mesh) onActivate?.(mesh.getWorldPosition(new THREE.Vector3()))
+    if (!mesh || !onActivate) return
+    audio.play('click')
+    onActivate(mesh.getWorldPosition(new THREE.Vector3()))
   })
 
   const geometry = useMemo(() => buildMarkerGeometry(), [])

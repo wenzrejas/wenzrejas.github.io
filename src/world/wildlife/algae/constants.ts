@@ -2,10 +2,10 @@ import { PHASES } from '@/world/environment/day-night-cycle/dayNightKeyframes'
 import type { IslandKey } from '@/world/islands/shared/constants'
 
 // ── Spawning ──────────────────────────────────────────────────────────────────
-export const MAX_PATCHES = 4
+export const MAX_PATCHES = 6
 export const FIRST_CHECK_DELAY = 3
-export const CHECK_INTERVAL = 8
-export const SPAWN_CHANCE = 0.35
+export const CHECK_INTERVAL = 5
+export const SPAWN_CHANCE = 0.6
 export const MOONLIT_BOOST = 2.5
 export const NIGHT_FROM = PHASES.dusk
 export const NIGHT_UNTIL = PHASES['first light']
@@ -56,11 +56,11 @@ export const SPARK_SPEED = 4
 export const HULL_HALF_LENGTH = 18
 export const HULL_HALF_BEAM = 7
 
-// ── Rain flashes ──────────────────────────────────────────────────────────────
-export const MAX_RAIN_HITS = 64
-export const RAIN_FLASH_SIZE = 2.2
-export const RAIN_FLASH_LIFE = 0.7
-export const RAIN_FLASH_DROPS = 3
+// ── Flashes where rain or a dolphin's splash hits the glow ────────────────────
+export const MAX_GLOW_HITS = 64
+export const GLOW_FLASH_SIZE = 2.2
+export const GLOW_FLASH_LIFE = 0.7
+export const GLOW_FLASH_DROPS = 3
 
 // ── Splash ────────────────────────────────────────────────────────────────────
 export const SPLASH_POOL = 200

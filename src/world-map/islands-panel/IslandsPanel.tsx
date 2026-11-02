@@ -2,7 +2,7 @@ import { useEffect, useId, useRef, type CSSProperties } from 'react'
 import { WORLD_MAP_COPY } from '@/data/worldMapCopy'
 import CloseButton from '@/panels/shared/close-button/CloseButton'
 import { useMistScroll } from '@/panels/shared/island-panel/useMistScroll'
-import { isMotionReduced } from '@/store/settingsStore'
+import { scrollBehavior } from '@/store/settingsStore'
 import type { IslandKey } from '@/world/islands/shared/constants'
 import type { MapMotion } from '../types'
 import CompassNeedle from './CompassNeedle'
@@ -33,7 +33,7 @@ export default function IslandsPanel({
     if (!selectedIsland) return
     scrollerRef.current?.querySelector('.island-card--selected')?.scrollIntoView({
       block: 'nearest',
-      behavior: isMotionReduced() ? 'auto' : 'smooth',
+      behavior: scrollBehavior(),
     })
   }, [selectedIsland])
 

@@ -1,12 +1,12 @@
 import { rand } from '@/utils/math'
 import type { ParticlePool } from '@/world/effects/particlePool'
-import { rainHits } from './algaeField'
+import { glowHits } from './algaeField'
 import {
+  GLOW_FLASH_DROPS,
+  GLOW_FLASH_LIFE,
+  GLOW_FLASH_SIZE,
   HULL_HALF_BEAM,
   HULL_HALF_LENGTH,
-  RAIN_FLASH_DROPS,
-  RAIN_FLASH_LIFE,
-  RAIN_FLASH_SIZE,
   SPARK_LIFE_MAX,
   SPARK_LIFE_MIN,
   SPARK_SIZE,
@@ -62,10 +62,10 @@ export function emitBowSplash(splash: ParticlePool, hull: Hull): void {
   )
 }
 
-export function emitRainFlashes(sparks: ParticlePool, splash: ParticlePool): void {
-  for (const hit of rainHits.splice(0)) {
-    sparks.spawn(hit.x, SPARK_Y, hit.y, 0, 0, 0, RAIN_FLASH_SIZE * rand(0.7, 1.2), RAIN_FLASH_LIFE)
-    for (let i = 0; i < RAIN_FLASH_DROPS; i++) {
+export function emitGlowFlashes(sparks: ParticlePool, splash: ParticlePool): void {
+  for (const hit of glowHits.splice(0)) {
+    sparks.spawn(hit.x, SPARK_Y, hit.y, 0, 0, 0, GLOW_FLASH_SIZE * rand(0.7, 1.2), GLOW_FLASH_LIFE)
+    for (let i = 0; i < GLOW_FLASH_DROPS; i++) {
       splash.spawn(
         hit.x,
         0.3,

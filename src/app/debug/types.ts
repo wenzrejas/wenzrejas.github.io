@@ -111,6 +111,9 @@ export interface WildlifeControls {
   turtleInterval: number
   whaleChance: number
   whaleInterval: number
+  algaeChance: number
+  algaeInterval: number
+  algaeAnyTime: boolean
 }
 
 export interface MusicControls {

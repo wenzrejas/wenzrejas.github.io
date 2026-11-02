@@ -20,16 +20,14 @@ interface GemSparklesProps {
 
 export default function GemSparkles({ gem, tuning, size, level }: GemSparklesProps) {
   const pointsRef = useRef<THREE.Points>(null)
-  const geometry = useMemo(() => buildSparkleGeometry(gem.sparkleSpots, tuning), [gem, tuning])
-  const material = useMemo(() => createSparkleMaterial(gem.color, tuning), [gem, tuning])
-
-  useEffect(
-    () => () => {
-      geometry.dispose()
-      material.dispose()
-    },
-    [geometry, material]
+  const geometry = useMemo(
+    () => buildSparkleGeometry(gem.sparkleSpots, tuning),
+    [gem.sparkleSpots, tuning]
   )
+  const material = useMemo(() => createSparkleMaterial(gem.color, tuning), [gem.color, tuning])
+
+  useEffect(() => () => geometry.dispose(), [geometry])
+  useEffect(() => () => material.dispose(), [material])
 
   useFrame(({ clock, camera, gl }) => {
     const points = pointsRef.current

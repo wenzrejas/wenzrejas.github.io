@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { earnAchievement } from '@/store/achievementStore'
@@ -15,8 +15,9 @@ import { ParticlePool } from '@/world/effects/particlePool'
 import Spray from '@/world/effects/Spray'
 import { depthFade } from '../shared/wildlifeMaterial'
 import { isOpenWater } from '@/world/islands/shared/islandZones'
+import { algaeAt, algaeUniforms } from '@/world/wildlife/algae/algaeField'
 import { buildDolphinGeometry, createDolphinMaterial } from './dolphinModel'
-import { emitFinWake, emitSplash } from './spray'
+import { emitFinWake, emitSplash, flashGlowingWater } from './spray'
 import {
   BANK_FACTOR,
   DOLPHIN_LENGTH,
@@ -42,10 +43,10 @@ import {
 } from './constants'
 import {
   createPod,
+  podChance,
   pose,
   scatterPod,
   swim,
-  timeOfDayChance,
   updateAction,
   updateRoaming,
   type Pod,
@@ -73,8 +74,10 @@ export default function Dolphins() {
   const checkTimer = useRef(FIRST_CHECK_DELAY)
   const foam = useMemo(() => new ParticlePool(FOAM_POOL), [])
   const drops = useMemo(() => new ParticlePool(DROP_POOL), [])
+  const sprayGlow = useRef(0)
+  const sprayGlowAt = useCallback(() => sprayGlow.current, [])
 
-  useFrame((_, delta) => {
+  useFrame(({ clock }, delta) => {
     const body = bodyRef.current
     if (!body) return
 
@@ -98,7 +101,7 @@ export default function Dolphins() {
         !raining &&
         !whale.active &&
         isOpenWater(motion.x, motion.z, OPEN_WATER_GAP) &&
-        Math.random() < dolphinChance * timeOfDayChance(cycle.timeOfDay)
+        Math.random() < dolphinChance * podChance(cycle.timeOfDay, algaeAt(motion.x, motion.z))
       ) {
         pod.current = createPod(motion)
       }
@@ -109,6 +112,7 @@ export default function Dolphins() {
 
     if (current) {
       current.age += dt
+      sprayGlow.current = algaeAt(current.dolphins[0].x, current.dolphins[0].z)
       if (whale.active && current.scatteredAt === null) scatterPod(current, whale.x, whale.z)
       if (!current.leaving && (raining || current.age > current.followTime)) {
         current.leaving = true
@@ -149,11 +153,12 @@ export default function Dolphins() {
             entering ? SPLASH_ENTRY_DROPS : SPLASH_EXIT_DROPS,
             entering ? 1.1 : 0.8
           )
+          flashGlowingWater(dolphin.x, dolphin.z, clock.getElapsedTime())
         }
         dolphin.prevY = y
 
-        const finX = dolphin.x - Math.sin(dolphin.heading) * DOLPHIN_LENGTH * 0.05
-        const finZ = dolphin.z - Math.cos(dolphin.heading) * DOLPHIN_LENGTH * 0.05
+        const finX = dolphin.x - Math.sin(dolphin.heading) * DOLPHIN_LENGTH * 0.1
+        const finZ = dolphin.z - Math.cos(dolphin.heading) * DOLPHIN_LENGTH * 0.1
         const finBreaching = y < 0 && y + FIN_HEIGHT * DOLPHIN_LENGTH > 0 && dolphin.speed > 2
         if (!finBreaching) {
           dolphin.wakeX = finX
@@ -203,7 +208,13 @@ export default function Dolphins() {
         frustumCulled={false}
         visible={false}
       />
-      <Spray foam={foam} drops={drops} gravity={DROP_GRAVITY} />
+      <Spray
+        foam={foam}
+        drops={drops}
+        gravity={DROP_GRAVITY}
+        tint={algaeUniforms.uAlgaeGlow.value}
+        tintAt={sprayGlowAt}
+      />
     </>
   )
 }

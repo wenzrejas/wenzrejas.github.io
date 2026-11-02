@@ -1,18 +1,18 @@
-import { useEffect, useId, useLayoutEffect, useRef, type ReactNode } from 'react'
+import { useId, useLayoutEffect, useRef, type ReactNode } from 'react'
 import { animated, type SpringValues } from '@react-spring/web'
 import { PANEL_COPY } from '@/data/panelCopy'
 import { centerFocusLeftOf, closePanel } from '@/store/panelStore'
-import { isDepthsInView, isWorldInView } from '@/store/viewStore'
 import { useSheetLayout } from '@/utils/layout'
 import CloseButton from '../close-button/CloseButton'
 import CompassRose from '../compass-rose/CompassRose'
 import PanelArt from '../panel-art/PanelArt'
 import Parchment from '../parchment/Parchment'
 import { TITLE_UNDERLINE, TITLE_UNDERLINE_BOX } from './brushStrokeModel'
+import { useCloseOnEscape } from './useCloseOnEscape'
 import { useMistScroll } from './useMistScroll'
 import './IslandPanel.scss'
 
-interface SheetMotion {
+export interface SheetMotion {
   opacity: number
   x: number
   y: number
@@ -53,13 +53,7 @@ export default function IslandPanel({
     return () => window.removeEventListener('resize', reportOpenArea)
   }, [isCentered])
 
-  useEffect(() => {
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && (isWorldInView() || isDepthsInView())) closePanel()
-    }
-    window.addEventListener('keydown', closeOnEscape)
-    return () => window.removeEventListener('keydown', closeOnEscape)
-  }, [])
+  useCloseOnEscape()
 
   return (
     <aside
@@ -69,7 +63,7 @@ export default function IslandPanel({
       aria-labelledby={titleId}
     >
       <animated.div className="island-panel__sheet" style={motion}>
-        <Parchment isFullBleed={isSheet} />
+        <Parchment shape={isSheet ? 'fullBleed' : 'rolled'} />
         <CloseButton
           className="island-panel__close"
           label={PANEL_COPY.close}

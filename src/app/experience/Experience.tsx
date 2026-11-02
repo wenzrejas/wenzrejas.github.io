@@ -23,7 +23,10 @@ import { useLoadingStore } from '@/store/loadingStore'
 import { useSettingsStore } from '@/store/settingsStore'
 import './Experience.scss'
 
-const Perf = lazy(() => import('r3f-perf').then((module) => ({ default: module.Perf })))
+const Perf =
+  import.meta.env.DEV && IS_DEBUG
+    ? lazy(() => import('r3f-perf').then((module) => ({ default: module.Perf })))
+    : null
 
 export default function Experience() {
   const shipRef = useRef<THREE.Group>(null)
@@ -50,7 +53,7 @@ export default function Experience() {
       <FramePacer />
       <Suspense fallback={null}>
         <color attach="background" args={['#1a7fa8']} />
-        {IS_DEBUG && (
+        {Perf && (
           <Suspense fallback={null}>
             <Perf position="bottom-right" />
           </Suspense>

@@ -111,6 +111,12 @@ export const SETTINGS_COPY = {
   achievements: {
     tab: 'Achievements',
   },
+  keepsakes: {
+    tab: 'Keepsakes',
+    bottles: 'Bottles',
+    stillAfloat: 'Still out at sea',
+    lastBottleHint: 'One more, by the lighthouse at Lumina Point',
+  },
   about: {
     tab: 'About',
     nameSeparator: ' · ',

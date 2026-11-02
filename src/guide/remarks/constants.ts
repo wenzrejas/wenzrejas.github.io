@@ -44,5 +44,8 @@ export const ONCE_EVER_REMARKS: QueuedRemark[] = [
   'openedWorldMap',
   'ridingTheWind',
   'sentMessage',
+  'spottedBottle',
+  'keptABottle',
+  'lastBottleWashedUp',
   ...Object.values(ISLAND_REMARKS),
 ]

@@ -71,6 +71,17 @@ $grid-cell: 10%;
     vector-effect: non-scaling-stroke;
   }
 
+  &__bottle {
+    position: absolute;
+    width: 0.4rem;
+    height: 0.4rem;
+    translate: -50% -50%;
+    border-radius: 50%;
+    background: #ffe9a8;
+    box-shadow: 0 0 4px rgba(255, 220, 140, 0.9);
+    visibility: hidden;
+  }
+
   &__ship {
     position: absolute;
     width: 0.8rem;

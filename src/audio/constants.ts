@@ -1,4 +1,5 @@
 import { PHASES } from '../world/environment/day-night-cycle/dayNightKeyframes'
+import type { IslandKey } from '../world/islands/shared/constants'
 import type { MusicTrack } from './sounds'
 
 // ── Mix ───────────────────────────────────────────────────────────────────────
@@ -55,3 +56,11 @@ export const SEAGULL_FADE_OUT = 2.5
 export const WHALE_JUMP_SPLASH_VOLUME = 0.5
 export const WHALE_JUMP_SPLASH_PITCH = 1.15
 export const WHALE_PLUNGE_SPLASH_PITCH = 0.8
+
+// ── Crickets ──────────────────────────────────────────────────────────────────
+export const CRICKET_ISLANDS: readonly IslandKey[] = ['tech', 'cozy', 'buildshore']
+export const CRICKET_FULL_GAP = 40
+export const CRICKET_SILENT_GAP = 180
+export const CRICKET_RAMP = 1
+export const CRICKET_FADE = 2
+export const CRICKET_LEVEL_STEP = 0.02

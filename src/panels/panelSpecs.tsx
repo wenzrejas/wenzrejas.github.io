@@ -3,7 +3,7 @@ import { ISLAND_COPY, PROJECT_COPY } from '@/data/islandCopy'
 import { TOOLKIT_COPY } from '@/data/panelCopy'
 import { PROJECT_STORIES } from '@/data/project-stories/projectStories'
 import { SETTINGS_COPY } from '@/data/settingsCopy'
-import type { GroveKey, PanelKey, ProjectKey } from '@/store/panelStore'
+import type { GroveKey, IslandPanelKey, ProjectKey } from '@/store/panelStore'
 import { CONTACT_SPLASH_URL } from './contact/constants'
 import ContactContent from './contact/ContactContent'
 import { PROJECT_SHOWCASES, PROJECT_SPLASH_ZOOM } from './project/constants'
@@ -37,7 +37,7 @@ const projectSpec = (project: ProjectKey): PanelSpec => ({
   Content: () => <ProjectContent project={project} />,
 })
 
-export const PANEL_SPECS: Record<PanelKey, PanelSpec> = {
+export const PANEL_SPECS: Record<IslandPanelKey, PanelSpec> = {
   contact: {
     title: ISLAND_COPY.lumina.label,
     subtitle: ISLAND_COPY.lumina.description,

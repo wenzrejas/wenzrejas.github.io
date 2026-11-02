@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { GLOW_COLOR, MAX_PATCHES, MAX_RAIN_HITS } from './constants'
+import { GLOW_COLOR, MAX_GLOW_HITS, MAX_PATCHES } from './constants'
 
 export const algaeUniforms = {
   uAlgaePatches: {
@@ -12,11 +12,17 @@ export const algaeUniforms = {
 
 export const algaeDefines = { ALGAE_MAX_PATCHES: MAX_PATCHES }
 
-export const rainHits: THREE.Vector2[] = []
+export const glowHits: THREE.Vector2[] = []
 
-export function queueRainHit(x: number, z: number): void {
-  if (rainHits.length < MAX_RAIN_HITS) rainHits.push(new THREE.Vector2(x, z))
+export function queueGlowHit(x: number, z: number): void {
+  if (glowHits.length < MAX_GLOW_HITS) glowHits.push(new THREE.Vector2(x, z))
 }
+
+export type PatchOrder = 'atShip' | 'clear'
+
+export const patchOrders: PatchOrder[] = []
+
+export const orderPatch = (order: PatchOrder) => patchOrders.push(order)
 
 export function algaeAt(x: number, z: number): number {
   const intensity = algaeUniforms.uAlgaeIntensity.value

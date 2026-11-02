@@ -5,7 +5,6 @@ export const PROJECT_SPLASH_ZOOM = 1.25
 
 export const GALLERY_MIN_SLOT_COUNT = 4
 export const CAROUSEL_EDGE_SLACK_PIXELS = 1
-export const CAROUSEL_DRAG_THRESHOLD_PIXELS = 5
 export const PREVIEW_SWIPE_PIXELS = 48
 
 interface ProjectShowcase {

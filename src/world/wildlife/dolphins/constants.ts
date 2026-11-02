@@ -10,11 +10,12 @@ export const POD_MAX = 4
 export const FOLLOW_TIME_MIN = 30
 export const FOLLOW_TIME_MAX = 60
 
-// ── Time of day ───────────────────────────────────────────────────────────────
+// ── Time of day (and glowing algae, which draws pods out at night) ────────────
 export const ACTIVE_FROM = PHASES.sunrise - 0.03
 export const ACTIVE_UNTIL = (PHASES.morning + PHASES.noon) / 2
 export const NOON_UNTIL = (PHASES.noon + PHASES.afternoon) / 2
 export const NOON_CHANCE = 0.1
+export const ALGAE_LURE_GLOW = 0.5
 
 // ── Formation ─────────────────────────────────────────────────────────────────
 export const SLOT_ANGLE_MIN = 0.45
@@ -77,7 +78,7 @@ export const LEAP_HEIGHT = 10
 export const LEAP_HEIGHT_JITTER = 0.25
 export const LEAP_PITCH_BOOST = 1.25
 export const LEAP_PITCH_MAX = 1.35
-export const LEAP_ARCH = 0.4
+export const LEAP_ARCH = 0.7
 export const LEAP_ROLL = 0.3
 
 // ── Spray ─────────────────────────────────────────────────────────────────────
@@ -88,10 +89,12 @@ export const FOAM_LIFE = 1.4
 export const FOAM_SIZE = 1.1
 export const DROP_SIZE = 0.45
 export const DROP_GRAVITY = 32
-export const FIN_HEIGHT = 0.22
+export const FIN_HEIGHT = 0.23
 export const FIN_WAKE_SPACING = 1.4
 export const FIN_WAKE_DRIFT = 1.5
 export const SPLASH_EXIT_DROPS = 12
 export const SPLASH_ENTRY_DROPS = 22
 export const SPLASH_RING = 12
 export const SPLASH_RING_SPEED = 4.5
+export const SPLASH_GLOW_FLASHES = 16
+export const SPLASH_GLOW_REACH = 8

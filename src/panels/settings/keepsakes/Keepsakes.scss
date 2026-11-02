@@ -1,0 +1,105 @@
+@use '@/styles/breakpoints';
+@use '@/styles/parchment' as *;
+
+$afloat-opacity: 0.6;
+$marker-size: 0.5rem;
+$marker-edge: 1.5px;
+
+.keepsakes {
+  &__header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-bottom: 0.35rem;
+    border-bottom: 1px solid $ink-faint;
+  }
+
+  &__heading {
+    @include eyebrow-label;
+  }
+
+  &__tally {
+    @include tally-count;
+  }
+
+  &__bottles {
+    list-style: none;
+  }
+
+  &__bottle {
+    border-bottom: 1px solid $ink-faint;
+
+    &--afloat {
+      display: flex;
+      align-items: center;
+      min-height: breakpoints.$touch-target;
+      font-family: var(--font-secondary);
+      font-size: $base-font-size;
+      font-style: italic;
+      color: $ink-soft;
+      opacity: $afloat-opacity;
+    }
+  }
+
+  &__title {
+    @include entry-title;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: breakpoints.$touch-target;
+    list-style: none;
+    cursor: var(--cursor-hand);
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    &::after {
+      content: '';
+      flex: none;
+      width: $marker-size;
+      height: $marker-size;
+      margin-right: 0.3rem;
+      border-right: $marker-edge solid $ink-soft;
+      border-bottom: $marker-edge solid $ink-soft;
+      rotate: 45deg;
+      transition: rotate $state-change;
+    }
+
+    &:focus-visible {
+      @include ink-focus-ring(2px);
+    }
+  }
+
+  details[open] &__title::after {
+    rotate: 225deg;
+  }
+
+  &__text {
+    padding-bottom: 0.7rem;
+    font-family: var(--font-secondary);
+    font-size: $base-font-size;
+    line-height: 1.55;
+    color: $ink;
+  }
+
+  &__link {
+    display: inline-flex;
+    align-items: center;
+    min-height: breakpoints.$touch-target;
+    margin-bottom: 0.3rem;
+    padding: 0;
+    border: none;
+    background: none;
+    font-family: var(--font-secondary);
+    font-size: $base-font-size;
+    font-weight: 600;
+    color: $wax-red;
+    text-decoration: underline;
+    cursor: var(--cursor-hand);
+
+    &:focus-visible {
+      @include ink-focus-ring(2px);
+    }
+  }
+}

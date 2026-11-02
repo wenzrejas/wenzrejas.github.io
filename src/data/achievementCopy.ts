@@ -37,6 +37,8 @@ export const ACHIEVEMENT_COPY: Record<AchievementKey, AchievementText> = {
   weatheredTheStorm: { title: 'Weathered the Storm', description: 'Keep sailing through the rain' },
   stargazer: { title: 'Stargazer', description: 'Sail under a starry night' },
   dawnPatrol: { title: 'Dawn Patrol', description: 'Watch the sun rise at sea' },
+  messageInABottle: { title: 'Message in a Bottle', description: 'Read your first bottle' },
+  beachcomber: { title: 'Beachcomber', description: 'Find all twelve bottles' },
   scenicRoute: { title: 'Scenic Route', description: 'Sail a full circle' },
   becalmed: { title: 'Becalmed', description: 'Let the ship sit still for a while' },
   oldFriend: { title: 'Old Friend', description: 'Come back for another voyage' },
@@ -60,6 +62,7 @@ export const LIVERY_NAMES: Record<LiveryKey, string> = {
   midnight: 'Midnight',
   royal: 'Royal',
   gilded: 'Gilded',
+  seaGlass: 'Sea Glass',
 }
 
 // ── Achievements tab ──────────────────────────────────────────────────────────
@@ -69,6 +72,7 @@ export const ACHIEVEMENTS_TAB_COPY = {
     islands: 'The Islands',
     depths: 'Timewell Depths',
     seaAndSky: 'Sea & Sky',
+    keepsakes: 'Keepsakes',
     oddMoments: 'Odd Moments',
   } satisfies Record<AchievementCategory, string>,
   secret: { title: '???', description: 'A secret of the sea' },
@@ -78,6 +82,7 @@ export const ACHIEVEMENTS_TAB_COPY = {
   topRank: 'The highest rank on these seas',
   liveries: 'Ship colors',
   lockedLivery: (rank: string) => `Unlocks at ${rank}`,
+  lockedByAchievement: (achievement: string) => `Unlocks with ${achievement}`,
   earned: 'Earned',
   notEarned: 'Not yet earned',
   legendNote: {

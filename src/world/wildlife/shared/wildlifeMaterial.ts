@@ -5,7 +5,9 @@ interface WildlifeMaterialSpec {
   vertexGlsl: string
   fragmentGlsl: string
   deform: string
+  deformNormal?: string
   fade?: string
+  flatShading?: boolean
   defines?: Record<string, number>
   uniforms?: Record<string, { value: number }>
 }
@@ -14,23 +16,31 @@ export function createWildlifeMaterial({
   vertexGlsl,
   fragmentGlsl,
   deform,
+  deformNormal,
   fade = 'aFade',
+  flatShading = true,
   defines,
   uniforms,
 }: WildlifeMaterialSpec): THREE.MeshLambertMaterial {
   const material = new THREE.MeshLambertMaterial({
     vertexColors: true,
-    flatShading: true,
+    flatShading,
     side: THREE.DoubleSide,
     alphaHash: true,
   })
 
   if (defines) material.defines = floatDefines(defines)
 
-  const programCacheKey = [vertexGlsl, fragmentGlsl, deform, fade].join('|')
+  const programCacheKey = [vertexGlsl, fragmentGlsl, deform, deformNormal, fade].join('|')
   material.customProgramCacheKey = () => programCacheKey
   material.onBeforeCompile = (shader) => {
     if (uniforms) Object.assign(shader.uniforms, uniforms)
+    if (deformNormal) {
+      shader.vertexShader = shader.vertexShader.replace(
+        '#include <beginnormal_vertex>',
+        `#include <beginnormal_vertex>\nobjectNormal = ${deformNormal}(objectNormal);`
+      )
+    }
     shader.vertexShader = shader.vertexShader
       .replace('#include <common>', `#include <common>\n${vertexGlsl}`)
       .replace(

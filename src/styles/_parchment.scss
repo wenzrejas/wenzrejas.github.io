@@ -23,6 +23,11 @@ $diamond-ornament: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'
 
 $parchment-art-filter: saturate(0.75) contrast(0.9) sepia(0.12);
 
+$viewport-top-share: 0.0615;
+$viewport-right-share: 0.0294;
+$viewport-bottom-share: 0.0375;
+$viewport-left-share: 0.0316;
+
 @function panel-font($size, $floor: $size * 0.875) {
   $range: $size - $floor;
   @return clamp($floor, calc(#{$floor - $range} + #{math.div($range, 1rem) * 4}vw), $size);
@@ -192,6 +197,31 @@ $cartouche-pressed-label-drop: 1px;
 @mixin handwritten {
   font-family: var(--font-handwritten);
   font-style: italic;
+}
+
+@mixin eyebrow-label {
+  font-family: var(--font-secondary);
+  font-size: panel-font(0.72rem);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: $ink-soft;
+}
+
+@mixin tally-count {
+  font-family: var(--font-secondary);
+  font-size: panel-font(0.8rem);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: $ink-soft;
+}
+
+@mixin entry-title {
+  font-family: var(--font-accent);
+  font-size: panel-font(1.05rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: $ink;
 }
 
 @mixin cartouche-label {

@@ -4,18 +4,18 @@ import * as THREE from 'three'
 import { buildFlatQuad } from '@/utils/geometry'
 import { eventDelta } from '@/store/cinematicStore'
 import { useCycleStore } from '@/store/cycleStore'
+import { useDebugStore } from '@/store/debugStore'
 import { useShipStore } from '@/store/shipStore'
 import { isRaining, useWeatherStore } from '@/store/weatherStore'
 import { retain } from '@/utils/array'
 import { MAX_FRAME_SECONDS } from '@/utils/time'
 import { ParticlePool, updateDrops, updateSparks } from '@/world/effects/particlePool'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
-import { algaeAt, algaeUniforms } from './algaeField'
+import { algaeAt, algaeUniforms, patchOrders } from './algaeField'
 import { createAlgaeMaterial, createSparkMaterial } from './algaeMaterial'
-import { emitBowSplash, emitHullSpark, emitRainFlashes } from './algaeSpray'
+import { emitBowSplash, emitGlowFlashes, emitHullSpark } from './algaeSpray'
 import {
   AMBIENT_RATE,
-  CHECK_INTERVAL,
   DESPAWN_DISTANCE,
   FADE_IN,
   FIRST_CHECK_DELAY,
@@ -29,13 +29,19 @@ import {
   SPARK_IDLE_RATE,
   SPARK_POOL,
   SPARK_RATE,
-  SPAWN_CHANCE,
   SPLASH_GRAVITY,
   SPLASH_POOL,
   SPLASH_RATE,
   TRAIL_SPACING,
 } from './constants'
-import { createPatch, isNightWindow, patchReach, viewReach, type Patch } from './patches'
+import {
+  applyPatchOrder,
+  createPatch,
+  isNightWindow,
+  patchReach,
+  viewReach,
+  type Patch,
+} from './patches'
 import { recordTrail } from './scatterTrail'
 
 export default function Algae() {
@@ -74,7 +80,8 @@ export default function Algae() {
 
     const dt = Math.min(delta, MAX_FRAME_SECONDS)
     const ship = useShipStore.getState()
-    const night = isNightWindow(useCycleStore.getState().timeOfDay)
+    const { algaeChance, algaeInterval, algaeAnyTime } = useDebugStore.getState().wildlife
+    const night = algaeAnyTime || isNightWindow(useCycleStore.getState().timeOfDay)
 
     const intensity = algaeUniforms.uAlgaeIntensity
     intensity.value += ((night ? 1 : 0) - intensity.value) * Math.min(1, INTENSITY_RATE * dt)
@@ -82,11 +89,14 @@ export default function Algae() {
     ambient.value += ((isRaining() ? 0 : 1) - ambient.value) * Math.min(1, AMBIENT_RATE * dt)
     const reach = viewReach(camera, ship.x, ship.z)
 
-    checkTimer.current -= eventDelta(dt)
+    for (const order of patchOrders) applyPatchOrder(patches.current, order, ship.x, ship.z)
+    patchOrders.length = 0
+
+    checkTimer.current = Math.min(checkTimer.current, algaeInterval) - eventDelta(dt)
     if (checkTimer.current <= 0) {
-      checkTimer.current = CHECK_INTERVAL
+      checkTimer.current = algaeInterval
       const moonlit = useWeatherStore.getState().type === 'moonlit'
-      const chance = SPAWN_CHANCE * (moonlit ? MOONLIT_BOOST : 1)
+      const chance = algaeChance * (moonlit ? MOONLIT_BOOST : 1)
       if (patches.current.length < MAX_PATCHES && night && Math.random() < chance) {
         const patch = createPatch(ship.x, ship.z, reach)
         if (patch) patches.current.push(patch)
@@ -133,7 +143,7 @@ export default function Algae() {
       emitBowSplash(splash, ship)
     }
 
-    emitRainFlashes(sparks, splash)
+    emitGlowFlashes(sparks, splash)
 
     updateSparks(sparks, sparkMesh, dt)
     updateDrops(splash, splashMesh, dt, SPLASH_GRAVITY)

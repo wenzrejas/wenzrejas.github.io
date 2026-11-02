@@ -13,12 +13,13 @@ import LoadingScreen from './loading/LoadingScreen'
 import Panels from './panels/Panels'
 import WorldMap from './world-map/WorldMap'
 
-const DebugTools = lazy(() => import('./app/debug/DebugTools'))
+const DebugTools =
+  import.meta.env.DEV && IS_DEBUG ? lazy(() => import('./app/debug/DebugTools')) : null
 
 export default function App() {
   return (
     <>
-      {IS_DEBUG && (
+      {DebugTools && (
         <Suspense fallback={null}>
           <DebugTools />
         </Suspense>
