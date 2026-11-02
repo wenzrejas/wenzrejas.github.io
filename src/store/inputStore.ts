@@ -18,6 +18,8 @@ export const useInputStore = create<InputState>(() => ({
   joystick: { x: 0, y: 0, isActive: false },
 }))
 
+export const useIsTouchInput = () => useInputStore((state) => state.mode === 'touch')
+
 function switchTo(mode: InputMode) {
   if (useInputStore.getState().mode !== mode) useInputStore.setState({ mode })
 }

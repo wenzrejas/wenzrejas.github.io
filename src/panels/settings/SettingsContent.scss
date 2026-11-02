@@ -276,8 +276,28 @@ $tab-bar-height: 2px;
       letter-spacing: 0.1em;
     }
 
+    &__choice {
+      align-items: center;
+    }
+
+    &__slider {
+      height: breakpoints.$touch-target;
+    }
+  }
+}
+
+@include breakpoints.phone-landscape {
+  .settings {
+    &__tabs {
+      margin-top: 0.5rem;
+    }
+  }
+}
+
+@include breakpoints.phone-portrait {
+  .settings {
     &__row {
-      grid-template-columns: minmax(0, 1fr) 2.4rem;
+      grid-template-columns: minmax(0, 1fr) $value-width;
       gap: 0.5rem;
       padding-block: 0.65rem;
     }
@@ -287,14 +307,6 @@ $tab-bar-height: 2px;
     &__keys,
     &__credit-names {
       grid-column: 1 / -1;
-    }
-
-    &__choice {
-      align-items: center;
-    }
-
-    &__slider {
-      height: breakpoints.$touch-target;
     }
   }
 }

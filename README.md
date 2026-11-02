@@ -30,14 +30,14 @@ Hi, I'm Wenz Louie Rejas, a frontend developer who loves turning creative ideas 
 
 ## Controls
 
-| Action | Keys |
-| --- | --- |
-| Sail the ship | <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> or the arrow keys |
-| Open a marker | Click or <kbd>Enter</kbd> |
-| Close a panel | <kbd>Esc</kbd> |
-| Travel the depths | Scroll, <kbd>W</kbd> / <kbd>S</kbd> or <kbd>↑</kbd> / <kbd>↓</kbd> |
+| Action | Keyboard and mouse | Touch |
+| --- | --- | --- |
+| Sail the ship | <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd>, the arrow keys, or drag on the sea | Drag on the sea |
+| Open a marker | Click or <kbd>Enter</kbd> | Tap a marker |
+| Close a panel | <kbd>Esc</kbd> | Tap the close button |
+| Travel the depths | Scroll, <kbd>W</kbd> / <kbd>S</kbd> or <kbd>↑</kbd> / <kbd>↓</kbd> | Swipe up or down |
 
-I built it for desktop. On screens narrower than 1024 px, the site asks you to find a bigger one before you set sail.
+It runs on desktops, tablets and phones, in portrait or landscape.
 
 ## Built with
 

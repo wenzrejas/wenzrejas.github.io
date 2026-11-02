@@ -46,6 +46,7 @@ export const SETTINGS_COPY = {
       sixty: '60',
       unlimited: 'Unlimited',
     } satisfies Record<FrameRateLimit, string>,
+    fullscreen: 'Full screen',
     hud: 'Show HUD',
     reduceMotion: 'Reduce motion',
     reduceFlashing: 'Reduce flashing',

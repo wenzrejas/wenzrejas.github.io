@@ -1,11 +1,11 @@
 import { SETTINGS_COPY } from '@/data/settingsCopy'
 import KeyText from '@/panels/shared/key-cap/KeyText'
-import { useInputStore } from '@/store/inputStore'
+import { useIsTouchInput } from '@/store/inputStore'
 
 const { controls } = SETTINGS_COPY
 
 export default function ControlsTab() {
-  const isTouch = useInputStore((state) => state.mode === 'touch')
+  const isTouch = useIsTouchInput()
   const hints = isTouch ? controls.touchHints : controls.hints
 
   return (

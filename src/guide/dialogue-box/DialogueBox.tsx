@@ -2,7 +2,7 @@ import { useId } from 'react'
 import { animated, useTransition } from '@react-spring/web'
 import { DIALOGUES, GUIDE_COPY } from '@/data/guideCopy'
 import { endDialogue, showNextPage, showPreviousPage, useGuideStore } from '@/store/guideStore'
-import { useInputStore } from '@/store/inputStore'
+import { useIsTouchInput } from '@/store/inputStore'
 import { useCompactLayout } from '@/utils/layout'
 import { MODAL_DIALOGUES } from '../constants'
 import { animationSeconds } from '../mascot/mascotPlayback'
@@ -24,7 +24,7 @@ export default function DialogueBox({ isTailLeft }: { isTailLeft: boolean }) {
   const dialogue = useGuideStore((state) => state.dialogue)
   const pageIndex = useGuideStore((state) => state.pageIndex)
   const isDismissed = useGuideStore((state) => state.isDismissed)
-  const isTouch = useInputStore((state) => state.mode === 'touch')
+  const isTouch = useIsTouchInput()
   const isCompact = useCompactLayout()
   const nameId = useId()
   const transitions = useTransition(dialogue ? [dialogue] : [], {

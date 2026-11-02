@@ -445,10 +445,9 @@ class AudioManager {
   }
 
   private unlock = (): void => {
-    if (!this.context || this.unlocked) return
+    if (!this.context || (this.unlocked && this.ready)) return
     this.context.resume().then(() => {
       this.unlocked = true
-      for (const event of UNLOCK_EVENTS) window.removeEventListener(event, this.unlock, true)
       this.startPending()
     })
   }

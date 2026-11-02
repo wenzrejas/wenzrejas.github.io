@@ -4,7 +4,7 @@ import { Html } from '@react-three/drei'
 import { animated, useSpring } from '@react-spring/web'
 import * as THREE from 'three'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
-import { useInputStore } from '../store/inputStore'
+import { useIsTouchInput } from '../store/inputStore'
 import { isPanelOpen } from '../store/panelStore'
 import { isRevealPlaying } from '../store/revealStore'
 import { isWorldScene, useViewStore } from '../store/viewStore'
@@ -51,7 +51,7 @@ export default function InteractionMarker({
   const motion = useRef<MarkerMotion>({ hover: 0, velocity: 0, presence: 1 })
   const [pulseOffset] = useState(Math.random)
   const [isHovered, setHovered] = useState(false)
-  const isTouch = useInputStore((state) => state.mode === 'touch')
+  const isTouch = useIsTouchInput()
   const reportHover = useEffectEvent((next: boolean) => {
     setHovered(next)
     onHover?.(next)

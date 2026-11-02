@@ -52,6 +52,12 @@ $content-width-share: 1 - $viewport-right-share - $viewport-left-share - $conten
   width: var(--sheet-width);
   pointer-events: none;
 
+  @include breakpoints.touch-input {
+    -webkit-touch-callout: default;
+    -webkit-user-select: text;
+    user-select: text;
+  }
+
   &--centered {
     --sheet-width: min(#{$centered-sheet-width}, calc(100vw - 3rem));
 
@@ -331,5 +337,11 @@ $content-width-share: 1 - $viewport-right-share - $viewport-left-share - $conten
     .island-panel__compass {
       display: none;
     }
+  }
+}
+
+@include breakpoints.phone-landscape {
+  .island-panel--centered .island-panel__subtitle {
+    display: none;
   }
 }
