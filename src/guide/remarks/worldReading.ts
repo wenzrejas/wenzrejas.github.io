@@ -1,3 +1,6 @@
+import { isInsideJellyPatch } from '@/minigames/jellyfish-bloom/bloomState'
+import { LANTERN_SPOTTED_REACH } from '@/minigames/lantern-night/constants'
+import { isLanternFinalePlaying, isLanternWithin } from '@/minigames/lantern-night/lanternFlock'
 import {
   bottlesAfloat,
   bottleWithin,
@@ -36,6 +39,9 @@ export function readWorld(): WorldReading {
     isSkyBeamActive: useSkyBeamStore.getState().isActive,
     isNearBottle:
       bottleWithin(bottlesAfloat(found), ship.x, ship.z, BOTTLE_SPOTTED_REACH) !== undefined,
+    isNearLantern:
+      readStage() === 'world' && isLanternWithin(ship.x, ship.z, LANTERN_SPOTTED_REACH),
+    isAmongJellyfish: readStage() === 'world' && isInsideJellyPatch(ship.x, ship.z),
     hasLastBottleWashedUp: isBottleAfloat(LAST_BOTTLE, found) && !isPanelOpen(),
     hasKeptABottle: found.length > 0 && !isPanelOpen(),
     shipX: ship.x,
@@ -49,6 +55,10 @@ export function readWorld(): WorldReading {
 export function readStage(): RemarkStage {
   if (useViewStore.getState().mapPhase === 'open') return 'map'
   const isWorldCalm =
-    isWorldInView() && !isPanelOpen() && !isCinematicPlaying() && !isRevealPlaying()
+    isWorldInView() &&
+    !isPanelOpen() &&
+    !isCinematicPlaying() &&
+    !isRevealPlaying() &&
+    !isLanternFinalePlaying()
   return isWorldCalm ? 'world' : 'none'
 }

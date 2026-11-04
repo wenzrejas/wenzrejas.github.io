@@ -15,3 +15,6 @@ export function baseZoom(width: number, height: number) {
   const zoom = CAMERA_ZOOM * MathUtils.clamp(share, CAMERA_MIN_ZOOM_SHARE, 1)
   return isHandheldView() ? Math.min(zoom, CAMERA_HANDHELD_MAX_ZOOM) : zoom
 }
+
+export const zoomedOutBoost = (width: number, height: number, max: number) =>
+  MathUtils.clamp(CAMERA_ZOOM / baseZoom(width, height), 1, max)

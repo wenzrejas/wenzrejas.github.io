@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { earnAchievement } from '@/store/achievementStore'
@@ -74,8 +74,6 @@ export default function Dolphins() {
   const checkTimer = useRef(FIRST_CHECK_DELAY)
   const foam = useMemo(() => new ParticlePool(FOAM_POOL), [])
   const drops = useMemo(() => new ParticlePool(DROP_POOL), [])
-  const sprayGlow = useRef(0)
-  const sprayGlowAt = useCallback(() => sprayGlow.current, [])
 
   useFrame(({ clock }, delta) => {
     const body = bodyRef.current
@@ -112,7 +110,6 @@ export default function Dolphins() {
 
     if (current) {
       current.age += dt
-      sprayGlow.current = algaeAt(current.dolphins[0].x, current.dolphins[0].z)
       if (whale.active && current.scatteredAt === null) scatterPod(current, whale.x, whale.z)
       if (!current.leaving && (raining || current.age > current.followTime)) {
         current.leaving = true
@@ -212,8 +209,7 @@ export default function Dolphins() {
         foam={foam}
         drops={drops}
         gravity={DROP_GRAVITY}
-        tint={algaeUniforms.uAlgaeGlow.value}
-        tintAt={sprayGlowAt}
+        glowTint={algaeUniforms.uAlgaeGlow.value}
       />
     </>
   )

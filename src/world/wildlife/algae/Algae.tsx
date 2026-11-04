@@ -5,6 +5,7 @@ import { buildFlatQuad } from '@/utils/geometry'
 import { eventDelta } from '@/store/cinematicStore'
 import { useCycleStore } from '@/store/cycleStore'
 import { useDebugStore } from '@/store/debugStore'
+import { isNightEventOn } from '@/store/nightEventStore'
 import { useShipStore } from '@/store/shipStore'
 import { isRaining, useWeatherStore } from '@/store/weatherStore'
 import { retain } from '@/utils/array'
@@ -97,7 +98,8 @@ export default function Algae() {
       checkTimer.current = algaeInterval
       const moonlit = useWeatherStore.getState().type === 'moonlit'
       const chance = algaeChance * (moonlit ? MOONLIT_BOOST : 1)
-      if (patches.current.length < MAX_PATCHES && night && Math.random() < chance) {
+      const canSpawn = patches.current.length < MAX_PATCHES && night && !isNightEventOn()
+      if (canSpawn && Math.random() < chance) {
         const patch = createPatch(ship.x, ship.z, reach)
         if (patch) patches.current.push(patch)
       }

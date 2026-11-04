@@ -2,6 +2,11 @@ import * as THREE from 'three'
 
 export const buildFlatQuad = () => new THREE.PlaneGeometry(1, 1).rotateX(-Math.PI / 2)
 
+export const dynamicInstancedAttribute = (count: number, itemSize = 1) =>
+  new THREE.InstancedBufferAttribute(new Float32Array(count * itemSize), itemSize).setUsage(
+    THREE.DynamicDrawUsage
+  )
+
 export function stitchRibbon(indices: number[], firstVertex: number, pairCount: number): void {
   for (let pair = 0; pair < pairCount - 1; pair++) {
     const vertex = firstVertex + pair * 2

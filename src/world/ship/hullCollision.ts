@@ -53,3 +53,6 @@ export function hullGap(gapAt: (x: number, z: number) => number): number {
   }
   return gap
 }
+
+export const hullGapToPoint = (pointX: number, pointZ: number) =>
+  hullGap((x, z) => Math.hypot(x - pointX, z - pointZ))

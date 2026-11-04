@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import { eventDelta } from '@/store/cinematicStore'
+import { isNightEventOn, spoilsNightEvent } from '@/store/nightEventStore'
 import type { WeatherState, WeatherType } from '@/store/weatherStore'
 import { mix } from '@/utils/math'
 import {
@@ -37,7 +38,9 @@ const WEATHERS = Object.keys(WEATHER_PARAMS) as WeatherType[]
 export const isClearSky = (type: WeatherType) => type === 'sunny' || type === 'moonlit'
 
 function pickOther(current: WeatherType): WeatherType {
-  const others = WEATHERS.filter((weather) => weather !== current)
+  const others = WEATHERS.filter(
+    (weather) => weather !== current && !(isNightEventOn() && spoilsNightEvent(weather))
+  )
   return others[Math.floor(Math.random() * others.length)]
 }
 
@@ -92,6 +95,7 @@ export function advanceWeatherCycle(cycle: WeatherCycle, dt: number, wantsClearS
 
 export function applyWeather(weather: WeatherState, type: WeatherType, params: WeatherParams) {
   weather.type = type
+  weather.comingType = type
   weather.lightMult = params.lightMult
   weather.moonMult = params.moonMult
   weather.waveAmpMult = params.waveAmpMult
@@ -114,6 +118,7 @@ export function blendWeather(weather: WeatherState, cycle: WeatherCycle) {
   weather.rainIntensity = mix(from.rainIntensity, to.rainIntensity, eased)
   const dominant = progress > 0.5 ? cycle.next : cycle.current
   weather.type = weather.rainIntensity >= RAIN_SHOWN_INTENSITY ? 'rainy' : dominant
+  weather.comingType = cycle.isBlending ? cycle.next : cycle.current
   weather.overcastAmount = mix(from.overcastAmount, to.overcastAmount, eased)
   weather.cloudShadow = mix(from.cloudShadow, to.cloudShadow, eased)
 }

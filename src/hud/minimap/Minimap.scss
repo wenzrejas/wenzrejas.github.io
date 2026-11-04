@@ -82,6 +82,17 @@ $grid-cell: 10%;
     visibility: hidden;
   }
 
+  &__lantern {
+    position: absolute;
+    width: 0.35rem;
+    height: 0.35rem;
+    translate: -50% -50%;
+    border-radius: 50%;
+    background: #ffb454;
+    box-shadow: 0 0 4px rgba(255, 160, 70, 0.9);
+    visibility: hidden;
+  }
+
   &__ship {
     position: absolute;
     width: 0.8rem;

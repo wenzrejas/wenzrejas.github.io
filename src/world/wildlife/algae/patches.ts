@@ -50,7 +50,7 @@ export function viewReach(camera: THREE.Camera, x: number, z: number): number {
 
 export const patchReach = (patch: Patch) => patch.radius * PATCH_EDGE_REACH
 
-function isBlockedByIsland(x: number, z: number, radius: number): boolean {
+export function isBlockedByIsland(x: number, z: number, radius: number): boolean {
   return ISLAND_ZONES.some((zone) => {
     const gap = shoreGap(zone, x, z)
     if (gap < radius * 0.3) return true

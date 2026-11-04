@@ -32,6 +32,8 @@ export interface WorldReading {
   isWorldPaused: boolean
   isSkyBeamActive: boolean
   isNearBottle: boolean
+  isNearLantern: boolean
+  isAmongJellyfish: boolean
   hasLastBottleWashedUp: boolean
   hasKeptABottle: boolean
   shipX: number
@@ -90,10 +92,12 @@ const hasPassed = (from: number, to: number, time: number) =>
 
 const hasReached = (from: number, to: number, level: number) => from < level && to >= level
 
-const BOTTLE_MOMENTS = [
+const MINI_GAME_MOMENTS = [
   ['hasLastBottleWashedUp', 'lastBottleWashedUp'],
   ['hasKeptABottle', 'keptABottle'],
   ['isNearBottle', 'spottedBottle'],
+  ['isNearLantern', 'spottedLanterns'],
+  ['isAmongJellyfish', 'spottedJellyfish'],
 ] as const
 
 export function noticeMoment(
@@ -109,7 +113,7 @@ export function noticeMoment(
   if (island && island !== previous.revealingIsland) return ISLAND_REMARKS[island]
   if (world.isMapUnfolded && !previous.isMapUnfolded) return 'openedWorldMap'
   if (world.isSkyBeamActive && !previous.isSkyBeamActive) return 'sentMessage'
-  for (const [reading, remark] of BOTTLE_MOMENTS) {
+  for (const [reading, remark] of MINI_GAME_MOMENTS) {
     if (world[reading] && !previous[reading] && !isHeard(remark)) return remark
   }
   if (nearby && nearby !== previous.nearbyIsland && nearby !== island) return 'familiarIsland'

@@ -10,9 +10,16 @@ interface Particle {
   vy: number
   vz: number
   size: number
+  glow: number
+}
+
+interface GlowPaint {
+  base: THREE.Color
+  glow: THREE.Color
 }
 
 const _dummy = new THREE.Object3D()
+const _color = new THREE.Color()
 
 // ── Pool ──────────────────────────────────────────────────────────────────────
 
@@ -31,6 +38,7 @@ export class ParticlePool {
       vy: 0,
       vz: 0,
       size: 0,
+      glow: 0,
     }))
   }
 
@@ -42,7 +50,8 @@ export class ParticlePool {
     vy: number,
     vz: number,
     size: number,
-    life: number
+    life: number,
+    glow = 0
   ): boolean {
     const total = this.particles.length
     for (let offset = 0; offset < total; offset++) {
@@ -59,6 +68,7 @@ export class ParticlePool {
       particle.vy = vy
       particle.vz = vz
       particle.size = size
+      particle.glow = glow
       this.cursor = (index + 1) % total
       return true
     }
@@ -71,10 +81,26 @@ export class ParticlePool {
 function commit(mesh: THREE.InstancedMesh, count: number): void {
   mesh.count = count
   mesh.visible = count > 0
-  if (count > 0) mesh.instanceMatrix.needsUpdate = true
+  if (count === 0) return
+  mesh.instanceMatrix.needsUpdate = true
+  if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true
 }
 
-export function updateFoam(pool: ParticlePool, mesh: THREE.InstancedMesh, dt: number): void {
+function paintGlow(
+  mesh: THREE.InstancedMesh,
+  index: number,
+  { glow }: Particle,
+  paint: GlowPaint
+): void {
+  mesh.setColorAt(index, _color.copy(paint.base).lerp(paint.glow, glow))
+}
+
+export function updateFoam(
+  pool: ParticlePool,
+  mesh: THREE.InstancedMesh,
+  dt: number,
+  paint?: GlowPaint
+): void {
   const damping = Math.exp(-2 * dt)
   let count = 0
   for (const particle of pool.particles) {
@@ -90,6 +116,7 @@ export function updateFoam(pool: ParticlePool, mesh: THREE.InstancedMesh, dt: nu
     _dummy.rotation.set(0, 0, 0)
     _dummy.scale.setScalar(particle.size * Math.max(0, 1 - progress * 1.25))
     _dummy.updateMatrix()
+    if (paint) paintGlow(mesh, count, particle, paint)
     mesh.setMatrixAt(count++, _dummy.matrix)
   }
   commit(mesh, count)
@@ -102,7 +129,8 @@ export function updateDrops(
   mesh: THREE.InstancedMesh,
   dt: number,
   gravity: number,
-  surfaceAt: (x: number, z: number) => number = onFlatWater
+  surfaceAt: (x: number, z: number) => number = onFlatWater,
+  paint?: GlowPaint
 ): void {
   let count = 0
   for (const particle of pool.particles) {
@@ -121,6 +149,7 @@ export function updateDrops(
     _dummy.rotation.set(particle.age * 7, particle.age * 5, 0)
     _dummy.scale.setScalar(particle.size)
     _dummy.updateMatrix()
+    if (paint) paintGlow(mesh, count, particle, paint)
     mesh.setMatrixAt(count++, _dummy.matrix)
   }
   commit(mesh, count)

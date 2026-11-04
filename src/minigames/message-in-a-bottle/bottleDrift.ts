@@ -1,7 +1,5 @@
-import { MathUtils } from 'three'
 import type * as THREE from 'three'
-import { CAMERA_ZOOM } from '@/app/experience/constants'
-import { baseZoom } from '@/app/experience/worldZoom'
+import { zoomedOutBoost } from '@/app/experience/worldZoom'
 import {
   BOTTLE_BOB,
   BOTTLE_BOB_RATE,
@@ -16,8 +14,7 @@ import {
 } from './constants'
 
 export const bottleScaleFor = (width: number, height: number) =>
-  BOTTLE_SCALE *
-  MathUtils.clamp(CAMERA_ZOOM / baseZoom(width, height), 1, BOTTLE_ZOOMED_OUT_BOOST_MAX)
+  BOTTLE_SCALE * zoomedOutBoost(width, height, BOTTLE_ZOOMED_OUT_BOOST_MAX)
 
 export function poseBottle(
   pose: THREE.Object3D,

@@ -1,4 +1,5 @@
 import { button, useControls } from 'leva'
+import { endNightEvent, forceNightEvent } from '@/store/nightEventStore'
 import {
   CHECK_INTERVAL as ALGAE_INTERVAL,
   SPAWN_CHANCE as ALGAE_CHANCE,
@@ -105,6 +106,9 @@ export function useWildlifeControls() {
       algaeAnyTime: { value: false, label: 'algae any time' },
       'algae at ship': button(() => orderPatch('atShip')),
       'clear algae': button(() => orderPatch('clear')),
+      'lantern night': button(() => forceNightEvent('lanterns')),
+      'jellyfish bloom': button(() => forceNightEvent('jellyfish')),
+      'end night event': button(() => endNightEvent()),
     },
     { collapsed: true }
   ) as WildlifeControls

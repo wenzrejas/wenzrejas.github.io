@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
 import { CONTACT_COPY } from '@/data/panelCopy'
 import { closePanel } from '@/store/panelStore'
+import { scrollBehavior } from '@/store/settingsStore'
 import { startSkyBeam } from '@/store/skyBeamStore'
 import { scrollAncestorToEnd } from '@/utils/scroll'
 import { isSheetLayout } from '@/utils/layout'
@@ -42,7 +43,8 @@ export default function ContactForm() {
   }, [])
 
   useEffect(() => {
-    if (hasSendFailed && sendErrorRef.current) scrollAncestorToEnd(sendErrorRef.current)
+    if (hasSendFailed && sendErrorRef.current)
+      scrollAncestorToEnd(sendErrorRef.current, scrollBehavior())
   }, [hasSendFailed])
 
   const clearError = useCallback((field: ContactField) => {

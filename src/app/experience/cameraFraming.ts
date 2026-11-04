@@ -36,6 +36,10 @@ const SCREEN_UP = new THREE.Vector3(0, 1, 0)
   .normalize()
 export const GROUND_FORWARD = new THREE.Vector2(VIEW_DIRECTION.x, VIEW_DIRECTION.z).normalize()
 export const FORWARD_RISE = GROUND_FORWARD.x * SCREEN_UP.x + GROUND_FORWARD.y * SCREEN_UP.z
+export const HEIGHT_RISE = SCREEN_UP.y
+export const screenAcrossOf = (x: number, z: number) => x * SCREEN_RIGHT.x + z * SCREEN_RIGHT.z
+export const screenRiseOf = (x: number, z: number, height: number) =>
+  (x * GROUND_FORWARD.x + z * GROUND_FORWARD.y) * FORWARD_RISE + height * HEIGHT_RISE
 const BASE_OFFSET = new THREE.Vector3(...CAMERA_OFFSET)
 const UP = new THREE.Vector3(0, 1, 0)
 const _offset = new THREE.Vector3()

@@ -283,6 +283,20 @@ const SPOTTED_BOTTLE: DialoguePage[] = [
   },
 ]
 
+const SPOTTED_LANTERNS: DialoguePage[] = [
+  {
+    mood: 'surprised',
+    lines: ['Paper lanterns, all dark!', "Sail close and let's light them."],
+  },
+]
+
+const SPOTTED_JELLYFISH: DialoguePage[] = [
+  {
+    mood: 'surprised',
+    lines: ['Jellyfish, all around us!', 'Steer gently.'],
+  },
+]
+
 const KEPT_A_BOTTLE: DialoguePage[] = [
   {
     mood: 'happy',
@@ -410,6 +424,8 @@ const REMARKS = {
   reachedCozyIsle: REACHED_COZY_ISLE,
   sentMessage: SENT_MESSAGE,
   spottedBottle: SPOTTED_BOTTLE,
+  spottedLanterns: SPOTTED_LANTERNS,
+  spottedJellyfish: SPOTTED_JELLYFISH,
   keptABottle: KEPT_A_BOTTLE,
   lastBottleWashedUp: LAST_BOTTLE_WASHED_UP,
 } satisfies Record<string, DialoguePage[]>

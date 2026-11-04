@@ -26,7 +26,8 @@ Hi, I'm Wenz Louie Rejas, a frontend developer who loves turning creative ideas 
 - A world map you can fast-travel from, plus a compass, minimap and weather readout.
 - Wobbi, my "trusty little navigator. Well... mostly trusty.", who pops in with tips as you explore.
 - Messages in bottles scattered across the sea, with notes about me and this world, saved to a Keepsakes tab in Settings.
-- 26 achievements to collect. Every new rank unlocks a fresh sail livery for the ship.
+- Some nights bring a surprise: paper lanterns to light and send skyward, or a bloom of glowing jellyfish to steer through.
+- 27 achievements to collect. Every new rank unlocks a fresh sail livery for the ship.
 - Settings for sound, graphics, frame rate, time of day, weather, day length, wildlife, sailing speed, reduced motion and reduced flashing.
 
 ## Controls
@@ -75,6 +76,7 @@ npm run dev
 | --- | --- |
 | `npm run dev` | Starts the Vite dev server |
 | `npm run build` | Builds the site into `dist/` |
+| `npm run build:perf` | Builds the site with the fps monitor on, for checking real devices |
 | `npm run preview` | Serves the production build locally |
 | `npm run lint` | Runs ESLint |
 | `npm run format` | Formats the source with Prettier |

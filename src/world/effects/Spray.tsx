@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { buildFlatQuad } from '@/utils/geometry'
@@ -14,9 +14,18 @@ interface SprayProps {
   surfaceAt?: (x: number, z: number) => number
   tint?: THREE.Color
   tintAt?: () => number
+  glowTint?: THREE.Color
 }
 
-export default function Spray({ foam, drops, gravity, surfaceAt, tint, tintAt }: SprayProps) {
+export default function Spray({
+  foam,
+  drops,
+  gravity,
+  surfaceAt,
+  tint,
+  tintAt,
+  glowTint,
+}: SprayProps) {
   const foamRef = useRef<THREE.InstancedMesh>(null)
   const dropsRef = useRef<THREE.InstancedMesh>(null)
 
@@ -34,16 +43,29 @@ export default function Spray({ foam, drops, gravity, surfaceAt, tint, tintAt }:
     [foamGeometry, dropGeometry, material]
   )
 
+  const paint = useMemo(
+    () => glowTint && { base: useCycleStore.getState().foamColor, glow: glowTint },
+    [glowTint]
+  )
+
+  useLayoutEffect(() => {
+    if (!glowTint) return
+    foamRef.current?.setColorAt(0, glowTint)
+    dropsRef.current?.setColorAt(0, glowTint)
+  }, [glowTint])
+
   useFrame((_, delta) => {
     const foamMesh = foamRef.current
     const dropsMesh = dropsRef.current
     if (!foamMesh || !dropsMesh) return
 
     const dt = Math.min(delta, MAX_FRAME_SECONDS)
-    material.color.copy(useCycleStore.getState().foamColor)
-    if (tint && tintAt) material.color.lerp(tint, tintAt())
-    updateFoam(foam, foamMesh, dt)
-    updateDrops(drops, dropsMesh, dt, gravity, surfaceAt)
+    if (!paint) {
+      material.color.copy(useCycleStore.getState().foamColor)
+      if (tint && tintAt) material.color.lerp(tint, tintAt())
+    }
+    updateFoam(foam, foamMesh, dt, paint)
+    updateDrops(drops, dropsMesh, dt, gravity, surfaceAt, paint)
   })
 
   return (

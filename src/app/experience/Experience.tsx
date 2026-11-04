@@ -24,7 +24,7 @@ import { useSettingsStore } from '@/store/settingsStore'
 import './Experience.scss'
 
 const Perf =
-  import.meta.env.DEV && IS_DEBUG
+  (import.meta.env.DEV && IS_DEBUG) || import.meta.env.MODE === 'perf'
     ? lazy(() => import('r3f-perf').then((module) => ({ default: module.Perf })))
     : null
 

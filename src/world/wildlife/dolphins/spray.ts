@@ -15,6 +15,7 @@ import {
 } from './constants'
 
 export function emitFinWake(foam: ParticlePool, x: number, z: number, heading: number): void {
+  const glow = algaeAt(x, z)
   const sideX = Math.cos(heading)
   const sideZ = -Math.sin(heading)
   for (const side of [-1, 1]) {
@@ -27,7 +28,8 @@ export function emitFinWake(foam: ParticlePool, x: number, z: number, heading: n
       0,
       sideZ * drift,
       FOAM_SIZE * rand(0.7, 1.1),
-      FOAM_LIFE * rand(0.8, 1.2)
+      FOAM_LIFE * rand(0.8, 1.2),
+      glow
     )
   }
 }
@@ -42,6 +44,7 @@ export function emitSplash(
   dropCount: number,
   strength: number
 ): void {
+  const glow = algaeAt(x, z)
   const carryX = Math.sin(heading) * speed * 0.25
   const carryZ = Math.cos(heading) * speed * 0.25
 
@@ -56,7 +59,8 @@ export function emitSplash(
       rand(8, 15) * strength,
       Math.sin(angle) * spread + carryZ,
       DROP_SIZE * rand(0.6, 1.3),
-      3
+      3,
+      glow
     )
   }
 
@@ -71,7 +75,8 @@ export function emitSplash(
       0,
       Math.sin(angle) * ringSpeed,
       FOAM_SIZE * rand(1, 1.6) * strength,
-      FOAM_LIFE * rand(0.9, 1.3)
+      FOAM_LIFE * rand(0.9, 1.3),
+      glow
     )
   }
 }
