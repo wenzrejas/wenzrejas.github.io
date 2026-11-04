@@ -27,7 +27,7 @@ Hi, I'm Wenz Louie Rejas, a frontend developer who loves turning creative ideas 
 - Wobbi, my "trusty little navigator. Well... mostly trusty.", who pops in with tips as you explore.
 - Messages in bottles scattered across the sea, with notes about me and this world, saved to a Keepsakes tab in Settings.
 - Some nights bring a surprise: paper lanterns to light and send skyward, or a bloom of glowing jellyfish to steer through.
-- 27 achievements to collect. Every new rank unlocks a fresh sail livery for the ship.
+- 28 achievements to collect. Every new rank unlocks a fresh sail livery for the ship.
 - Settings for sound, graphics, frame rate, time of day, weather, day length, wildlife, sailing speed, reduced motion and reduced flashing.
 
 ## Controls

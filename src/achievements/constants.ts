@@ -46,6 +46,7 @@ const ACHIEVEMENT_SPECS = {
   stargazer: { category: 'seaAndSky' },
   dawnPatrol: { category: 'seaAndSky' },
   lanternFestival: { category: 'seaAndSky' },
+  bloomDrifter: { category: 'seaAndSky' },
   messageInABottle: { category: 'keepsakes' },
   beachcomber: { category: 'keepsakes', items: COLLECTED_BOTTLES },
   scenicRoute: { category: 'oddMoments', isSecret: true },

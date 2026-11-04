@@ -38,6 +38,7 @@ export const ACHIEVEMENT_COPY: Record<AchievementKey, AchievementText> = {
   stargazer: { title: 'Stargazer', description: 'Sail under a starry night' },
   dawnPatrol: { title: 'Dawn Patrol', description: 'Watch the sun rise at sea' },
   lanternFestival: { title: 'Lantern Festival', description: 'Light every lantern in one night' },
+  bloomDrifter: { title: 'Bloom Drifter', description: 'Sail through a jellyfish bloom' },
   messageInABottle: { title: 'Message in a Bottle', description: 'Read your first bottle' },
   beachcomber: { title: 'Beachcomber', description: 'Find all twelve bottles' },
   scenicRoute: { title: 'Scenic Route', description: 'Sail a full circle' },

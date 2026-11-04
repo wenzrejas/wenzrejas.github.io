@@ -40,6 +40,7 @@ const MOMENTS: [AchievementKey, MomentReached][] = [
     (world) => Math.hypot(world.shipX, world.shipZ) >= BOUNDARY_RADIUS - EDGE_OF_WORLD_MARGIN,
   ],
   ['glowingWaters', (world) => world.algaeGlow >= ALGAE_REMARK_GLOW],
+  ['bloomDrifter', (world) => world.isAmongJellyfish],
   ['weatheredTheStorm', (_, counters) => counters.rainSeconds >= RAIN_CONTINUES_AFTER_SECONDS],
   ['stargazer', (world) => isMoonlit(world) && isSailing(world)],
   ['dawnPatrol', (world) => isDawn(world.timeOfDay)],

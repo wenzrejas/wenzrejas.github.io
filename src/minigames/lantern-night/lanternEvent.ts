@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import { earnAchievement } from '@/store/achievementStore'
 import { useCycleStore } from '@/store/cycleStore'
 import { useNightEventStore } from '@/store/nightEventStore'
-import { isGraphicsSharp } from '@/store/settingsStore'
+import { isGraphicsSharp, isMotionReduced } from '@/store/settingsStore'
 import { useShipStore } from '@/store/shipStore'
 import { useWeatherStore } from '@/store/weatherStore'
 import { useWindStore } from '@/store/windStore'
@@ -11,6 +11,8 @@ import { isOnScreen } from '@/utils/screen'
 import { hullGapToPoint } from '@/world/ship/hullCollision'
 import {
   LANTERN_AFLOAT_COUNT,
+  LANTERN_AFLOAT_SPEED,
+  LANTERN_AFLOAT_TURN_RATE,
   LANTERN_FINALE_COUNT,
   LANTERN_FINALE_COUNT_SMOOTH,
   LANTERN_FINALE_SECONDS,
@@ -111,16 +113,26 @@ function sendUnlitAway() {
   }
 }
 
+function circleAfloat(lantern: Lantern, dt: number) {
+  const heading = lantern.seed * Math.PI * 2 + lantern.ageSeconds * LANTERN_AFLOAT_TURN_RATE
+  lantern.x += Math.sin(heading) * LANTERN_AFLOAT_SPEED * dt
+  lantern.z += Math.cos(heading) * LANTERN_AFLOAT_SPEED * dt
+}
+
 function advanceFlock(dt: number, camera: THREE.Camera) {
   const wind = useWindStore.getState().dir
   const drift = LANTERN_WIND_DRIFT * useWeatherStore.getState().windMult * dt
+  const isDrifting = !isMotionReduced()
   retain(flock, (lantern) => {
     lantern.ageSeconds += dt
     if (lantern.leaveSeconds !== null) {
       lantern.leaveSeconds += dt
       return lantern.leaveSeconds < LANTERN_LEAVE_SECONDS
     }
-    if (lantern.litSeconds === null) return true
+    if (lantern.litSeconds === null) {
+      if (isDrifting) circleAfloat(lantern, dt)
+      return true
+    }
     lantern.litSeconds += dt
     const height = heightOf(lantern)
     const driftShare = lantern.isFinale
