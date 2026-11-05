@@ -39,6 +39,7 @@ export const CLOTH_STEP_SECONDS = 1 / 30
 export const TAILWIND_ALIGN_START = 0.5
 export const TAILWIND_ALIGN_FULL = 0.9
 export const TAILWIND_RATE = 1.5
+export const SURGE_SHOW_RATE = 5
 
 // ── Slipstream ────────────────────────────────────────────────────────────────
 export const SLIPSTREAM_HEIGHTS = [1.3, 1.8]
@@ -75,6 +76,7 @@ export const SHIP_LIVERIES = {
   royal: { cloth: '#efe4c8', accent: '#2c4f9e' },
   gilded: { cloth: '#e6bf55', accent: '#9a6a1c' },
   seaGlass: { cloth: '#bfe5d6', accent: '#1f6f5f' },
+  regatta: { cloth: '#1f5fa8', accent: '#f4f1e6' },
 } satisfies Record<string, { cloth: string; accent: string } | null>
 export type LiveryKey = keyof typeof SHIP_LIVERIES
 
@@ -82,7 +84,7 @@ export type LiveryKey = keyof typeof SHIP_LIVERIES
 export const BASE_Y = -3
 export const BOB_AMP = 0.7
 export const BOB_SPEED = 2
-export const MOVE_SPEED = 30
+export const MOVE_SPEED = 33
 export const TURN_SPEED = 0.6
 export const TILT_MAX = 0.12
 export const TILT_SPEED = 6

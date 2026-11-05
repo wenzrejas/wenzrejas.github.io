@@ -1,0 +1,24 @@
+@use '@/styles/parchment' as *;
+
+$default-size: 3.4rem;
+$empty-inset: 8%;
+
+.medal-disc {
+  display: block;
+  flex: none;
+  width: var(--medal-size, $default-size);
+  height: var(--medal-size, $default-size);
+  user-select: none;
+
+  &--empty {
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: $empty-inset;
+      border: 2px dashed $ink-faint;
+      border-radius: 50%;
+    }
+  }
+}

@@ -1,4 +1,11 @@
 import * as THREE from 'three'
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
+
+export function mergeParts(parts: THREE.BufferGeometry[]) {
+  const merged = mergeGeometries(parts)
+  for (const part of parts) part.dispose()
+  return merged
+}
 
 export const buildFlatQuad = () => new THREE.PlaneGeometry(1, 1).rotateX(-Math.PI / 2)
 

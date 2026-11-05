@@ -4,6 +4,7 @@ import type * as THREE from 'three'
 import { uniformsOf } from '@/utils/meshes'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { SLIPSTREAM_HIDE_BELOW } from './constants'
+import { shipFadeUniforms } from './shipFade'
 import { buildSlipstreamGeometry, createSlipstreamMaterial } from './slipstreamModel'
 
 interface SlipstreamProps {
@@ -29,7 +30,7 @@ export default function Slipstream({ tailwindRef }: SlipstreamProps) {
     mesh.visible = tailwindRef.current > SLIPSTREAM_HIDE_BELOW
     const uniforms = uniformsOf(mesh)
     uniforms.uTime.value = clock.getElapsedTime()
-    uniforms.uStrength.value = tailwindRef.current
+    uniforms.uStrength.value = tailwindRef.current * shipFadeUniforms.uShipFade.value
   })
 
   return (

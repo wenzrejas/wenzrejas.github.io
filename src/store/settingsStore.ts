@@ -3,7 +3,7 @@ import type { Channel } from '@/audio/sounds'
 import type { PhaseName } from '@/world/environment/day-night-cycle/dayNightKeyframes'
 import type { WeatherType } from './weatherStore'
 import { hasFinePointer } from './inputStore'
-import { rememberedText, rememberText } from './visitorMemory'
+import { rememberedRecord, rememberText } from './visitorMemory'
 
 export type GraphicsQuality = 'smooth' | 'sharp'
 export type FrameRateLimit = 'thirty' | 'sixty' | 'unlimited'
@@ -60,17 +60,9 @@ const DEFAULT_SETTINGS: Settings = {
   areRemarksOn: true,
 }
 
-function recallSettings(): Settings {
-  const stored = rememberedText('settings')
-  if (!stored) return DEFAULT_SETTINGS
-  try {
-    return { ...DEFAULT_SETTINGS, ...JSON.parse(stored) }
-  } catch {
-    return DEFAULT_SETTINGS
-  }
-}
-
-export const useSettingsStore = create<Settings>(recallSettings)
+export const useSettingsStore = create<Settings>(() =>
+  rememberedRecord('settings', DEFAULT_SETTINGS)
+)
 
 export function changeSetting<Key extends keyof Settings>(key: Key, value: Settings[Key]) {
   useSettingsStore.setState({ [key]: value } as Pick<Settings, Key>)

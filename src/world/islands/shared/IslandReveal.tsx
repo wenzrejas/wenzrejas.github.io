@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type RefObject } from 'react'
 import { useFrame } from '@react-three/fiber'
 import type * as THREE from 'three'
 import { noteReveal } from '@/achievements/storeEvents'
+import { isRaceUnderway } from '@/store/checkpointStore'
 import { isCinematicPlaying } from '@/store/cinematicStore'
 import { useDebugStore } from '@/store/debugStore'
 import { isLoaderShowing } from '@/store/loadingStore'
@@ -51,7 +52,12 @@ export default function IslandReveal({ shipRef }: IslandRevealProps) {
     }
 
     if (elapsed.current < 0) {
-      if (useDebugStore.getState().camera.topView || isCinematicPlaying() || isLoaderShowing())
+      if (
+        useDebugStore.getState().camera.topView ||
+        isCinematicPlaying() ||
+        isLoaderShowing() ||
+        isRaceUnderway()
+      )
         return
       sampleGroundFrame(camera)
       const tuning = useDebugStore.getState().islands

@@ -1,5 +1,6 @@
 import type { IslandKey } from '../world/islands/shared/constants'
 import { ISLAND_ZONES, shoreGap } from '../world/islands/shared/islandZones'
+import { isRaceUnderway } from '../store/checkpointStore'
 import { useCycleStore } from '../store/cycleStore'
 import { useDebugStore } from '../store/debugStore'
 import { useRevealStore } from '../store/revealStore'
@@ -16,6 +17,8 @@ import {
   NIGHT_MUSIC,
   NIGHT_MUSIC_FROM,
   NIGHT_MUSIC_UNTIL,
+  RACE_MUSIC,
+  RACE_MUSIC_CROSSFADE,
   RAIN_MUSIC,
   WEATHER_MUSIC_CROSSFADE,
 } from './constants'
@@ -52,6 +55,8 @@ function chooseMusic(currentIsland: IslandKey | null) {
   if (isBelowSurface(useViewStore.getState()))
     return { island, track: DEPTHS_MUSIC, context: 'depths' }
 
+  if (isRaceUnderway()) return { island, track: RACE_MUSIC, context: 'race' }
+
   return {
     island,
     track: raining ? RAIN_MUSIC : night ? NIGHT_MUSIC : (islandTune ?? track),
@@ -73,7 +78,11 @@ export function createMusicDirector() {
       island = choice.island
 
       const crossfade =
-        choice.context === previousContext ? MUSIC_CROSSFADE : WEATHER_MUSIC_CROSSFADE
+        choice.context === 'race'
+          ? RACE_MUSIC_CROSSFADE
+          : choice.context === previousContext
+            ? MUSIC_CROSSFADE
+            : WEATHER_MUSIC_CROSSFADE
       previousContext = choice.context
 
       if (enabled !== soundOn) {

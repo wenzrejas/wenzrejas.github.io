@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from 'react'
 
+const phoneLandscape = window.matchMedia('(max-height: 500px)')
 const compact = window.matchMedia('(max-width: 767px), (max-height: 500px)')
 const sheetLayout = window.matchMedia('(max-width: 1023px), (max-height: 500px)')
 const sheetPortrait = window.matchMedia('(max-width: 1023px) and (orientation: portrait)')
@@ -9,6 +10,7 @@ const isCompactLayout = () => compact.matches
 const isSheetPortrait = () => sheetPortrait.matches
 const isDepthsFitted = () => depthsFitted.matches
 
+export const isPhoneLandscape = () => phoneLandscape.matches
 export const isSheetLayout = () => sheetLayout.matches
 
 const subscribeTo = (query: MediaQueryList) => (onChange: () => void) => {

@@ -15,7 +15,7 @@ export default function VolumeSlider({ channel }: VolumeSliderProps) {
   return (
     <div className="settings__row">
       <label className="settings__label" htmlFor={sliderId}>
-        {SETTINGS_COPY.sound.volumes[channel]}
+        {SETTINGS_COPY.general.volumes[channel]}
       </label>
       <input
         id={sliderId}
@@ -29,7 +29,7 @@ export default function VolumeSlider({ channel }: VolumeSliderProps) {
         onChange={(event) => changeVolume(channel, event.currentTarget.valueAsNumber)}
       />
       <output className="settings__value" htmlFor={sliderId}>
-        {SETTINGS_COPY.sound.volumeValue(volume)}
+        {SETTINGS_COPY.general.volumeValue(volume)}
       </output>
     </div>
   )

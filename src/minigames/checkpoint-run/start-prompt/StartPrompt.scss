@@ -1,0 +1,26 @@
+@use '@/styles/breakpoints';
+@use '@/styles/parchment' as *;
+
+$start-width: 13rem;
+$start-cartouche-unit: 0.42px;
+
+.start-prompt {
+  &__details {
+    font-family: var(--font-secondary);
+    font-size: $base-font-size;
+    font-variant-numeric: tabular-nums;
+    color: $ink-soft;
+  }
+
+  &__best-time {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .race-card__action {
+    min-width: $start-width;
+
+    @include breakpoints.sheet-layout {
+      --cartouche-unit: #{$start-cartouche-unit};
+    }
+  }
+}

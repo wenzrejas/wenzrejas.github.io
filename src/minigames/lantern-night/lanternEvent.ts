@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { audio } from '@/audio/audioManager'
 import { earnAchievement } from '@/store/achievementStore'
 import { useCycleStore } from '@/store/cycleStore'
 import { useNightEventStore } from '@/store/nightEventStore'
@@ -72,10 +73,14 @@ function regatherIfLeftBehind(unlit: Lantern[], view: LanternView) {
 }
 
 function lightTouched(unlit: Lantern[], shipX: number, shipZ: number) {
+  let hasLit = false
   for (const lantern of unlit) {
     if (Math.hypot(lantern.x - shipX, lantern.z - shipZ) > LANTERN_TOUCH_CHECK_DISTANCE) continue
-    if (hullGapToPoint(lantern.x, lantern.z) <= LANTERN_TOUCH_REACH) lantern.litSeconds = 0
+    if (hullGapToPoint(lantern.x, lantern.z) > LANTERN_TOUCH_REACH) continue
+    lantern.litSeconds = 0
+    hasLit = true
   }
+  if (hasLit) audio.play('lanternRustle')
 }
 
 function tendAfloat(view: LanternView) {

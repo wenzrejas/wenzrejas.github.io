@@ -1,11 +1,14 @@
 import { useLayoutEffect, useMemo } from 'react'
 import { useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
+import { flatFootprint } from '@/utils/meshes'
 import { MODEL_BOW_OFFSET, SHIP_MODEL_URL } from './constants'
 import { applyCloudShadow } from '../environment/weather/cloudShadow'
 import type { GlowTarget } from '../islands/shared/nightGlow'
 import { applyBrightness, type TintTarget } from '../islands/shared/islandModel'
 import { dressLivery } from './liveryModel'
+import { buildShipFadePass, dressShipFade } from './shipFade'
+import { writeShipMask } from './shipMask'
 import { buildShipRig } from './shipRigModel'
 
 export function useShipModel(brightness: number) {
@@ -13,9 +16,7 @@ export function useShipModel(brightness: number) {
 
   const ship = useMemo(() => {
     const clone = scene.clone(true)
-    const box = new THREE.Box3().setFromObject(clone)
-    const size = new THREE.Vector3()
-    box.getSize(size)
+    const footprint = flatFootprint(clone)
     clone.rotation.y = MODEL_BOW_OFFSET
 
     const glows: GlowTarget[] = []
@@ -27,6 +28,8 @@ export function useShipModel(brightness: number) {
       const mat = m.clone() as THREE.MeshStandardMaterial
       applyCloudShadow(mat)
       dressLivery(mat)
+      dressShipFade(mat)
+      writeShipMask(mat)
       if (mat.map) {
         mat.map.magFilter = THREE.NearestFilter
         mat.map.minFilter = THREE.NearestMipmapNearestFilter
@@ -48,8 +51,9 @@ export function useShipModel(brightness: number) {
 
     return {
       clonedScene: clone,
-      footprint: Math.max(size.x, size.z),
+      footprint,
       rig: buildShipRig(clone),
+      fadePass: buildShipFadePass(clone),
       glows,
       tints,
     }

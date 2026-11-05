@@ -1,0 +1,94 @@
+$digit-seconds: 1s;
+$digit-size: clamp(6rem, 16vw, 10rem);
+$digit-shadow: 0 0.04em 0.16em rgba(0, 0, 0, 0.6);
+$pop-from: 1.5;
+$go-leave-to: 1.15;
+
+.race-countdown {
+  position: fixed;
+  inset: 0;
+  z-index: 85;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+
+  &__call {
+    font-family: var(--font-accent);
+    font-size: $digit-size;
+    font-weight: 700;
+    line-height: 1;
+    color: #ffffff;
+    text-shadow: $digit-shadow;
+    animation: race-countdown-pop $digit-seconds ease-out both;
+
+    &--still {
+      animation-name: race-countdown-fade;
+    }
+
+    &--go {
+      animation: race-countdown-go var(--go-seconds) ease-out both;
+    }
+
+    &--go#{&}--still {
+      animation-name: race-countdown-go-fade;
+    }
+  }
+}
+
+@keyframes race-countdown-pop {
+  from {
+    opacity: 0;
+    scale: $pop-from;
+  }
+
+  25% {
+    opacity: 1;
+    scale: 1;
+  }
+
+  to {
+    opacity: 0.85;
+    scale: 1;
+  }
+}
+
+@keyframes race-countdown-fade {
+  from {
+    opacity: 0;
+  }
+
+  25%,
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes race-countdown-go {
+  from {
+    opacity: 0;
+    scale: $pop-from;
+  }
+
+  20%,
+  65% {
+    opacity: 1;
+    scale: 1;
+  }
+
+  to {
+    opacity: 0;
+    scale: $go-leave-to;
+  }
+}
+
+@keyframes race-countdown-go-fade {
+  from,
+  to {
+    opacity: 0;
+  }
+
+  20%,
+  65% {
+    opacity: 1;
+  }
+}

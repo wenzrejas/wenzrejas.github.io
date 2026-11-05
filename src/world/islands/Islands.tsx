@@ -1,6 +1,11 @@
 import { useRef, type ComponentType } from 'react'
 import type * as THREE from 'three'
-import { WORLD_LOCATIONS, type IslandConfig, type IslandKey } from './shared/constants'
+import {
+  ISLAND_ROOT_NAME,
+  WORLD_LOCATIONS,
+  type IslandConfig,
+  type IslandKey,
+} from './shared/constants'
 import type { IslandBodyProps } from './shared/types'
 import Buildshore from './buildshore/Buildshore'
 import CozyIsle from './cozy-isle/CozyIsle'
@@ -30,7 +35,7 @@ function Island({ islandKey, config }: IslandProps) {
   useNearViewport(groupRef, islandKey)
 
   return (
-    <group ref={groupRef} position={[x, 0, z]}>
+    <group ref={groupRef} name={ISLAND_ROOT_NAME} position={[x, 0, z]}>
       <Body islandKey={islandKey} config={config} />
     </group>
   )

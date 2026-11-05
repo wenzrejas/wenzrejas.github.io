@@ -1,0 +1,35 @@
+@use '@/styles/breakpoints';
+@use '@/styles/parchment' as *;
+
+$medal-size: 2.6rem;
+
+.regatta {
+  --medal-size: #{$medal-size};
+
+  display: grid;
+  row-gap: $entry-card-gap;
+  list-style: none;
+
+  &__course {
+    @include entry-card;
+    display: grid;
+    grid-template-columns: $medal-size minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 0.9rem;
+    min-height: breakpoints.$touch-target;
+    padding: 0.6rem $entry-card-inset;
+  }
+
+  &__name {
+    @include entry-title;
+  }
+
+  &__time {
+    @include tally-count;
+    font-size: $base-font-size;
+  }
+
+  &__not-raced {
+    @include entry-note;
+  }
+}

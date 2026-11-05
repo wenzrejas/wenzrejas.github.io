@@ -27,7 +27,7 @@ export function buildSparkleGeometry(field: SparkleField): THREE.BufferGeometry 
   return geometry
 }
 
-export const createSparkleMaterial = (field: SparkleField) =>
+export const createSparkleMaterial = (field: SparkleField, color: THREE.Color) =>
   new THREE.ShaderMaterial({
     vertexShader: SPARKLE_VERT,
     fragmentShader: SPARKLE_FRAG,
@@ -36,7 +36,7 @@ export const createSparkleMaterial = (field: SparkleField) =>
     blending: THREE.AdditiveBlending,
     uniforms: {
       uIntensity: { value: 0 },
-      uColor: { value: new THREE.Color(field.color) },
+      uColor: { value: color },
       uArmSharpness: { value: field.armSharpness },
       uArmFalloff: { value: field.armFalloff },
       uGlowRadius: { value: field.glowRadius },

@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
+import { isRaceOnScreen, useCheckpointStore } from '../store/checkpointStore'
 import { isCinematicPlaying } from '../store/cinematicStore'
 import { isIntroductionPending } from '../store/guideStore'
 import { isPanelOpen } from '../store/panelStore'
@@ -18,6 +19,7 @@ export default function InteractionLayer() {
       isCinematicPlaying() ||
       isPanelOpen() ||
       isRevealPlaying() ||
+      isRaceOnScreen(useCheckpointStore.getState()) ||
       !isWorldInView()
     )
       interactions.hold()

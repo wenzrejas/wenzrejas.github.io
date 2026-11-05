@@ -2,6 +2,7 @@
 
 $hud-drop-shadow: drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.45));
 $card-radius: 12px;
+$race-gold: #ffd36b;
 
 @mixin glass-backdrop {
   backdrop-filter: blur(10px) saturate(1.2);

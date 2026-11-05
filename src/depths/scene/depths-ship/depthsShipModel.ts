@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
-import { meshesOf } from '@/utils/meshes'
+import { flatFootprint, meshesOf } from '@/utils/meshes'
 import { applyBrightness } from '@/world/islands/shared/islandModel'
 import { MODEL_BOW_OFFSET, MODEL_BRIGHTNESS } from '@/world/ship/constants'
 import { dressLivery } from '@/world/ship/liveryModel'
@@ -14,9 +14,9 @@ interface DepthsShipModel {
 
 export function buildDepthsShip(source: THREE.Object3D): DepthsShipModel {
   const model = source.clone(true)
-  const size = new THREE.Box3().setFromObject(model).getSize(new THREE.Vector3())
+  const footprint = flatFootprint(model)
   model.rotation.y = MODEL_BOW_OFFSET
-  model.scale.setScalar(DEPTHS_SHIP_LENGTH / Math.max(size.x, size.z))
+  model.scale.setScalar(DEPTHS_SHIP_LENGTH / footprint)
   model.updateMatrixWorld(true)
   const bounds = new THREE.Box3().setFromObject(model)
   model.position.sub(bounds.getCenter(new THREE.Vector3()))

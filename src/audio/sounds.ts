@@ -119,6 +119,32 @@ export const SOUNDS = {
     channel: 'sfx',
     volume: 0.03,
   },
+  startWhistle: {
+    url: '/audio/sfx/start-whistle.webm',
+    fallback: '/audio/sfx/start-whistle.mp3',
+    channel: 'sfx',
+    volume: 0.03,
+    hasLeadIn: true,
+  },
+  bottleClink: {
+    url: '/audio/sfx/bottle-clink.webm',
+    fallback: '/audio/sfx/bottle-clink.mp3',
+    channel: 'sfx',
+    volume: 0.05,
+  },
+  lanternRustle: {
+    url: '/audio/sfx/lantern-rustle.webm',
+    fallback: '/audio/sfx/lantern-rustle.mp3',
+    channel: 'sfx',
+    volume: 0.2,
+  },
+  ringPass: {
+    url: '/audio/sfx/ring-pass.webm',
+    fallback: '/audio/sfx/ring-pass.mp3',
+    channel: 'sfx',
+    volume: 0.05,
+    hasLeadIn: true,
+  },
   achievementPop: {
     url: '/audio/sfx/achievement-pop.webm',
     fallback: '/audio/sfx/achievement-pop.mp3',
@@ -181,6 +207,13 @@ export const SOUNDS = {
     volume: 0.25,
     stream: true,
   },
+  regattaRun: {
+    url: '/audio/bgm/regatta-run.webm',
+    fallback: '/audio/bgm/regatta-run.mp3',
+    channel: 'music',
+    volume: 0.2,
+    stream: true,
+  },
 } satisfies Record<string, SoundDefinition>
 
 export type SoundName = keyof typeof SOUNDS
@@ -194,6 +227,7 @@ export const MUSIC_TRACKS = {
   'Lumina Point': 'luminaPoint',
   Buildshore: 'buildshore',
   'Timewell Depth': 'timewell',
+  'Regatta Run': 'regattaRun',
 } as const satisfies Record<string, SoundName>
 
 export type MusicTrack = (typeof MUSIC_TRACKS)[keyof typeof MUSIC_TRACKS]

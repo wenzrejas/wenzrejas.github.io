@@ -107,6 +107,7 @@ class InteractionManager {
     let closestDistance = Infinity
     for (const [hitArea, { shipReach, baseGap }] of this.handlers) {
       const reach = shipReach ?? (baseGap ? BASE_TOUCH_REACH : SHIP_HOVER_REACH)
+      if (reach <= 0) continue
       const distance = baseGap ? hullGap(baseGap) : this.centerDistance(hitArea, ship.x, ship.z)
       if (distance >= reach || distance >= closestDistance) continue
       closest = hitArea
@@ -116,8 +117,8 @@ class InteractionManager {
   }
 
   private centerDistance(hitArea: THREE.Object3D, shipX: number, shipZ: number): number {
-    const { x, z } = hitArea.getWorldPosition(this.hitAreaPosition)
-    return Math.hypot(x - shipX, z - shipZ)
+    const { elements } = hitArea.matrixWorld
+    return Math.hypot(elements[12] - shipX, elements[14] - shipZ)
   }
 
   private pick(allowTouchFallback = false): THREE.Object3D | null {

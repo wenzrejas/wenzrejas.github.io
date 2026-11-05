@@ -49,5 +49,9 @@ export const ONCE_EVER_REMARKS: QueuedRemark[] = [
   'spottedJellyfish',
   'keptABottle',
   'lastBottleWashedUp',
+  'spottedRaceBuoy',
+  'finishedARace',
+  'wonGoldMedal',
+  'wonEveryGold',
   ...Object.values(ISLAND_REMARKS),
 ]

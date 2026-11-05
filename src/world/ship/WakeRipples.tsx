@@ -17,6 +17,7 @@ import {
   hideRippleInstances,
   spawnWakeRipples,
 } from './rippleSprites'
+import { isShipHidden } from './shipFade'
 
 interface WakeRipplesProps {
   shipRef: RefObject<THREE.Group | null>
@@ -50,7 +51,10 @@ export default function WakeRipples({ shipRef }: WakeRipplesProps) {
     lastSpawnPoint.current ??= { x, z }
     const lastSpawn = lastSpawnPoint.current
 
-    if (Math.hypot(x - lastSpawn.x, z - lastSpawn.z) >= wake.spawnDist) {
+    if (isShipHidden()) {
+      lastSpawn.x = x
+      lastSpawn.z = z
+    } else if (Math.hypot(x - lastSpawn.x, z - lastSpawn.z) >= wake.spawnDist) {
       const slotBase = (groupIndex.current % RIPPLE_MAX_GROUPS) * RIPPLE_SPRITES_PER_GROUP
       spawnWakeRipples(sprites.current, slotBase, time, ship, wake)
       groupIndex.current++

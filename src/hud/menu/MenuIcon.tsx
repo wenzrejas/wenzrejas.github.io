@@ -1,6 +1,6 @@
 import { useId, type ReactNode } from 'react'
 
-type MenuIconName = 'music' | 'spyglass' | 'chart' | 'helm'
+type MenuIconName = 'music' | 'spyglass' | 'chart' | 'helm' | 'restart' | 'abandon'
 
 const SLASH = 'M4 4 L20 20'
 
@@ -50,6 +50,27 @@ const ICON_SHAPES: Record<MenuIconName, ReactNode> = {
       <path d="M23.8 12 a1.5 1.5 0 1 0 -3 0 a1.5 1.5 0 1 0 3 0 Z M20.78 19.28 a1.5 1.5 0 1 0 -3 0 a1.5 1.5 0 1 0 3 0 Z M13.5 22.3 a1.5 1.5 0 1 0 -3 0 a1.5 1.5 0 1 0 3 0 Z M6.22 19.28 a1.5 1.5 0 1 0 -3 0 a1.5 1.5 0 1 0 3 0 Z M3.2 12 a1.5 1.5 0 1 0 -3 0 a1.5 1.5 0 1 0 3 0 Z M6.22 4.72 a1.5 1.5 0 1 0 -3 0 a1.5 1.5 0 1 0 3 0 Z M13.5 1.7 a1.5 1.5 0 1 0 -3 0 a1.5 1.5 0 1 0 3 0 Z M20.78 4.72 a1.5 1.5 0 1 0 -3 0 a1.5 1.5 0 1 0 3 0 Z" />
       <circle cx={12} cy={12} r={2.6} />
     </>
+  ),
+  restart: (
+    <g
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2.2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M19.4 13.2 A7.6 7.6 0 1 1 16.8 6.2" />
+      <path d="M17.4 2.2 L17 6.6 L12.6 6.2" />
+    </g>
+  ),
+  abandon: (
+    <path
+      d="M6 6 L18 18 M18 6 L6 18"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2.4}
+      strokeLinecap="round"
+    />
   ),
 }
 

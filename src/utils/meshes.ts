@@ -12,6 +12,11 @@ export function meshesOf(object: THREE.Object3D): THREE.Mesh[] {
   return meshes
 }
 
+export function flatFootprint(object: THREE.Object3D) {
+  const size = new THREE.Box3().setFromObject(object).getSize(new THREE.Vector3())
+  return Math.max(size.x, size.z)
+}
+
 export const nodeNamed = (root: THREE.Object3D, name: string) =>
   root.getObjectByName(THREE.PropertyBinding.sanitizeNodeName(name))
 

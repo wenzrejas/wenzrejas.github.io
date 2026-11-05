@@ -7,6 +7,7 @@ import {
   LIVERY_NAMES,
   RANK_NAMES,
 } from '@/data/achievementCopy'
+import PanelIcon from '@/panels/shared/PanelIcon'
 import { chooseLivery, useAchievementStore } from '@/store/achievementStore'
 import { ORIGINAL_CANVAS, SHIP_LIVERIES, type LiveryKey } from '@/world/ship/constants'
 import { LIVERY_CHOICES } from '../constants'
@@ -49,6 +50,7 @@ export default function LiveryRow({ earned }: { earned: AchievementKey[] }) {
               onClick={() => livery !== chosen && chooseLivery(livery)}
             >
               <span className="achievements__swatch" style={swatchStyle(livery)} />
+              {lockHint !== null && <PanelIcon icon="lock" className="achievements__lock" />}
               <span>{LIVERY_NAMES[livery]}</span>
             </button>
           )

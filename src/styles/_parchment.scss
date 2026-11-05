@@ -4,6 +4,7 @@
 $ink: #3a291d;
 $ink-soft: #5a4535;
 $ink-faint: rgba(90, 69, 53, 0.32);
+$ink-rule: rgba(90, 69, 53, 0.16);
 $error-ink: #a3361f;
 $wax-red: #9b2c22;
 
@@ -37,6 +38,12 @@ $base-font-size: var(--panel-body-font-size, 1rem);
 $label-font-size: panel-font(1.2rem, 1rem);
 
 $state-change: 0.18s ease;
+
+$entry-card-radius: 0.6rem;
+$entry-card-inset: 0.9rem;
+$entry-card-gap: 0.55rem;
+$entry-card-fill-opacity: 0.35;
+$entry-note-opacity: 0.6;
 
 $cartouche-art-scale: 0.5;
 $cartouche-art-width: 514;
@@ -73,6 +80,14 @@ $cartouche-pressed-label-drop: 1px;
 @mixin card-frame {
   border: $frame-width solid transparent;
   border-image: card-frame-image($frame-fill-opacity) $frame-slice fill / $frame-width stretch;
+}
+
+$paper-card-fill: 'f3e2c0';
+$paper-card-edge: '8c5a30';
+
+@mixin paper-card-frame {
+  @include card-frame;
+  border-image-source: card-frame-image(0.97, $paper-card-fill, $paper-card-edge, 0.85);
 }
 
 @mixin cartouche-button {
@@ -214,6 +229,20 @@ $cartouche-pressed-label-drop: 1px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   color: $ink-soft;
+}
+
+@mixin entry-card {
+  border: 1px solid $ink-faint;
+  border-radius: $entry-card-radius;
+  background: rgba($note-paper, $entry-card-fill-opacity);
+}
+
+@mixin entry-note {
+  font-family: var(--font-secondary);
+  font-size: $base-font-size;
+  font-style: italic;
+  color: $ink-soft;
+  opacity: $entry-note-opacity;
 }
 
 @mixin entry-title {

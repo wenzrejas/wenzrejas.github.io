@@ -1,3 +1,6 @@
+import { isBuoyWithin } from '@/minigames/checkpoint-run/checkpointRun'
+import { BUOY_SPOTTED_REACH } from '@/minigames/checkpoint-run/constants'
+import { COURSE_KEYS } from '@/minigames/checkpoint-run/courses'
 import { isInsideJellyPatch } from '@/minigames/jellyfish-bloom/bloomState'
 import { LANTERN_SPOTTED_REACH } from '@/minigames/lantern-night/constants'
 import { isLanternFinalePlaying, isLanternWithin } from '@/minigames/lantern-night/lanternFlock'
@@ -9,6 +12,7 @@ import {
 } from '@/minigames/message-in-a-bottle/bottleSpots'
 import { BOTTLE_SPOTTED_REACH } from '@/minigames/message-in-a-bottle/constants'
 import { useBottleStore } from '@/store/bottleStore'
+import { goldCourses, isRaceOnScreen, useCheckpointStore } from '@/store/checkpointStore'
 import { isCinematicPlaying } from '@/store/cinematicStore'
 import { useCycleStore } from '@/store/cycleStore'
 import { isPanelOpen } from '@/store/panelStore'
@@ -26,6 +30,9 @@ export function readWorld(): WorldReading {
   const reveal = useRevealStore.getState()
   const view = useViewStore.getState()
   const { found } = useBottleStore.getState()
+  const races = useCheckpointStore.getState()
+  const golds = goldCourses(races).length
+  const { result } = races
   return {
     timeOfDay: useCycleStore.getState().timeOfDay,
     isRaining: isRainyWeather(),
@@ -42,8 +49,13 @@ export function readWorld(): WorldReading {
     isNearLantern:
       readStage() === 'world' && isLanternWithin(ship.x, ship.z, LANTERN_SPOTTED_REACH),
     isAmongJellyfish: readStage() === 'world' && isInsideJellyPatch(ship.x, ship.z),
+    isNearRaceBuoy: readStage() === 'world' && isBuoyWithin(ship.x, ship.z, BUOY_SPOTTED_REACH),
     hasLastBottleWashedUp: isBottleAfloat(LAST_BOTTLE, found) && !isPanelOpen(),
     hasKeptABottle: found.length > 0 && !isPanelOpen(),
+    hasFinishedARace: result !== null,
+    hasWonGold: result?.medal === 'gold',
+    hasWonEveryGold: result !== null && golds === COURSE_KEYS.length,
+    isRacing: races.run !== null,
     shipX: ship.x,
     shipZ: ship.z,
     shipSpeed: ship.speed,
@@ -59,6 +71,7 @@ export function readStage(): RemarkStage {
     !isPanelOpen() &&
     !isCinematicPlaying() &&
     !isRevealPlaying() &&
-    !isLanternFinalePlaying()
+    !isLanternFinalePlaying() &&
+    !isRaceOnScreen(useCheckpointStore.getState())
   return isWorldCalm ? 'world' : 'none'
 }

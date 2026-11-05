@@ -34,13 +34,18 @@ export interface WorldReading {
   isNearBottle: boolean
   isNearLantern: boolean
   isAmongJellyfish: boolean
+  isNearRaceBuoy: boolean
   hasLastBottleWashedUp: boolean
   hasKeptABottle: boolean
+  hasFinishedARace: boolean
+  hasWonGold: boolean
+  hasWonEveryGold: boolean
   shipX: number
   shipZ: number
   shipSpeed: number
   shipHeading: number
   shipPlacements: number
+  isRacing: boolean
 }
 
 export interface MomentCounters {
@@ -68,7 +73,8 @@ export function countMoments(
 ): MomentCounters {
   if (world.isWorldPaused) return counters
   const isMoving = world.shipSpeed >= STOPPED_SPEED
-  const isSameCourse = isMoving && world.shipPlacements === previous.shipPlacements
+  const isSameCourse =
+    isMoving && !world.isRacing && world.shipPlacements === previous.shipPlacements
   return {
     rainSeconds: world.isRaining ? counters.rainSeconds + dt : 0,
     tailwindSeconds: world.tailwind >= WIND_REMARK_TAILWIND ? counters.tailwindSeconds + dt : 0,
@@ -95,7 +101,11 @@ const hasReached = (from: number, to: number, level: number) => from < level && 
 const MINI_GAME_MOMENTS = [
   ['hasLastBottleWashedUp', 'lastBottleWashedUp'],
   ['hasKeptABottle', 'keptABottle'],
+  ['hasWonEveryGold', 'wonEveryGold'],
+  ['hasWonGold', 'wonGoldMedal'],
+  ['hasFinishedARace', 'finishedARace'],
   ['isNearBottle', 'spottedBottle'],
+  ['isNearRaceBuoy', 'spottedRaceBuoy'],
   ['isNearLantern', 'spottedLanterns'],
   ['isAmongJellyfish', 'spottedJellyfish'],
 ] as const

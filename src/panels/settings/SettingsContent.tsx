@@ -7,19 +7,19 @@ import { SETTINGS_TABS, type SettingsTab } from './constants'
 import AboutTab from './tabs/AboutTab'
 import AchievementsTab from './tabs/AchievementsTab'
 import ControlsTab from './tabs/ControlsTab'
-import DisplayTab from './tabs/DisplayTab'
+import GeneralTab from './tabs/GeneralTab'
 import KeepsakesTab from './tabs/KeepsakesTab'
-import SoundTab from './tabs/SoundTab'
+import RegattaTab from './tabs/RegattaTab'
 import WorldTab from './tabs/WorldTab'
 import './SettingsContent.scss'
 
 const TAB_PANES: Record<SettingsTab, ComponentType> = {
-  sound: SoundTab,
-  display: DisplayTab,
+  general: GeneralTab,
   world: WorldTab,
   controls: ControlsTab,
   achievements: AchievementsTab,
   keepsakes: KeepsakesTab,
+  regatta: RegattaTab,
   about: AboutTab,
 }
 

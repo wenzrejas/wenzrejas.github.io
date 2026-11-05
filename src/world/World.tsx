@@ -1,5 +1,6 @@
 import { useRef, forwardRef } from 'react'
 import * as THREE from 'three'
+import CheckpointRuns from '@/minigames/checkpoint-run/CheckpointRuns'
 import BottleField from '@/minigames/message-in-a-bottle/BottleField'
 import NightEvents from '@/minigames/night-events/NightEvents'
 import Boundary from './environment/boundary/Boundary'
@@ -55,6 +56,7 @@ const World = forwardRef<THREE.Group>((_props, forwardedRef) => {
       <Whale />
       <BottleField />
       <NightEvents />
+      <CheckpointRuns />
     </>
   )
 })

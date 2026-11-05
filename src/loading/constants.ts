@@ -1,5 +1,8 @@
+import { SCENE_RENDER_FRAME_PRIORITY } from '@/app/experience/constants'
+
 // ── Preload ───────────────────────────────────────────────────────────────────
 export const PRELOAD_WAIT_LIMIT_SECONDS = 10
+export const SCENE_UPLOAD_FRAME_PRIORITY = SCENE_RENDER_FRAME_PRIORITY - 0.5
 
 // ── Messages ──────────────────────────────────────────────────────────────────
 export const STAGE_START_PERCENTS = [0, 20, 40, 60, 80, 95]

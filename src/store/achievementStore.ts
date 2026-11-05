@@ -8,7 +8,7 @@ import {
 } from '@/achievements/constants'
 import { ISLAND_KEYS } from '@/world/islands/shared/islandSpecs'
 import type { LiveryKey } from '@/world/ship/constants'
-import { rememberedItems, rememberedText, rememberText } from './visitorMemory'
+import { rememberedItems, rememberedRecord, rememberText } from './visitorMemory'
 
 interface AchievementRecord {
   earned: AchievementKey[]
@@ -25,18 +25,8 @@ const FRESH_RECORD: AchievementRecord = { earned: [], progress: {}, livery: 'ori
 const isComplete = (achievement: AchievementKey, items: string[]) =>
   ACHIEVEMENTS[achievement].items?.every((item) => items.includes(item)) ?? false
 
-function readRecord(): AchievementRecord {
-  const stored = rememberedText('achievements')
-  if (!stored) return FRESH_RECORD
-  try {
-    return { ...FRESH_RECORD, ...JSON.parse(stored) }
-  } catch {
-    return FRESH_RECORD
-  }
-}
-
 function recallRecord(): AchievementRecord {
-  const record = readRecord()
+  const record = rememberedRecord('achievements', FRESH_RECORD)
   const revealed = rememberedItems('revealedIslands', ISLAND_KEYS)
   const charted = [...new Set([...(record.progress.cartographer ?? []), ...revealed])]
   const earned = new Set(record.earned.filter((key) => ACHIEVEMENT_KEYS.includes(key)))

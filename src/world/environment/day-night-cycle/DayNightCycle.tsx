@@ -52,6 +52,7 @@ export default function DayNightCycle() {
     lerpColor(lo.oceanDeep, hi.oceanDeep, a, cycle.oceanDeep)
     lerpColor(lo.oceanMid, hi.oceanMid, a, cycle.oceanMid)
     lerpColor(lo.foam, hi.foam, a, cycle.foamColor)
+    lerpColor(lo.sparkle, hi.sparkle, a, cycle.sparkleColor)
 
     if (weather.overcastAmount > 0) {
       cycle.fogColor.multiplyScalar(1 - weather.overcastAmount * 0.35)

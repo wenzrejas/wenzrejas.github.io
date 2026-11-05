@@ -1,0 +1,107 @@
+@use '@/styles/breakpoints';
+@use '@/styles/parchment' as *;
+@use '@/styles/typography';
+
+$card-width: 28rem;
+$close-size: 2.5rem;
+$close-inset: 0.5rem;
+$screen-gap: 1rem;
+$small-medal-size: 2.2rem;
+$short-medal-size: 2rem;
+$short-cartouche-unit: 0.36px;
+
+.race-card {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 88;
+  display: grid;
+  justify-items: center;
+  row-gap: 0.85rem;
+  width: $card-width;
+  max-width: calc(var(--safe-width) - 2rem);
+  padding: 1.75rem 2rem;
+  translate: -50% -50%;
+  @include paper-card-frame;
+  text-align: center;
+
+  @include breakpoints.phone-portrait {
+    padding: 1.5rem 1.25rem;
+  }
+
+  @include breakpoints.phone-landscape {
+    row-gap: 0.4rem;
+    max-height: calc(100dvh - var(--safe-top) - var(--safe-bottom) - #{$screen-gap});
+    padding: 0.75rem 1.5rem;
+    overflow-y: auto;
+  }
+
+  &__close {
+    --close-button-size: #{$close-size};
+
+    position: absolute;
+    top: $close-inset;
+    right: $close-inset;
+
+    @include breakpoints.touch-input {
+      --close-button-size: #{breakpoints.$touch-target};
+    }
+  }
+
+  &__eyebrow {
+    @include typography.spaced-caps;
+    color: $ink-soft;
+  }
+
+  &__course {
+    font-family: var(--font-accent);
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: $ink;
+  }
+
+  &__medal-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+
+    &--small {
+      --medal-size: #{$small-medal-size};
+    }
+
+    @include breakpoints.phone-landscape {
+      --medal-size: #{$short-medal-size};
+    }
+  }
+
+  &__medal-name {
+    font-family: var(--font-secondary);
+    font-size: $base-font-size;
+    font-weight: 600;
+    color: $ink;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+
+    @include breakpoints.phone-landscape {
+      margin-top: 0;
+    }
+  }
+
+  &__action {
+    @include cartouche-button;
+
+    @include breakpoints.phone-landscape {
+      --cartouche-unit: #{$short-cartouche-unit};
+    }
+  }
+
+  &__action-label {
+    @include cartouche-label;
+  }
+}

@@ -1,6 +1,8 @@
+import { COURSES } from '@/minigames/checkpoint-run/courses'
 import { LAST_BOTTLE, type BottleKey } from '@/minigames/message-in-a-bottle/bottleSpots'
 import { earnAchievement, recordProgress } from '@/store/achievementStore'
 import { useBottleStore } from '@/store/bottleStore'
+import { goldCourses, useCheckpointStore, type RunResult } from '@/store/checkpointStore'
 import { useDepthsStore } from '@/store/depthsStore'
 import { usePanelStore, type PanelKey } from '@/store/panelStore'
 import { useRevealStore } from '@/store/revealStore'
@@ -20,6 +22,14 @@ function notePanel(panel: PanelKey) {
 function noteBottles(found: BottleKey[]) {
   earnAchievement('messageInABottle')
   for (const bottle of found) if (bottle !== LAST_BOTTLE) recordProgress('beachcomber', bottle)
+}
+
+function noteRaceResult({ course, perfects }: RunResult) {
+  earnAchievement('offTheLine')
+  if (perfects === COURSES[course].rings.length) earnAchievement('threadTheNeedle')
+  const golds = goldCourses(useCheckpointStore.getState())
+  if (golds.length > 0) earnAchievement('goldenWake')
+  for (const gold of golds) recordProgress('regattaChampion', gold)
 }
 
 export function noteReveal(island: IslandKey) {
@@ -47,6 +57,9 @@ export function followStoreEvents() {
     }),
     useBottleStore.subscribe(({ found }, previous) => {
       if (found !== previous.found) noteBottles(found)
+    }),
+    useCheckpointStore.subscribe(({ result }, previous) => {
+      if (result && result !== previous.result) noteRaceResult(result)
     }),
   ]
   return () => {

@@ -12,12 +12,13 @@ interface OceanSparklesProps {
   shipRef: RefObject<THREE.Group | null>
   field: SparkleField
   intensityOf: () => number
+  color: THREE.Color
 }
 
-export default function OceanSparkles({ shipRef, field, intensityOf }: OceanSparklesProps) {
+export default function OceanSparkles({ shipRef, field, intensityOf, color }: OceanSparklesProps) {
   const pointsRef = useRef<THREE.Points>(null)
   const geometry = useMemo(() => buildSparkleGeometry(field), [field])
-  const material = useMemo(() => createSparkleMaterial(field), [field])
+  const material = useMemo(() => createSparkleMaterial(field, color), [field, color])
 
   useEffect(
     () => () => {

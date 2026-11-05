@@ -3,6 +3,7 @@ import { useFrame, useThree } from '@react-three/fiber'
 import type * as THREE from 'three'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { zoomedOutBoost } from '@/app/experience/worldZoom'
+import { isRaceUnderway } from '@/store/checkpointStore'
 import { MAX_FRAME_SECONDS } from '@/utils/time'
 import { LANTERN_CAPACITY, LANTERN_ZOOMED_OUT_BOOST_MAX } from './constants'
 import { drawFlock } from './lanternDraw'
@@ -41,6 +42,12 @@ export default function LanternField() {
     const bodies = bodiesRef.current
     const glows = glowsRef.current
     if (!bodies || !glows) return
+
+    if (isRaceUnderway()) {
+      bodies.visible = false
+      glows.visible = false
+      return
+    }
 
     const { zoom } = camera as THREE.OrthographicCamera
     stepLanternEvent(

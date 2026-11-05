@@ -28,3 +28,7 @@ vec3 waveSines(vec2 xz) {
 float shoreCalm(vec2 xz) {
   return texture2D(uShoreCalmMap, xz / uShoreCalmMapSize + 0.5).r;
 }
+
+float waveRideAt(vec2 xz) {
+  return waveSines(xz).x * shoreCalm(xz);
+}

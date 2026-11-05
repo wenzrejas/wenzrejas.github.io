@@ -5,6 +5,7 @@ import { animated, useSpring } from '@react-spring/web'
 import * as THREE from 'three'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { audio } from '@/audio/audioManager'
+import { isRaceOnScreen, useCheckpointStore } from '../store/checkpointStore'
 import { useIsTouchInput } from '../store/inputStore'
 import { isPanelOpen } from '../store/panelStore'
 import { isRevealPlaying } from '../store/revealStore'
@@ -32,12 +33,17 @@ interface InteractionMarkerProps {
   onActivate?: (markerSpot: THREE.Vector3) => void
   shipReach?: number
   baseGap?: (x: number, z: number) => number
+  pixels?: number
+  bodyHit?: THREE.BufferGeometry
 }
 
-const LABEL_STYLE = {
-  '--marker-reach': `${MARKER_PIXELS * MARKER_RING_OUTER}px`,
-  '--marker-color': MARKER_COLOR,
-} as CSSProperties
+type MarkerArea = 'marker' | 'body'
+
+const labelStyleFor = (pixels: number) =>
+  ({
+    '--marker-reach': `${pixels * MARKER_RING_OUTER}px`,
+    '--marker-color': MARKER_COLOR,
+  }) as CSSProperties
 
 export default function InteractionMarker({
   position,
@@ -47,15 +53,25 @@ export default function InteractionMarker({
   onActivate,
   shipReach,
   baseGap,
+  pixels = MARKER_PIXELS,
+  bodyHit,
 }: InteractionMarkerProps) {
   const meshRef = useRef<THREE.Mesh>(null)
+  const bodyRef = useRef<THREE.Mesh>(null)
   const motion = useRef<MarkerMotion>({ hover: 0, velocity: 0, presence: 1 })
   const [pulseOffset] = useState(Math.random)
   const [isHovered, setHovered] = useState(false)
   const isTouch = useIsTouchInput()
-  const reportHover = useEffectEvent((next: boolean) => {
-    setHovered(next)
-    onHover?.(next)
+  const litAreas = useRef(new Set<MarkerArea>())
+  const reportHover = useEffectEvent((area: MarkerArea, next: boolean) => {
+    const areas = litAreas.current
+    const wasLit = areas.size > 0
+    if (next) areas.add(area)
+    else areas.delete(area)
+    const isLit = areas.size > 0
+    if (isLit === wasLit) return
+    setHovered(isLit)
+    onHover?.(isLit)
   })
   const activate = useEffectEvent(() => {
     const mesh = meshRef.current
@@ -66,6 +82,7 @@ export default function InteractionMarker({
 
   const geometry = useMemo(() => buildMarkerGeometry(), [])
   const material = useMemo(() => createMarkerMaterial(), [])
+  const labelStyle = useMemo(() => labelStyleFor(pixels), [pixels])
   const { opacity, x } = useSpring({
     opacity: isHovered ? 1 : 0,
     x: isHovered ? 0 : -MARKER_LABEL_SLIDE,
@@ -84,22 +101,38 @@ export default function InteractionMarker({
     const mesh = meshRef.current
     if (!mesh) return
     mesh.layers.enable(INTERACTION_LAYER)
-    return interactions.register(mesh, {
-      onHover: (next) => reportHover(next),
+    const stopMarker = interactions.register(mesh, {
+      onHover: (next) => reportHover('marker', next),
       onActivate: () => activate(),
       shipReach,
       baseGap,
     })
-  }, [shipReach, baseGap])
+    const body = bodyRef.current
+    if (!body) return stopMarker
+    body.layers.enable(INTERACTION_LAYER)
+    const stopBody = interactions.register(body, {
+      onHover: (next) => reportHover('body', next),
+      onActivate: () => activate(),
+      shipReach: 0,
+    })
+    return () => {
+      stopMarker()
+      stopBody()
+    }
+  }, [shipReach, baseGap, bodyHit])
 
   useFrame(({ camera, clock }, delta) => {
     const mesh = meshRef.current
     if (!mesh) return
-    const isShown = !isPanelOpen() && !isRevealPlaying() && isWorldScene(useViewStore.getState())
+    const isShown =
+      !isPanelOpen() &&
+      !isRevealPlaying() &&
+      !isRaceOnScreen(useCheckpointStore.getState()) &&
+      isWorldScene(useViewStore.getState())
     fadeMarker(motion.current, isShown, delta)
     mesh.visible = motion.current.presence > 0
     if (!mesh.visible) return
-    pinToScreen(mesh, camera, MARKER_PIXELS)
+    pinToScreen(mesh, camera, pixels)
     springHover(motion.current, isHovered, delta)
     const uniforms = uniformsOf(mesh)
     uniforms.uOpacity.value = motion.current.presence
@@ -115,9 +148,10 @@ export default function InteractionMarker({
         material={material}
         renderOrder={RENDER_LAYER.markers}
       />
+      {bodyHit && <mesh ref={bodyRef} geometry={bodyHit} visible={false} />}
       {!isTouch && (
         <Html pointerEvents="none">
-          <div className="interaction-marker" style={LABEL_STYLE}>
+          <div className="interaction-marker" style={labelStyle}>
             <animated.span className="interaction-marker__label" style={{ opacity, x }}>
               {label}
               {description && (

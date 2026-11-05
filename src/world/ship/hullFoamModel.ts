@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import { floatDefines } from '@/utils/glsl'
 import type { DistanceField } from '../shore/shoreField'
 import { FOAM_GRAIN, FOAM_JAG } from './constants'
+import { shipFadeUniforms } from './shipFade'
 import FOAM_VERT from './shaders/foam.vert.glsl'
 import FOAM_FRAG from './shaders/foam.frag.glsl'
 
@@ -20,6 +21,7 @@ export function createHullFoamMaterial(): THREE.ShaderMaterial {
       uReach: { value: 0 },
       uTime: { value: 0 },
       uColor: { value: new THREE.Color(1, 1, 1) },
+      uShipFade: shipFadeUniforms.uShipFade,
     },
     vertexShader: FOAM_VERT,
     fragmentShader: FOAM_FRAG,

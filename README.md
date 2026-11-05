@@ -27,7 +27,8 @@ Hi, I'm Wenz Louie Rejas, a frontend developer who loves turning creative ideas 
 - Wobbi, my "trusty little navigator. Well... mostly trusty.", who pops in with tips as you explore.
 - Messages in bottles scattered across the sea, with notes about me and this world, saved to a Keepsakes tab in Settings.
 - Some nights bring a surprise: paper lanterns to light and send skyward, or a bloom of glowing jellyfish to steer through.
-- 28 achievements to collect. Every new rank unlocks a fresh sail livery for the ship.
+- Three Regatta race courses, each started from a buoy, with medals and best times kept in Settings.
+- 32 achievements to collect. Every new rank unlocks a fresh sail livery for the ship.
 - Settings for sound, graphics, frame rate, time of day, weather, day length, wildlife, sailing speed, reduced motion and reduced flashing.
 
 ## Controls
@@ -98,7 +99,7 @@ src/
 ├── loading/        The parchment-map loading screen
 ├── guide/          Wobbi, the guide
 ├── achievements/   Achievements, ranks and sail liveries
-├── minigames/      Message in a Bottle
+├── minigames/      Message in a Bottle, Lantern Night, Jellyfish Bloom, Regatta
 ├── interaction/    Island markers and hover handling
 ├── audio/          Music, ambience and sound effects
 ├── store/          Zustand stores
@@ -111,7 +112,8 @@ src/
 
 ## Credits
 
-- Music and sound effects from [Pixabay](https://pixabay.com/)
+- Music by [Kounine](https://linktr.ee/Kounine)
+- Sound effects from [Pixabay](https://pixabay.com/)
 - Special thanks to [Three.js Journey](https://threejs-journey.com/) by Bruno Simon
 
 ## Say hello

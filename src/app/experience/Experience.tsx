@@ -46,7 +46,7 @@ export default function Experience() {
         near: CAMERA_NEAR,
         far: CAMERA_FAR,
       }}
-      gl={{ antialias: true }}
+      gl={{ antialias: true, stencil: true }}
       dpr={PIXEL_RATIOS[graphicsQuality]}
       frameloop="demand"
     >

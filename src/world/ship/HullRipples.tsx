@@ -18,6 +18,7 @@ import {
   hideRippleInstances,
   spawnHullRipples,
 } from './rippleSprites'
+import { isShipHidden } from './shipFade'
 
 interface HullRipplesProps {
   shipRef: RefObject<THREE.Group | null>
@@ -50,7 +51,7 @@ export default function HullRipples({ shipRef, hullOutlineRef }: HullRipplesProp
     const time = clock.getElapsedTime()
     const bobSign = Math.sin(time * tuning.bobSpeed) >= 0 ? 1 : -1
     const hullOutline = hullOutlineRef.current
-    if (hullOutline && previousBobSign.current > 0 && bobSign < 0) {
+    if (hullOutline && previousBobSign.current > 0 && bobSign < 0 && !isShipHidden()) {
       const slotBase = (groupIndex.current % HULL_RIPPLE_GROUPS) * HULL_RIPPLES_PER_GROUP
       spawnHullRipples(sprites.current, slotBase, time, ship, hullOutline, tuning)
       groupIndex.current++

@@ -10,8 +10,8 @@ interface AchievementRowProps {
 }
 
 export default function AchievementRow({ achievement, isEarned, itemsDone }: AchievementRowProps) {
-  const { isSecret, items } = ACHIEVEMENTS[achievement]
-  const { title, description } = isSecret && !isEarned ? copy.secret : ACHIEVEMENT_COPY[achievement]
+  const { items } = ACHIEVEMENTS[achievement]
+  const { title, description } = ACHIEVEMENT_COPY[achievement]
 
   return (
     <li

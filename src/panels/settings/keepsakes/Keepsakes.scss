@@ -1,17 +1,15 @@
 @use '@/styles/breakpoints';
 @use '@/styles/parchment' as *;
 
-$afloat-opacity: 0.6;
 $marker-size: 0.5rem;
 $marker-edge: 1.5px;
+$rule-ornament-size: 9px;
 
 .keepsakes {
   &__header {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    padding-bottom: 0.35rem;
-    border-bottom: 1px solid $ink-faint;
   }
 
   &__heading {
@@ -23,21 +21,21 @@ $marker-edge: 1.5px;
   }
 
   &__bottles {
+    display: grid;
+    row-gap: $entry-card-gap;
+    margin-top: 0.7rem;
     list-style: none;
   }
 
   &__bottle {
-    border-bottom: 1px solid $ink-faint;
+    @include entry-card;
 
     &--afloat {
+      @include entry-note;
       display: flex;
       align-items: center;
       min-height: breakpoints.$touch-target;
-      font-family: var(--font-secondary);
-      font-size: $base-font-size;
-      font-style: italic;
-      color: $ink-soft;
-      opacity: $afloat-opacity;
+      padding-inline: $entry-card-inset;
     }
   }
 
@@ -47,6 +45,8 @@ $marker-edge: 1.5px;
     align-items: center;
     justify-content: space-between;
     min-height: breakpoints.$touch-target;
+    padding-inline: $entry-card-inset;
+    border-radius: inherit;
     list-style: none;
     cursor: var(--cursor-hand);
 
@@ -75,8 +75,16 @@ $marker-edge: 1.5px;
     rotate: 225deg;
   }
 
+  &__body {
+    padding: 0 $entry-card-inset 0.85rem;
+  }
+
+  &__rule {
+    margin-bottom: 0.75rem;
+    @include diamond-rule($rule-ornament-size);
+  }
+
   &__text {
-    padding-bottom: 0.7rem;
     font-family: var(--font-secondary);
     font-size: $base-font-size;
     line-height: 1.55;
@@ -87,7 +95,7 @@ $marker-edge: 1.5px;
     display: inline-flex;
     align-items: center;
     min-height: breakpoints.$touch-target;
-    margin-bottom: 0.3rem;
+    margin-top: 0.25rem;
     padding: 0;
     border: none;
     background: none;

@@ -9,8 +9,11 @@ $swatch-size: 2.5rem;
 $swatch-radius: 4px;
 $swatch-edge: rgba($ink, 0.45);
 $livery-gap: 0.5rem;
-$livery-min-width: 3.1rem;
+$livery-columns: 4;
 $locked-livery-opacity: 0.4;
+$lock-size: 1.15rem;
+$lock-ink: #6f6f6f;
+$lock-edge: rgba(255, 255, 255, 0.55);
 $wax-light: #c24a3b;
 $wax-dark: #6b1a13;
 $wax-rim: rgba(255, 214, 196, 0.38);
@@ -25,7 +28,11 @@ $seal-line-weight: 1.5px;
     align-items: baseline;
     row-gap: 0.35rem;
     margin-bottom: 0.6rem;
-    padding: 1.5rem;
+    padding: 1.5rem 0;
+
+    @include breakpoints.sheet-layout {
+      padding-inline: 1.5rem;
+    }
   }
 
   &__eyebrow,
@@ -68,17 +75,22 @@ $seal-line-weight: 1.5px;
   }
 
   &__livery-row {
-    padding: 0.4rem 1.5rem;
+    padding: 0.4rem 0;
+
+    @include breakpoints.sheet-layout {
+      padding-inline: 1.5rem;
+    }
   }
 
   &__liveries {
     grid-column: 2 / -1;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax($livery-min-width, 1fr));
+    grid-template-columns: repeat($livery-columns, minmax(0, 1fr));
     gap: $livery-gap;
   }
 
   &__livery {
+    position: relative;
     display: grid;
     align-content: start;
     justify-items: center;
@@ -109,9 +121,23 @@ $seal-line-weight: 1.5px;
     }
 
     &:disabled {
-      opacity: $locked-livery-opacity;
       cursor: not-allowed;
+
+      > span {
+        opacity: $locked-livery-opacity;
+      }
     }
+  }
+
+  &__lock {
+    position: absolute;
+    top: calc($swatch-size / 2);
+    left: 50%;
+    width: $lock-size;
+    height: $lock-size;
+    translate: -50% -50%;
+    color: $lock-ink;
+    filter: drop-shadow(0 0 1px $lock-edge);
   }
 
   &__swatch {
@@ -151,7 +177,7 @@ $seal-line-weight: 1.5px;
 
   &__heading {
     padding-bottom: 0.35rem;
-    border-bottom: 1px solid $ink-faint;
+    border-bottom: 1px solid $ink-rule;
   }
 
   &__list {

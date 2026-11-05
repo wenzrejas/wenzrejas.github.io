@@ -1,0 +1,285 @@
+@use '@/styles/breakpoints';
+@use '@/styles/glass';
+
+$timer-top: 5.25rem;
+$timer-height: 2.625rem;
+$ring-width: 5.4rem;
+$time-width: 3.4rem;
+$ink: #ffffff;
+$muted-ink: rgba(228, 232, 240, 0.75);
+$separator: rgba(255, 255, 255, 0.3);
+$pointer-size: 1.7rem;
+$key-edge: rgba(255, 255, 255, 0.45);
+$key-edge-lit: rgba(255, 255, 255, 0.8);
+$key-face: rgba(0, 0, 0, 0.2);
+$pip-size: 0.5rem;
+$pip-idle: rgba(255, 255, 255, 0.28);
+$call-top: 8.3rem;
+$split-behind: #ff9d8a;
+$split-ahead: #8fe8ad;
+$surge-bar-height: 3px;
+$surge-bar-inset: 1.2rem;
+$panel-border: 2px;
+$sheet-timer-top: 4.25rem;
+$sheet-call-top: 7.5rem;
+$compact-ring-width: 4.75rem;
+$compact-icon-size: 1.15rem;
+$compact-last-action-room: 0.2rem;
+$arriving-action-opacity: 0.45;
+
+.run-timer {
+  position: fixed;
+  top: $timer-top;
+  left: 50%;
+  z-index: 80;
+  display: flex;
+  height: $timer-height;
+  translate: -50% 0;
+  border-radius: 999px;
+  font-family: var(--font-hud);
+  color: $ink;
+  white-space: nowrap;
+  @include glass.glass-panel;
+
+  @include breakpoints.sheet-layout {
+    top: calc(var(--safe-top) + #{$sheet-timer-top});
+  }
+
+  &--arriving .run-timer__action {
+    opacity: $arriving-action-opacity;
+    pointer-events: none;
+  }
+
+  @include breakpoints.touch-input {
+    height: calc(#{breakpoints.$touch-target} + #{$panel-border});
+  }
+
+  &__readout {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0 1.1rem;
+
+    @include breakpoints.compact {
+      gap: 0.5rem;
+      padding: 0 0.65rem;
+    }
+  }
+
+  &__ring {
+    width: $ring-width;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-align: center;
+    text-transform: uppercase;
+    color: $muted-ink;
+    @include glass.rise-label;
+
+    @include breakpoints.compact {
+      width: $compact-ring-width;
+      font-size: 0.7rem;
+      letter-spacing: 0.04em;
+    }
+  }
+
+  &__time {
+    min-width: $time-width;
+    font-size: 1.15rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    @include glass.rise-label;
+
+    @include breakpoints.compact {
+      font-size: 1.05rem;
+    }
+  }
+
+  &__pips {
+    display: flex;
+    gap: 0.45rem;
+    padding: 0 0.1rem;
+
+    @include breakpoints.compact {
+      gap: 0.35rem;
+      padding: 0;
+    }
+
+    &--surging .run-timer__pip--lit {
+      box-shadow: 0 0 7px glass.$race-gold;
+    }
+  }
+
+  &__pip {
+    width: $pip-size;
+    height: $pip-size;
+    rotate: 45deg;
+    background: $pip-idle;
+    transition: background 0.18s ease;
+
+    &--lit {
+      background: glass.$race-gold;
+    }
+  }
+
+  &__surge {
+    position: absolute;
+    right: $surge-bar-inset;
+    bottom: 0;
+    left: $surge-bar-inset;
+    height: $surge-bar-height;
+    border-radius: $surge-bar-height;
+    background: glass.$race-gold;
+    box-shadow: 0 0 6px glass.$race-gold;
+    scale: 0 1;
+    pointer-events: none;
+  }
+
+  &__action {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0 0.9rem 0 0.8rem;
+    border: 0;
+    border-left: 1px solid $separator;
+    background: none;
+    font-family: var(--font-hud);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: $muted-ink;
+    cursor: var(--cursor-hand);
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease;
+
+    .key-cap {
+      display: block;
+      min-width: 0;
+      height: auto;
+      margin: 0;
+      padding: 0.3rem 0.5rem 0.27rem;
+      border-color: $key-edge;
+      border-radius: 0.3rem;
+      background: $key-face;
+      box-shadow: none;
+      font-size: 0.625rem;
+      color: $ink;
+      transition: border-color 0.15s ease;
+      @include glass.rise-label;
+    }
+
+    @include breakpoints.hover-only {
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.18);
+        color: $ink;
+
+        .key-cap {
+          border-color: $key-edge-lit;
+        }
+      }
+    }
+
+    @include breakpoints.touch-input {
+      &:active {
+        background-color: rgba(255, 255, 255, 0.18);
+        color: $ink;
+      }
+    }
+
+    &:focus-visible {
+      outline: 2px solid $ink;
+      outline-offset: -4px;
+    }
+
+    @include breakpoints.compact {
+      justify-content: center;
+      width: breakpoints.$touch-target;
+      padding: 0;
+      font-size: $compact-icon-size;
+    }
+
+    &:last-of-type {
+      padding-right: 1.25rem;
+      border-radius: 0 999px 999px 0;
+
+      @include breakpoints.compact {
+        width: calc(#{breakpoints.$touch-target} + #{$compact-last-action-room});
+        padding-right: $compact-last-action-room;
+      }
+    }
+  }
+}
+
+.run-timer__action-label {
+  @include glass.rise-label;
+}
+
+.run-calls {
+  position: fixed;
+  top: $call-top;
+  left: 50%;
+  z-index: 80;
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
+  translate: -50% 0;
+  white-space: nowrap;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.55);
+  pointer-events: none;
+
+  @include breakpoints.sheet-layout {
+    top: calc(var(--safe-top) + #{$sheet-call-top});
+  }
+
+  @include breakpoints.compact {
+    gap: 0.6rem;
+  }
+
+  @include breakpoints.phone-landscape {
+    left: calc(var(--safe-left) + 1rem);
+    translate: 0;
+  }
+}
+
+.run-call {
+  font-family: var(--font-accent);
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: glass.$race-gold;
+
+  @include breakpoints.compact {
+    font-size: 1.25rem;
+  }
+}
+
+.run-split {
+  font-family: var(--font-hud);
+  font-size: 1.35rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: $split-behind;
+
+  @include breakpoints.compact {
+    font-size: 1.05rem;
+  }
+
+  &--ahead {
+    color: $split-ahead;
+  }
+}
+
+.run-pointer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 80;
+  width: $pointer-size;
+  height: $pointer-size;
+  pointer-events: none;
+  will-change: translate;
+  background: glass.$race-gold;
+  clip-path: polygon(100% 50%, 0 0, 28% 50%, 0 100%);
+  filter: drop-shadow(0 0 4px rgba(255, 211, 107, 0.85));
+}

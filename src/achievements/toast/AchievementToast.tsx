@@ -4,6 +4,7 @@ import type { AchievementKey } from '@/achievements/constants'
 import { audio } from '@/audio/audioManager'
 import { ACHIEVEMENT_COPY, ACHIEVEMENT_TOAST_COPY } from '@/data/achievementCopy'
 import { finishAnnouncement, useAchievementStore } from '@/store/achievementStore'
+import { isRaceOnScreen, useCheckpointStore } from '@/store/checkpointStore'
 import { usePanelStore } from '@/store/panelStore'
 import { useRevealStore } from '@/store/revealStore'
 import { isMapUnfolded, useViewStore } from '@/store/viewStore'
@@ -26,7 +27,8 @@ function useIsToastHeld() {
   const isRevealPlaying = useRevealStore((state) => state.activeKey !== null)
   const isPanelOpen = usePanelStore((state) => state.activePanel !== null)
   const isMapOut = useViewStore(isMapUnfolded)
-  return isRevealPlaying || isPanelOpen || isMapOut
+  const isRacing = useCheckpointStore(isRaceOnScreen)
+  return isRevealPlaying || isPanelOpen || isMapOut || isRacing
 }
 
 export default function AchievementToast() {

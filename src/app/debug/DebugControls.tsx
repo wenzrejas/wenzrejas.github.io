@@ -9,6 +9,7 @@ import { useWeatherControls } from './panels/weather'
 import { useDayCycleControls } from './panels/dayCycle'
 import { useCameraControls } from './panels/camera'
 import { useRevealControls } from './panels/reveal'
+import { useRaceControls } from './panels/races'
 import { useWildlifeControls } from './panels/wildlife'
 import { useMusicControls } from './panels/music'
 
@@ -23,6 +24,7 @@ export function DebugSync() {
   const dayCycle = useDayCycleControls()
   const camera = useCameraControls()
   const reveal = useRevealControls()
+  useRaceControls()
   const wildlife = useWildlifeControls()
   const music = useMusicControls()
 

@@ -12,12 +12,12 @@ import type {
 
 // ── Tabs ──────────────────────────────────────────────────────────────────────
 export const SETTINGS_TABS = [
-  'sound',
-  'display',
+  'general',
   'world',
   'controls',
   'achievements',
   'keepsakes',
+  'regatta',
   'about',
 ] as const
 export type SettingsTab = (typeof SETTINGS_TABS)[number]

@@ -3,6 +3,7 @@ import { audio } from '@/audio/audioManager'
 import { openingMusic } from '@/audio/musicDirector'
 import type { SoundName } from '@/audio/sounds'
 import { preloadMascotSheets } from '@/guide/mascot/mascotSheets'
+import { MEDAL_ART_URLS } from '@/minigames/checkpoint-run/medal-disc/constants'
 import { BOTTLE_SIGNATURE_URL } from '@/minigames/message-in-a-bottle/constants'
 import { CARTOUCHE_ART_URLS } from '@/panels/shared/cartouche/constants'
 import { isRaining } from '@/store/weatherStore'
@@ -39,6 +40,7 @@ async function preload() {
     ...Object.values(CARTOUCHE_ART_URLS).map(decodeImage),
     decodeImage(ACHIEVEMENT_BADGE_URL),
     decodeImage(BOTTLE_SIGNATURE_URL),
+    ...Object.values(MEDAL_ART_URLS).map(decodeImage),
     audio.preloadBuffers(),
     ...openingStreams().map((name) => audio.preload(name)),
   ])

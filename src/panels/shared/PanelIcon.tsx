@@ -1,6 +1,14 @@
 import type { ReactNode } from 'react'
 
-export type PanelIconName = 'external' | 'mail' | 'next' | 'pen' | 'person' | 'previous' | 'star'
+export type PanelIconName =
+  | 'external'
+  | 'lock'
+  | 'mail'
+  | 'next'
+  | 'pen'
+  | 'person'
+  | 'previous'
+  | 'star'
 
 const ICON_SHAPES: Record<PanelIconName, ReactNode> = {
   external: (
@@ -8,6 +16,12 @@ const ICON_SHAPES: Record<PanelIconName, ReactNode> = {
       <path d="M10.5 4.5 H6.5 A2 2 0 0 0 4.5 6.5 V17.5 A2 2 0 0 0 6.5 19.5 H17.5 A2 2 0 0 0 19.5 17.5 V13.5" />
       <path d="M14 4.5 H19.5 V10" />
       <path d="M19.5 4.5 L11.5 12.5" />
+    </>
+  ),
+  lock: (
+    <>
+      <rect x={5} y={10.5} width={14} height={10} rx={2} />
+      <path d="M8 10.5 V7.5 A4 4 0 0 1 16 7.5 V10.5" />
     </>
   ),
   mail: (

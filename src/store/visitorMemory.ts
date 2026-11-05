@@ -8,6 +8,7 @@ const MEMORY_KEYS = {
   heardDialogues: 'heard-dialogues',
   achievements: 'achievements',
   foundBottles: 'found-bottles',
+  checkpointRuns: 'regatta-records',
   settings: 'settings',
 }
 
@@ -30,6 +31,16 @@ export function rememberedItems<Item extends string>(memory: Memory, items: read
 
 export const rememberedText = (memory: Memory) =>
   IS_DEBUG ? null : readStored(MEMORY_KEYS[memory])
+
+export function rememberedRecord<Saved extends object>(memory: Memory, fresh: Saved): Saved {
+  const stored = rememberedText(memory)
+  if (!stored) return fresh
+  try {
+    return { ...fresh, ...JSON.parse(stored) }
+  } catch {
+    return fresh
+  }
+}
 
 export function rememberText(memory: Memory, text: string) {
   if (!IS_DEBUG) writeStored(MEMORY_KEYS[memory], text)

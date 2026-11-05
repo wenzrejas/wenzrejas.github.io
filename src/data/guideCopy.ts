@@ -317,6 +317,40 @@ const LAST_BOTTLE_WASHED_UP: DialoguePage[] = [
   },
 ]
 
+// ── Remarks (Regatta) ─────────────────────────────────────────────────────────
+const SPOTTED_RACE_BUOY: DialoguePage[] = [
+  {
+    mood: 'surprised',
+    lines: ['Ooh, a race buoy!', 'Click its marker and see how fast this little ship can go!'],
+    touchLines: ['Ooh, a race buoy!', 'Tap its marker and see how fast this little ship can go!'],
+  },
+]
+
+const FINISHED_A_RACE: DialoguePage[] = [
+  {
+    mood: 'happy',
+    lines: [
+      'Nice sailing!',
+      'Go through the very middle of a ring for a burst of speed.',
+      'Your best times are kept under Regatta in Settings.',
+    ],
+  },
+]
+
+const WON_GOLD_MEDAL: DialoguePage[] = [
+  {
+    mood: 'achievement',
+    lines: ['A gold medal!', "Now that's some fine sailing."],
+  },
+]
+
+const WON_EVERY_GOLD: DialoguePage[] = [
+  {
+    mood: 'achievement',
+    lines: ['Gold on all three courses!', 'Nobody sails these waters faster than you.'],
+  },
+]
+
 // ── Depths ────────────────────────────────────────────────────────────────────
 const ARRIVED_IN_DEPTHS: DialoguePage[] = [
   {
@@ -428,6 +462,10 @@ const REMARKS = {
   spottedJellyfish: SPOTTED_JELLYFISH,
   keptABottle: KEPT_A_BOTTLE,
   lastBottleWashedUp: LAST_BOTTLE_WASHED_UP,
+  spottedRaceBuoy: SPOTTED_RACE_BUOY,
+  finishedARace: FINISHED_A_RACE,
+  wonGoldMedal: WON_GOLD_MEDAL,
+  wonEveryGold: WON_EVERY_GOLD,
 } satisfies Record<string, DialoguePage[]>
 
 export const DIALOGUES = {

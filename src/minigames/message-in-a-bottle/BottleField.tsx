@@ -2,8 +2,10 @@ import { useEffect, useMemo, useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
+import { audio } from '@/audio/audioManager'
 import { isSailingHeld } from '@/controls/sailingInput'
 import { findBottle, useBottleStore } from '@/store/bottleStore'
+import { isRaceUnderway } from '@/store/checkpointStore'
 import { isRevealPlaying } from '@/store/revealStore'
 import { useShipStore } from '@/store/shipStore'
 import { useWeatherStore } from '@/store/weatherStore'
@@ -62,6 +64,11 @@ export default function BottleField() {
     const glass = glassRef.current
     if (!field || !contents || !glass) return
 
+    if (isRaceUnderway()) {
+      field.visible = false
+      return
+    }
+
     const time = clock.getElapsedTime()
     const swell = useWeatherStore.getState().waveAmpMult
     let drawn = 0
@@ -83,7 +90,9 @@ export default function BottleField() {
     if (isSailingHeld() || isRevealPlaying()) return
     const { x, z } = useShipStore.getState()
     const reached = bottleWithin(afloat, x, z, BOTTLE_REACH)
-    if (reached) findBottle(reached)
+    if (!reached) return
+    audio.play('bottleClink')
+    findBottle(reached)
   })
 
   return (

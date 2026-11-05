@@ -1,15 +1,17 @@
 import * as THREE from 'three'
 import { useCycleStore } from '@/store/cycleStore'
 import { useWeatherStore } from '@/store/weatherStore'
-import { rand } from '@/utils/math'
+import { mix, rand } from '@/utils/math'
 import {
+  GLITTER_CLEAR_SHADOW,
+  GLITTER_DAY_STRENGTH,
+  GLITTER_GONE_SHADOW,
+  GLITTER_NIGHT_END,
+  GLITTER_NIGHT_STRENGTH,
+  MOON_SPARKLE_COLOR,
   SPARKLE_MOON_RANGE,
   SPARKLE_NIGHT_START,
   SPARKLE_Y,
-  SUN_SPARKLE_CLEAR_SHADOW,
-  SUN_SPARKLE_GONE_SHADOW,
-  SUN_SPARKLE_NIGHT_END,
-  SUN_SPARKLE_STRENGTH,
 } from './constants'
 
 export interface SparkleField {
@@ -19,13 +21,14 @@ export interface SparkleField {
   lifeMax: number
   sizeMin: number
   sizeMax: number
-  color: string
   armSharpness: number
   armFalloff: number
   glowRadius: number
 }
 
 const { clamp, smoothstep } = THREE.MathUtils
+
+export const MOON_COLOR = new THREE.Color(MOON_SPARKLE_COLOR)
 
 export const sparkleLife = (field: SparkleField) => rand(field.lifeMin, field.lifeMax)
 export const sparkleSize = (field: SparkleField) => rand(field.sizeMin, field.sizeMax)
@@ -40,12 +43,13 @@ export function moonSparkleIntensity(): number {
   return moonFactor * nightGate
 }
 
-export function sunSparkleIntensity(): number {
+export function glitterIntensity(): number {
   const { cloudShadow } = useWeatherStore.getState()
   const { nightFactor } = useCycleStore.getState()
-  const sunlight = 1 - smoothstep(cloudShadow, SUN_SPARKLE_CLEAR_SHADOW, SUN_SPARKLE_GONE_SHADOW)
-  const dayGate = 1 - smoothstep(nightFactor, 0, SUN_SPARKLE_NIGHT_END)
-  return SUN_SPARKLE_STRENGTH * sunlight * dayGate
+  const skyLight = 1 - smoothstep(cloudShadow, GLITTER_CLEAR_SHADOW, GLITTER_GONE_SHADOW)
+  const nightShare = smoothstep(nightFactor, 0, GLITTER_NIGHT_END)
+  const strength = mix(GLITTER_DAY_STRENGTH, GLITTER_NIGHT_STRENGTH, nightShare)
+  return strength * skyLight
 }
 
 export function respawnSparkles(

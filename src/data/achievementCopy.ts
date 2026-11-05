@@ -41,6 +41,13 @@ export const ACHIEVEMENT_COPY: Record<AchievementKey, AchievementText> = {
   bloomDrifter: { title: 'Bloom Drifter', description: 'Sail through a jellyfish bloom' },
   messageInABottle: { title: 'Message in a Bottle', description: 'Read your first bottle' },
   beachcomber: { title: 'Beachcomber', description: 'Find all twelve bottles' },
+  offTheLine: { title: 'Off the Line', description: 'Finish a regatta' },
+  goldenWake: { title: 'Golden Wake', description: 'Win a gold medal on any course' },
+  threadTheNeedle: {
+    title: 'Thread the Needle',
+    description: 'Pass every ring of a course dead center',
+  },
+  regattaChampion: { title: 'Regatta Champion', description: 'Win gold on all three courses' },
   scenicRoute: { title: 'Scenic Route', description: 'Sail a full circle' },
   becalmed: { title: 'Becalmed', description: 'Let the ship sit still for a while' },
   oldFriend: { title: 'Old Friend', description: 'Come back for another voyage' },
@@ -65,6 +72,7 @@ export const LIVERY_NAMES: Record<LiveryKey, string> = {
   royal: 'Royal',
   gilded: 'Gilded',
   seaGlass: 'Sea Glass',
+  regatta: 'Regatta',
 }
 
 // ── Achievements tab ──────────────────────────────────────────────────────────
@@ -75,9 +83,9 @@ export const ACHIEVEMENTS_TAB_COPY = {
     depths: 'Timewell Depths',
     seaAndSky: 'Sea & Sky',
     keepsakes: 'Keepsakes',
+    regatta: 'Regatta',
     oddMoments: 'Odd Moments',
   } satisfies Record<AchievementCategory, string>,
-  secret: { title: '???', description: 'A secret of the sea' },
   rank: 'Rank',
   tally: (done: number, total: number) => `${done} / ${total}`,
   nextRank: (needed: number, rank: string) => `${needed} more to ${rank}`,

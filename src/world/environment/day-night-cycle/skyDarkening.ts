@@ -15,6 +15,7 @@ const DARK = {
   oceanDeep: new THREE.Color(NIGHT.oceanDeep),
   oceanMid: new THREE.Color(NIGHT.oceanMid),
   foam: new THREE.Color(NIGHT.foam),
+  sparkle: new THREE.Color(NIGHT.sparkle),
   sunDirection: new THREE.Vector3(...NIGHT.sunPos).normalize(),
   moonDirection: new THREE.Vector3(...NIGHT.moonPos).normalize(),
   moonPosition: new THREE.Vector3(...NIGHT.moonPos),
@@ -36,6 +37,7 @@ export function darkenSky(darkness: number, { background, hemi, sun, moon }: Sky
   cycle.oceanDeep.lerp(DARK.oceanDeep, darkness)
   cycle.oceanMid.lerp(DARK.oceanMid, darkness)
   cycle.foamColor.lerp(DARK.foam, darkness)
+  cycle.sparkleColor.lerp(DARK.sparkle, darkness)
   cycle.oceanSunDir.lerp(DARK.sunDirection, darkness).normalize()
   cycle.oceanMoonDir.lerp(DARK.moonDirection, darkness).normalize()
 

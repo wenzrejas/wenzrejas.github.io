@@ -1,4 +1,5 @@
 import type { SpringConfig } from '@react-spring/web'
+import { COURSE_KEYS } from '@/minigames/checkpoint-run/courses'
 import { COLLECTED_BOTTLES } from '@/minigames/message-in-a-bottle/bottleSpots'
 import { PHASES } from '@/world/environment/day-night-cycle/dayNightKeyframes'
 import { PROJECT_KEYS } from '@/world/islands/buildshore/projects/projectSites'
@@ -13,6 +14,7 @@ export const ACHIEVEMENT_CATEGORIES = [
   'depths',
   'seaAndSky',
   'keepsakes',
+  'regatta',
   'oddMoments',
 ] as const
 export type AchievementCategory = (typeof ACHIEVEMENT_CATEGORIES)[number]
@@ -20,7 +22,6 @@ export type AchievementCategory = (typeof ACHIEVEMENT_CATEGORIES)[number]
 // ── Achievements (tab order; items are counted towards completion) ────────────
 interface AchievementSpec {
   category: AchievementCategory
-  isSecret?: boolean
   items?: readonly string[]
 }
 
@@ -30,7 +31,7 @@ const ACHIEVEMENT_SPECS = {
   cartographer: { category: 'voyage', items: ISLAND_KEYS },
   windrider: { category: 'voyage' },
   chartedCourse: { category: 'voyage' },
-  edgeOfTheWorld: { category: 'voyage', isSecret: true },
+  edgeOfTheWorld: { category: 'voyage' },
   signalSent: { category: 'islands' },
   followingTheLights: { category: 'islands' },
   coffeeBreak: { category: 'islands' },
@@ -49,8 +50,12 @@ const ACHIEVEMENT_SPECS = {
   bloomDrifter: { category: 'seaAndSky' },
   messageInABottle: { category: 'keepsakes' },
   beachcomber: { category: 'keepsakes', items: COLLECTED_BOTTLES },
-  scenicRoute: { category: 'oddMoments', isSecret: true },
-  becalmed: { category: 'oddMoments', isSecret: true },
+  offTheLine: { category: 'regatta' },
+  goldenWake: { category: 'regatta' },
+  threadTheNeedle: { category: 'regatta' },
+  regattaChampion: { category: 'regatta', items: COURSE_KEYS },
+  scenicRoute: { category: 'oddMoments' },
+  becalmed: { category: 'oddMoments' },
   oldFriend: { category: 'oddMoments' },
   legendOfTheSeas: { category: 'oddMoments' },
 } satisfies Record<string, AchievementSpec>
@@ -74,6 +79,7 @@ export type RankKey = (typeof RANKS)[number]['rank']
 // ── Liveries unlocked by an achievement instead of a rank ─────────────────────
 export const ACHIEVEMENT_LIVERIES: Partial<Record<LiveryKey, AchievementKey>> = {
   seaGlass: 'beachcomber',
+  regatta: 'regattaChampion',
 }
 
 // ── World watch (seconds; times of day as cycle shares) ───────────────────────

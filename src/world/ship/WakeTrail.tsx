@@ -18,6 +18,7 @@ import {
   writeRibbon,
 } from './wakeRibbon'
 import { buildWakeRibbonGeometry, createWakeRibbonMaterial } from './wakeRibbonModel'
+import { isShipHidden } from './shipFade'
 
 interface WakeTrailProps {
   shipRef: RefObject<THREE.Group | null>
@@ -56,14 +57,16 @@ export default function WakeTrail({ shipRef }: WakeTrailProps) {
     uniforms.uInvActiveMax.value = ribbonSpan(ribbon.current)
 
     carryRibbon(ribbon.current, dt)
-    const hasMoved = sampleShip(
-      ribbon.current,
-      ship.position.x,
-      ship.position.z,
-      ship.position.x + Math.sin(ship.rotation.y) * WAKE_STERN_SHIFT,
-      ship.position.z + Math.cos(ship.rotation.y) * WAKE_STERN_SHIFT,
-      wake.minSampleDist
-    )
+    const hasMoved =
+      !isShipHidden() &&
+      sampleShip(
+        ribbon.current,
+        ship.position.x,
+        ship.position.z,
+        ship.position.x + Math.sin(ship.rotation.y) * WAKE_STERN_SHIFT,
+        ship.position.z + Math.cos(ship.rotation.y) * WAKE_STERN_SHIFT,
+        wake.minSampleDist
+      )
     fadeRibbon(ribbon.current, mesh.geometry, hasMoved, dt)
     uniforms.uFadeProgress.value = ribbon.current.fade
     writeRibbon(ribbon.current, mesh.geometry, wake)

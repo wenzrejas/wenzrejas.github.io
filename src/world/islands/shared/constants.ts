@@ -22,6 +22,7 @@
 } as const
 
 export const VIEW_MARGIN = 80
+export const ISLAND_ROOT_NAME = 'island-root'
 
 // ── First-approach reveal ─────────────────────────────────────────────────────
 export const REVEAL_LEAD = 36

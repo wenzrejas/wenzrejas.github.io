@@ -95,31 +95,31 @@ export const MOON_SPARKLES: SparkleField = {
   lifeMax: 3.5,
   sizeMin: 8,
   sizeMax: 16,
-  color: '#c8f0ff',
   armSharpness: 14,
   armFalloff: 1.5,
   glowRadius: 3.5,
 }
+export const MOON_SPARKLE_COLOR = '#c8f0ff'
 export const SPARKLE_MOON_RANGE = 2
 export const SPARKLE_NIGHT_START = 0.6
 
-// ── Sun sparkles (clear days; cloud shadow and night factor fade them) ────────
-export const SUN_SPARKLES: SparkleField = {
+// ── Ocean glitter (day and night; cloud shadow fades it) ─────────────────────
+export const OCEAN_GLITTER: SparkleField = {
   count: 220,
   spread: 325,
   lifeMin: 0.5,
   lifeMax: 1.6,
   sizeMin: 5,
   sizeMax: 10,
-  color: '#fff6dc',
   armSharpness: 16,
   armFalloff: 2.5,
   glowRadius: 5,
 }
-export const SUN_SPARKLE_STRENGTH = 0.65
-export const SUN_SPARKLE_CLEAR_SHADOW = 0.15
-export const SUN_SPARKLE_GONE_SHADOW = 0.6
-export const SUN_SPARKLE_NIGHT_END = 0.3
+export const GLITTER_DAY_STRENGTH = 0.65
+export const GLITTER_NIGHT_STRENGTH = 0.75
+export const GLITTER_CLEAR_SHADOW = 0.15
+export const GLITTER_GONE_SHADOW = 0.6
+export const GLITTER_NIGHT_END = 0.3
 
 // ── Rain ──────────────────────────────────────────────────────────────────────
 export const RAIN_DROPS = 600

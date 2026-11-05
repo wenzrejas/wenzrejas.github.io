@@ -6,6 +6,19 @@ $chart-inset: 0.45rem;
 $tick-length: 0.7rem;
 $grid-ink: rgba(255, 255, 255, 0.04);
 $grid-cell: 10%;
+$course-color: #f5871f;
+$ghost-color: rgba(255, 255, 255, 0.85);
+
+@mixin chart-dot($size, $color, $glow, $glow-color) {
+  position: absolute;
+  width: $size;
+  height: $size;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: $color;
+  box-shadow: 0 0 $glow $glow-color;
+  visibility: hidden;
+}
 
 .minimap {
   position: fixed;
@@ -72,25 +85,29 @@ $grid-cell: 10%;
   }
 
   &__bottle {
-    position: absolute;
-    width: 0.4rem;
-    height: 0.4rem;
-    translate: -50% -50%;
-    border-radius: 50%;
-    background: #ffe9a8;
-    box-shadow: 0 0 4px rgba(255, 220, 140, 0.9);
-    visibility: hidden;
+    @include chart-dot(0.4rem, #ffe9a8, 4px, rgba(255, 220, 140, 0.9));
   }
 
   &__lantern {
+    @include chart-dot(0.35rem, #ffb454, 4px, rgba(255, 160, 70, 0.9));
+  }
+
+  &__course {
     position: absolute;
-    width: 0.35rem;
-    height: 0.35rem;
+    width: 0.5rem;
+    height: 0.5rem;
     translate: -50% -50%;
-    border-radius: 50%;
-    background: #ffb454;
-    box-shadow: 0 0 4px rgba(255, 160, 70, 0.9);
-    visibility: hidden;
+    rotate: 45deg;
+    border: 1px solid #ffffff;
+    background: $course-color;
+  }
+
+  &__next-ring {
+    @include chart-dot(0.55rem, glass.$race-gold, 6px, glass.$race-gold);
+  }
+
+  &__ghost {
+    @include chart-dot(0.45rem, $ghost-color, 4px, $ghost-color);
   }
 
   &__ship {

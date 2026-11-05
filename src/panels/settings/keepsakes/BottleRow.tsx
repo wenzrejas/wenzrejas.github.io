@@ -34,17 +34,24 @@ export default function BottleRow({ bottle, isFound }: BottleRowProps) {
     <li className="keepsakes__bottle">
       <details>
         <summary className="keepsakes__title">{title}</summary>
-        <p className="keepsakes__text">{text}</p>
-        {panel && isInWorld && (
-          <button type="button" className="keepsakes__link" onClick={() => openBottlePanel(panel)}>
-            {bottlePanelLabel(panel)}
-          </button>
-        )}
-        {link && (
-          <a className="keepsakes__link" href={link.url} target="_blank" rel="noreferrer">
-            {link.label}
-          </a>
-        )}
+        <div className="keepsakes__body">
+          <div className="keepsakes__rule" aria-hidden="true" />
+          <p className="keepsakes__text">{text}</p>
+          {panel && isInWorld && (
+            <button
+              type="button"
+              className="keepsakes__link"
+              onClick={() => openBottlePanel(panel)}
+            >
+              {bottlePanelLabel(panel)}
+            </button>
+          )}
+          {link && (
+            <a className="keepsakes__link" href={link.url} target="_blank" rel="noreferrer">
+              {link.label}
+            </a>
+          )}
+        </div>
       </details>
     </li>
   )

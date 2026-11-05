@@ -10,6 +10,9 @@ import Guide from './guide/Guide'
 import Hud from './hud/Hud'
 import HudMenu from './hud/menu/HudMenu'
 import LoadingScreen from './loading/LoadingScreen'
+import RaceCountdown from './minigames/checkpoint-run/countdown/RaceCountdown'
+import RunResults from './minigames/checkpoint-run/results/RunResults'
+import StartPrompt from './minigames/checkpoint-run/start-prompt/StartPrompt'
 import Panels from './panels/Panels'
 import WorldMap from './world-map/WorldMap'
 
@@ -33,6 +36,9 @@ export default function App() {
       <HudMenu />
       <Guide />
       <Achievements />
+      <StartPrompt />
+      <RaceCountdown />
+      <RunResults />
       <Panels />
       <WorldMap />
       <LoadingScreen />

@@ -14,6 +14,7 @@ interface KF {
   oceanDeep: string
   oceanMid: string
   foam: string
+  sparkle: string
   fresnel: number
   specular: number
 }
@@ -36,6 +37,7 @@ export const KFS: KF[] = [
     oceanDeep: '#030710',
     oceanMid: '#060c1a',
     foam: '#7c88bc',
+    sparkle: '#d8dcff',
     fresnel: 0.3,
     specular: 0.12,
   },
@@ -56,6 +58,7 @@ export const KFS: KF[] = [
     oceanDeep: '#0e1e30',
     oceanMid: '#162438',
     foam: '#9a8470',
+    sparkle: '#ffc9be',
     fresnel: 0.45,
     specular: 0.35,
   },
@@ -76,6 +79,7 @@ export const KFS: KF[] = [
     oceanDeep: '#2a4e6a',
     oceanMid: '#3a6882',
     foam: '#d4a860',
+    sparkle: '#ffd5a1',
     fresnel: 0.85,
     specular: 0.9,
   },
@@ -96,6 +100,7 @@ export const KFS: KF[] = [
     oceanDeep: '#1e8ab8',
     oceanMid: '#40aad4',
     foam: '#e8e0d0',
+    sparkle: '#fff1d0',
     fresnel: 1.0,
     specular: 1.0,
   },
@@ -116,6 +121,7 @@ export const KFS: KF[] = [
     oceanDeep: '#27a3d8',
     oceanMid: '#59c0e8',
     foam: '#ffffff',
+    sparkle: '#fff6dc',
     fresnel: 1.0,
     specular: 1.0,
   },
@@ -136,6 +142,7 @@ export const KFS: KF[] = [
     oceanDeep: '#2092c2',
     oceanMid: '#4aaee0',
     foam: '#f0f2f8',
+    sparkle: '#fff0c8',
     fresnel: 1.0,
     specular: 1.0,
   },
@@ -156,6 +163,7 @@ export const KFS: KF[] = [
     oceanDeep: '#2a4060',
     oceanMid: '#3a5878',
     foam: '#d4a840',
+    sparkle: '#ffd090',
     fresnel: 0.9,
     specular: 0.9,
   },
@@ -176,6 +184,7 @@ export const KFS: KF[] = [
     oceanDeep: '#080a1a',
     oceanMid: '#0c1225',
     foam: '#8a97b8',
+    sparkle: '#f5c3e6',
     fresnel: 0.5,
     specular: 0.3,
   },
@@ -196,6 +205,7 @@ export const KFS: KF[] = [
     oceanDeep: '#030712',
     oceanMid: '#060a18',
     foam: '#7f8bbe',
+    sparkle: '#d5e3ff',
     fresnel: 0.3,
     specular: 0.12,
   },
@@ -216,6 +226,7 @@ export const KFS: KF[] = [
     oceanDeep: '#020510',
     oceanMid: '#040816',
     foam: '#8b96c8',
+    sparkle: '#cfe0ff',
     fresnel: 0.25,
     specular: 0.08,
   },
@@ -236,6 +247,7 @@ export const KFS: KF[] = [
     oceanDeep: '#030710',
     oceanMid: '#060c1a',
     foam: '#7c88bc',
+    sparkle: '#d8dcff',
     fresnel: 0.3,
     specular: 0.12,
   },

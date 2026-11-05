@@ -1,6 +1,7 @@
 import { useRef, type RefObject } from 'react'
 import { useFrame } from '@react-three/fiber'
 import type * as THREE from 'three'
+import { useCycleStore } from '@/store/cycleStore'
 import { useDebugStore } from '@/store/debugStore'
 import { useSettingsStore } from '@/store/settingsStore'
 import { useWeatherStore } from '@/store/weatherStore'
@@ -9,7 +10,7 @@ import { MAX_FRAME_SECONDS } from '@/utils/time'
 import {
   CALM_WEATHER,
   MOON_SPARKLES,
-  SUN_SPARKLES,
+  OCEAN_GLITTER,
   WEATHER_FRAME_PRIORITY,
   WEATHER_PARAMS,
 } from './constants'
@@ -22,7 +23,7 @@ import {
   driftClouds,
 } from './weatherCycle'
 import OceanSparkles from './OceanSparkles'
-import { moonSparkleIntensity, sunSparkleIntensity } from './sparkleField'
+import { glitterIntensity, MOON_COLOR, moonSparkleIntensity } from './sparkleField'
 import Rain from './Rain'
 import RainRipples from './RainRipples'
 
@@ -57,8 +58,18 @@ export default function WeatherSystem({ shipRef }: WeatherSystemProps) {
     <>
       <Rain shipRef={shipRef} />
       <RainRipples shipRef={shipRef} />
-      <OceanSparkles shipRef={shipRef} field={MOON_SPARKLES} intensityOf={moonSparkleIntensity} />
-      <OceanSparkles shipRef={shipRef} field={SUN_SPARKLES} intensityOf={sunSparkleIntensity} />
+      <OceanSparkles
+        shipRef={shipRef}
+        field={MOON_SPARKLES}
+        intensityOf={moonSparkleIntensity}
+        color={MOON_COLOR}
+      />
+      <OceanSparkles
+        shipRef={shipRef}
+        field={OCEAN_GLITTER}
+        intensityOf={glitterIntensity}
+        color={useCycleStore.getState().sparkleColor}
+      />
     </>
   )
 }

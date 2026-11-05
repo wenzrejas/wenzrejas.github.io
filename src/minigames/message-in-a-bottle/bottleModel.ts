@@ -1,6 +1,6 @@
 import * as THREE from 'three'
-import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
 import { displayColorOf } from '@/utils/color'
+import { mergeParts } from '@/utils/geometry'
 import { floatDefines } from '@/utils/glsl'
 import type { SparkleGem } from '@/world/islands/shared/gem-sparkles/sparkleSpots'
 import { patchShader } from '@/world/islands/shared/materialPatch'
@@ -36,12 +36,7 @@ function buildContentBand({ bottom, top, bottomRadius, topRadius, color }: Conte
   return band
 }
 
-export function buildBottleContents() {
-  const bands = BOTTLE_CONTENT_BANDS.map(buildContentBand)
-  const contents = mergeGeometries(bands)
-  for (const band of bands) band.dispose()
-  return contents
-}
+export const buildBottleContents = () => mergeParts(BOTTLE_CONTENT_BANDS.map(buildContentBand))
 
 export const createBottleContentsMaterial = () =>
   new THREE.MeshStandardMaterial({

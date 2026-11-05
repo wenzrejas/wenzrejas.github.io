@@ -9,9 +9,16 @@ import type {
   WildlifeActivity,
 } from '@/store/settingsStore'
 
+interface CreditLink {
+  label: string
+  url: string
+}
+
+export type CreditName = string | CreditLink
+
 interface CreditGroup {
   heading: string
-  names: string[]
+  names: CreditName[]
 }
 
 interface ControlHint {
@@ -23,18 +30,17 @@ export const SETTINGS_COPY = {
   title: 'Settings',
   subtitle: 'Trim the sails',
   switch: { on: 'On', off: 'Off' },
-  sound: {
-    tab: 'Sound',
-    toggle: 'Sound',
+  general: {
+    tab: 'General',
+    sound: 'Sound',
+    allSound: 'All sound',
+    display: 'Display',
     volumes: {
       music: 'Music',
       ambience: 'Ambience',
       sfx: 'Effects',
     } satisfies Record<Channel, string>,
     volumeValue: (volume: number) => `${Math.round(volume * 100)}%`,
-  },
-  display: {
-    tab: 'Display',
     graphics: 'Graphics',
     graphicsChoices: {
       smooth: 'Smooth',
@@ -99,6 +105,8 @@ export const SETTINGS_COPY = {
       { keys: '[W][A][S][D] • [Arrow] keys • [Drag] on the sea', action: 'Sail the ship' },
       { keys: '[Click] • [Enter]', action: 'Open a marker' },
       { keys: '[Esc]', action: 'Close a panel' },
+      { keys: '[Esc]', action: 'Abandon a race' },
+      { keys: '[R]', action: 'Restart a race' },
       { keys: '[Scroll] • [W][S] • [↑][↓]', action: 'Travel the depths' },
     ] satisfies ControlHint[],
     touchHints: [
@@ -116,6 +124,9 @@ export const SETTINGS_COPY = {
     bottles: 'Bottles',
     stillAfloat: 'Still out at sea',
     lastBottleHint: 'One more, by the lighthouse at Lumina Point',
+  },
+  regatta: {
+    tab: 'Regatta',
   },
   about: {
     tab: 'About',
@@ -136,9 +147,12 @@ export const SETTINGS_COPY = {
           'Photoshop',
         ],
       },
-      { heading: 'Music', names: ['Pixabay'] },
       { heading: 'Sound Effects', names: ['Pixabay'] },
-      { heading: 'Special Thanks', names: ['Three.js Journey by Bruno Simon'] },
+      { heading: 'Music', names: [{ label: 'Kounine', url: 'https://linktr.ee/Kounine' }] },
+      {
+        heading: 'Special Thanks',
+        names: [{ label: 'Three.js Journey by Bruno Simon', url: 'https://threejs-journey.com/' }],
+      },
     ] satisfies CreditGroup[],
   },
 }

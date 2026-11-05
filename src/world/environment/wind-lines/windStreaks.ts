@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import type { WindLineControls } from '@/app/debug/types'
+import { raceWindAngle } from '@/store/checkpointStore'
 import { useWindStore } from '@/store/windStore'
 import { rand } from '@/utils/math'
 import {
@@ -65,6 +66,12 @@ export const createWindState = (): WindState => ({
 })
 
 export function turnWind(wind: WindState, dt: number): number {
+  const raceAngle = raceWindAngle()
+  if (raceAngle !== null) {
+    wind.target = raceAngle
+    wind.untilChange = WIND_CHANGE_INTERVAL
+  }
+
   let remaining = wind.target - wind.angle
   remaining = ((remaining + Math.PI) % (2 * Math.PI)) - Math.PI
   wind.angle += THREE.MathUtils.clamp(remaining, -WIND_TURN_RATE * dt, WIND_TURN_RATE * dt)

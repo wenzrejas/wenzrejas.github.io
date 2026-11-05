@@ -6,6 +6,7 @@ import { useShipModel } from './useShipModel'
 import { useShipMovement } from './useShipMovement'
 import { useHullFoam } from './useHullFoam'
 import { useShipRig } from './useShipRig'
+import { useShipFade } from './shipFade'
 import { useShipGlow } from './shipGlow'
 import { useShipLivery } from './useShipLivery'
 import { traceHullOutline, type HullOutline } from './hullOutline'
@@ -17,7 +18,7 @@ interface ShipProps {
 
 const Ship = forwardRef<THREE.Group, ShipProps>(({ hullOutlineRef }, ref) => {
   const { modelSize, baseY, brightness } = useDebugStore((s) => s.ship)
-  const { scene, clonedScene, footprint, rig, glows } = useShipModel(brightness)
+  const { scene, clonedScene, footprint, rig, fadePass, glows } = useShipModel(brightness)
   const modelScale = modelSize / footprint
   const hullOutline = useMemo(
     () => traceHullOutline(scene, modelScale, baseY),
@@ -29,6 +30,7 @@ const Ship = forwardRef<THREE.Group, ShipProps>(({ hullOutlineRef }, ref) => {
   const foam = useHullFoam(groupRef, heading, lean, hullOutline)
   useShipRig(rig, heading, steering, tailwind)
   useShipGlow(glows)
+  useShipFade(fadePass)
   useShipLivery()
 
   useEffect(() => {
