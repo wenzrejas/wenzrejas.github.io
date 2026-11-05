@@ -69,8 +69,8 @@ export interface WakeControls {
 
 export interface BoundaryControls {
   radius: number
-  fogColor: string
   falloff: number
+  bankHeight: number
 }
 
 export interface WindLineControls {

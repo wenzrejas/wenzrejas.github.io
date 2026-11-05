@@ -1,5 +1,6 @@
 import * as THREE from 'three'
-import { floatDefines, glslFloat } from '@/utils/glsl'
+import { mergeParts } from '@/utils/geometry'
+import { floatDefines, glslVec2 } from '@/utils/glsl'
 import { rand } from '@/utils/math'
 import { oceanSurfaceUniforms } from '@/world/environment/ocean/oceanSurfaceUniforms'
 import { buildCellTexture } from './cellTexture'
@@ -56,8 +57,6 @@ export const flowUniforms = {
   uCellMap: { value: buildCellTexture() },
 }
 
-const glslVec2 = (x: number, y: number) => `vec2(${glslFloat(x)}, ${glslFloat(y)})`
-
 const FOAM_DEFINES = {
   FOAM_SCALE_A: glslVec2(FOAM_CELLS_ACROSS, FOAM_CELLS_ALONG),
   FOAM_SCALE_B: glslVec2(FOAM_FINE_CELLS_ACROSS, FOAM_FINE_CELLS_ALONG),
@@ -110,23 +109,41 @@ export function createCascadeMaterials(): Record<FlowKind, THREE.ShaderMaterial>
   }
 }
 
-function addFlowAttribute({ mesh, kind, phase }: FlowMesh): void {
-  const count = mesh.geometry.getAttribute('position').count
+function flowPiece({ mesh, kind, phase, toModel }: FlowMesh): THREE.BufferGeometry {
+  const source = mesh.geometry
+  const count = source.getAttribute('position').count
   const flow = new Float32Array(count * 2)
   for (let i = 0; i < count; i++) {
     flow[i * 2] = phase
     flow[i * 2 + 1] = FLOW_SPEEDS[kind]
   }
-  mesh.geometry.setAttribute('aFlow', new THREE.BufferAttribute(flow, 2))
+
+  const piece = new THREE.BufferGeometry()
+  piece.setAttribute('position', source.getAttribute('position').clone())
+  piece.setAttribute('normal', source.getAttribute('normal').clone())
+  piece.setAttribute('uv', source.getAttribute('uv').clone())
+  piece.setAttribute('aFlow', new THREE.BufferAttribute(flow, 2))
+  piece.setIndex(source.index!.clone())
+  return piece.applyMatrix4(toModel)
 }
 
-export function dressCascades(
+export function buildCascadeGeometries({ flows }: Cascades): Map<FlowKind, THREE.BufferGeometry> {
+  const pieces = new Map<FlowKind, THREE.BufferGeometry[]>()
+  for (const flow of flows) {
+    const parts = pieces.get(flow.kind) ?? []
+    parts.push(flowPiece(flow))
+    pieces.set(flow.kind, parts)
+  }
+  return new Map([...pieces].map(([kind, parts]) => [kind, mergeParts(parts)]))
+}
+
+export function hideCascadeSources(
   { flows }: Cascades,
   materials: Record<FlowKind, THREE.ShaderMaterial>
 ): void {
-  for (const flow of flows) {
-    addFlowAttribute(flow)
-    flow.mesh.material = materials[flow.kind]
+  for (const { mesh, kind } of flows) {
+    mesh.material = materials[kind]
+    mesh.visible = false
   }
 }
 

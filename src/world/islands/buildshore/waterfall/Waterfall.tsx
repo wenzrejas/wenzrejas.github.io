@@ -14,13 +14,14 @@ import { useSiteFrame } from '@/world/islands/shared/shoreSites'
 import type { Cascades } from './cascades'
 import { FOAM_NIGHT_SHARE } from './constants'
 import {
+  buildCascadeGeometries,
   buildFoamPadGeometry,
   buildSplashGeometry,
   createCascadeMaterials,
   createFoamPadMaterial,
   createSplashMaterial,
-  dressCascades,
   flowUniforms,
+  hideCascadeSources,
 } from './waterfallModel'
 import { createWaterfallSound, followWaterfallSound } from './waterfallSound'
 import { placeSplashSites } from './waterfallSplash'
@@ -38,6 +39,7 @@ export default function Waterfall({ cascades, placement, offsetY }: WaterfallPro
     [cascades, frame, offsetY]
   )
   const cascadeMaterials = useMemo(() => createCascadeMaterials(), [])
+  const cascadeGeometries = useMemo(() => buildCascadeGeometries(cascades), [cascades])
   const padGeometry = useMemo(() => buildFoamPadGeometry(sites), [sites])
   const splashGeometry = useMemo(() => buildSplashGeometry(sites), [sites])
   const padMaterial = useMemo(() => createFoamPadMaterial(), [])
@@ -57,12 +59,16 @@ export default function Waterfall({ cascades, placement, offsetY }: WaterfallPro
   )
   useEffect(
     () => () => {
+      for (const geometry of cascadeGeometries.values()) geometry.dispose()
       padGeometry.dispose()
       splashGeometry.dispose()
     },
-    [padGeometry, splashGeometry]
+    [cascadeGeometries, padGeometry, splashGeometry]
   )
-  useLayoutEffect(() => dressCascades(cascades, cascadeMaterials), [cascades, cascadeMaterials])
+  useLayoutEffect(
+    () => hideCascadeSources(cascades, cascadeMaterials),
+    [cascades, cascadeMaterials]
+  )
 
   useFrame(({ camera, gl, clock }) => {
     flowUniforms.uFlowTime.value = clock.getElapsedTime()
@@ -79,6 +85,11 @@ export default function Waterfall({ cascades, placement, offsetY }: WaterfallPro
 
   return (
     <>
+      <group {...placement}>
+        {[...cascadeGeometries].map(([kind, geometry]) => (
+          <mesh key={kind} geometry={geometry} material={cascadeMaterials[kind]} />
+        ))}
+      </group>
       <mesh
         ref={padsRef}
         geometry={padGeometry}

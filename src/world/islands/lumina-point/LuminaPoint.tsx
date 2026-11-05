@@ -26,7 +26,7 @@ import MainIslandInteraction from './MainIslandInteraction'
 import MonolithLinks from './MonolithLinks'
 import SeabedCircuit from './SeabedCircuit'
 import SkyBeam from './SkyBeam'
-import { tintLights } from './lights'
+import { splitLighthouseGlows, tintLights, useLighthouseGlow } from './lights'
 import { findMainIsland } from './mainIsland'
 import { findMonoliths } from './monoliths'
 import { findSkyBeamAnchor } from './skyBeamSequence'
@@ -40,17 +40,19 @@ export default function LuminaPoint({ islandKey, config }: IslandBodyProps) {
     overheadShadowStrength: LUMINA_OVERHEAD_SHADOW_STRENGTH,
     lampLevel: nightLampLevel(LAMP_SPILL_STRENGTH),
   })
-  const { beam, skyBeam, monoliths, mainIsland } = useMemo(() => {
+  const { beam, skyBeam, monoliths, mainIsland, glows } = useMemo(() => {
     tintLights(island)
     return {
       beam: rigBeam(island.model),
       skyBeam: findSkyBeamAnchor(island.model),
       monoliths: findMonoliths(island.model),
       mainIsland: findMainIsland(island.model),
+      glows: splitLighthouseGlows(island),
     }
   }, [island])
 
-  useNightGlow(island.glows)
+  useNightGlow(glows.ambient)
+  useLighthouseGlow(glows.lighthouse)
   useLogoFloat(monoliths)
 
   const placement = placeIsland(config.radius, tuning, island.footprint, island.center)

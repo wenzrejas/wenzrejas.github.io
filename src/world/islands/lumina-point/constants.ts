@@ -32,6 +32,7 @@ export const BEAM_STRENGTH = 0.4
 export const BEAM_COLOR = '#f4f0e2'
 export const BEAM_SUN_ON = 0.4
 export const BEAM_SUN_FULL = 0.05
+export const BEAM_RAIN_FULL = 0.5
 export const BEAM_SEGMENTS = 32
 export const BEAM_VISIBLE_LEVEL = 0.002
 

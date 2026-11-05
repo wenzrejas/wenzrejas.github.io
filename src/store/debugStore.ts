@@ -44,7 +44,7 @@ import {
 import {
   BOUNDARY_RADIUS,
   BOUNDARY_FALLOFF,
-  BOUNDARY_FOG_COLOR,
+  BOUNDARY_BANK_HEIGHT,
 } from '../world/environment/boundary/constants'
 import type { IslandKey } from '../world/islands/shared/constants'
 import { ISLAND_MODEL_DEFAULTS } from '../world/islands/shared/islandSpecs'
@@ -144,7 +144,7 @@ export const useDebugStore = create<DebugState>(() => ({
   boundary: {
     radius: BOUNDARY_RADIUS,
     falloff: BOUNDARY_FALLOFF,
-    fogColor: BOUNDARY_FOG_COLOR,
+    bankHeight: BOUNDARY_BANK_HEIGHT,
   },
   weather: {
     weatherEnabled: true,

@@ -1,5 +1,8 @@
 import * as THREE from 'three'
+import { onceFor } from '@/utils/cache'
+import { meshesOf, nodeNamed } from '@/utils/meshes'
 import type { IslandModel } from '../islandModel'
+import { cloneLit } from '../materialPatch'
 import LIGHTING_BAKE_PARS from './shaders/lightingBakePars.frag.glsl'
 import OVERHEAD_SHADOW from './shaders/overheadShadow.frag.glsl'
 import LAMP_SPILL from './shaders/lampSpill.frag.glsl'
@@ -25,6 +28,12 @@ interface LampSpill {
 export interface LightingBakeLevels {
   uOverheadShadow: { value: number }
   uLampSpill: { value: number }
+}
+
+export interface LampZone {
+  node: string
+  lampShare: number
+  lampCeiling: number
 }
 
 const bakedIslands = new WeakMap<IslandModel, LightingBakeLevels>()
@@ -55,9 +64,11 @@ function applyBakedLighting(
   material: THREE.MeshStandardMaterial,
   bake: LightingBake,
   { light, map }: LampSpill,
-  levels: LightingBakeLevels
+  levels: LightingBakeLevels,
+  lampCeiling?: number
 ): void {
   if (map) material.defines = { ...material.defines, LAMP_SPILL_RGB: '' }
+  if (lampCeiling !== undefined) material.defines = { ...material.defines, LAMP_SPILL_CEILING: '' }
   const compileLit = material.onBeforeCompile
 
   material.onBeforeCompile = (shader, renderer) => {
@@ -65,6 +76,7 @@ function applyBakedLighting(
     Object.assign(shader.uniforms, levels, {
       uBakedShadowStrength: { value: bake.overheadShadowStrength },
       uLampSpillLight: { value: light },
+      uLampSpillCeiling: { value: lampCeiling },
     })
     if (map) shader.uniforms.uLampSpillMap = map
     shader.fragmentShader = shader.fragmentShader
@@ -78,16 +90,44 @@ function applyBakedLighting(
   material.needsUpdate = true
 }
 
-export function bakeIslandLighting(island: IslandModel): LightingBakeLevels {
+function forkLampZone(island: IslandModel, zone: LampZone, zoneOf: Map<THREE.Material, LampZone>) {
+  const root = nodeNamed(island.model, zone.node)
+  if (!root) return
+
+  const forks = new WeakMap<THREE.Material, THREE.MeshStandardMaterial>()
+  for (const mesh of meshesOf(root)) {
+    const tint = island.tints.find(({ mat }) => mat === mesh.material)
+    if (!tint?.mat.userData.lightingBake || !tint.mat.aoMap) continue
+
+    mesh.material = onceFor(forks, tint.mat, () => {
+      const fork = cloneLit(tint.mat)
+      zoneOf.set(fork, zone)
+      island.tints.push({ mat: fork, base: tint.base })
+      return fork
+    })
+  }
+}
+
+export function bakeIslandLighting(
+  island: IslandModel,
+  lampCeiling?: number,
+  lampZones: LampZone[] = []
+): LightingBakeLevels {
   const existing = bakedIslands.get(island)
   if (existing) return existing
+
+  const zoneOf = new Map<THREE.Material, LampZone>()
+  for (const zone of lampZones) forkLampZone(island, zone, zoneOf)
 
   const levels: LightingBakeLevels = { uOverheadShadow: { value: 0 }, uLampSpill: { value: 0 } }
   for (const { mat } of island.tints) {
     const bake = mat.userData.lightingBake as LightingBake | undefined
     if (!bake || !mat.aoMap) continue
     const spill = lampSpillOf(bake, island.loadTexture)
-    if (spill) applyBakedLighting(mat, bake, spill, levels)
+    if (!spill) continue
+    const zone = zoneOf.get(mat)
+    if (zone) spill.light.multiplyScalar(zone.lampShare)
+    applyBakedLighting(mat, bake, spill, levels, zone?.lampCeiling ?? lampCeiling)
   }
   bakedIslands.set(island, levels)
   return levels

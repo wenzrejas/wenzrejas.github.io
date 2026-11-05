@@ -66,7 +66,7 @@ export const KFS: KF[] = [
   {
     t: 0.18,
     bg: '#dea050',
-    fog: '#a87830',
+    fog: '#e8bc98',
     hemiSky: '#e8a858',
     hemiGround: '#382008',
     hemiInt: 0.8,
@@ -87,7 +87,7 @@ export const KFS: KF[] = [
   {
     t: 0.28,
     bg: '#6ab8dc',
-    fog: '#88c0e0',
+    fog: '#e4dcd8',
     hemiSky: '#88c8ee',
     hemiGround: '#223a1a',
     hemiInt: 0.9,
@@ -150,7 +150,7 @@ export const KFS: KF[] = [
   {
     t: 0.6,
     bg: '#c07010',
-    fog: '#7a4a08',
+    fog: '#d8b080',
     hemiSky: '#d08020',
     hemiGround: '#2e1800',
     hemiInt: 0.6,

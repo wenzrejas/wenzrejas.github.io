@@ -1,5 +1,6 @@
-export const glslFloat = (value: number) =>
-  Number.isInteger(value) ? value.toFixed(1) : String(value)
+const glslFloat = (value: number) => (Number.isInteger(value) ? value.toFixed(1) : String(value))
+
+export const glslVec2 = (x: number, y: number) => `vec2(${glslFloat(x)}, ${glslFloat(y)})`
 
 export const floatDefines = (values: Record<string, number>): Record<string, string> =>
   Object.fromEntries(Object.entries(values).map(([name, value]) => [name, glslFloat(value)]))

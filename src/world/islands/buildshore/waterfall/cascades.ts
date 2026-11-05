@@ -17,6 +17,7 @@ export interface FlowMesh {
   mesh: THREE.Mesh
   kind: FlowKind
   phase: number
+  toModel: THREE.Matrix4
 }
 
 export interface WaterfallBase {
@@ -51,13 +52,20 @@ export const FLOW_SPEEDS: Record<FlowKind, number> = {
 const _toModel = new THREE.Matrix4()
 const _point = new THREE.Vector3()
 
-function pointsIn(model: THREE.Object3D, node: THREE.Object3D): THREE.Vector3[] {
+const hasFlowData = ({ geometry }: THREE.Mesh) =>
+  Boolean(geometry.index && geometry.getAttribute('uv') && geometry.getAttribute('normal'))
+
+function meshToModel(model: THREE.Object3D, mesh: THREE.Mesh): THREE.Matrix4 {
   _toModel.copy(model.matrixWorld).invert()
+  return new THREE.Matrix4().multiplyMatrices(_toModel, mesh.matrixWorld)
+}
+
+function pointsIn(model: THREE.Object3D, node: THREE.Object3D): THREE.Vector3[] {
   return meshesOf(node).flatMap((mesh) => {
-    const meshToModel = new THREE.Matrix4().multiplyMatrices(_toModel, mesh.matrixWorld)
+    const toModel = meshToModel(model, mesh)
     const position = mesh.geometry.getAttribute('position')
     return Array.from({ length: position.count }, (_, i) =>
-      _point.fromBufferAttribute(position, i).applyMatrix4(meshToModel).clone()
+      _point.fromBufferAttribute(position, i).applyMatrix4(toModel).clone()
     )
   })
 }
@@ -118,7 +126,9 @@ export function findCascades(model: THREE.Object3D): Cascades {
     if (kind === undefined) return
 
     const phase = Math.random()
-    for (const mesh of meshesOf(node)) flows.push({ mesh, kind, phase })
+    for (const mesh of meshesOf(node).filter(hasFlowData)) {
+      flows.push({ mesh, kind, phase, toModel: meshToModel(model, mesh) })
+    }
     if (kind !== 'sheet') return
 
     const base = findBase(model, node)

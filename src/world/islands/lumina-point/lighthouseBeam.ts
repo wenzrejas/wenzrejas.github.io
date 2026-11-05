@@ -1,12 +1,14 @@
 import * as THREE from 'three'
 import { useCycleStore } from '@/store/cycleStore'
 import { useSkyBeamStore } from '@/store/skyBeamStore'
+import { useWeatherStore } from '@/store/weatherStore'
 import { boundsIn, meshesOf, pointIn, positionIn } from '@/utils/meshes'
 import {
   BEAM_ANCHOR_FORWARD,
   BEAM_ANCHOR_NODE,
   BEAM_HEAD_NODE,
   BEAM_LENS_NODE,
+  BEAM_RAIN_FULL,
   BEAM_STRENGTH,
   BEAM_SUN_FULL,
   BEAM_SUN_ON,
@@ -38,9 +40,12 @@ export function aimHead(head: THREE.Object3D, yaw: number) {
   head.rotation.y = yaw
 }
 
+export const rainLight = () =>
+  THREE.MathUtils.smoothstep(useWeatherStore.getState().rainIntensity, 0, BEAM_RAIN_FULL)
+
 export function beamLevel(): number {
   const sunHeight = useCycleStore.getState().clockSunHeight
   const skyBeamPresence = useSkyBeamStore.getState().presence
   const daylight = THREE.MathUtils.smoothstep(sunHeight, BEAM_SUN_FULL, BEAM_SUN_ON)
-  return (1 - daylight) * (1 - skyBeamPresence) * BEAM_STRENGTH
+  return Math.max(1 - daylight, rainLight()) * (1 - skyBeamPresence) * BEAM_STRENGTH
 }

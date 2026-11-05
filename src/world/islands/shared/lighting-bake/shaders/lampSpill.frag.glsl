@@ -5,5 +5,9 @@
   vec3 storedSpill = vec3( bakedLighting.b );
 #endif
   float storedPeak = max( storedSpill.r, max( storedSpill.g, storedSpill.b ) );
-  gl_FragColor.rgb += diffuseColor.rgb * uLampSpillLight * storedSpill * storedPeak * uLampSpill;
+  vec3 lampSpill = uLampSpillLight * storedSpill * storedPeak * uLampSpill;
+#ifdef LAMP_SPILL_CEILING
+  lampSpill = uLampSpillCeiling * ( 1.0 - exp( -lampSpill / uLampSpillCeiling ) );
+#endif
+  gl_FragColor.rgb += diffuseColor.rgb * lampSpill;
 }

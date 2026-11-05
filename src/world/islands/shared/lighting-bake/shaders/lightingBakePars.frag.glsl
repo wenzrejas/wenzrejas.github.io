@@ -5,3 +5,6 @@ uniform float uLampSpill;
 #ifdef LAMP_SPILL_RGB
 uniform sampler2D uLampSpillMap;
 #endif
+#ifdef LAMP_SPILL_CEILING
+uniform float uLampSpillCeiling;
+#endif

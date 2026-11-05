@@ -15,7 +15,9 @@ import {
   BUILDSHORE_MODEL_URL,
   BUILDSHORE_OVERHEAD_SHADOW_STRENGTH,
   BUILDSHORE_SHORELINE_RESOLUTION,
+  LAMP_SPILL_CEILING,
   LAMP_SPILL_STRENGTH,
+  QOVES_LAMP_ZONES,
 } from './constants'
 import BuildshoreProjects from './projects/BuildshoreProjects'
 import { PROJECT_HOVER_GLOW_MATERIALS } from './projects/constants'
@@ -31,6 +33,8 @@ export default function Buildshore({ islandKey, config }: IslandBodyProps) {
   useLightingBake(island, {
     overheadShadowStrength: BUILDSHORE_OVERHEAD_SHADOW_STRENGTH,
     lampLevel: nightLampLevel(LAMP_SPILL_STRENGTH),
+    lampCeiling: LAMP_SPILL_CEILING,
+    lampZones: QOVES_LAMP_ZONES,
   })
   const train = useMemo(() => findTrainRig(island.model), [island])
   const cascades = useMemo(() => findCascades(island.model), [island])

@@ -1,4 +1,6 @@
 import { BASE_TUNING, type IslandSpec } from '../shared/islandSpec'
+import type { LampZone } from '../shared/lighting-bake/lightingBakeModel'
+import { QOVES_ROOT_NODE } from './projects/qoves/constants'
 import { BUILDSHORE_FOOTPRINT, BUILDSHORE_MODEL_TOP, BUILDSHORE_SCREEN_TOP } from './shoreProfile'
 
 export const BUILDSHORE_MODEL_URL = '/models/islands/buildshore_web_draco.glb'
@@ -16,7 +18,11 @@ export const BUILDSHORE_SPEC: IslandSpec = {
 
 // ── Lighting bake ─────────────────────────────────────────────────────────────
 export const BUILDSHORE_OVERHEAD_SHADOW_STRENGTH = 1.5
-export const LAMP_SPILL_STRENGTH = 1
+export const LAMP_SPILL_STRENGTH = 1.2
+export const LAMP_SPILL_CEILING = 0.7
+export const QOVES_LAMP_ZONES: LampZone[] = [
+  { node: QOVES_ROOT_NODE, lampShare: 0.4, lampCeiling: 0.25 },
+]
 
 // ── Coast ─────────────────────────────────────────────────────────────────────
 export const BUILDSHORE_SHORELINE_RESOLUTION = 640

@@ -111,7 +111,7 @@ export const SOUNDS = {
     url: '/audio/sfx/steam-engine.webm',
     fallback: '/audio/sfx/steam-engine.mp3',
     channel: 'ambience',
-    volume: 0.03,
+    volume: 0.05,
   },
   trainWhistle: {
     url: '/audio/sfx/train-whistle.webm',

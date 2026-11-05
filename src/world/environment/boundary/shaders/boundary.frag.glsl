@@ -1,52 +1,45 @@
-uniform float uTime;
-uniform vec2 uCenter;
 uniform float uRadius;
 uniform float uFalloff;
 uniform vec3 uColor;
+uniform vec3 uShade;
+uniform vec3 uLit;
+uniform sampler2D uCloudMap;
 varying vec2 vWorldXZ;
+varying vec4 vMistUv;
+varying vec4 vLitUv;
+varying float vLift;
 
-float hash(vec2 p) {
-  p = fract(p * vec2(0.1031, 0.1030));
-  p += dot(p, p.yx + 33.33);
-  return fract((p.x + p.y) * p.x);
-}
-
-float noise(vec2 p) {
-  vec2 i = floor(p);
-  vec2 f = fract(p);
-  f = f * f * (3.0 - 2.0 * f);
-  return mix(
-    mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x),
-    mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x),
-    f.y
-  );
-}
-
-float fbm(vec2 p) {
-  float v = 0.0, a = 0.5;
-  for (int i = 0; i < 3; i++) {
-    v += a * noise(p);
-    p = p * 2.0 + vec2(1.7, 9.2);
-    a *= 0.5;
-  }
-  return v;
+float mound(vec4 uv) {
+  float broad = texture2D(uCloudMap, uv.xy, FOG_DETAIL_BLUR).a;
+  float fine = texture2D(uCloudMap, uv.zw, FOG_DETAIL_BLUR).a;
+  return mix(broad, fine, FOG_FINE_SHARE);
 }
 
 void main() {
-  float dist = length(vWorldXZ - uCenter);
+  float dist = length(vWorldXZ);
+  float body = mound(vMistUv);
+  float wobble = (body - 0.5) * uFalloff;
 
-  float scale = 0.004;
-  float n1 = fbm(vWorldXZ * scale + vec2(uTime * 0.012, uTime * 0.008));
-  float n2 = fbm(vWorldXZ * scale * 1.6 + vec2(-uTime * 0.007, uTime * 0.014) + vec2(3.2, 1.7));
-  float noiseVal = mix(n1, n2, 0.5);
+  float sheet = smoothstep(uRadius - uFalloff, uRadius, dist + wobble * FOG_SHEET_WARP);
+  float rise = smoothstep(
+    uRadius + uFalloff * FOG_RISE_START,
+    uRadius + uFalloff * FOG_RISE_END,
+    dist + wobble * FOG_RISE_WARP
+  );
+  float swell = FOG_SHEET_SWELL_BASE + FOG_SHEET_SWELL * body;
+  float crest = mix(sheet * FOG_SHEET_LEVEL * swell, mix(FOG_VALLEY, 1.0, smoothstep(0.25, 0.75, body)), rise);
+  float alpha = smoothstep(vLift, vLift + FOG_SOFT, crest);
 
-  float edgeWarp = (noiseVal - 0.5) * uFalloff * 0.9;
-  float warpedDist = dist + edgeWarp;
+  if (vLift == 0.0) {
+    float hazeStart = uRadius - uFalloff * FOG_HAZE_REACH;
+    float wispMask = smoothstep(hazeStart, uRadius - uFalloff * 0.6, dist);
+    alpha = clamp(alpha + body * wispMask * FOG_HAZE, 0.0, 1.0);
+  }
 
-  float alpha = smoothstep(uRadius - uFalloff, uRadius, warpedDist);
+  if (alpha <= 0.0) discard;
 
-  float wispMask = smoothstep(uRadius - uFalloff * 2.2, uRadius - uFalloff * 0.6, dist);
-  float wisps = noiseVal * wispMask * 0.35;
+  float tone = clamp(vLift + (body - mound(vLitUv)) * FOG_LIGHT_GAIN, 0.0, 1.0);
+  vec3 color = tone < 0.5 ? mix(uShade, uColor, tone * 2.0) : mix(uColor, uLit, tone * 2.0 - 1.0);
 
-  gl_FragColor = vec4(uColor, clamp(alpha + wisps, 0.0, 1.0));
+  gl_FragColor = vec4(color, alpha);
 }
