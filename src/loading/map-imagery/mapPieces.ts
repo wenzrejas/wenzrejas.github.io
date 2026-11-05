@@ -1,4 +1,4 @@
-// ── Chart (the reference illustration) ────────────────────────────────────────
+// ── Chart ─────────────────────────────────────────────────────────────────────
 export const CHART_WIDTH = 1536
 export const CHART_HEIGHT = 1024
 
@@ -6,7 +6,7 @@ export const CHART_HEIGHT = 1024
 export const ATLAS_WIDTH = 1536
 export const ATLAS_HEIGHT = 688
 
-// ── Atlas pieces (chart px) ───────────────────────────────────────────────────
+// ── Atlas pieces ──────────────────────────────────────────────────────────────
 export const MAP_PIECES = [
   {
     key: 'compass',

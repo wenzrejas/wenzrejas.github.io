@@ -1,4 +1,4 @@
-// ── Sprite sheets (square frames, left to right then down) ────────────────────
+// ── Sprite sheets ─────────────────────────────────────────────────────────────
 export const FRAME_PIXELS = 256
 export const MAX_MASCOT_PIXEL_RATIO = 2
 export const SHEET_COLUMNS = 4
@@ -24,5 +24,5 @@ export const EMOTE_FRAMES_PER_SECOND = 12
 export const IDLE_FRAMES_PER_SECOND = 8
 export const MASCOT_LEAVE_SECONDS = 0.25
 
-// ── Frame blending (share of sheet resolution read to find Wobbi per frame) ───
+// ── Frame blending ────────────────────────────────────────────────────────────
 export const CENTROID_SAMPLE_SHARE = 0.25

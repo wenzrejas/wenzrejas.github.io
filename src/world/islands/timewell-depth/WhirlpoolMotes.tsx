@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import type * as THREE from 'three'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { pixelsPerUnit } from '@/utils/screen'
+import { disposeAll } from '@/utils/dispose'
 import { dayNightGlow } from '../shared/nightGlow'
 import type { HoverTimeline } from '../shared/hoverTimeline'
 import { spiralLevel } from './awakening'
@@ -27,13 +28,7 @@ export default function WhirlpoolMotes({ islandScale, awakening }: WhirlpoolMote
   const geometry = useMemo(() => buildMoteGeometry(islandScale), [islandScale])
   const material = useMemo(() => createMoteMaterial(), [])
 
-  useEffect(
-    () => () => {
-      geometry.dispose()
-      material.dispose()
-    },
-    [geometry, material]
-  )
+  useEffect(() => () => disposeAll(geometry, material), [geometry, material])
 
   useFrame(({ clock, camera, gl }) => {
     const points = pointsRef.current

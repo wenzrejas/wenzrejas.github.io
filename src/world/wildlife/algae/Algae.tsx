@@ -1,49 +1,13 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
-import { buildFlatQuad } from '@/utils/geometry'
-import { eventDelta } from '@/store/cinematicStore'
-import { useCycleStore } from '@/store/cycleStore'
-import { useDebugStore } from '@/store/debugStore'
-import { isNightEventOn } from '@/store/nightEventStore'
-import { useShipStore } from '@/store/shipStore'
-import { isRaining, useWeatherStore } from '@/store/weatherStore'
-import { retain } from '@/utils/array'
-import { MAX_FRAME_SECONDS } from '@/utils/time'
-import { ParticlePool, updateDrops, updateSparks } from '@/world/effects/particlePool'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
-import { algaeAt, algaeUniforms, patchOrders } from './algaeField'
+import { disposeAll } from '@/utils/dispose'
+import { buildFlatQuad } from '@/utils/geometry'
+import { MAX_FRAME_SECONDS } from '@/utils/time'
 import { createAlgaeMaterial, createSparkMaterial } from './algaeMaterial'
-import { emitBowSplash, emitGlowFlashes, emitHullSpark } from './algaeSpray'
-import {
-  AMBIENT_RATE,
-  DESPAWN_DISTANCE,
-  FADE_IN,
-  FIRST_CHECK_DELAY,
-  INTENSITY_RATE,
-  MAX_PATCHES,
-  MOONLIT_BOOST,
-  PLANE_MARGIN,
-  PLANE_SEGMENTS,
-  PLANE_SIZE,
-  PLANE_Y,
-  SPARK_IDLE_RATE,
-  SPARK_POOL,
-  SPARK_RATE,
-  SPLASH_GRAVITY,
-  SPLASH_POOL,
-  SPLASH_RATE,
-  TRAIL_SPACING,
-} from './constants'
-import {
-  applyPatchOrder,
-  createPatch,
-  isNightWindow,
-  patchReach,
-  viewReach,
-  type Patch,
-} from './patches'
-import { recordTrail } from './scatterTrail'
+import { PLANE_SEGMENTS, PLANE_SIZE, SPARK_POOL, SPLASH_POOL } from './constants'
+import { createPatchField, stepPatchField } from './patchField'
 
 export default function Algae() {
   const planeRef = useRef<THREE.Mesh>(null)
@@ -54,101 +18,20 @@ export default function Algae() {
   const sparkMaterial = useMemo(() => createSparkMaterial(), [])
   const sparkGeometry = useMemo(() => buildFlatQuad(), [])
   const splashGeometry = useMemo(() => new THREE.BoxGeometry(1, 1, 1), [])
+  const field = useMemo(() => createPatchField(), [])
 
   useEffect(
-    () => () => {
-      planeMaterial.dispose()
-      sparkMaterial.dispose()
-      sparkGeometry.dispose()
-      splashGeometry.dispose()
-    },
+    () => () => disposeAll(planeMaterial, sparkMaterial, sparkGeometry, splashGeometry),
     [planeMaterial, sparkMaterial, sparkGeometry, splashGeometry]
   )
-
-  const patches = useRef<Patch[]>([])
-  const sparks = useMemo(() => new ParticlePool(SPARK_POOL), [])
-  const splash = useMemo(() => new ParticlePool(SPLASH_POOL), [])
-  const checkTimer = useRef(FIRST_CHECK_DELAY)
-  const sparkBudget = useRef(0)
-  const splashBudget = useRef(0)
-  const lastTrail = useRef(new THREE.Vector2(Infinity, Infinity))
 
   useFrame(({ clock, camera }, delta) => {
     const plane = planeRef.current
     const sparkMesh = sparksRef.current
     const splashMesh = splashRef.current
     if (!plane || !sparkMesh || !splashMesh) return
-
     const dt = Math.min(delta, MAX_FRAME_SECONDS)
-    const ship = useShipStore.getState()
-    const { algaeChance, algaeInterval, algaeAnyTime } = useDebugStore.getState().wildlife
-    const night = algaeAnyTime || isNightWindow(useCycleStore.getState().timeOfDay)
-
-    const intensity = algaeUniforms.uAlgaeIntensity
-    intensity.value += ((night ? 1 : 0) - intensity.value) * Math.min(1, INTENSITY_RATE * dt)
-    const ambient = algaeUniforms.uAlgaeAmbient
-    ambient.value += ((isRaining() ? 0 : 1) - ambient.value) * Math.min(1, AMBIENT_RATE * dt)
-    const reach = viewReach(camera, ship.x, ship.z)
-
-    for (const order of patchOrders) applyPatchOrder(patches.current, order, ship.x, ship.z)
-    patchOrders.length = 0
-
-    checkTimer.current = Math.min(checkTimer.current, algaeInterval) - eventDelta(dt)
-    if (checkTimer.current <= 0) {
-      checkTimer.current = algaeInterval
-      const moonlit = useWeatherStore.getState().type === 'moonlit'
-      const chance = algaeChance * (moonlit ? MOONLIT_BOOST : 1)
-      const canSpawn = patches.current.length < MAX_PATCHES && night && !isNightEventOn()
-      if (canSpawn && Math.random() < chance) {
-        const patch = createPatch(ship.x, ship.z, reach)
-        if (patch) patches.current.push(patch)
-      }
-    }
-
-    if (!night && intensity.value < 0.01) patches.current.length = 0
-    let patchInView = false
-    retain(patches.current, (patch) => {
-      patch.age += dt
-      const distance = Math.hypot(patch.x - ship.x, patch.z - ship.z)
-      patchInView ||= distance < reach + patchReach(patch)
-      return distance <= DESPAWN_DISTANCE
-    })
-    algaeUniforms.uAlgaePatches.value.forEach((zone, i) => {
-      const patch = patches.current[i]
-      if (patch) zone.set(patch.x, patch.z, patch.radius, Math.min(1, patch.age / FADE_IN))
-      else zone.set(0, 0, 0, 0)
-    })
-
-    plane.visible = patchInView && intensity.value > 0.001
-    if (plane.visible) {
-      plane.position.set(Math.round(ship.x), PLANE_Y, Math.round(ship.z))
-      plane.scale.setScalar(Math.max(1, ((reach + PLANE_MARGIN) * 2) / PLANE_SIZE))
-    }
-
-    if (Math.hypot(ship.x - lastTrail.current.x, ship.z - lastTrail.current.y) >= TRAIL_SPACING) {
-      recordTrail(ship.x, ship.z, clock.getElapsedTime())
-      lastTrail.current.set(ship.x, ship.z)
-    }
-
-    const glow = algaeAt(ship.x, ship.z)
-    const cruise = Math.min(ship.speed / 30, 1)
-
-    sparkBudget.current += glow * (SPARK_IDLE_RATE + SPARK_RATE * cruise) * dt
-    while (sparkBudget.current >= 1) {
-      sparkBudget.current -= 1
-      emitHullSpark(sparks, ship)
-    }
-
-    splashBudget.current += glow * SPLASH_RATE * cruise * dt
-    while (splashBudget.current >= 1) {
-      splashBudget.current -= 1
-      emitBowSplash(splash, ship)
-    }
-
-    emitGlowFlashes(sparks, splash)
-
-    updateSparks(sparks, sparkMesh, dt)
-    updateDrops(splash, splashMesh, dt, SPLASH_GRAVITY)
+    stepPatchField(field, { plane, sparkMesh, splashMesh }, camera, clock.getElapsedTime(), dt)
   })
 
   return (

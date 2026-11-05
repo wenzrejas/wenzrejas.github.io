@@ -1,24 +1,24 @@
-// ── Size and home (seen at a level's ruin height, moving exactly like ruins) ──
+// ── Size and home ─────────────────────────────────────────────────────────────
 export const WHALE_LENGTH = 1400
 export const WHALE_DEPTH_Z = -760
 export const WHALE_HOME_LEVEL = 4
 export const WHALE_HOME_RISE = 20
 export const WHALE_TURN_TO_CAMERA_DEGREES = 22
 
-// ── Path (a slow rise and dip per pass, nose following it) ────────────────────
+// ── Path ──────────────────────────────────────────────────────────────────────
 export const WHALE_SWELL_HEIGHT = 60
 export const WHALE_SWELLS_PER_PASS = 1
 export const WHALE_ROLL_DEGREES = 5
 
-// ── Timing (passes start once the camera is this deep) ────────────────────────
+// ── Timing ────────────────────────────────────────────────────────────────────
 export const WHALE_SHOWS_FROM_LEVEL = 3.3
 export const WHALE_PASS_SECONDS = 45
 export const WHALE_REST_SECONDS = 35
 
-// ── Off-screen travel (extra share of the half view width) ────────────────────
+// ── Off-screen travel ─────────────────────────────────────────────────────────
 export const WHALE_EXIT_MARGIN = 0.08
 
-// ── Swim (shares of the length; rates in radians per second) ──────────────────
+// ── Swim ──────────────────────────────────────────────────────────────────────
 export const WHALE_STROKE_RATE = 1
 export const WHALE_BEND_START = 0.1
 export const WHALE_BEND_SPAN = 0.6

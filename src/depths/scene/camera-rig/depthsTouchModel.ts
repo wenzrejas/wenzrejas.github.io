@@ -7,7 +7,7 @@ import {
   TOUCH_GLIDE_DECAY,
   TOUCH_MAX_SPEED,
   TOUCH_MIN_SAMPLE_SECONDS,
-  TOUCH_RELEASE_WINDOW_MS,
+  TOUCH_RELEASE_WINDOW_MILLISECONDS,
   TOUCH_STOP_SPEED,
 } from './constants'
 
@@ -57,7 +57,8 @@ export function bindDepthsTouch(
     },
     onRelease: ({ timeStamp }) => {
       travel.isDragging = false
-      if (!canTravel() || timeStamp - travel.stamp > TOUCH_RELEASE_WINDOW_MS) travel.velocity = 0
+      if (!canTravel() || timeStamp - travel.stamp > TOUCH_RELEASE_WINDOW_MILLISECONDS)
+        travel.velocity = 0
     },
     onCancel: () => {
       travel.isDragging = false

@@ -74,11 +74,11 @@ export function buildTurtleGeometry(): THREE.BufferGeometry {
     })
   }
 
-  const scute = (color: THREE.Color, [u0, u1]: Band, [v0, v1]: Band) => {
-    const left = u0 + SCUTE_GAP
-    const right = u1 - SCUTE_GAP
-    const back = v0 + SCUTE_GAP
-    const fore = v1 - SCUTE_GAP
+  const scute = (color: THREE.Color, [acrossFrom, acrossTo]: Band, [alongFrom, alongTo]: Band) => {
+    const left = acrossFrom + SCUTE_GAP
+    const right = acrossTo - SCUTE_GAP
+    const back = alongFrom + SCUTE_GAP
+    const fore = alongTo - SCUTE_GAP
     const corners: Point[] = [
       shellPoint(left, back, SCUTE_LIFT),
       shellPoint(right, back, SCUTE_LIFT),
@@ -180,14 +180,14 @@ export function buildTurtleGeometry(): THREE.BufferGeometry {
     tri(SKIN_COLOR, [tailBase[i], tailBase[(i + 1) % tailBase.length], tailTip])
   }
 
-  const geo = new THREE.BufferGeometry()
-  geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
-  geo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3))
-  geo.setAttribute('aFront', new THREE.Float32BufferAttribute(front, 1))
-  geo.setAttribute('aRear', new THREE.Float32BufferAttribute(rear, 1))
-  addInstancedFloats(geo, ['aPhase', 'aFade'], MAX_TURTLES)
-  geo.computeVertexNormals()
-  return geo
+  const geometry = new THREE.BufferGeometry()
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
+  geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3))
+  geometry.setAttribute('aFront', new THREE.Float32BufferAttribute(front, 1))
+  geometry.setAttribute('aRear', new THREE.Float32BufferAttribute(rear, 1))
+  addInstancedFloats(geometry, ['aPhase', 'aFade'], MAX_TURTLES)
+  geometry.computeVertexNormals()
+  return geometry
 }
 
 // ── Material ──────────────────────────────────────────────────────────────────

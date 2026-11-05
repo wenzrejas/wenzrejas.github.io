@@ -23,7 +23,7 @@ import {
   FLEE_SPREAD,
   FLEE_TURN_RATE,
   FLEE_TURN_LIMIT,
-  FLEE_TAIL_FREQ,
+  FLEE_TAIL_FREQUENCY,
   FOLLOW_RATE,
   HEADING_RATE,
   HIDDEN_DEPTH,
@@ -51,7 +51,7 @@ import {
   SHORE_AVOID_RATE,
   SPEED_JITTER,
   SURFACE_CLEARANCE,
-  TAIL_FREQ,
+  TAIL_FREQUENCY,
   WANDER_RATE,
   WHALE_SCATTER_MARGIN,
 } from './constants'
@@ -59,15 +59,15 @@ import {
 interface FishState {
   x: number
   z: number
-  vx: number
-  vz: number
+  velocityX: number
+  velocityZ: number
   fleeHeading: number
   fleeSpeed: number
   heading: number
   depth: number
   targetDepth: number
   phase: number
-  tailFreq: number
+  tailFrequency: number
   size: number
   slotX: number
   slotZ: number
@@ -106,8 +106,8 @@ function createFish(slotX: number, slotZ: number, size: number, heading: number)
   return {
     x: 0,
     z: 0,
-    vx: 0,
-    vz: 0,
+    velocityX: 0,
+    velocityZ: 0,
     fleeHeading: heading,
     fleeSpeed: 0,
     heading,
@@ -117,7 +117,7 @@ function createFish(slotX: number, slotZ: number, size: number, heading: number)
       scale * FIN_REACH + SURFACE_CLEARANCE
     ),
     phase: Math.random() * Math.PI * 2,
-    tailFreq: TAIL_FREQ * rand(0.8, 1.2),
+    tailFrequency: TAIL_FREQUENCY * rand(0.8, 1.2),
     size: scale,
     slotX,
     slotZ,
@@ -181,21 +181,21 @@ export function createSchool(x: number, z: number, freeSlots: number): School {
     fish,
   }
 
-  for (const f of fish) {
-    slotPosition(school, f, 0)
-    f.x = _slot.x
-    f.z = _slot.y
+  for (const member of fish) {
+    slotPosition(school, member, 0)
+    member.x = _slot.x
+    member.z = _slot.y
   }
   return school
 }
 
 function slotPosition(school: School, fish: FishState, time: number): THREE.Vector2 {
-  const dirX = Math.sin(school.heading)
-  const dirZ = Math.cos(school.heading)
+  const directionX = Math.sin(school.heading)
+  const directionZ = Math.cos(school.heading)
   const slotX = fish.slotX + Math.sin(time * 0.8 + fish.seed) * 1.2
   return _slot.set(
-    school.x + dirZ * slotX + dirX * fish.slotZ,
-    school.z - dirX * slotX + dirZ * fish.slotZ
+    school.x + directionZ * slotX + directionX * fish.slotZ,
+    school.z - directionX * slotX + directionZ * fish.slotZ
   )
 }
 
@@ -267,21 +267,25 @@ export function updateFish(school: School, fish: FishState, time: number, dt: nu
   if (fleeing) {
     fish.heading = turnToward(fish.heading, fish.fleeHeading, FLEE_TURN_RATE * dt)
     fish.fleeSpeed *= Math.exp(-FLEE_DAMPING * dt)
-    fish.vx = Math.sin(fish.heading) * fish.fleeSpeed
-    fish.vz = Math.cos(fish.heading) * fish.fleeSpeed
+    fish.velocityX = Math.sin(fish.heading) * fish.fleeSpeed
+    fish.velocityZ = Math.cos(fish.heading) * fish.fleeSpeed
   } else {
     const target = slotPosition(school, fish, time)
     const catchupX = (target.x - fish.x) * FOLLOW_RATE
     const catchupZ = (target.y - fish.z) * FOLLOW_RATE
     const catchup = Math.min(1, CATCHUP_SPEED / Math.max(Math.hypot(catchupX, catchupZ), 1e-3))
-    fish.vx = Math.sin(school.heading) * speed + catchupX * catchup
-    fish.vz = Math.cos(school.heading) * speed + catchupZ * catchup
+    fish.velocityX = Math.sin(school.heading) * speed + catchupX * catchup
+    fish.velocityZ = Math.cos(school.heading) * speed + catchupZ * catchup
   }
 
-  fish.x += fish.vx * dt
-  fish.z += fish.vz * dt
-  if (!fleeing && Math.hypot(fish.vx, fish.vz) > 0.3) {
-    fish.heading = turnToward(fish.heading, Math.atan2(fish.vx, fish.vz), HEADING_RATE * dt)
+  fish.x += fish.velocityX * dt
+  fish.z += fish.velocityZ * dt
+  if (!fleeing && Math.hypot(fish.velocityX, fish.velocityZ) > 0.3) {
+    fish.heading = turnToward(
+      fish.heading,
+      Math.atan2(fish.velocityX, fish.velocityZ),
+      HEADING_RATE * dt
+    )
   }
 
   const depthRate = fish.targetDepth < fish.depth ? RISE_RATE : DIVE_RATE
@@ -291,5 +295,5 @@ export function updateFish(school: School, fish: FishState, time: number, dt: nu
     depthRate * dt
   )
   fish.phase +=
-    dt * Math.PI * 2 * (fleeing ? FLEE_TAIL_FREQ : (fish.tailFreq * speed) / school.speed)
+    dt * Math.PI * 2 * (fleeing ? FLEE_TAIL_FREQUENCY : (fish.tailFrequency * speed) / school.speed)
 }

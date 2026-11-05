@@ -1,15 +1,15 @@
 import type { RankKey } from '@/achievements/constants'
 import type { DialogueKey, PromotionKey } from '@/data/guideCopy'
 
-// ── Introduction (after the loader leaves) ────────────────────────────────────
+// ── Introduction ──────────────────────────────────────────────────────────────
 export const INTRODUCTION_DELAY_SECONDS = 0.6
 
-// ── Depths dialogues (once per visitor, seconds after their moment) ───────────
+// ── Depths dialogues ──────────────────────────────────────────────────────────
 export const DEPTHS_DIALOGUES: DialogueKey[] = ['arrivedInDepths', 'landedAtTheClock']
 export const ARRIVAL_DIALOGUE_DELAY_SECONDS = 0.6
 export const LANDING_DIALOGUE_DELAY_SECONDS = 1.2
 
-// ── Promotions (spoken once the world is calm after a new rank) ───────────────
+// ── Promotions ────────────────────────────────────────────────────────────────
 export const PROMOTION_DIALOGUES: Partial<Record<RankKey, PromotionKey>> = {
   deckhand: 'promotedToDeckhand',
   navigator: 'promotedToNavigator',
@@ -18,5 +18,5 @@ export const PROMOTION_DIALOGUES: Partial<Record<RankKey, PromotionKey>> = {
   legend: 'promotedToLegend',
 }
 
-// ── Modal dialogues (wait for Next or Skip, lock the screen behind) ───────────
+// ── Modal dialogues ───────────────────────────────────────────────────────────
 export const MODAL_DIALOGUES: DialogueKey[] = [...DEPTHS_DIALOGUES]

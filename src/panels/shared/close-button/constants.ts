@@ -1,4 +1,4 @@
-// ── Art (traced from the user's world map reference, in 64-unit box) ─────────
+// ── Art ───────────────────────────────────────────────────────────────────────
 export const CLOSE_BOX = '0 0 64 64'
 export const RING_CENTRE = { cx: 32, cy: 32 }
 export const RIM_RADIUS = 29.2

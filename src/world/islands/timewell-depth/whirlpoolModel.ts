@@ -5,6 +5,7 @@ import { rand } from '@/utils/math'
 import { oceanSurfaceUniforms } from '@/world/environment/ocean/oceanSurfaceUniforms'
 import { FOAM_GRAIN, FOAM_JAG } from '@/world/shore/constants'
 import type { ShoreField } from '@/world/shore/shoreField'
+import { createAdditiveMaterial } from '@/utils/materials'
 import {
   AWAKEN_COLOR,
   CORE_BOOST,
@@ -232,7 +233,7 @@ export function createWhirlpoolMaterial(): THREE.ShaderMaterial {
 }
 
 export function createMoteMaterial(): THREE.ShaderMaterial {
-  return new THREE.ShaderMaterial({
+  return createAdditiveMaterial({
     vertexShader: MOTES_VERT,
     fragmentShader: MOTES_FRAG,
     defines: floatDefines({
@@ -241,9 +242,6 @@ export function createMoteMaterial(): THREE.ShaderMaterial {
       FUNNEL_DEPTH: WHIRLPOOL_FUNNEL_DEPTH,
       FUNNEL_CURVE: WHIRLPOOL_FUNNEL_CURVE,
     }),
-    transparent: true,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
     uniforms: {
       uTime: { value: 0 },
       uSize: { value: 1 },

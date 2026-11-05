@@ -9,6 +9,7 @@ import {
   type HaloGem,
 } from '@/world/islands/shared/gem-halo/gemHaloModel'
 import { RUIN_LIFE_FRAME_PRIORITY } from '@/depths/scene/constants'
+import { disposeAll } from '@/utils/dispose'
 import { shineHalo } from './haloGlow'
 
 interface RuinHaloProps {
@@ -22,13 +23,7 @@ export default function RuinHalo({ ruin, halos, tuning, glow }: RuinHaloProps) {
   const geometry = useMemo(() => buildGemHaloGeometry(halos, tuning), [halos, tuning])
   const material = useMemo(() => createGemHaloMaterial(tuning), [tuning])
 
-  useEffect(
-    () => () => {
-      geometry.dispose()
-      material.dispose()
-    },
-    [geometry, material]
-  )
+  useEffect(() => () => disposeAll(geometry, material), [geometry, material])
 
   useFrame(
     ({ camera, gl, size }) =>

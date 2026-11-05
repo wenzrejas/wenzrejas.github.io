@@ -74,11 +74,11 @@ function addTriangle(
 function addQuad(
   shape: WhaleShape,
   color: THREE.Color,
-  [a, b, c, d]: ShapePoint[],
+  [cornerA, cornerB, cornerC, cornerD]: ShapePoint[],
   [reachA, reachB, reachC, reachD]: number[] = STILL
 ) {
-  addTriangle(shape, color, [a, b, c], [reachA, reachB, reachC])
-  addTriangle(shape, color, [a, c, d], [reachA, reachC, reachD])
+  addTriangle(shape, color, [cornerA, cornerB, cornerC], [reachA, reachB, reachC])
+  addTriangle(shape, color, [cornerA, cornerC, cornerD], [reachA, reachC, reachD])
 }
 
 const rounded = (value: number) => Math.sign(value) * Math.abs(value) ** WHALE_RING_ROUNDNESS

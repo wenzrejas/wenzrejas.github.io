@@ -11,7 +11,7 @@ export const FOG_HAZE_REACH = 2.2
 export const FOG_SHEET_REACH = 1.3
 export const FOG_LEAN_SHARE = 0.75
 
-// ── Mist shape (world units per noise tile, heights as a share of the bank) ───
+// ── Mist shape ────────────────────────────────────────────────────────────────
 export const FOG_BROAD_TILE = 330
 export const FOG_FINE_TILE = 135
 export const FOG_FINE_SHARE = 0.5

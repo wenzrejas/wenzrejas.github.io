@@ -16,15 +16,15 @@ float mound(vec4 uv) {
 }
 
 void main() {
-  float dist = length(vWorldXZ);
+  float centerDistance = length(vWorldXZ);
   float body = mound(vMistUv);
   float wobble = (body - 0.5) * uFalloff;
 
-  float sheet = smoothstep(uRadius - uFalloff, uRadius, dist + wobble * FOG_SHEET_WARP);
+  float sheet = smoothstep(uRadius - uFalloff, uRadius, centerDistance + wobble * FOG_SHEET_WARP);
   float rise = smoothstep(
     uRadius + uFalloff * FOG_RISE_START,
     uRadius + uFalloff * FOG_RISE_END,
-    dist + wobble * FOG_RISE_WARP
+    centerDistance + wobble * FOG_RISE_WARP
   );
   float swell = FOG_SHEET_SWELL_BASE + FOG_SHEET_SWELL * body;
   float crest = mix(sheet * FOG_SHEET_LEVEL * swell, mix(FOG_VALLEY, 1.0, smoothstep(0.25, 0.75, body)), rise);
@@ -32,7 +32,7 @@ void main() {
 
   if (vLift == 0.0) {
     float hazeStart = uRadius - uFalloff * FOG_HAZE_REACH;
-    float wispMask = smoothstep(hazeStart, uRadius - uFalloff * 0.6, dist);
+    float wispMask = smoothstep(hazeStart, uRadius - uFalloff * 0.6, centerDistance);
     alpha = clamp(alpha + body * wispMask * FOG_HAZE, 0.0, 1.0);
   }
 

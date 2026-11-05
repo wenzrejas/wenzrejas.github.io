@@ -14,14 +14,14 @@ interface RockSpot extends ChartSpot {
 // ── Atlas ─────────────────────────────────────────────────────────────────────
 export const ISLAND_ATLAS_URL = '/images/world-map/island-atlas.webp'
 
-// ── Chart (the reference's map area, chart px) ────────────────────────────────
+// ── Chart ─────────────────────────────────────────────────────────────────────
 export const CHART_WIDTH = 1136
 export const CHART_HEIGHT = 1024
 export const CHART_STRETCH_LIMIT = 1.3
 
-// ── Islands (true world positions, north up) ──────────────────────────────────
+// ── Islands ───────────────────────────────────────────────────────────────────
 export const WORLD_ORIGIN_ON_CHART = { x: 591, y: 470 }
-export const CHART_PX_PER_WORLD_UNIT = 0.45
+export const CHART_PIXELS_PER_WORLD_UNIT = 0.45
 export const ISLAND_ART_SCALE = 0.45
 export const COMPACT_ISLAND_ZOOM = 1.3
 
@@ -33,16 +33,16 @@ export const ISLAND_ART: Record<IslandKey, IslandArtKey> = {
   tech: 'islandStatues',
 }
 
-// ── Thumbnails (screen px the water may pass each side of the box) ────────────
+// ── Thumbnails ────────────────────────────────────────────────────────────────
 export const THUMBNAIL_WATER_SPILL = 5
 
-// ── Set Sail tooltip (screen px) ──────────────────────────────────────────────
+// ── Set Sail tooltip ──────────────────────────────────────────────────────────
 export const SET_SAIL_GAP = 6
 export const SET_SAIL_ROOM = 96
 export const SET_SAIL_HALF_WIDTH = 95
 export const SET_SAIL_EDGE = 6
 
-// ── Rock outcrops (chart centre) ──────────────────────────────────────────────
+// ── Rock outcrops ─────────────────────────────────────────────────────────────
 export const ROCK_SCALE = 0.65
 
 export const ROCK_SPOTS: RockSpot[] = [
@@ -60,7 +60,7 @@ export const ROCK_SPOTS: RockSpot[] = [
   { rock: 'rockSmallWest', x: 1000, y: 700 },
 ]
 
-// ── Decorations (the loading screen's art, chart centre) ──────────────────────
+// ── Decorations ───────────────────────────────────────────────────────────────
 export const DECORATION_SCALE = 0.65
 export const COMPASS_SCALE = 0.66
 export const COMPACT_COMPASS_HEIGHT = 52

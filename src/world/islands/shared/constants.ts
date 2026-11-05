@@ -1,4 +1,4 @@
-﻿export const WORLD_LOCATIONS = {
+export const WORLD_LOCATIONS = {
   timewell: {
     position: [-200, 0, 900] as [number, number, number],
     radius: 70,

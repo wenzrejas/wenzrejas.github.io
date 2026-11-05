@@ -70,7 +70,7 @@ export default function DiveTransition() {
     if (isSteeringCamera(run)) steerCamera(run)
   }, DIVE_STEP_FRAME_PRIORITY)
 
-  useFrame(({ gl, camera, size }) => {
+  useFrame(({ size }) => {
     if (!isVeilShown(run) || renderedScene() === null) return
     paintDiveVeil(veil, run, camera, clock.elapsed, size.width / size.height, gl.getPixelRatio())
     drawDiveVeil(veil, gl, camera)

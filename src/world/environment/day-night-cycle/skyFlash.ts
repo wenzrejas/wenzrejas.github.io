@@ -11,7 +11,7 @@ import type { SkyLights } from './skyDarkening'
 
 const TINT = new THREE.Color(SKY_FLASH_TINT)
 
-export function flashSky(flash: number, { background, hemi, sun }: SkyLights) {
+export function flashSky(flash: number, { background, hemisphere, sun }: SkyLights) {
   const cycle = useCycleStore.getState()
   cycle.fogColor.lerp(TINT, flash * SKY_FLASH_FOG)
   cycle.oceanDeep.lerp(TINT, flash * SKY_FLASH_SEA)
@@ -19,9 +19,9 @@ export function flashSky(flash: number, { background, hemi, sun }: SkyLights) {
 
   if (background instanceof THREE.Color) background.lerp(TINT, flash * SKY_FLASH_BACKGROUND)
 
-  if (hemi) {
-    hemi.color.lerp(TINT, flash)
-    hemi.intensity += flash * SKY_FLASH_LIGHT
+  if (hemisphere) {
+    hemisphere.color.lerp(TINT, flash)
+    hemisphere.intensity += flash * SKY_FLASH_LIGHT
   }
   if (sun) {
     sun.color.lerp(TINT, flash)

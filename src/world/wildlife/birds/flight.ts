@@ -6,9 +6,9 @@ import {
   ALTITUDE_MIN,
   BIRD_SIZE_JITTER,
   BIRD_SPAN,
-  FLAP_AMP,
+  FLAP_AMPLITUDE,
   FLAP_BLEND_RATE,
-  FLAP_FREQ,
+  FLAP_FREQUENCY,
   FLAP_TIME_MAX,
   FLAP_TIME_MIN,
   FLIGHT_LANE,
@@ -23,8 +23,8 @@ import {
   GLIDE_TIME_MAX,
   GLIDE_TIME_MIN,
   TURN_BIAS,
-  TURN_FREQ_MAX,
-  TURN_FREQ_MIN,
+  TURN_FREQUENCY_MAX,
+  TURN_FREQUENCY_MIN,
   TURN_RATE,
 } from './constants'
 
@@ -49,7 +49,7 @@ export interface Flight {
   turn: number
   turnBias: number
   turnWander: number
-  turnFreq: number
+  turnFrequency: number
   turnPhase: number
   speed: number
   travelled: number
@@ -64,7 +64,7 @@ function createBird(offsetX: number, offsetY: number, offsetZ: number): Bird {
     offsetZ,
     size: BIRD_SPAN * rand(1 - BIRD_SIZE_JITTER, 1 + BIRD_SIZE_JITTER),
     phase: Math.random() * Math.PI * 2,
-    flapRate: FLAP_FREQ * rand(0.85, 1.15),
+    flapRate: FLAP_FREQUENCY * rand(0.85, 1.15),
     flapping,
     timer: flapping ? rand(FLAP_TIME_MIN, FLAP_TIME_MAX) : rand(GLIDE_TIME_MIN, GLIDE_TIME_MAX),
     blend: flapping ? 1 : 0,
@@ -95,8 +95,8 @@ function createFormation(freeSlots: number): Bird[] {
 
 export function createFlight(originX: number, originZ: number, freeSlots: number): Flight {
   const heading = Math.random() * Math.PI * 2
-  const dirX = Math.sin(heading)
-  const dirZ = Math.cos(heading)
+  const directionX = Math.sin(heading)
+  const directionZ = Math.cos(heading)
   const lane = rand(-FLIGHT_LANE, FLIGHT_LANE)
   const altitude = rand(ALTITUDE_MIN, ALTITUDE_MAX)
   const midHeight = altitude / 2
@@ -104,14 +104,14 @@ export function createFlight(originX: number, originZ: number, freeSlots: number
   const centerZ = originZ + (midHeight * CAMERA_OFFSET[2]) / CAMERA_OFFSET[1]
 
   return {
-    x: centerX - dirX * FLIGHT_RADIUS + dirZ * lane,
-    z: centerZ - dirZ * FLIGHT_RADIUS - dirX * lane,
+    x: centerX - directionX * FLIGHT_RADIUS + directionZ * lane,
+    z: centerZ - directionZ * FLIGHT_RADIUS - directionX * lane,
     y: altitude,
     heading,
     turn: 0,
     turnBias: rand(-TURN_BIAS, TURN_BIAS),
     turnWander: TURN_RATE * rand(0.5, 1),
-    turnFreq: rand(TURN_FREQ_MIN, TURN_FREQ_MAX),
+    turnFrequency: rand(TURN_FREQUENCY_MIN, TURN_FREQUENCY_MAX),
     turnPhase: Math.random() * Math.PI * 2,
     speed: FLIGHT_SPEED + rand(-FLIGHT_SPEED_JITTER, FLIGHT_SPEED_JITTER),
     travelled: 0,
@@ -120,7 +120,7 @@ export function createFlight(originX: number, originZ: number, freeSlots: number
 }
 
 export function steerFlight(flight: Flight, time: number, dt: number): void {
-  const wander = Math.sin(time * flight.turnFreq * Math.PI * 2 + flight.turnPhase)
+  const wander = Math.sin(time * flight.turnFrequency * Math.PI * 2 + flight.turnPhase)
   flight.turn = flight.turnBias + flight.turnWander * wander
   flight.heading += flight.turn * dt
   flight.x += Math.sin(flight.heading) * flight.speed * dt
@@ -145,5 +145,5 @@ export function updateWings(bird: Bird, dt: number): number {
   )
   bird.phase += dt * bird.flapRate * Math.PI * 2
 
-  return mix(GLIDE_LIFT, Math.sin(bird.phase) * FLAP_AMP, bird.blend)
+  return mix(GLIDE_LIFT, Math.sin(bird.phase) * FLAP_AMPLITUDE, bird.blend)
 }

@@ -2,6 +2,7 @@ import { useEffect, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
 import type * as THREE from 'three'
 import type { WallClock } from '@/utils/time'
+import { disposeAll } from '@/utils/dispose'
 import { advancePoints } from './pointMaterial'
 
 interface DepthPointsProps {
@@ -14,13 +15,7 @@ export default function DepthPoints({ buildGeometry, createMaterial, clock }: De
   const geometry = useMemo(() => buildGeometry(), [buildGeometry])
   const material = useMemo(() => createMaterial(), [createMaterial])
 
-  useEffect(
-    () => () => {
-      geometry.dispose()
-      material.dispose()
-    },
-    [geometry, material]
-  )
+  useEffect(() => () => disposeAll(geometry, material), [geometry, material])
 
   useFrame(({ camera, gl, size }) =>
     advancePoints(

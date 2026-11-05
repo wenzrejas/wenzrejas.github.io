@@ -39,7 +39,7 @@ export function buildDepthsShip(source: THREE.Object3D): DepthsShipModel {
 
   const materials = [...copies.values()]
   applyBrightness(
-    materials.map((mat) => ({ mat, base: mat.color.clone() })),
+    materials.map((material) => ({ material, base: material.color.clone() })),
     MODEL_BRIGHTNESS
   )
   const root = new THREE.Group()

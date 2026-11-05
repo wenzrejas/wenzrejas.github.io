@@ -25,8 +25,8 @@ export const BEAM_ANCHOR_FORWARD = [0, -1, 0] as const
 export const BEAM_HEAD_NODE = 'Lighthouse_Lantern_Rotor'
 export const BEAM_LENS_NODE = 'Glow_BeaconLens'
 export const BEAM_LENGTH = 21
-export const BEAM_SPREAD_DEG = 16
-export const BEAM_TILT_DEG = 6
+export const BEAM_SPREAD_DEGREES = 16
+export const BEAM_TILT_DEGREES = 6
 export const BEAM_SPEED = 0.35
 export const BEAM_STRENGTH = 0.4
 export const BEAM_COLOR = '#f4f0e2'
@@ -34,6 +34,9 @@ export const BEAM_SUN_ON = 0.4
 export const BEAM_SUN_FULL = 0.05
 export const BEAM_RAIN_FULL = 0.5
 export const BEAM_SEGMENTS = 32
+export const BEAM_FADE_IN = 0.02
+export const BEAM_FALLOFF = 1.3
+export const BEAM_EDGE_LEVEL = 0.12
 export const BEAM_VISIBLE_LEVEL = 0.002
 
 // ── Lights ────────────────────────────────────────────────────────────────────

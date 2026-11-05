@@ -1,10 +1,10 @@
 import type { NoiseOctave } from '../procedural/valueNoise'
 import type { EdgeTint, ShadowStep } from './parchmentModel'
 
-// ── Sheet shape (traced units) ────────────────────────────────────────────────
+// ── Sheet shape ───────────────────────────────────────────────────────────────
 export const SHEET_CORNER_REACH = 72
 
-// ── Loose sheet: top edge with its climb taken out (traced units) ─────────────
+// ── Loose sheet ───────────────────────────────────────────────────────────────
 export const TOP_EDGE_CLIMB: [number, number][] = [
   [0, 32],
   [130, 31],
@@ -79,7 +79,7 @@ export const CREASE_LIGHT_OFFSET = 0.9
 export const CREASE_DARK = 'rgba(138, 90, 46, 0.22)'
 export const CREASE_LIGHT = 'rgba(255, 250, 238, 0.42)'
 
-// ── Aged band (traced units) ──────────────────────────────────────────────────
+// ── Aged band ─────────────────────────────────────────────────────────────────
 export const BAND_SAMPLE_STEP = 2
 export const BAND_SMOOTHING = 9
 export const BAND_REACH = 9.5
@@ -123,7 +123,7 @@ export const BACK_STRIP_LIT = '#e2b887'
 export const BACK_STRIP_SHADED = '#cfa06c'
 export const BACK_STRIP_EDGE_TINTS: EdgeTint[] = [{ reachPixels: 3, tint: '#f4e3cb' }]
 
-// ── Rod (traced units) ────────────────────────────────────────────────────────
+// ── Rod ───────────────────────────────────────────────────────────────────────
 export const ROD_LEFT = -16
 export const ROD_RIGHT = 18
 export const ROD_TOP = 49.2

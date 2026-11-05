@@ -8,6 +8,7 @@ import { useShipStore } from '@/store/shipStore'
 import { MAX_FRAME_SECONDS } from '@/utils/time'
 import Spray from '@/world/effects/Spray'
 import { ParticlePool, updateDrops } from '@/world/effects/particlePool'
+import { disposeAll } from '@/utils/dispose'
 import { COURSE_GATES } from './checkpointRun'
 import {
   ARCH_COLOR,
@@ -33,13 +34,7 @@ export default function RaceEffects() {
   const drops = useMemo(() => new ParticlePool(RACE_DROP_POOL), [])
   const sprayBudget = useRef(0)
 
-  useEffect(
-    () => () => {
-      sparkGeometry.dispose()
-      sparkMaterial.dispose()
-    },
-    [sparkGeometry, sparkMaterial]
-  )
+  useEffect(() => () => disposeAll(sparkGeometry, sparkMaterial), [sparkGeometry, sparkMaterial])
 
   useEffect(
     () =>

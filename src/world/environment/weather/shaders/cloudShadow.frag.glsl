@@ -8,7 +8,7 @@
   varying vec2  vCloudUv;
 
   void main() {
-    float d = texture2D(uMap, vCloudUv * uRepeat + uOffset).a;
-    float cloud = clamp(d * uGain + uBias, 0.0, 1.0);
+    float density = texture2D(uMap, vCloudUv * uRepeat + uOffset).a;
+    float cloud = clamp(density * uGain + uBias, 0.0, 1.0);
     gl_FragColor = vec4(uColor, cloud * uOpacity);
   }

@@ -1,7 +1,7 @@
 import { useControls, folder } from 'leva'
 import {
   BASE_Y,
-  BOB_AMP,
+  BOB_AMPLITUDE,
   BOB_SPEED,
   FOAM_REACH,
   FOAM_Y,
@@ -14,7 +14,6 @@ import {
   TILT_SPEED,
   TURN_SPEED,
 } from '@/world/ship/constants'
-import type { ShipControls } from '../types'
 
 export function useShipControls() {
   return useControls(
@@ -30,7 +29,7 @@ export function useShipControls() {
       }),
       Bob: folder({
         baseY: { value: BASE_Y, min: -20, max: 20, step: 0.1 },
-        bobAmp: { value: BOB_AMP, min: 0, max: 5, step: 0.1 },
+        bobAmplitude: { value: BOB_AMPLITUDE, min: 0, max: 5, step: 0.1 },
         bobSpeed: { value: BOB_SPEED, min: 0, max: 5, step: 0.1 },
       }),
       Tilt: folder({
@@ -38,8 +37,8 @@ export function useShipControls() {
         tiltSpeed: { value: TILT_SPEED, min: 0, max: 20, step: 0.5 },
       }),
       Ripple: folder({
-        partLife: { value: PARTICLE_LIFETIME, min: 0.1, max: 5, step: 0.1 },
-        partSpeed: { value: PARTICLE_SPEED, min: 0, max: 30, step: 1 },
+        particleLife: { value: PARTICLE_LIFETIME, min: 0.1, max: 5, step: 0.1 },
+        particleSpeed: { value: PARTICLE_SPEED, min: 0, max: 30, step: 1 },
       }),
       Foam: folder({
         foamReach: { value: FOAM_REACH, min: 0.5, max: 5, step: 0.1, label: 'reach' },
@@ -47,5 +46,5 @@ export function useShipControls() {
       }),
     },
     { collapsed: true }
-  ) as ShipControls
+  )
 }

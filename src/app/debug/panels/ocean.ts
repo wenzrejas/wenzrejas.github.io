@@ -1,13 +1,12 @@
 import { useControls, folder } from 'leva'
 import { OCEAN_DEFAULTS } from '@/world/environment/ocean/constants'
-import type { OceanControls } from '../types'
 
 export function useOceanControls() {
   return useControls(
     'Ocean',
     {
       Wave: folder({
-        waveAmp: { value: OCEAN_DEFAULTS.waveAmp, min: 0, max: 15, step: 0.1 },
+        waveAmplitude: { value: OCEAN_DEFAULTS.waveAmplitude, min: 0, max: 15, step: 0.1 },
         waveSpeed: { value: OCEAN_DEFAULTS.waveSpeed, min: 0, max: 5, step: 0.05 },
       }),
       Cell: folder({
@@ -27,7 +26,7 @@ export function useOceanControls() {
       Color: folder({
         deepColor: { value: OCEAN_DEFAULTS.deepColor },
         midColor: { value: OCEAN_DEFAULTS.midColor },
-        midPos: { value: OCEAN_DEFAULTS.midPos, min: 0, max: 1, step: 0.01 },
+        midPosition: { value: OCEAN_DEFAULTS.midPosition, min: 0, max: 1, step: 0.01 },
         highlightColor: { value: OCEAN_DEFAULTS.highlightColor },
         opacity: { value: OCEAN_DEFAULTS.opacity, min: 0, max: 1, step: 0.01 },
         deepOpacity: { value: OCEAN_DEFAULTS.deepOpacity, min: 0, max: 1, step: 0.01 },
@@ -49,5 +48,5 @@ export function useOceanControls() {
       }),
     },
     { collapsed: true }
-  ) as OceanControls
+  )
 }

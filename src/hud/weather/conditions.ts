@@ -25,4 +25,4 @@ const windOriginName = (direction: THREE.Vector2) =>
 export const readWeather = () =>
   shownWeather(useWeatherStore.getState().type, useCycleStore.getState().timeOfDay)
 
-export const readWindPoint = () => windOriginName(useWindStore.getState().dir)
+export const readWindPoint = () => windOriginName(useWindStore.getState().direction)

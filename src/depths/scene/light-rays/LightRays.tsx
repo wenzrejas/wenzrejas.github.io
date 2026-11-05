@@ -2,6 +2,7 @@ import { useEffect, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import type { WallClock } from '@/utils/time'
+import { disposeAll } from '@/utils/dispose'
 import { surfaceDaylight } from '../surface-daylight/surfaceDaylight'
 import { shimmerRays } from './rayShimmer'
 import { buildRayGeometry, createRayMaterial } from './lightRaysModel'
@@ -14,13 +15,7 @@ export default function LightRays({ clock }: LightRaysProps) {
   const geometry = useMemo(() => buildRayGeometry(), [])
   const material = useMemo(() => createRayMaterial(), [])
 
-  useEffect(
-    () => () => {
-      geometry.dispose()
-      material.dispose()
-    },
-    [geometry, material]
-  )
+  useEffect(() => () => disposeAll(geometry, material), [geometry, material])
 
   useFrame(() => shimmerRays(material, clock.elapsed, surfaceDaylight()))
 

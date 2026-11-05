@@ -7,6 +7,7 @@ import {
   setJellyfishBody,
 } from '@/world/wildlife/shared/jellyfish-shape/jellyfishShapeModel'
 import JELLYFISH_FRAG from '@/world/wildlife/shared/jellyfish-shape/shaders/jellyfish.frag.glsl'
+import { createAdditiveMaterial } from '@/utils/materials'
 import { ARRIVAL_LEVEL } from '../constants'
 import { DEEPEST_LEVEL, levelDepth, levelSpot } from '../timeline/timeline'
 import {
@@ -103,7 +104,7 @@ export function buildJellyfishGeometry(): THREE.InstancedBufferGeometry {
 }
 
 export const createJellyfishMaterial = () =>
-  new THREE.ShaderMaterial({
+  createAdditiveMaterial({
     vertexShader: JELLYFISH_VERT,
     fragmentShader: JELLYFISH_FRAG,
     defines: floatDefines({
@@ -115,9 +116,6 @@ export const createJellyfishMaterial = () =>
       DRIFT_RATE,
       FADE_DENSITY: JELLYFISH_FADE_DENSITY,
     }),
-    transparent: true,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
     side: THREE.DoubleSide,
     uniforms: { uTime: { value: 0 } },
   })

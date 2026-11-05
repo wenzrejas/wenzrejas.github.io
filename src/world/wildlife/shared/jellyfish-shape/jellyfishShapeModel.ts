@@ -49,9 +49,9 @@ const _side = new THREE.Vector3()
 const _facing = new THREE.Vector3()
 
 function addFacet(body: Body, corners: Point[], shapes: Point[]) {
-  const [a, b, c] = corners
-  _edge.set(b[0] - a[0], b[1] - a[1], b[2] - a[2])
-  _side.set(c[0] - a[0], c[1] - a[1], c[2] - a[2])
+  const [cornerA, cornerB, cornerC] = corners
+  _edge.set(cornerB[0] - cornerA[0], cornerB[1] - cornerA[1], cornerB[2] - cornerA[2])
+  _side.set(cornerC[0] - cornerA[0], cornerC[1] - cornerA[1], cornerC[2] - cornerA[2])
   _facing.crossVectors(_edge, _side)
   if (_facing.lengthSq() < 1e-10) return
   _facing.normalize()
@@ -76,12 +76,12 @@ function addBell(body: Body) {
     const [upperRadius, upperHeight] = BELL_PROFILE[band]
     const [lowerRadius, lowerHeight] = BELL_PROFILE[band + 1]
     for (let segment = 0; segment < BELL_SEGMENTS; segment++) {
-      const a = ring(upperRadius, upperHeight, segment)
-      const b = ring(upperRadius, upperHeight, segment + 1)
-      const c = ring(lowerRadius, lowerHeight, segment + 1)
-      const d = ring(lowerRadius, lowerHeight, segment)
-      addFacet(body, [a, b, c], bellShapes)
-      addFacet(body, [a, c, d], bellShapes)
+      const cornerA = ring(upperRadius, upperHeight, segment)
+      const cornerB = ring(upperRadius, upperHeight, segment + 1)
+      const cornerC = ring(lowerRadius, lowerHeight, segment + 1)
+      const cornerD = ring(lowerRadius, lowerHeight, segment)
+      addFacet(body, [cornerA, cornerB, cornerC], bellShapes)
+      addFacet(body, [cornerA, cornerC, cornerD], bellShapes)
     }
   }
 }

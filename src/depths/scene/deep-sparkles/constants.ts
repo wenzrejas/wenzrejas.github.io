@@ -1,4 +1,4 @@
-// ── Population (in levels; density grows as share of depth ^ ramp) ────────────
+// ── Population ────────────────────────────────────────────────────────────────
 export const SPARKLE_COUNT = 900
 export const SPARKLE_SEED = 53
 export const SPARKLE_FROM_LEVEL = 0.4
@@ -8,7 +8,7 @@ export const SPARKLE_SPREAD_ACROSS = 140
 export const SPARKLE_NEAREST_Z = 60
 export const SPARKLE_FARTHEST_Z = -140
 
-// ── Twinkle (seconds; share of each cycle spent flashing) ─────────────────────
+// ── Twinkle ───────────────────────────────────────────────────────────────────
 export const SPARKLE_CYCLE_SECONDS: [number, number] = [2.5, 6]
 export const SPARKLE_FLASH_SHARE = 0.3
 export const SPARKLE_DRIFT = 1.5

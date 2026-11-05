@@ -2,7 +2,7 @@
 export const PAYMENTS_FLAG_NODE = 'PM Village | payment bell tower | royal blue payments flag'
 export const PENNANT_NODE = 'CCC Station Blue pennant'
 
-// ── Wave (flag lengths, cycles per second) ────────────────────────────────────
+// ── Wave ──────────────────────────────────────────────────────────────────────
 export const FLAG_WAVES_ALONG = 1.3
 export const FLAG_WAVE_RATE = 0.8
 export const FLAG_RIPPLE_WAVES_ALONG = 3

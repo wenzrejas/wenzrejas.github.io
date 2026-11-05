@@ -30,7 +30,9 @@ function findRuins(model: THREE.Object3D) {
   model.traverse((node) => {
     if (roleOf(node) === 'ruin') ruins.push(node)
   })
-  return ruins.sort((a, b) => String(a.userData.ruin).localeCompare(String(b.userData.ruin)))
+  return ruins.sort((left, right) =>
+    String(left.userData.ruin).localeCompare(String(right.userData.ruin))
+  )
 }
 
 function moverOf(

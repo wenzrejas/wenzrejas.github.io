@@ -1,23 +1,24 @@
-import { forwardRef, useEffect, useMemo, useRef, type RefObject } from 'react'
-import * as THREE from 'three'
-import { useDebugStore } from '@/store/debugStore'
+import { useEffect, useMemo, type RefObject } from 'react'
+import type * as THREE from 'three'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
-import { useShipModel } from './useShipModel'
-import { useShipMovement } from './useShipMovement'
-import { useHullFoam } from './useHullFoam'
-import { useShipRig } from './useShipRig'
+import { useDebugStore } from '@/store/debugStore'
+import { traceHullOutline, type HullOutline } from './hullOutline'
 import { useShipFade } from './shipFade'
 import { useShipGlow } from './shipGlow'
-import { useShipLivery } from './useShipLivery'
-import { traceHullOutline, type HullOutline } from './hullOutline'
 import Slipstream from './Slipstream'
+import { useHullFoam } from './useHullFoam'
+import { useShipLivery } from './useShipLivery'
+import { useShipModel } from './useShipModel'
+import { useShipMovement } from './useShipMovement'
+import { useShipRig } from './useShipRig'
 
 interface ShipProps {
+  shipRef: RefObject<THREE.Group | null>
   hullOutlineRef: RefObject<HullOutline | null>
 }
 
-const Ship = forwardRef<THREE.Group, ShipProps>(({ hullOutlineRef }, ref) => {
-  const { modelSize, baseY, brightness } = useDebugStore((s) => s.ship)
+export default function Ship({ shipRef, hullOutlineRef }: ShipProps) {
+  const { modelSize, baseY, brightness } = useDebugStore((state) => state.ship)
   const { scene, clonedScene, footprint, rig, fadePass, glows } = useShipModel(brightness)
   const modelScale = modelSize / footprint
   const hullOutline = useMemo(
@@ -25,10 +26,13 @@ const Ship = forwardRef<THREE.Group, ShipProps>(({ hullOutlineRef }, ref) => {
     [scene, modelScale, baseY]
   )
 
-  const groupRef = useRef<THREE.Group>(null)
-  const { heading, lean, steering, tailwind } = useShipMovement(groupRef)
-  const foam = useHullFoam(groupRef, heading, lean, hullOutline)
-  useShipRig(rig, heading, steering, tailwind)
+  const sailing = useShipMovement(shipRef)
+  const {
+    meshRef: foamRef,
+    geometry: foamGeometry,
+    material: foamMaterial,
+  } = useHullFoam(shipRef, sailing, hullOutline)
+  useShipRig(rig, sailing)
   useShipGlow(glows)
   useShipFade(fadePass)
   useShipLivery()
@@ -39,31 +43,21 @@ const Ship = forwardRef<THREE.Group, ShipProps>(({ hullOutlineRef }, ref) => {
 
   return (
     <>
-      <group
-        ref={(el) => {
-          groupRef.current = el
-          if (typeof ref === 'function') ref(el)
-          else if (ref) ref.current = el
-        }}
-        position={[0, baseY, 0]}
-      >
+      <group ref={shipRef} position={[0, baseY, 0]}>
         <primitive object={clonedScene} scale={modelScale}>
-          <Slipstream tailwindRef={tailwind} />
+          <Slipstream sailing={sailing} />
         </primitive>
       </group>
 
-      {foam.geometry && (
+      {foamGeometry && (
         <mesh
-          ref={foam.meshRef}
-          geometry={foam.geometry}
-          material={foam.material}
+          ref={foamRef}
+          geometry={foamGeometry}
+          material={foamMaterial}
           renderOrder={RENDER_LAYER.waterSurface}
           frustumCulled={false}
         />
       )}
     </>
   )
-})
-
-Ship.displayName = 'Ship'
-export default Ship
+}

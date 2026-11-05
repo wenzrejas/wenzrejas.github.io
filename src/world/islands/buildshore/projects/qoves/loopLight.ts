@@ -26,7 +26,7 @@ export function findQovesLoop(island: IslandModel): QovesLoop | null {
   return {
     frame,
     stones,
-    amberGlow: island.glows.find(({ mat }) => mat.name === AMBER_GLOW_MATERIAL) ?? null,
+    amberGlow: island.glows.find(({ material }) => material.name === AMBER_GLOW_MATERIAL) ?? null,
   }
 }
 
@@ -35,5 +35,5 @@ export const loopLevel = (hover: HoverTimeline) => timelineStage(hover, LOOP_RIS
 export const cometHead = (hover: HoverTimeline) => -hover.engagedSeconds * COMET_TURN_RATE
 
 export function swellAmberGlow(glow: GlowTarget, night: number, level: number): void {
-  glow.mat.emissiveIntensity = glow.base * (night + AMBER_GLOW_SWELL * level)
+  glow.material.emissiveIntensity = glow.base * (night + AMBER_GLOW_SWELL * level)
 }

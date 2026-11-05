@@ -19,8 +19,8 @@ uniform vec3 uCore;
 varying vec2 vUv;
 
 vec2 turned(vec2 point, float angle) {
-  float c = cos(angle), s = sin(angle);
-  return vec2(c * point.x - s * point.y, s * point.x + c * point.y);
+  float cosine = cos(angle), sine = sin(angle);
+  return vec2(cosine * point.x - sine * point.y, sine * point.x + cosine * point.y);
 }
 
 float dialAt(vec2 point, float turn, float scale, float blur) {

@@ -1,7 +1,7 @@
 import { audio } from '@/audio/audioManager'
 import type { CourseKey } from './courses'
 
-interface RingPass {
+export interface RingPass {
   course: CourseKey
   ring: number
   kind: 'passed' | 'perfect' | 'finished'

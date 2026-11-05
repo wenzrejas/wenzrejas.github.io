@@ -18,19 +18,19 @@ void main() {
     float age = uTime - point.z;
     if (age > TRAIL_LIFE) break;
     vec2 away = vWorld - point.xy;
-    float dist = length(away);
+    float awayDistance = length(away);
     float settle = 1.0 - age / TRAIL_LIFE;
     float reach = SCATTER_RADIUS * (0.6 + 0.4 * min(age / 0.6, 1.0));
-    float weight = (1.0 - smoothstep(0.0, reach, dist)) * settle;
-    push += away / max(dist, 0.001) * weight;
+    float weight = (1.0 - smoothstep(0.0, reach, awayDistance)) * settle;
+    push += away / max(awayDistance, 0.001) * weight;
     excite = max(excite, weight);
-    cleared = max(cleared, (1.0 - smoothstep(0.0, reach * 0.45, dist)) * settle);
+    cleared = max(cleared, (1.0 - smoothstep(0.0, reach * 0.45, awayDistance)) * settle);
   }
   vec2 offset = length(push) > 0.0 ? normalize(push) * excite * SCATTER_PUSH : vec2(0.0);
 
-  vec2 q = (vWorld - offset) * SPECK_SCALE;
-  vec2 cell = floor(q);
-  vec2 local = fract(q);
+  vec2 speckPoint = (vWorld - offset) * SPECK_SCALE;
+  vec2 cell = floor(speckPoint);
+  vec2 local = fract(speckPoint);
   float seed = algaeHash(cell);
   vec2 centre = vec2(algaeHash(cell + 7.1), algaeHash(cell + 3.7)) * 0.6 + 0.2;
   float inside = step(max(abs(local.x - centre.x), abs(local.y - centre.y)), SPECK_SIZE);

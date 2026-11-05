@@ -38,7 +38,7 @@ export default function WorldMap() {
   }, [])
 
   useEffect(() => {
-    if (isLoaderGone) preloadWorldMap()
+    if (isLoaderGone) void preloadWorldMap()
   }, [isLoaderGone])
 
   useEffect(

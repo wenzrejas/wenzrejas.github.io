@@ -13,8 +13,8 @@ const _vertex = new THREE.Vector3()
 const _point = new THREE.Vector3()
 const _frameAxis = new THREE.Vector3()
 
-const sectorOf = (dx: number, dz: number) =>
-  Math.floor(((Math.atan2(dz, dx) / (Math.PI * 2) + 1) % 1) * BASE_FOOTPRINT_SECTORS) %
+const sectorOf = (deltaX: number, deltaZ: number) =>
+  Math.floor(((Math.atan2(deltaZ, deltaX) / (Math.PI * 2) + 1) % 1) * BASE_FOOTPRINT_SECTORS) %
   BASE_FOOTPRINT_SECTORS
 
 export function footprintOf(
@@ -30,11 +30,11 @@ export function footprintOf(
     const position = mesh.geometry.getAttribute('position')
     for (let i = 0; i < position.count; i++) {
       _vertex.fromBufferAttribute(position, i).applyMatrix4(_meshToFrame)
-      const dx = _vertex.x - center.x
-      const dz = _vertex.z - center.z
-      const radius = Math.hypot(dx, dz)
+      const deltaX = _vertex.x - center.x
+      const deltaZ = _vertex.z - center.z
+      const radius = Math.hypot(deltaX, deltaZ)
       if (radius > maxRadius) continue
-      const sector = sectorOf(dx, dz)
+      const sector = sectorOf(deltaX, deltaZ)
       radii[sector] = Math.max(radii[sector], radius)
     }
   }
@@ -48,8 +48,8 @@ export function footprintGap(
   z: number
 ): number {
   _point.set(x, 0, z).applyMatrix4(_toFrame.copy(frame.matrixWorld).invert())
-  const dx = _point.x - centerX
-  const dz = _point.z - centerZ
-  const gap = Math.hypot(dx, dz) - radii[sectorOf(dx, dz)]
+  const deltaX = _point.x - centerX
+  const deltaZ = _point.z - centerZ
+  const gap = Math.hypot(deltaX, deltaZ) - radii[sectorOf(deltaX, deltaZ)]
   return gap * _frameAxis.setFromMatrixColumn(frame.matrixWorld, 0).length()
 }

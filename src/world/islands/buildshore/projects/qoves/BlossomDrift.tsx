@@ -5,6 +5,7 @@ import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { uniformsOf } from '@/utils/meshes'
 import { pixelsPerUnit } from '@/utils/screen'
 import type { HoverTimeline } from '@/world/islands/shared/hoverTimeline'
+import { disposeAll } from '@/utils/dispose'
 import { buildBlossomGeometry, createBlossomMaterial } from './blossomDriftModel'
 import { BLOSSOM_SIZE } from './constants'
 
@@ -18,13 +19,7 @@ export default function BlossomDrift({ hover, islandScale }: BlossomDriftProps) 
   const geometry = useMemo(() => buildBlossomGeometry(), [])
   const material = useMemo(() => createBlossomMaterial(), [])
 
-  useEffect(
-    () => () => {
-      geometry.dispose()
-      material.dispose()
-    },
-    [geometry, material]
-  )
+  useEffect(() => () => disposeAll(geometry, material), [geometry, material])
 
   useFrame(({ camera, gl }) => {
     const points = pointsRef.current

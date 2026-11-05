@@ -1,11 +1,12 @@
 import { useLayoutEffect, useMemo } from 'react'
 import { useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
+import { replaceMaterials } from '@/utils/meshes'
 import { applyCloudShadow } from '@/world/environment/weather/cloudShadow'
 import type { GlowTarget } from './nightGlow'
 
 export interface TintTarget {
-  mat: THREE.MeshStandardMaterial
+  material: THREE.MeshStandardMaterial
   base: THREE.Color
 }
 
@@ -30,30 +31,17 @@ function prepareIslandModel({ scene, parser }: IslandSource, isCloudShaded: bool
 
   const tints: TintTarget[] = []
   const glows: GlowTarget[] = []
-  const cache = new Map<THREE.Material, THREE.Material>()
 
-  const flatten = (source: THREE.Material): THREE.Material => {
-    const cached = cache.get(source)
-    if (cached) return cached
-
-    const mat = source.clone() as THREE.MeshPhysicalMaterial
-    if ('roughness' in mat) mat.roughness = 1
-    if ('specularIntensity' in mat) mat.specularIntensity = 0
-    if ('color' in mat) tints.push({ mat, base: mat.color.clone() })
-    if ('emissive' in mat && mat.emissive.getHex() !== 0) {
-      glows.push({ mat, base: mat.emissiveIntensity })
+  replaceMaterials(model, (source) => {
+    const material = source.clone() as THREE.MeshPhysicalMaterial
+    if ('roughness' in material) material.roughness = 1
+    if ('specularIntensity' in material) material.specularIntensity = 0
+    if ('color' in material) tints.push({ material: material, base: material.color.clone() })
+    if ('emissive' in material && material.emissive.getHex() !== 0) {
+      glows.push({ material: material, base: material.emissiveIntensity })
     }
-    if (isCloudShaded) applyCloudShadow(mat)
-    cache.set(source, mat)
-    return mat
-  }
-
-  model.traverse((obj) => {
-    const mesh = obj as THREE.Mesh
-    if (!mesh.isMesh) return
-    mesh.material = Array.isArray(mesh.material)
-      ? mesh.material.map(flatten)
-      : flatten(mesh.material)
+    if (isCloudShaded) applyCloudShadow(material)
+    return material
   })
 
   return {
@@ -67,7 +55,7 @@ function prepareIslandModel({ scene, parser }: IslandSource, isCloudShaded: bool
 }
 
 export function applyBrightness(tints: TintTarget[], brightness: number) {
-  for (const { mat, base } of tints) mat.color.copy(base).multiplyScalar(brightness)
+  for (const { material, base } of tints) material.color.copy(base).multiplyScalar(brightness)
 }
 
 export function useIslandModel(url: string, brightness: number, isCloudShaded = true): IslandModel {

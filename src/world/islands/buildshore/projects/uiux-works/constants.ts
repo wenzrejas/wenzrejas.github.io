@@ -7,14 +7,14 @@ export const GEM_NODE = 'UIUX_Works_Gem'
 export const PEDESTAL_INSET_NODE = 'UIUX Works | Gem violet inset'
 export const INSET_GLOW_MATERIAL = 'UIUX Works | Violet luminous inset'
 
-// ── Gem (model units, seconds) ────────────────────────────────────────────────
+// ── Gem ───────────────────────────────────────────────────────────────────────
 export const GEM_RISE_SECONDS = 0.6
 export const GEM_LIFT = 0.7
 export const GEM_SPIN_RATE = 0.9
 export const GEM_BOB = 0.1
 export const GEM_BOB_RATE = 1.6
 
-// ── Gem sparkles (model units, seconds) ───────────────────────────────────────
+// ── Gem sparkles ──────────────────────────────────────────────────────────────
 export const GEM_SPARKLES: CornerSparkleTuning = {
   color: '#e9dcff',
   count: 9,
@@ -38,7 +38,7 @@ export const GEM_HALO_COLOR = '#b98cff'
 export const INSET_PULSE = 1.4
 export const INSET_PULSE_RATE = 1.2
 
-// ── Plaza rings (model units) ─────────────────────────────────────────────────
+// ── Plaza rings ───────────────────────────────────────────────────────────────
 export const PLAZA_RING_REACH = 4.6
 export const PLAZA_RING: PulseRingTuning = {
   color: '#a46cff',

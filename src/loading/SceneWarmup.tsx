@@ -13,12 +13,13 @@ export default function SceneWarmup() {
   const uploadsRef = useRef<THREE.Object3D[] | null>(null)
 
   useEffect(() => {
-    warmShaders(gl, scene, camera).finally(() => {
+    const startUploads = () => {
       uploadsRef.current = uploadQueueOf(scene)
-    })
+    }
+    void warmShaders(gl, scene, camera).then(startUploads, startUploads)
   }, [gl, scene, camera])
 
-  useFrame(({ gl, scene, camera }) => {
+  useFrame(() => {
     const uploads = uploadsRef.current
     if (!uploads) return
     const root = uploads.pop()

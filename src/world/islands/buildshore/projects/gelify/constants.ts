@@ -12,7 +12,7 @@ export const MONITOR_SCREEN_NODE = 'GEL Editor | Monitor screen'
 export const ANGULAR_CUBE_PREFIX = 'GEL_Angular_Cube_'
 export const ANGULAR_GEM_NODE = 'GEL_Angular_Gem'
 
-// ── Editor in motion (model units, seconds) ───────────────────────────────────
+// ── Editor motion ─────────────────────────────────────────────────────────────
 export const EDITOR_RISE_SECONDS = 0.5
 export const CARD_BOB = 0.07
 export const CARD_BOB_RATE = 0.35
@@ -23,20 +23,20 @@ export const ACCENT_SPIN_RATE = 1.8
 export const ACCENT_TUMBLE = 0.5
 export const ACCENT_TUMBLE_RATE = 0.9
 
-// ── Playhead (screen width shares, seconds) ───────────────────────────────────
+// ── Playhead ──────────────────────────────────────────────────────────────────
 export const PLAYHEAD_MIN_BRIGHTNESS = 0.9
 export const PLAYHEAD_START_SHARE = 0.22
 export const PLAYHEAD_END_SHARE = 0.91
 export const PLAYHEAD_SWEEP_SECONDS = 3
 
-// ── Angular blocks (model units, seconds) ─────────────────────────────────────
+// ── Angular blocks ────────────────────────────────────────────────────────────
 export const BLOCK_LIFT = 0.45
 export const BLOCK_HOP_SECONDS = 0.55
 export const BLOCK_STAGGER_SECONDS = 0.1
 export const BLOCK_WAVE_SECONDS = 3.2
 export const STACK_TOLERANCE = 0.1
 
-// ── Angular gem (model units, seconds) ────────────────────────────────────────
+// ── Angular gem ───────────────────────────────────────────────────────────────
 export const ANGULAR_GEM_LIFT = 1.8
 export const ANGULAR_GEM_FORWARD = 0.4
 export const ANGULAR_GEM_RISE_SECONDS = 0.6
@@ -45,7 +45,7 @@ export const ANGULAR_GEM_PAUSE_SECONDS = 1
 export const ANGULAR_GEM_GLOW_DAY_SHARE = 0.25
 export const ANGULAR_GEM_GLOW_GAIN = 1.2
 
-// ── Angular gem sparkles (model units, seconds) ───────────────────────────────
+// ── Angular gem sparkles ──────────────────────────────────────────────────────
 export const ANGULAR_GEM_SPARKLES: CornerSparkleTuning = {
   color: '#c4e9ff',
   count: 7,
@@ -58,7 +58,7 @@ export const ANGULAR_GEM_SPARKLES: CornerSparkleTuning = {
   tintShare: 1,
 }
 
-// ── Sapphire facets (view-space light) ────────────────────────────────────────
+// ── Sapphire facets ───────────────────────────────────────────────────────────
 export const FACET_LIGHT_DIRECTION: [number, number, number] = [-0.4, 0.8, 0.45]
 export const FACET_TILT_GAIN = 7.5
 export const FACET_SHARPNESS = 2

@@ -1,7 +1,12 @@
 import * as THREE from 'three'
 import { COMPASS_COPY } from '@/data/hudCopy'
 import { bearingDegrees, POINT_STEP_DEGREES } from '../north'
-import { PX_PER_DEGREE, TAPE_END_DEGREES, TAPE_START_DEGREES, TICK_STEP_DEGREES } from './constants'
+import {
+  PIXELS_PER_DEGREE,
+  TAPE_END_DEGREES,
+  TAPE_START_DEGREES,
+  TICK_STEP_DEGREES,
+} from './constants'
 
 interface TapeMark {
   x: number
@@ -9,7 +14,7 @@ interface TapeMark {
 }
 
 export function tapeOffset(heading: number): number {
-  return -bearingDegrees(heading) * PX_PER_DEGREE
+  return -bearingDegrees(heading) * PIXELS_PER_DEGREE
 }
 
 function createTapeMark(degrees: number): TapeMark {
@@ -17,7 +22,7 @@ function createTapeMark(degrees: number): TapeMark {
   const isPoint = turnDegrees % POINT_STEP_DEGREES === 0
 
   return {
-    x: degrees * PX_PER_DEGREE,
+    x: degrees * PIXELS_PER_DEGREE,
     label: isPoint ? COMPASS_COPY.points[turnDegrees / POINT_STEP_DEGREES] : null,
   }
 }

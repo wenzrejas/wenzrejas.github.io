@@ -34,8 +34,8 @@ import {
 interface SprayingShip {
   x: number
   z: number
-  vx: number
-  vz: number
+  velocityX: number
+  velocityZ: number
   heading: number
 }
 
@@ -99,7 +99,7 @@ export function emitRingSplash(foam: ParticlePool, drops: ParticlePool, gate: Ga
 export function emitSurgeSpray(
   foam: ParticlePool,
   drops: ParticlePool,
-  { x, z, vx, vz, heading }: SprayingShip
+  { x, z, velocityX, velocityZ, heading }: SprayingShip
 ) {
   const forwardX = Math.sin(heading)
   const forwardZ = Math.cos(heading)
@@ -116,9 +116,9 @@ export function emitSurgeSpray(
     spotX,
     0.6,
     spotZ,
-    vx * SURGE_DROP_CARRY + outX,
+    velocityX * SURGE_DROP_CARRY + outX,
     rand(0.5, 1) * SURGE_SPRAY_RISE,
-    vz * SURGE_DROP_CARRY + outZ,
+    velocityZ * SURGE_DROP_CARRY + outZ,
     SURGE_DROP_SIZE * rand(0.6, 1.2),
     SURGE_DROP_LIFE
   )
@@ -126,9 +126,9 @@ export function emitSurgeSpray(
     spotX,
     0.4,
     spotZ,
-    vx * SURGE_FOAM_CARRY + outX,
+    velocityX * SURGE_FOAM_CARRY + outX,
     0,
-    vz * SURGE_FOAM_CARRY + outZ,
+    velocityZ * SURGE_FOAM_CARRY + outZ,
     SURGE_FOAM_SIZE * rand(0.6, 1.3),
     SURGE_FOAM_LIFE
   )

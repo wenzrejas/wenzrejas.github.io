@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import { FLAME_TONGUES } from './constants'
 import FLAME_VERT from './shaders/flame.vert.glsl'
 import FLAME_FRAG from './shaders/flame.frag.glsl'
+import { createAdditiveMaterial } from '@/utils/materials'
 
 export function buildFlameGeometry(size: number): THREE.PlaneGeometry {
   const geometry = new THREE.PlaneGeometry(1, 1)
@@ -10,11 +11,8 @@ export function buildFlameGeometry(size: number): THREE.PlaneGeometry {
 }
 
 export const createFlameMaterial = (glow: number) =>
-  new THREE.ShaderMaterial({
+  createAdditiveMaterial({
     defines: { TONGUES: FLAME_TONGUES },
-    transparent: true,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
     side: THREE.DoubleSide,
     uniforms: {
       uTime: { value: 0 },

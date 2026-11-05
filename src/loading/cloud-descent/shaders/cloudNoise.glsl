@@ -9,20 +9,20 @@ float latticeValue(ivec2 corner) {
   return float(value >> 8u) / 16777215.0;
 }
 
-float latticeNoise(vec2 p) {
-  ivec2 cell = ivec2(floor(p));
-  vec2  f    = fract(p);
-  vec2  ease = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
+float latticeNoise(vec2 point) {
+  ivec2 cell = ivec2(floor(point));
+  vec2  fraction    = fract(point);
+  vec2  ease = fraction * fraction * fraction * (fraction * (fraction * 6.0 - 15.0) + 10.0);
   return mix(mix(latticeValue(cell),              latticeValue(cell + ivec2(1, 0)), ease.x),
              mix(latticeValue(cell + ivec2(0, 1)), latticeValue(cell + ivec2(1, 1)), ease.x), ease.y);
 }
 
-float cloudFbm(vec2 p, int octaves) {
+float cloudFbm(vec2 point, int octaves) {
   float total = 0.0, weight = 0.5, weights = 0.0;
   for (int i = 0; i < octaves; i++) {
-    total   += weight * latticeNoise(p);
+    total   += weight * latticeNoise(point);
     weights += weight;
-    p        = OCTAVE_TURN * p + OCTAVE_SHIFT;
+    point        = OCTAVE_TURN * point + OCTAVE_SHIFT;
     weight  *= 0.5;
   }
   return total / weights;

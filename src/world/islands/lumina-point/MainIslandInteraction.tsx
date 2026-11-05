@@ -18,7 +18,7 @@ export default function MainIslandInteraction({
   mainIsland,
   islandScale,
 }: MainIslandInteractionProps) {
-  const isSkyBeamActive = useSkyBeamStore((s) => s.isActive)
+  const isSkyBeamActive = useSkyBeamStore((state) => state.isActive)
 
   const summitSites = useMemo(() => [mainIsland.summit], [mainIsland])
 

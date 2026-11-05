@@ -56,14 +56,14 @@ export default function WindLines({ shipRef }: WindLinesProps) {
 
     if (!tuning.windEnabled || turning > WIND_SETTLED_ANGLE) return
     const ship = shipRef.current
-    const { windMult } = useWeatherStore.getState()
+    const { windMultiplier } = useWeatherStore.getState()
     spawnStreak(
       wind.current,
       clock.getElapsedTime(),
       ship?.position.x ?? 0,
       ship?.position.z ?? 0,
       tuning,
-      windMult
+      windMultiplier
     )
   })
 

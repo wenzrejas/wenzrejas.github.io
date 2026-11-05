@@ -1,5 +1,5 @@
-import { PHASES } from '../world/environment/day-night-cycle/dayNightKeyframes'
-import type { IslandKey } from '../world/islands/shared/constants'
+import { PHASES } from '@/world/environment/day-night-cycle/dayNightKeyframes'
+import type { IslandKey } from '@/world/islands/shared/constants'
 import type { MusicTrack } from './sounds'
 
 // ── Mix ───────────────────────────────────────────────────────────────────────
@@ -34,7 +34,7 @@ export const MUTE_SMOOTHING = 0.08
 export const SILENCE_THRESHOLD = 0.002
 
 // ── Weather ───────────────────────────────────────────────────────────────────
-export const WEATHER_POLL_MS = 250
+export const WEATHER_POLL_MILLISECONDS = 250
 export const RAIN_CUTOFF = 0.01
 export const RAIN_FADE = 2
 export const RAIN_VOLUME_RAMP = 0.5

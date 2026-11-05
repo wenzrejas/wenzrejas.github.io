@@ -19,7 +19,7 @@ vec3 swimWhale(vec3 point) {
   point.x += uTurnCurve * spine;
   point.y += uClimbCurve * spine;
 
-  float flipperStroke = uPhase * FLIPPER_FREQ;
+  float flipperStroke = uPhase * FLIPPER_FREQUENCY;
   point.z += flipperReach * sin(flipperStroke) * FLIPPER_SWEEP;
   point.y += flipperReach * cos(flipperStroke) * FLIPPER_LIFT;
   return point;

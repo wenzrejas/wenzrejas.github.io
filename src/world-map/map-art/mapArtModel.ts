@@ -14,7 +14,7 @@ import { WORLD_LOCATIONS, type IslandKey } from '@/world/islands/shared/constant
 import { ISLAND_KEYS } from '@/world/islands/shared/islandSpecs'
 import {
   CHART_HEIGHT,
-  CHART_PX_PER_WORLD_UNIT,
+  CHART_PIXELS_PER_WORLD_UNIT,
   CHART_STRETCH_LIMIT,
   CHART_WIDTH,
   COMPACT_COMPASS_CLEAR_LEFT,
@@ -108,8 +108,8 @@ function islandChartSpot(island: IslandKey): ChartPoint {
   const [x, , z] = WORLD_LOCATIONS[island].position
   const { x: east, y: north } = toEastNorth(x, z, _eastNorth)
   return {
-    x: WORLD_ORIGIN_ON_CHART.x + east * CHART_PX_PER_WORLD_UNIT,
-    y: WORLD_ORIGIN_ON_CHART.y - north * CHART_PX_PER_WORLD_UNIT,
+    x: WORLD_ORIGIN_ON_CHART.x + east * CHART_PIXELS_PER_WORLD_UNIT,
+    y: WORLD_ORIGIN_ON_CHART.y - north * CHART_PIXELS_PER_WORLD_UNIT,
   }
 }
 

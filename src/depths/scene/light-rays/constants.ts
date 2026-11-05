@@ -20,6 +20,6 @@ export const RAY_REACH = 420
 export const RAY_SHIMMER_RATE = 0.35
 export const RAY_SWAY = 0.25
 
-// ── Night (share of the daytime strength kept at full night) ──────────────────
+// ── Night ─────────────────────────────────────────────────────────────────────
 export const RAY_NIGHT_LEVEL = 0.25
 export const RAY_NIGHT_COLOR = '#9fb8ff'

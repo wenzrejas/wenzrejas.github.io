@@ -11,6 +11,7 @@ import { useShipStore } from '@/store/shipStore'
 import { useWeatherStore } from '@/store/weatherStore'
 import { isOnScreen } from '@/utils/screen'
 import GemSparkles from '@/world/islands/shared/gem-sparkles/GemSparkles'
+import { disposeAll } from '@/utils/dispose'
 import { bottleScaleFor, poseBottle } from './bottleDrift'
 import {
   bottleGlintGem,
@@ -49,12 +50,7 @@ export default function BottleField() {
   )
 
   useEffect(
-    () => () => {
-      contentsGeometry.dispose()
-      contentsMaterial.dispose()
-      glassGeometry.dispose()
-      glassMaterial.dispose()
-    },
+    () => () => disposeAll(contentsGeometry, contentsMaterial, glassGeometry, glassMaterial),
     [contentsGeometry, contentsMaterial, glassGeometry, glassMaterial]
   )
 
@@ -70,7 +66,7 @@ export default function BottleField() {
     }
 
     const time = clock.getElapsedTime()
-    const swell = useWeatherStore.getState().waveAmpMult
+    const swell = useWeatherStore.getState().waveAmplitudeMultiplier
     let drawn = 0
     for (const bottle of afloat) {
       poseBottle(_pose, BOTTLE_SPOTS[bottle], scale, time, swell)

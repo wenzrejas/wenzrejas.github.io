@@ -24,7 +24,7 @@ interface StationClock {
 const Y_AXIS = new THREE.Vector3(0, 1, 0)
 const HOUR_STOPS = (Object.keys(PHASES) as PhaseName[])
   .map((phase) => ({ t: PHASES[phase], hours: CLOCK_HOURS_AT_PHASE[phase] }))
-  .sort((a, b) => a.t - b.t)
+  .sort((left, right) => left.t - right.t)
 const HOUR_TRACK = [...HOUR_STOPS, { t: HOUR_STOPS[0].t + 1, hours: HOUR_STOPS[0].hours + 24 }]
 
 const _up = new THREE.Vector3()
@@ -34,11 +34,11 @@ const _turn = new THREE.Quaternion()
 
 export function clockHours(timeOfDay: number): number {
   const start = HOUR_TRACK[0].t
-  const t = ((((timeOfDay - start) % 1) + 1) % 1) + start
-  const next = HOUR_TRACK.findIndex((stop) => stop.t > t)
+  const clockTime = ((((timeOfDay - start) % 1) + 1) % 1) + start
+  const next = HOUR_TRACK.findIndex((stop) => stop.t > clockTime)
   const from = HOUR_TRACK[next - 1]
   const to = HOUR_TRACK[next]
-  return THREE.MathUtils.mapLinear(t, from.t, to.t, from.hours, to.hours)
+  return THREE.MathUtils.mapLinear(clockTime, from.t, to.t, from.hours, to.hours)
 }
 
 const clockwiseTurn = (fromX: number, fromZ: number, toX: number, toZ: number, facing: number) =>

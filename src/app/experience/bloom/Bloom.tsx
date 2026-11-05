@@ -21,7 +21,7 @@ export default function Bloom() {
     return () => cancelAnimationFrame(warmFrame)
   }, [chain, gl])
 
-  useFrame(({ gl }, delta) => {
+  useFrame((_, delta) => {
     const scene = renderedScene()
     if (scene === null || isLoaderShowing()) return
     shownSeconds.current += Math.min(delta, MAX_FRAME_SECONDS)

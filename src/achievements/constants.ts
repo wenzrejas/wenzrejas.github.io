@@ -7,7 +7,7 @@ import { ISLAND_KEYS } from '@/world/islands/shared/islandSpecs'
 import { STATUE_GROVES } from '@/world/islands/tech-grove/constants'
 import type { LiveryKey } from '@/world/ship/constants'
 
-// ── Categories (tab order) ────────────────────────────────────────────────────
+// ── Categories ────────────────────────────────────────────────────────────────
 export const ACHIEVEMENT_CATEGORIES = [
   'voyage',
   'islands',
@@ -19,7 +19,7 @@ export const ACHIEVEMENT_CATEGORIES = [
 ] as const
 export type AchievementCategory = (typeof ACHIEVEMENT_CATEGORIES)[number]
 
-// ── Achievements (tab order; items are counted towards completion) ────────────
+// ── Achievements ──────────────────────────────────────────────────────────────
 interface AchievementSpec {
   category: AchievementCategory
   items?: readonly string[]
@@ -65,7 +65,7 @@ export const ACHIEVEMENTS: Record<AchievementKey, AchievementSpec> = ACHIEVEMENT
 export const ACHIEVEMENT_KEYS = Object.keys(ACHIEVEMENT_SPECS) as AchievementKey[]
 export const CROWNING_ACHIEVEMENT: AchievementKey = 'legendOfTheSeas'
 
-// ── Ranks (achievements earned to reach each, and the livery it unlocks) ──────
+// ── Ranks ─────────────────────────────────────────────────────────────────────
 export const RANKS = [
   { rank: 'stowaway', earned: 0, livery: 'original' },
   { rank: 'deckhand', earned: 3, livery: 'seafoam' },
@@ -76,13 +76,13 @@ export const RANKS = [
 ] as const satisfies readonly { rank: string; earned: number; livery: LiveryKey }[]
 export type RankKey = (typeof RANKS)[number]['rank']
 
-// ── Liveries unlocked by an achievement instead of a rank ─────────────────────
+// ── Achievement liveries ──────────────────────────────────────────────────────
 export const ACHIEVEMENT_LIVERIES: Partial<Record<LiveryKey, AchievementKey>> = {
   seaGlass: 'beachcomber',
   regatta: 'regattaChampion',
 }
 
-// ── World watch (seconds; times of day as cycle shares) ───────────────────────
+// ── World watch ───────────────────────────────────────────────────────────────
 export const ACHIEVEMENT_POLL_SECONDS = 0.5
 export const EDGE_OF_WORLD_MARGIN = 60
 export const DAWN_ENDS_TIME = PHASES.morning

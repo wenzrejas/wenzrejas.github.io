@@ -4,11 +4,14 @@ export const LANTERN_NODE = 'Buildshore_Train_Loco_Upper_lantern_lens'
 export const HEADLIGHT_COLOR = '#ffcf82'
 export const HEADLIGHT_VISIBLE_LEVEL = 0.002
 
-// ── Beam (locomotive units) ───────────────────────────────────────────────────
+// ── Beam ──────────────────────────────────────────────────────────────────────
 export const BEAM_LENGTH = 5
-export const BEAM_SPREAD_DEG = 30
-export const BEAM_TILT_DEG = 11
+export const BEAM_SPREAD_DEGREES = 30
+export const BEAM_TILT_DEGREES = 11
 export const BEAM_SEGMENTS = 24
+export const BEAM_FADE_IN = 0.04
+export const BEAM_FALLOFF = 1.6
+export const BEAM_EDGE_LEVEL = 0.15
 export const BEAM_STRENGTH = 0.45
 
 // ── Track pool ────────────────────────────────────────────────────────────────

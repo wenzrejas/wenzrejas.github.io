@@ -1,5 +1,5 @@
-import { usePanelStore, type PanelKey } from '../store/panelStore'
-import { MAX_FRAME_SECONDS } from '../utils/time'
+import { usePanelStore, type PanelKey } from '@/store/panelStore'
+import { MAX_FRAME_SECONDS } from '@/utils/time'
 import { HOVER_EASE_RATE, HOVER_SNAP_GAP } from './constants'
 
 export function easeHover(hoverable: { hoverBlend: number }, isHovered: boolean, delta: number) {

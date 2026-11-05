@@ -20,10 +20,10 @@ const glowingIslands = new WeakMap<IslandModel, ScreenGlows>()
 export const glowScreens = (island: IslandModel) =>
   onceFor(glowingIslands, island, () => {
     const glows = { screens: createColorGlow(), uiuxScreens: createColorGlow() }
-    for (const { mat } of island.tints) {
-      if (mat.name !== SCREEN_GLOW_MATERIAL) continue
-      sinkBehindCoplanar(mat, SCREEN_DEPTH_STEPS)
-      addColorGlow(mat, glows.screens)
+    for (const { material } of island.tints) {
+      if (material.name !== SCREEN_GLOW_MATERIAL) continue
+      sinkBehindCoplanar(material, SCREEN_DEPTH_STEPS)
+      addColorGlow(material, glows.screens)
     }
     const panels = meshesNamed(island.model, FLOATING_CARD_NODES)
     if (panels.length > 0) dressColorGlow(panels, glows.screens)

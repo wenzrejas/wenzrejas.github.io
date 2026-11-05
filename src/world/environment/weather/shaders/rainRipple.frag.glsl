@@ -8,10 +8,10 @@ varying float vSwallowed;
 void main() {
   if (uIntensity < 0.01) discard;
 
-  vec2 c = vUV - 0.5;
-  float dist = length(c);
+  vec2 centred = vUV - 0.5;
+  float centerDistance = length(centred);
 
-  float ring = smoothstep(0.38, 0.44, dist) * smoothstep(0.52, 0.45, dist);
+  float ring = smoothstep(0.38, 0.44, centerDistance) * smoothstep(0.52, 0.45, centerDistance);
   float fade = 1.0 - smoothstep(0.0, 1.0, vProgress);
 
   float alpha = ring * fade * uIntensity * 0.55 * (1.0 - vSwallowed);

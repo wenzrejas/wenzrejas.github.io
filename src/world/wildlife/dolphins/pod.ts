@@ -1,10 +1,10 @@
 import * as THREE from 'three'
-import { useShipStore } from '@/store/shipStore'
+import type { ShipState } from '@/store/shipStore'
 import { useWhaleStore } from '@/store/whaleStore'
 import { mix, rand, wrapAngle } from '@/utils/math'
 import { ISLAND_ZONES, isOpenWater, shoreGap } from '@/world/islands/shared/islandZones'
 import {
-  ACCEL,
+  ACCELERATION,
   ACTION_DELAY_MAX,
   ACTION_DELAY_MIN,
   ACTIVE_FROM,
@@ -59,7 +59,7 @@ import {
 
 type Action = 'cruise' | 'surface' | 'leap'
 
-interface Dolphin {
+export interface Dolphin {
   x: number
   z: number
   heading: number
@@ -78,7 +78,7 @@ interface Dolphin {
   leapHeight: number
   leapDuration: number
   leapRoll: number
-  prevY: number
+  previousY: number
   wakeX: number
   wakeZ: number
   fleeHeading: number
@@ -97,9 +97,7 @@ export interface Pod {
   dolphins: Dolphin[]
 }
 
-type ShipMotion = ReturnType<typeof useShipStore.getState>
-
-interface Pose {
+export interface Pose {
   y: number
   climb: number
   arch: number
@@ -116,7 +114,7 @@ export function podChance(time: number, algaeGlow: number): number {
   return 0
 }
 
-export function createPod(ship: ShipMotion): Pod {
+export function createPod(ship: ShipState): Pod {
   const count = Math.floor(rand(POD_MIN, POD_MAX + 1))
   const dolphins = Array.from({ length: count }, (_, i): Dolphin => {
     const side = i % 2 === 0 ? 1 : -1
@@ -132,7 +130,7 @@ export function createPod(ship: ShipMotion): Pod {
       z,
       heading: ship.heading,
       yawRate: 0,
-      speed: Math.hypot(ship.vx, ship.vz),
+      speed: Math.hypot(ship.velocityX, ship.velocityZ),
       pitch: 0,
       depth: HIDDEN_DEPTH,
       targetDepth: rand(CRUISE_DEPTH_MIN, CRUISE_DEPTH_MAX),
@@ -146,7 +144,7 @@ export function createPod(ship: ShipMotion): Pod {
       leapHeight: LEAP_HEIGHT,
       leapDuration: LEAP_DURATION,
       leapRoll: 0,
-      prevY: -HIDDEN_DEPTH,
+      previousY: -HIDDEN_DEPTH,
       wakeX: x,
       wakeZ: z,
       fleeHeading: 0,
@@ -186,7 +184,7 @@ function anchorInOpenWater(pod: Pod): void {
   pod.roamZ = z
 }
 
-export function updateRoaming(pod: Pod, ship: ShipMotion, dt: number): void {
+export function updateRoaming(pod: Pod, ship: ShipState, dt: number): void {
   if (pod.roaming) {
     pod.roamAngle += ROAM_RATE * dt
     if (isOpenWater(ship.x, ship.z, ROAM_END_GAP)) pod.roaming = false
@@ -212,16 +210,16 @@ export function scatterPod(pod: Pod, fromX: number, fromZ: number): void {
 const _push = new THREE.Vector2()
 
 function addRepulsion(dolphin: Dolphin, x: number, z: number, radius: number): void {
-  const dx = dolphin.x - x
-  const dz = dolphin.z - z
-  const distance = Math.hypot(dx, dz)
+  const deltaX = dolphin.x - x
+  const deltaZ = dolphin.z - z
+  const distance = Math.hypot(deltaX, deltaZ)
   if (distance >= radius || distance < 1e-3) return
   const strength = (1 - distance / radius) * SEPARATION_STRENGTH
-  _push.x += (dx / distance) * strength
-  _push.y += (dz / distance) * strength
+  _push.x += (deltaX / distance) * strength
+  _push.y += (deltaZ / distance) * strength
 }
 
-export function swim(dolphin: Dolphin, pod: Pod, ship: ShipMotion, dt: number): void {
+export function swim(dolphin: Dolphin, pod: Pod, ship: ShipState, dt: number): void {
   if (pod.leaving) dolphin.slotRadius += LEAVE_DRIFT * dt
 
   const angle = pod.roaming
@@ -231,8 +229,8 @@ export function swim(dolphin: Dolphin, pod: Pod, ship: ShipMotion, dt: number): 
   const centerZ = pod.roaming ? pod.roamZ : ship.z
   const targetX = centerX + Math.sin(angle) * dolphin.slotRadius
   const targetZ = centerZ + Math.cos(angle) * dolphin.slotRadius
-  const leadX = pod.roaming ? Math.cos(angle) * ROAM_RATE * dolphin.slotRadius : ship.vx
-  const leadZ = pod.roaming ? -Math.sin(angle) * ROAM_RATE * dolphin.slotRadius : ship.vz
+  const leadX = pod.roaming ? Math.cos(angle) * ROAM_RATE * dolphin.slotRadius : ship.velocityX
+  const leadZ = pod.roaming ? -Math.sin(angle) * ROAM_RATE * dolphin.slotRadius : ship.velocityZ
 
   _push.set(0, 0)
   for (const other of pod.dolphins) {
@@ -263,7 +261,7 @@ export function swim(dolphin: Dolphin, pod: Pod, ship: ShipMotion, dt: number): 
   const alignment = (1 + Math.cos(turn)) / 2
   let targetSpeed = desiredSpeed * mix(TURN_SLOWDOWN, 1, alignment)
   if (dolphin.action === 'leap') targetSpeed = Math.max(targetSpeed, dolphin.speed)
-  dolphin.speed += (targetSpeed - dolphin.speed) * Math.min(1, ACCEL * dt)
+  dolphin.speed += (targetSpeed - dolphin.speed) * Math.min(1, ACCELERATION * dt)
 
   dolphin.x += Math.sin(dolphin.heading) * dolphin.speed * dt
   dolphin.z += Math.cos(dolphin.heading) * dolphin.speed * dt
@@ -303,18 +301,18 @@ export function updateAction(dolphin: Dolphin, leaving: boolean, dt: number): vo
 }
 
 export function pose(dolphin: Dolphin): Pose {
-  const t = dolphin.actionProgress
-  const arc = Math.sin(Math.PI * t)
+  const progress = dolphin.actionProgress
+  const arc = Math.sin(Math.PI * progress)
 
   if (dolphin.action === 'leap') {
     const rise = dolphin.leapHeight + dolphin.depth
-    _pose.y = -dolphin.depth + rise * 4 * t * (1 - t)
-    _pose.climb = (rise * 4 * (1 - 2 * t)) / dolphin.leapDuration
+    _pose.y = -dolphin.depth + rise * 4 * progress * (1 - progress)
+    _pose.climb = (rise * 4 * (1 - 2 * progress)) / dolphin.leapDuration
     _pose.arch = LEAP_ARCH * arc
     _pose.roll = dolphin.leapRoll * arc
   } else if (dolphin.action === 'surface') {
     _pose.y = -dolphin.depth + SURFACE_LIFT * arc * arc
-    _pose.climb = (SURFACE_LIFT * Math.PI * Math.sin(2 * Math.PI * t)) / SURFACE_DURATION
+    _pose.climb = (SURFACE_LIFT * Math.PI * Math.sin(2 * Math.PI * progress)) / SURFACE_DURATION
     _pose.arch = SURFACE_ARCH * arc
     _pose.roll = 0
   } else {

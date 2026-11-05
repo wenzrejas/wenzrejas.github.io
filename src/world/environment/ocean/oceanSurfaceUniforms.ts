@@ -8,7 +8,7 @@ export const oceanSurfaceUniforms = {
   uCellSpeed: { value: OCEAN_DEFAULTS.cellSpeed },
   uDeepColor: { value: new THREE.Color(OCEAN_DEFAULTS.deepColor) },
   uMidColor: { value: new THREE.Color(OCEAN_DEFAULTS.midColor) },
-  uMidPos: { value: OCEAN_DEFAULTS.midPos },
+  uMidPosition: { value: OCEAN_DEFAULTS.midPosition },
   uHighlight: { value: new THREE.Color(OCEAN_DEFAULTS.highlightColor) },
   uOpacity: { value: OCEAN_DEFAULTS.opacity },
   uDeepOpacity: { value: OCEAN_DEFAULTS.deepOpacity },
@@ -16,9 +16,9 @@ export const oceanSurfaceUniforms = {
   uFresnelStrength: { value: OCEAN_DEFAULTS.fresnelStrength },
   uSpecularStrength: { value: OCEAN_DEFAULTS.specularStrength },
   uSpecularPower: { value: OCEAN_DEFAULTS.specularPower },
-  uSunDir: {
+  uSunDirection: {
     value: new THREE.Vector3(OCEAN_DEFAULTS.sunX, OCEAN_DEFAULTS.sunY, OCEAN_DEFAULTS.sunZ),
   },
-  uMoonDir: { value: new THREE.Vector3(5, 80, 5).normalize() },
+  uMoonDirection: { value: new THREE.Vector3(5, 80, 5).normalize() },
   uMoonIntensity: { value: 0 },
 }

@@ -30,8 +30,8 @@ const Perf =
 
 export default function Experience() {
   const shipRef = useRef<THREE.Group>(null)
-  const orbitCamera = useDebugStore((s) => s.camera.orbitCamera)
-  const topView = useDebugStore((s) => s.camera.topView)
+  const orbitCamera = useDebugStore((state) => state.camera.orbitCamera)
+  const topView = useDebugStore((state) => state.camera.topView)
   const isLoaderGone = useLoadingStore((state) => state.isLoaderGone)
   const graphicsQuality = useSettingsStore((state) => state.graphicsQuality)
 
@@ -64,7 +64,7 @@ export default function Experience() {
         <Bloom />
         <DiveTransition />
         <WorldPause />
-        <World ref={shipRef} />
+        <World shipRef={shipRef} />
         <DepthsStage />
         {topView ? (
           <TopView />

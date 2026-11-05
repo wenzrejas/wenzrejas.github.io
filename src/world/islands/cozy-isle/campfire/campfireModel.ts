@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import { columnBoundingSphere } from '@/utils/bounds'
 import { floatDefines } from '@/utils/glsl'
 import { rand } from '@/utils/math'
+import { createAdditiveMaterial } from '@/utils/materials'
 import {
   EMBER_COUNT,
   EMBER_DRIFT,
@@ -41,11 +42,8 @@ export function buildEmberGeometry(width: number, height: number): THREE.BufferG
 }
 
 export const createEmberMaterial = () =>
-  new THREE.ShaderMaterial({
+  createAdditiveMaterial({
     defines: floatDefines({ LIFETIME: EMBER_LIFETIME }),
-    transparent: true,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
     uniforms: {
       uTime: { value: 0 },
       uSize: { value: 4 },

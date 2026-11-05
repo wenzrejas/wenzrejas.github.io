@@ -1,8 +1,8 @@
-import { useCoastStore } from '../store/coastStore'
-import { useShipStore } from '../store/shipStore'
-import { isRaining } from '../store/weatherStore'
-import { signedLoopDistance } from '../utils/polygon'
-import { nightGlow } from '../world/islands/shared/nightGlow'
+import { useCoastStore } from '@/store/coastStore'
+import { useShipStore } from '@/store/shipStore'
+import { isRaining } from '@/store/weatherStore'
+import { signedLoopDistance } from '@/utils/polygon'
+import { nightGlow } from '@/world/islands/shared/nightGlow'
 import {
   CRICKET_FADE,
   CRICKET_FULL_GAP,

@@ -2,6 +2,7 @@ import { useEffect, useMemo } from 'react'
 import { createPortal, useFrame } from '@react-three/fiber'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { RUIN_LIFE_FRAME_PRIORITY } from '@/depths/scene/constants'
+import { disposeAll } from '@/utils/dispose'
 import DriftPoints from '../shared/DriftPoints'
 import type { MilestoneProps } from '../shared/milestone'
 import { wakeShare, wakeStrength } from '../shared/ruinWake'
@@ -14,13 +15,7 @@ export default function OpenBook({ ruin, level, timeline, clock }: MilestoneProp
   const material = useMemo(() => createPageGlowMaterial(), [])
   const strength = () => wakeStrength(wakeShare(timeline, level))
 
-  useEffect(
-    () => () => {
-      geometry.dispose()
-      material.dispose()
-    },
-    [geometry, material]
-  )
+  useEffect(() => () => disposeAll(geometry, material), [geometry, material])
 
   useFrame(() => glowSpread(material, ruin, clock.elapsed, strength()), RUIN_LIFE_FRAME_PRIORITY)
 

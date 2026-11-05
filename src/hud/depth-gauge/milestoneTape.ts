@@ -1,12 +1,12 @@
 import { ARRIVAL_LEVEL, DEPTH_LEVEL_COUNT } from '@/depths/scene/constants'
-import { PX_PER_LEVEL, TICKS_PER_LEVEL } from './constants'
+import { PIXELS_PER_LEVEL, TICKS_PER_LEVEL } from './constants'
 
 interface MilestoneMark {
   y: number
   label: string | null
 }
 
-const tapeY = (level: number) => (level - ARRIVAL_LEVEL) * PX_PER_LEVEL
+const tapeY = (level: number) => (level - ARRIVAL_LEVEL) * PIXELS_PER_LEVEL
 
 export const tapeOffset = (viewedLevel: number) => -tapeY(viewedLevel)
 

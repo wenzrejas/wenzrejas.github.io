@@ -1,4 +1,4 @@
-import * as THREE from 'three'
+import type * as THREE from 'three'
 import { footprintGap, footprintOf } from '@/interaction/baseFootprint'
 import { meshesOf, pointIn, positionIn } from '@/utils/meshes'
 import { CAFE_NODE, COUNTER_MARKER_SPOT, DOCK_NODE, NOTE_SPOT, TERRAIN_NODE } from './constants'

@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { createTriangleSoup, type TrianglePoint } from '@/utils/geometry'
 import { floatDefines } from '@/utils/glsl'
 import { randomBetween, seededRandom } from '@/utils/random'
 import { patchShader } from '@/world/islands/shared/materialPatch'
@@ -28,8 +29,6 @@ import {
 import FISH_SWIM_PARS from './shaders/fishSwimPars.vert.glsl'
 import FISH_SWIM from './shaders/fishSwim.vert.glsl'
 
-type Point = [number, number, number]
-
 export interface SchoolLayer {
   perLevel: number
   nearestZ: number
@@ -49,34 +48,27 @@ const FACING_AHEAD = new THREE.Quaternion()
 // ── Geometry ──────────────────────────────────────────────────────────────────
 
 function buildFishGeometry() {
-  const positions: number[] = []
-  const colors: number[] = []
-  const tri = (color: THREE.Color, a: Point, b: Point, c: Point) => {
-    for (const corner of [a, b, c]) {
-      positions.push(...corner)
-      colors.push(color.r, color.g, color.b)
-    }
-  }
+  const { positions, colors, addTriangle } = createTriangleSoup()
 
-  const nose: Point = [1, 0, 0]
-  const back: Point = [0.15, 0.36, 0]
-  const belly: Point = [0.15, -0.3, 0]
-  const flankNear: Point = [0.2, 0.02, 0.2]
-  const flankFar: Point = [0.2, 0.02, -0.2]
-  const tailRoot: Point = [-0.62, 0.02, 0]
+  const nose: TrianglePoint = [1, 0, 0]
+  const back: TrianglePoint = [0.15, 0.36, 0]
+  const belly: TrianglePoint = [0.15, -0.3, 0]
+  const flankNear: TrianglePoint = [0.2, 0.02, 0.2]
+  const flankFar: TrianglePoint = [0.2, 0.02, -0.2]
+  const tailRoot: TrianglePoint = [-0.62, 0.02, 0]
 
-  tri(BACK, nose, back, flankNear)
-  tri(BELLY, nose, flankNear, belly)
-  tri(BELLY, nose, belly, flankFar)
-  tri(BACK, nose, flankFar, back)
-  tri(BACK, tailRoot, flankNear, back)
-  tri(BELLY, tailRoot, belly, flankNear)
-  tri(BELLY, tailRoot, flankFar, belly)
-  tri(BACK, tailRoot, back, flankFar)
+  addTriangle(BACK, nose, back, flankNear)
+  addTriangle(BELLY, nose, flankNear, belly)
+  addTriangle(BELLY, nose, belly, flankFar)
+  addTriangle(BACK, nose, flankFar, back)
+  addTriangle(BACK, tailRoot, flankNear, back)
+  addTriangle(BELLY, tailRoot, belly, flankNear)
+  addTriangle(BELLY, tailRoot, flankFar, belly)
+  addTriangle(BACK, tailRoot, back, flankFar)
 
-  tri(FIN, tailRoot, [-1, 0.34, 0], [-0.86, 0.02, 0])
-  tri(FIN, tailRoot, [-0.86, 0.02, 0], [-1, -0.28, 0])
-  tri(FIN, back, [-0.18, 0.55, 0], [-0.3, 0.26, 0])
+  addTriangle(FIN, tailRoot, [-1, 0.34, 0], [-0.86, 0.02, 0])
+  addTriangle(FIN, tailRoot, [-0.86, 0.02, 0], [-1, -0.28, 0])
+  addTriangle(FIN, back, [-0.18, 0.55, 0], [-0.3, 0.14, 0])
 
   const geometry = new THREE.BufferGeometry()
   geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))

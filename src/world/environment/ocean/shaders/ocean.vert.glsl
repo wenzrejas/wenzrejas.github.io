@@ -12,13 +12,13 @@ void main() {
   float whirlpoolCalm = smoothstep(1.0, WHIRLPOOL_CALM_REACH, whirlpoolShare(worldPos.xz));
   float calm = shoreCalm(worldPos.xz) * whirlpoolCalm;
 
-  float amp = uWaveAmp * calm;
+  float amplitude = uWaveAmplitude * calm;
 
   vWaveHeight = wave.x * calm;
-  worldPos.y += wave.x * amp;
+  worldPos.y += wave.x * amplitude;
   worldPos.y -= whirlpoolDip(worldPos.xz) * FUNNEL_OVERSHOOT;
 
-  vNormal   = normalize(vec3(-wave.y * amp, 1.0, -wave.z * amp));
+  vNormal   = normalize(vec3(-wave.y * amplitude, 1.0, -wave.z * amplitude));
   vWorldPos = worldPos.xz;
   vPos      = worldPos.xyz;
   gl_Position = projectionMatrix * viewMatrix * worldPos;

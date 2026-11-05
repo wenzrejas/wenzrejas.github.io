@@ -3,6 +3,7 @@ import { displayColorOf } from '@/utils/color'
 import { floatDefines } from '@/utils/glsl'
 import { mix } from '@/utils/math'
 import GLOW_POINT_FRAG from '@/shaders/glowPoint.frag.glsl'
+import { createAdditiveMaterial } from '@/utils/materials'
 import type { DriftTuning } from './particleDrift'
 import DRIFT_POINTS_VERT from './shaders/driftPoints.vert.glsl'
 
@@ -34,7 +35,7 @@ export const createDriftMaterial = ({
   strength,
   color,
 }: DriftTuning) =>
-  new THREE.ShaderMaterial({
+  createAdditiveMaterial({
     vertexShader: DRIFT_POINTS_VERT,
     fragmentShader: GLOW_POINT_FRAG,
     defines: floatDefines({
@@ -45,9 +46,6 @@ export const createDriftMaterial = ({
       SIZE: size,
       STRENGTH: strength,
     }),
-    transparent: true,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
     uniforms: {
       uTime: { value: 0 },
       uGlow: { value: 1 },

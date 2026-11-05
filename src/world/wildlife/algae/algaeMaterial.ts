@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { floatDefines } from '@/utils/glsl'
 import { waveUniforms } from '@/world/environment/ocean/waveUniforms'
+import { createAdditiveMaterial } from '@/utils/materials'
 import { algaeDefines, algaeUniforms } from './algaeField'
 import {
   CREST_BRIGHT,
@@ -19,7 +20,7 @@ import ALGAE_VERT from './shaders/algae.vert.glsl'
 import ALGAE_FRAG from './shaders/algae.frag.glsl'
 
 export function createAlgaeMaterial(): THREE.ShaderMaterial {
-  return new THREE.ShaderMaterial({
+  return createAdditiveMaterial({
     vertexShader: ALGAE_VERT,
     fragmentShader: ALGAE_FRAG,
     defines: {
@@ -36,9 +37,6 @@ export function createAlgaeMaterial(): THREE.ShaderMaterial {
         CREST_BRIGHT,
       }),
     },
-    transparent: true,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
     uniforms: { ...algaeUniforms, ...waveUniforms, uTrail: trailUniform },
   })
 }

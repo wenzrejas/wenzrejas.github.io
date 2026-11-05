@@ -1,4 +1,4 @@
-// ── Patches (scattered around the ship like the glowing algae) ────────────────
+// ── Patches ───────────────────────────────────────────────────────────────────
 export const JELLY_MAX_PATCHES = 6
 export const JELLY_PATCH_CHECK_SECONDS = 5
 export const JELLY_PATCH_CHANCE = 0.6
@@ -20,7 +20,7 @@ export const JELLY_PATCH_BESIDE_SHIP_SPREAD = 0.5
 export const JELLY_PATCH_BEYOND_VIEW = 200
 export const JELLY_PATCH_DESPAWN_DISTANCE = 1100
 
-// ── How many, and how they settle in a patch ──────────────────────────────────
+// ── Population ────────────────────────────────────────────────────────────────
 export const JELLY_COUNT = 700
 export const JELLY_COUNT_SMOOTH = 260
 export const JELLY_AREA_EACH = 240
@@ -38,7 +38,7 @@ export const JELLY_BATCH_SECONDS = 4
 export const JELLY_BATCH_SPREAD_SECONDS = 1.5
 export const BLOOM_SPOTTED_RISE = 0.5
 
-// ── Body (world units) ────────────────────────────────────────────────────────
+// ── Body ──────────────────────────────────────────────────────────────────────
 export const JELLY_SMALLEST_RADIUS = 1.4
 export const JELLY_LARGEST_RADIUS = 1.9
 export const JELLY_SHALLOWEST = 3
@@ -53,14 +53,14 @@ export const JELLY_HALO_SIZE = 8
 export const JELLY_HALO_LIFT = 0.25
 export const JELLY_HALO_STRENGTH = 0.34
 
-// ── Under the water (rides the ocean's waves, brighter on crests like the algae)
+// ── Underwater ────────────────────────────────────────────────────────────────
 export const JELLY_CREST_DIM = 0.7
 export const JELLY_CREST_BRIGHT = 1.25
 export const JELLY_WOBBLE_GRAIN = 0.8
 export const JELLY_WOBBLE_RATE = 1.6
 export const JELLY_WOBBLE_SIZE = 0.3
 
-// ── Motion (all ride one current; neighbours also sway together in slow circles)
+// ── Motion ────────────────────────────────────────────────────────────────────
 export const JELLY_LEAN_RATE = 0.24
 export const JELLY_CURRENT_SPEED = 1.5
 export const JELLY_WANDER_SPEED = 0.6
@@ -69,7 +69,7 @@ export const JELLY_WANDER_GRAIN = 0.03
 export const JELLY_WANDER_SPREAD = 1
 export const JELLY_RISE_SECONDS = 8
 
-// ── Brushing the hull: pushed clear first, then a slow dive ───────────────────
+// ── Brushing the hull ─────────────────────────────────────────────────────────
 export const JELLY_BRUSH_REACH = 3
 export const JELLY_BRUSH_CHECK_DISTANCE = 60
 export const JELLY_BRUSHABLE_RISE = 0.5

@@ -2,7 +2,7 @@ import { PHASES } from '@/world/environment/day-night-cycle/dayNightKeyframes'
 import type { QueuedRemark, RemarkKey } from '@/data/guideCopy'
 import type { IslandKey } from '@/world/islands/shared/constants'
 
-// ── Pacing (real seconds; a remark's first time each visit skips the gap) ─────
+// ── Pacing ────────────────────────────────────────────────────────────────────
 export const REMARK_POLL_SECONDS = 0.25
 export const REMARK_GAP_SECONDS = 90
 export const REMARK_BREATHER_SECONDS = 12
@@ -20,14 +20,14 @@ export const ALGAE_REMARK_GLOW = 0.5
 export const WIND_REMARK_TAILWIND = 0.5
 export const WIND_REMARK_HOLD_SECONDS = 1
 
-// ── Voyage (ship speeds in world units per second) ────────────────────────────
+// ── Voyage ────────────────────────────────────────────────────────────────────
 export const SAILING_SPEED = 16
 export const STOPPED_SPEED = 1
 export const SAILING_FOR_A_WHILE_SECONDS = 60
 export const STAYING_IDLE_SECONDS = 45
 export const CIRCLE_TURN_RADIANS = Math.PI * 2
 
-// ── World map (spoken over the open map) ──────────────────────────────────────
+// ── World map ─────────────────────────────────────────────────────────────────
 export const MAP_REMARKS: QueuedRemark[] = ['openedWorldMap']
 
 // ── Island reveals ────────────────────────────────────────────────────────────
@@ -39,7 +39,7 @@ export const ISLAND_REMARKS: Record<IslandKey, RemarkKey> = {
   cozy: 'reachedCozyIsle',
 }
 
-// ── Once per visitor (remembered across visits) ───────────────────────────────
+// ── Once per visitor ──────────────────────────────────────────────────────────
 export const ONCE_EVER_REMARKS: QueuedRemark[] = [
   'openedWorldMap',
   'ridingTheWind',

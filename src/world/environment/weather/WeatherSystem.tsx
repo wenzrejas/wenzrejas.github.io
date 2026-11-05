@@ -50,7 +50,7 @@ export default function WeatherSystem({ shipRef }: WeatherSystemProps) {
       blendWeather(weather, cycle.current)
     }
 
-    driftClouds(weather, useWindStore.getState().dir, dt)
+    driftClouds(weather, useWindStore.getState().direction, dt)
     advanceLightning(lightning.current, weather, dt)
   }, WEATHER_FRAME_PRIORITY)
 

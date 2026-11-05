@@ -1,0 +1,9 @@
+@mixin mist-mask($reveal) {
+  --mist-size: calc(#{$reveal} * var(--reach));
+
+  mask-image: var(--mist);
+  mask-repeat: no-repeat;
+  mask-size: var(--mist-size) var(--mist-size);
+  mask-position: calc(var(--origin-x) - var(--mist-size) / 2)
+    calc(var(--origin-y) - var(--mist-size) / 2);
+}

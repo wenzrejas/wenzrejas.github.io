@@ -25,7 +25,7 @@ import {
   type HullOutline,
 } from './hullOutline'
 
-interface RippleSprite {
+export interface RippleSprite {
   alive: boolean
   written: boolean
   spawnTime: number

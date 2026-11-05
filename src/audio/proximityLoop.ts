@@ -1,5 +1,6 @@
 import * as THREE from 'three'
-import { audio, type SoundHandle } from './audioManager'
+import { audio } from './audioManager'
+import type { SoundHandle } from './soundHandle'
 import type { SoundName } from './sounds'
 
 interface LoopRamp {

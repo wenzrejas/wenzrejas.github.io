@@ -125,8 +125,8 @@ function circleAfloat(lantern: Lantern, dt: number) {
 }
 
 function advanceFlock(dt: number, camera: THREE.Camera) {
-  const wind = useWindStore.getState().dir
-  const drift = LANTERN_WIND_DRIFT * useWeatherStore.getState().windMult * dt
+  const wind = useWindStore.getState().direction
+  const drift = LANTERN_WIND_DRIFT * useWeatherStore.getState().windMultiplier * dt
   const isDrifting = !isMotionReduced()
   retain(flock, (lantern) => {
     lantern.ageSeconds += dt

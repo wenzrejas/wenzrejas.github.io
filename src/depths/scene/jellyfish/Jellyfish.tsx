@@ -2,6 +2,7 @@ import { useEffect, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import type { WallClock } from '@/utils/time'
+import { disposeAll } from '@/utils/dispose'
 import { buildJellyfishGeometry, createJellyfishMaterial } from './jellyfishModel'
 import { pulseJellyfish } from './jellyfishPulse'
 
@@ -13,13 +14,7 @@ export default function Jellyfish({ clock }: JellyfishProps) {
   const geometry = useMemo(() => buildJellyfishGeometry(), [])
   const material = useMemo(() => createJellyfishMaterial(), [])
 
-  useEffect(
-    () => () => {
-      geometry.dispose()
-      material.dispose()
-    },
-    [geometry, material]
-  )
+  useEffect(() => () => disposeAll(geometry, material), [geometry, material])
 
   useFrame(() => pulseJellyfish(material, clock.elapsed))
 

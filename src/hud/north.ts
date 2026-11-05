@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { COMPASS_COPY } from '@/data/hudCopy'
-import { SPAWN_HEADING } from '../store/shipStore'
+import { SPAWN_HEADING } from '@/store/shipStore'
 
 const NORTH_HEADING = SPAWN_HEADING
 

@@ -1,11 +1,11 @@
 import type { GemSparkleTuning } from '@/world/islands/shared/gem-sparkles/gemSparklesModel'
 
-// ── Reach (world units from the ship) ─────────────────────────────────────────
+// ── Reach ─────────────────────────────────────────────────────────────────────
 export const BOTTLE_REACH = 28
 export const BOTTLE_SPOTTED_REACH = 130
 export const BOTTLE_CHART_REACH = 300
 
-// ── Shape (measured along the bottle, base to cork) ───────────────────────────
+// ── Shape ─────────────────────────────────────────────────────────────────────
 const ROLLED_NOTE = '#f1e8c4'
 const NOTE_TIE = '#a8372c'
 const CORK = '#b98a5a'

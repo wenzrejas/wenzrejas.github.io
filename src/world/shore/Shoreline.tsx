@@ -8,6 +8,7 @@ import { SHORE_Y } from './constants'
 import type { ShoreField } from './shoreField'
 import { createFieldTexture, createShorelineMaterial } from './shorelineModel'
 import { islandLocalY } from '@/world/islands/shared/islandSpec'
+import { disposeAll } from '@/utils/dispose'
 
 interface ShorelineProps {
   field: ShoreField
@@ -22,13 +23,7 @@ export default function Shoreline({ field, islandScale, offsetY }: ShorelineProp
   const material = useMemo(() => createShorelineMaterial(), [])
 
   useEffect(() => () => texture.dispose(), [texture])
-  useEffect(
-    () => () => {
-      geometry.dispose()
-      material.dispose()
-    },
-    [geometry, material]
-  )
+  useEffect(() => () => disposeAll(geometry, material), [geometry, material])
 
   useFrame(({ clock }) => {
     const mesh = meshRef.current

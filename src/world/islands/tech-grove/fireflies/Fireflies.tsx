@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import * as THREE from 'three'
+import type * as THREE from 'three'
 import { useCycleStore } from '@/store/cycleStore'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import {
@@ -8,6 +8,7 @@ import {
   createFairWeatherPresence,
 } from '@/world/islands/shared/fairWeatherPresence'
 import { pixelsPerUnit } from '@/utils/screen'
+import { disposeAll } from '@/utils/dispose'
 import {
   FIREFLY_BOB,
   FIREFLY_PRESENCE_RATE,
@@ -28,13 +29,7 @@ export default function Fireflies({ islets, center, islandScale, offsetY }: Fire
   )
   const material = useMemo(() => createFireflyMaterial(), [])
 
-  useEffect(
-    () => () => {
-      geometry.dispose()
-      material.dispose()
-    },
-    [geometry, material]
-  )
+  useEffect(() => () => disposeAll(geometry, material), [geometry, material])
 
   useFrame(({ clock, camera, gl }, delta) => {
     const points = pointsRef.current

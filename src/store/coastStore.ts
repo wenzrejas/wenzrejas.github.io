@@ -1,7 +1,7 @@
 import { create } from 'zustand'
-import type { CoastCollision } from '../world/shore/coastCollision'
-import type { Coastline } from '../world/shore/coastline'
-import type { Waterline } from '../world/shore/shoreField'
+import type { CoastCollision } from '@/world/shore/coastCollision'
+import type { Coastline } from '@/world/shore/coastline'
+import type { Waterline } from '@/world/shore/shoreField'
 
 interface CoastState {
   collisions: CoastCollision[]

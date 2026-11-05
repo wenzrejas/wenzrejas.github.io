@@ -25,7 +25,6 @@ import {
   CHECK_INTERVAL as WHALE_INTERVAL,
   SPAWN_CHANCE as WHALE_CHANCE,
 } from '@/world/wildlife/whale/constants'
-import type { WildlifeControls } from '../types'
 
 export function useWildlifeControls() {
   return useControls(
@@ -111,5 +110,5 @@ export function useWildlifeControls() {
       'end night event': button(() => endNightEvent()),
     },
     { collapsed: true }
-  ) as WildlifeControls
+  )
 }

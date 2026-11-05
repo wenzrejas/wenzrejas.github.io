@@ -56,7 +56,7 @@ export const SPARK_SPEED = 4
 export const HULL_HALF_LENGTH = 18
 export const HULL_HALF_BEAM = 7
 
-// ── Flashes where rain or a dolphin's splash hits the glow ────────────────────
+// ── Glow flashes ──────────────────────────────────────────────────────────────
 export const MAX_GLOW_HITS = 64
 export const GLOW_FLASH_SIZE = 2.2
 export const GLOW_FLASH_LIFE = 0.7
@@ -69,3 +69,8 @@ export const SPLASH_RATE = 70
 export const SPLASH_SIZE = 0.45
 export const SPLASH_SPEED = 6
 export const SPLASH_LIFT = 7
+
+// ── Thresholds ────────────────────────────────────────────────────────────────
+export const PATCHES_CLEAR_BELOW_INTENSITY = 0.01
+export const PLANE_HIDDEN_BELOW_INTENSITY = 0.001
+export const SPARK_CRUISE_SPEED = 30

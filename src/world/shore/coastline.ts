@@ -210,7 +210,7 @@ function bridgePieces(pieces: Piece[]): Bridge[] {
       ...closestPoints(from.points, to.points),
     }))
   )
-  pairs.sort((a, b) => a.squaredGap - b.squaredGap)
+  pairs.sort((left, right) => left.squaredGap - right.squaredGap)
 
   const group = pieces.map((_, index) => index)
   const groupOf = (piece: number): number =>

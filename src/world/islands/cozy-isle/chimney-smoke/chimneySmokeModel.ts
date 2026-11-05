@@ -19,7 +19,9 @@ import {
 import SMOKE_VERT from './shaders/chimneySmoke.vert.glsl'
 import SMOKE_FRAG from '@/shaders/smokePuff.frag.glsl'
 
-const STRONGEST_WIND = Math.max(...Object.values(WEATHER_PARAMS).map(({ windMult }) => windMult))
+const STRONGEST_WIND = Math.max(
+  ...Object.values(WEATHER_PARAMS).map(({ windMultiplier }) => windMultiplier)
+)
 
 // ── Geometry ──────────────────────────────────────────────────────────────────
 

@@ -9,7 +9,7 @@ varying float vFoam;
 void main() {
   vec3 spot = instanceMatrix[3].xyz;
   vec4 world = instanceMatrix * vec4(position, 1.0);
-  world.y += waveRideAt(spot.xz) * uWaveAmp;
+  world.y += waveRideAt(spot.xz) * uWaveAmplitude;
   vAround = world.xz - spot.xz;
   vWorld = world.xz;
   vFoam = aFoam;

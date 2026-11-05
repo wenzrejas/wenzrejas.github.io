@@ -2,13 +2,12 @@ import { useMemo } from 'react'
 import { createPortal, useThree } from '@react-three/fiber'
 import { useDebugStore } from '@/store/debugStore'
 import type { IslandBodyProps } from '../shared/types'
+import IslandFrame from '../shared/IslandFrame'
 import { useIslandModel } from '../shared/islandModel'
 import { placeIsland } from '../shared/islandTransform'
 import { nightLampLevel } from '../shared/lighting-bake/lightingBakeLevels'
 import { useLightingBake } from '../shared/lighting-bake/useLightingBake'
 import { useNightGlow } from '../shared/nightGlow'
-import IslandShadow from '../shared/IslandShadow'
-import Coast from '@/world/shore/Coast'
 import { useCoastFields } from '@/world/shore/useCoastFields'
 import RockSurf from '../shared/rock-surf/RockSurf'
 import {
@@ -33,8 +32,8 @@ import { findSkyBeamAnchor } from './skyBeamSequence'
 import { useLogoFloat } from './useLogoFloat'
 
 export default function LuminaPoint({ islandKey, config }: IslandBodyProps) {
-  const root = useThree((s) => s.scene)
-  const tuning = useDebugStore((s) => s.islands.lumina)
+  const root = useThree((state) => state.scene)
+  const tuning = useDebugStore((state) => state.islands.lumina)
   const island = useIslandModel(LUMINA_MODEL_URL, tuning.brightness)
   useLightingBake(island, {
     overheadShadowStrength: LUMINA_OVERHEAD_SHADOW_STRENGTH,
@@ -60,17 +59,15 @@ export default function LuminaPoint({ islandKey, config }: IslandBodyProps) {
 
   return (
     <>
-      <IslandShadow radius={config.radius} tuning={tuning} blob={LUMINA_BLOB} />
-      <group {...placement}>
-        <primitive object={island.model} />
-        {coast && (
-          <Coast
-            islandKey={islandKey}
-            fields={coast}
-            islandScale={placement.scale}
-            offsetY={tuning.offsetY}
-          />
-        )}
+      <IslandFrame
+        islandKey={islandKey}
+        radius={config.radius}
+        tuning={tuning}
+        island={island}
+        placement={placement}
+        coast={coast}
+        blob={LUMINA_BLOB}
+      >
         <Holograms monoliths={monoliths} islandScale={placement.scale} />
         <MonolithLinks monoliths={monoliths} />
         {mainIsland && (
@@ -86,7 +83,7 @@ export default function LuminaPoint({ islandKey, config }: IslandBodyProps) {
             offsetY={tuning.offsetY}
           />
         )}
-      </group>
+      </IslandFrame>
       {coast && (
         <RockSurf
           model={island.model}

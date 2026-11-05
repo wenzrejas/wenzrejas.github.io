@@ -45,7 +45,7 @@ const lying = (
 export const REST_ARCH = 0.35
 export const ARCH_START = 0.23
 
-// ── Body (traced from the reference, nose at +0.47) ───────────────────────────
+// ── Body ──────────────────────────────────────────────────────────────────────
 export const BELLY_SEGMENTS = 3
 export const BACK_SEGMENTS = 7
 export const NOSE: ShapePoint = [0, -0.002, 0.472]
@@ -79,7 +79,7 @@ export const BODY_STATIONS: BodyStation[] = [
   station(-0.445, 0.016, -0.016, 0.01, -0.01),
 ]
 
-// ── Dorsal fin (along, height; root buried in the back) ───────────────────────
+// ── Dorsal fin ────────────────────────────────────────────────────────────────
 export const DORSAL_ROWS: BladeRow[] = [
   upright([0.06, 0.135], [-0.09, 0.115], 0.036),
   upright([0.02, 0.185], [-0.085, 0.165], 0.032),
@@ -89,7 +89,7 @@ export const DORSAL_ROWS: BladeRow[] = [
 ]
 export const DORSAL_TIP: ShapePoint = [0, 0.255, -0.078]
 
-// ── Pectoral flipper (across, height, along; mirrored; root in the flank) ─────
+// ── Pectoral flipper ──────────────────────────────────────────────────────────
 export const FLIPPER_ROWS: BladeRow[] = [
   { leading: [0.074, -0.055, 0.125], trailing: [0.074, -0.135, 0.055], thickness: 0.03 },
   { leading: [0.108, -0.06, 0.07], trailing: [0.103, -0.15, -0.005], thickness: 0.032 },
@@ -99,7 +99,7 @@ export const FLIPPER_ROWS: BladeRow[] = [
 ]
 export const FLIPPER_TIP: ShapePoint = [0.157, -0.15, -0.155]
 
-// ── Flukes (across, lift, leading, trailing; mirrored across the notch) ───────
+// ── Flukes ────────────────────────────────────────────────────────────────────
 export const FLUKE_ROWS: BladeRow[] = [
   lying(0, 0, -0.368, -0.458, 0.036),
   lying(0.03, 0, -0.38, -0.47, 0.034),

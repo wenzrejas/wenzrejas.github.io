@@ -1,6 +1,9 @@
 import type * as THREE from 'three'
 
-const nextFrame = () => new Promise<number>((resolve) => requestAnimationFrame(resolve))
+const nextFrame = () =>
+  new Promise<number>((resolve) => {
+    requestAnimationFrame(resolve)
+  })
 
 export async function warmShaders(
   renderer: THREE.WebGLRenderer,

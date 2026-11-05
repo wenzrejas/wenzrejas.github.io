@@ -60,7 +60,7 @@ export const LANTERN_PITCH_RATE = 1.6
 export const LANTERN_ROLL_ANGLE = 0.06
 export const LANTERN_ROLL_RATE = 1.1
 
-// ── Livery (red accents on canvas and hull, white cloth on canvas only) ──────
+// ── Livery ────────────────────────────────────────────────────────────────────
 export const CANVAS_MATERIAL = 'Canvas_VertexColor'
 export const SURFACE_MATERIAL = 'Surface_VertexColor'
 export const LIVERY_ACCENT_REDNESS = 0.4
@@ -82,7 +82,7 @@ export type LiveryKey = keyof typeof SHIP_LIVERIES
 
 // ── Ship physics ──────────────────────────────────────────────────────────────
 export const BASE_Y = -3
-export const BOB_AMP = 0.7
+export const BOB_AMPLITUDE = 0.7
 export const BOB_SPEED = 2
 export const MOVE_SPEED = 33
 export const TURN_SPEED = 0.6
@@ -140,7 +140,7 @@ export const WAKE_TRAIL_LENGTH = 128
 export const WAKE_ARM_NEAR = 4.2
 export const WAKE_ARM_FAR = 20
 export const WAKE_ARM_HALF_WIDTH = 4
-export const WAKE_MIN_SAMPLE_DIST = 0.5
+export const WAKE_MIN_SAMPLE_DISTANCE = 0.5
 export const WAKE_TOTAL_VERTS = WAKE_TRAIL_LENGTH * 4
 export const WAKE_TRAIL_Y = 0.3
 export const WAKE_INNER_MIN = 0.01
@@ -154,10 +154,15 @@ export const RIPPLE_SPRITES_PER_GROUP = 12
 export const TOTAL_RIPPLE_SPRITES = RIPPLE_MAX_GROUPS * RIPPLE_SPRITES_PER_GROUP
 export const RIPPLE_LIFETIME = 2.5
 export const RIPPLE_EXPAND_SPEED = 5
-export const RIPPLE_SPAWN_DIST = 5.5
+export const RIPPLE_SPAWN_DISTANCE = 5.5
 export const RIPPLE_HALF_SPREAD = 4.0
 export const RIPPLE_DEPTH = 9.0
 export const WAKE_RIPPLE_Y = 0.4
 export const WAKE_RIPPLE_SIZE_MIN = 1
 export const WAKE_RIPPLE_SIZE_MAX = 1.8
 export const RIPPLE_SHRINK = 1.25
+
+// ── Sailing ───────────────────────────────────────────────────────────────────
+export const VELOCITY_RESPONSE_RATE = 6
+export const WIND_ASSIST = 0.3
+export const WIND_ASSIST_CAP = 2.5

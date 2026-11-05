@@ -51,7 +51,7 @@ export function findBulbs(model: THREE.Object3D): Bulb[] {
   const cafeCenter = positionIn(model, cafe)
   return meshesNamed(model, BULB_NODES)
     .flatMap((mesh) => bulbCenters(model, mesh))
-    .sort((a, b) => b.distanceTo(cafeCenter) - a.distanceTo(cafeCenter))
+    .sort((left, right) => right.distanceTo(cafeCenter) - left.distanceTo(cafeCenter))
     .map((center, rank) => ({ center, waveDelay: rank * BULB_WAVE_STEP_SECONDS }))
 }
 
@@ -65,9 +65,11 @@ export function sortCafeGlows(model: THREE.Object3D, glows: GlowTarget[]): CafeG
   const bulbMaterials = materialsOf(BULB_NODES)
   const neonMaterials = materialsOf(NEON_NODES)
   return {
-    bulbs: glows.filter(({ mat }) => bulbMaterials.has(mat)),
-    neon: glows.filter(({ mat }) => neonMaterials.has(mat)),
-    others: glows.filter(({ mat }) => !bulbMaterials.has(mat) && !neonMaterials.has(mat)),
+    bulbs: glows.filter(({ material }) => bulbMaterials.has(material)),
+    neon: glows.filter(({ material }) => neonMaterials.has(material)),
+    others: glows.filter(
+      ({ material }) => !bulbMaterials.has(material) && !neonMaterials.has(material)
+    ),
   }
 }
 

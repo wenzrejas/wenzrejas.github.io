@@ -1,4 +1,4 @@
-// ── Puffs (model units, seconds) ──────────────────────────────────────────────
+// ── Puffs ─────────────────────────────────────────────────────────────────────
 export const SMOKE_PUFF_POOL = 48
 export const SMOKE_CHUFF_TRAVEL = 0.65
 export const SMOKE_IDLE_SPEED = 0.2
@@ -15,7 +15,7 @@ export const SMOKE_SPREAD_SPEED = 0.25
 export const SMOKE_DRAG = 0.9
 export const SMOKE_DRIFT = 0.9
 
-// ── Whistle (model units, seconds) ────────────────────────────────────────────
+// ── Whistle ───────────────────────────────────────────────────────────────────
 export const WHISTLE_PUFFS = 7
 export const WHISTLE_PUFF_SPACING_SECONDS = 0.05
 export const WHISTLE_INTERVAL_SECONDS = 4.5

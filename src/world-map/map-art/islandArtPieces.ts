@@ -1,8 +1,8 @@
-// ── Atlas ───────────────────────────────────────────────────────────────────────
+// ── Atlas ─────────────────────────────────────────────────────────────────────
 export const ISLAND_ATLAS_WIDTH = 2048
 export const ISLAND_ATLAS_HEIGHT = 888
 
-// ── Rock outcrops with water (atlas px, anchor = rock centre within the piece) ──
+// ── Rock outcrops ─────────────────────────────────────────────────────────────
 export const ROCK_PIECES = {
   rockClusterCentre: {
     width: 93,
@@ -37,7 +37,7 @@ export const ROCK_PIECES = {
   rockTrioWest: { width: 93, height: 59, atlasX: 1947, atlasY: 4, anchorX: 46.5, anchorY: 23 },
 }
 
-// ── Islands with water (atlas px, anchor = island centre within the piece) ──────
+// ── Islands ───────────────────────────────────────────────────────────────────
 export const ISLAND_PIECES = {
   islandCafe: { width: 640, height: 441, atlasX: 655, atlasY: 4, anchorX: 329, anchorY: 310 },
   islandLighthouse: {

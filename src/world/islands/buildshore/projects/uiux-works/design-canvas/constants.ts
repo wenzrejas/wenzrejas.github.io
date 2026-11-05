@@ -1,4 +1,4 @@
-// ── Layout grid (plaza shares, seconds) ───────────────────────────────────────
+// ── Layout grid ───────────────────────────────────────────────────────────────
 export const GRID_COLOR = '#b48cff'
 export const GRID_CELLS = 12
 export const GRID_LINE_WIDTH = 0.06
@@ -9,7 +9,7 @@ export const GRID_SWEEP_SHARPNESS = 40
 export const GRID_LIFT = 0.02
 export const GRID_RISE_SECONDS = 0.4
 
-// ── Selection box (CSS pixels, seconds) ───────────────────────────────────────
+// ── Selection box ─────────────────────────────────────────────────────────────
 export const SELECTION_COLOR = '#9747ff'
 export const SELECTION_STROKE_PIXELS = 1.5
 export const SELECTION_HANDLE_PIXELS = 8
@@ -19,7 +19,7 @@ export const SELECTION_SNAP_AT_SECONDS = 0.6
 export const SELECTION_SNAP_SECONDS = 0.18
 export const SELECTION_SNAP_GROWTH = 0.18
 
-// ── Labels (CSS pixels) ───────────────────────────────────────────────────────
+// ── Labels ────────────────────────────────────────────────────────────────────
 export const LABEL_FONT = '600 13px "DM Sans", sans-serif'
 export const PILL_FONT = '600 12px "DM Sans", sans-serif'
 export const LABEL_WIDTH_PIXELS = 72

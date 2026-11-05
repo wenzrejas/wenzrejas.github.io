@@ -16,7 +16,7 @@ export const MIST_SOFTNESS = 0.22
 export const MIST_SOLID_DEPTH = 0.22
 export const MIST_TAIL_START = 0.86
 
-// ── Title underline (brush stroke) ────────────────────────────────────────────
+// ── Title underline ───────────────────────────────────────────────────────────
 export const BRUSH_SEED = 23
 export const BRUSH_WIDTH = 320
 export const BRUSH_HEIGHT = 20

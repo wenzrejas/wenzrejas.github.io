@@ -7,6 +7,7 @@ import { onShipPlaced } from '@/store/shipStore'
 import { uniformsOf } from '@/utils/meshes'
 import { FALLBACK_FRAME_SECONDS, MAX_FRAME_SECONDS } from '@/utils/time'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
+import { disposeAll } from '@/utils/dispose'
 import { WAKE_STERN_SHIFT } from './constants'
 import {
   carryRibbon,
@@ -30,13 +31,7 @@ export default function WakeTrail({ shipRef }: WakeTrailProps) {
   const geometry = useMemo(() => buildWakeRibbonGeometry(), [])
   const material = useMemo(() => createWakeRibbonMaterial(), [])
 
-  useEffect(
-    () => () => {
-      geometry.dispose()
-      material.dispose()
-    },
-    [geometry, material]
-  )
+  useEffect(() => () => disposeAll(geometry, material), [geometry, material])
 
   useEffect(
     () => onShipPlaced(({ x, z }) => clearRibbon(ribbon.current, geometry, x, z)),
@@ -65,7 +60,7 @@ export default function WakeTrail({ shipRef }: WakeTrailProps) {
         ship.position.z,
         ship.position.x + Math.sin(ship.rotation.y) * WAKE_STERN_SHIFT,
         ship.position.z + Math.cos(ship.rotation.y) * WAKE_STERN_SHIFT,
-        wake.minSampleDist
+        wake.minSampleDistance
       )
     fadeRibbon(ribbon.current, mesh.geometry, hasMoved, dt)
     uniforms.uFadeProgress.value = ribbon.current.fade

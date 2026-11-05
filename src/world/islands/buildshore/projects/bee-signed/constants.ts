@@ -7,7 +7,7 @@ export const WAX_SEAL_NODE = 'BeeSigned | Wax seal'
 export const HIVE_WINDOW_ROLE = 'hive_architecture'
 export const HIVE_WINDOW_DEPTH_STEPS = 1
 
-// ── Signing (seconds, signature lengths) ──────────────────────────────────────
+// ── Signing ───────────────────────────────────────────────────────────────────
 export const SIGN_DELAY_SECONDS = 0.15
 export const SIGN_SECONDS = 1.3
 export const INK_GLINT_REACH = 0.1
@@ -15,7 +15,7 @@ export const INK_GLINT_COLOR = '#ffc94d'
 export const INK_GLINT_STRENGTH = 2.2
 export const INK_GLINT_FADE_SECONDS = 0.35
 
-// ── Wax seal (seconds, seal-local units) ──────────────────────────────────────
+// ── Wax seal ──────────────────────────────────────────────────────────────────
 export const SEAL_LIFT = 0.35
 export const SEAL_LIFT_SECONDS = 0.3
 export const STAMP_AT_SECONDS = 1.6
@@ -36,7 +36,7 @@ export const SEAL_RING: PulseRingTuning = {
   glow: 0,
 }
 
-// ── Bees (model units, seconds) ───────────────────────────────────────────────
+// ── Bees ──────────────────────────────────────────────────────────────────────
 export const BEE_COUNT = 5
 export const BEE_SIZE = 0.55
 export const BEE_EMERGE_SECONDS = 1.1
@@ -55,7 +55,7 @@ export const BEE_BODY_COLOR = '#ffc62e'
 export const BEE_STRIPE_COLOR = '#2b2118'
 export const BEE_WING_COLOR = '#ffffff'
 
-// ── Bee trails (model units, seconds) ─────────────────────────────────────────
+// ── Bee trails ────────────────────────────────────────────────────────────────
 export const BEE_TRAIL_DOTS = 6
 export const BEE_TRAIL_SPACING_SECONDS = 0.07
 export const BEE_TRAIL_SIZE = 0.22

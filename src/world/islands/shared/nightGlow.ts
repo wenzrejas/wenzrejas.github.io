@@ -7,7 +7,7 @@ const GLOW_START = 0.05
 const GLOW_FULL = 0.42
 
 export interface GlowTarget {
-  mat: THREE.MeshStandardMaterial
+  material: THREE.MeshStandardMaterial
   base: number
 }
 
@@ -17,7 +17,7 @@ export const nightGlow = () =>
 export const dayNightGlow = (dayShare: number) => mix(dayShare, 1, nightGlow())
 
 export function lightGlows(glows: GlowTarget[], level: number) {
-  for (const { mat, base } of glows) mat.emissiveIntensity = base * level
+  for (const { material, base } of glows) material.emissiveIntensity = base * level
 }
 
 export function useNightGlow(glows: GlowTarget[]) {

@@ -11,6 +11,7 @@ import { MAX_FRAME_SECONDS } from '@/utils/time'
 import { nightGlow } from '@/world/islands/shared/nightGlow'
 import { shipBobHeight } from '@/world/ship/shipBob'
 import { SHIP_MODEL_URL } from '@/world/ship/constants'
+import { disposeAll } from '@/utils/dispose'
 import {
   GHOST_END_FADE_SECONDS,
   GHOST_NIGHT_STRENGTH,
@@ -53,12 +54,7 @@ export default function RaceGhost() {
   const heading = useRef(0)
 
   useEffect(
-    () => () => {
-      geometry.dispose()
-      outline.dispose()
-      material.dispose()
-      depthMaterial.dispose()
-    },
+    () => () => disposeAll(geometry, outline, material, depthMaterial),
     [geometry, outline, material, depthMaterial]
   )
 

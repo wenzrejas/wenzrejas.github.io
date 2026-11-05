@@ -6,6 +6,7 @@ import { dayNightGlow } from '@/world/islands/shared/nightGlow'
 import type { HoverTimeline } from '@/world/islands/shared/hoverTimeline'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { pixelsPerUnit } from '@/utils/screen'
+import { disposeAll } from '@/utils/dispose'
 import { riseLevel } from '../awakening'
 import { AWAKEN_DAY_SHARE, WHIRLPOOL_EYE_X, WHIRLPOOL_EYE_Z, WHIRLPOOL_RADIUS } from '../constants'
 import { FRAGMENT_COUNT } from './constants'
@@ -33,12 +34,7 @@ export default function MemoryEchoes({ awakening, islandScale }: MemoryEchoesPro
   const haloMaterial = useMemo(() => createFragmentHaloMaterial(), [])
 
   useEffect(
-    () => () => {
-      geometry.dispose()
-      material.dispose()
-      haloGeometry.dispose()
-      haloMaterial.dispose()
-    },
+    () => () => disposeAll(geometry, material, haloGeometry, haloMaterial),
     [geometry, material, haloGeometry, haloMaterial]
   )
 

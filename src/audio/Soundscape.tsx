@@ -1,15 +1,15 @@
 import { useEffect } from 'react'
 import { audio } from './audioManager'
-import { AMBIENCE_FADE_IN, DEFAULT_FADE, WEATHER_POLL_MS } from './constants'
+import { AMBIENCE_FADE_IN, DEFAULT_FADE, WEATHER_POLL_MILLISECONDS } from './constants'
 import { createCricketSounds } from './cricketSounds'
 import { createMusicDirector } from './musicDirector'
 import { CHANNELS } from './sounds'
 import { createWeatherSounds } from './weatherSounds'
-import { useDebugStore } from '../store/debugStore'
-import { useHudStore } from '../store/hudStore'
-import { useLoadingStore } from '../store/loadingStore'
-import { useSettingsStore, type Settings } from '../store/settingsStore'
-import { isBelowSurface, useViewStore } from '../store/viewStore'
+import { useDebugStore } from '@/store/debugStore'
+import { useHudStore } from '@/store/hudStore'
+import { useLoadingStore } from '@/store/loadingStore'
+import { useSettingsStore, type Settings } from '@/store/settingsStore'
+import { isBelowSurface, useViewStore } from '@/store/viewStore'
 
 const CLICK_TARGETS = 'button, a[href]'
 
@@ -45,7 +45,7 @@ export default function Soundscape() {
     const music = createMusicDirector()
     music.update()
 
-    const musicTimer = window.setInterval(() => music.update(), WEATHER_POLL_MS)
+    const musicTimer = window.setInterval(() => music.update(), WEATHER_POLL_MILLISECONDS)
 
     const unsubscribe = useDebugStore.subscribe((state, previous) => {
       const { enabled, track } = state.music
@@ -71,7 +71,7 @@ export default function Soundscape() {
     const ambienceTimer = window.setInterval(() => {
       weatherSounds.update()
       cricketSounds.update()
-    }, WEATHER_POLL_MS)
+    }, WEATHER_POLL_MILLISECONDS)
 
     return () => {
       window.clearInterval(ambienceTimer)

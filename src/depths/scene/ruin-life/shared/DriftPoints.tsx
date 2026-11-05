@@ -4,6 +4,7 @@ import type * as THREE from 'three'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import type { WallClock } from '@/utils/time'
 import { RUIN_LIFE_FRAME_PRIORITY } from '@/depths/scene/constants'
+import { disposeAll } from '@/utils/dispose'
 import { driftParticles, type DriftTuning } from './particleDrift'
 import { buildDriftGeometry, createDriftMaterial } from './driftPointsModel'
 
@@ -19,13 +20,7 @@ export default function DriftPoints({ node, origin, tuning, clock, glow }: Drift
   const geometry = useMemo(() => buildDriftGeometry(tuning), [tuning])
   const material = useMemo(() => createDriftMaterial(tuning), [tuning])
 
-  useEffect(
-    () => () => {
-      geometry.dispose()
-      material.dispose()
-    },
-    [geometry, material]
-  )
+  useEffect(() => () => disposeAll(geometry, material), [geometry, material])
 
   useFrame(
     ({ camera, gl, size }) =>

@@ -6,10 +6,10 @@ export type WeatherType = 'sunny' | 'cloudy' | 'rainy' | 'windy' | 'moonlit'
 export interface WeatherState {
   type: WeatherType
   comingType: WeatherType
-  lightMult: number
-  moonMult: number
-  waveAmpMult: number
-  windMult: number
+  lightMultiplier: number
+  moonMultiplier: number
+  waveAmplitudeMultiplier: number
+  windMultiplier: number
   rainIntensity: number
   overcastAmount: number
   cloudShadow: number
@@ -24,10 +24,10 @@ const RAIN_CUTOFF = 0.01
 export const useWeatherStore = create<WeatherState>(() => ({
   type: 'sunny',
   comingType: 'sunny',
-  lightMult: 1.0,
-  moonMult: 1.0,
-  waveAmpMult: 1.0,
-  windMult: 1.0,
+  lightMultiplier: 1.0,
+  moonMultiplier: 1.0,
+  waveAmplitudeMultiplier: 1.0,
+  windMultiplier: 1.0,
   rainIntensity: 0.0,
   overcastAmount: 0.0,
   cloudShadow: 0.0,

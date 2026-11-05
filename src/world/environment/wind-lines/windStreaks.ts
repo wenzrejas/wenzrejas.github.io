@@ -85,7 +85,7 @@ export function turnWind(wind: WindState, dt: number): number {
 
   const store = useWindStore.getState()
   store.angle = wind.angle
-  store.dir.set(Math.cos(wind.angle), -Math.sin(wind.angle))
+  store.direction.set(Math.cos(wind.angle), -Math.sin(wind.angle))
   return Math.abs(remaining)
 }
 
@@ -102,7 +102,7 @@ export function spawnStreak(
   centerX: number,
   centerZ: number,
   tuning: WindLineControls,
-  windMult: number
+  windMultiplier: number
 ) {
   if (time < wind.nextSpawnAt) return
 
@@ -111,8 +111,8 @@ export function spawnStreak(
     streak.isActive = true
     streak.progress = 0
     streak.duration = tuning.lineDuration
-    streak.velocityX = Math.cos(wind.angle) * tuning.windSpeed * windMult
-    streak.velocityZ = -Math.sin(wind.angle) * tuning.windSpeed * windMult
+    streak.velocityX = Math.cos(wind.angle) * tuning.windSpeed * windMultiplier
+    streak.velocityZ = -Math.sin(wind.angle) * tuning.windSpeed * windMultiplier
     streak.x = centerX + (Math.random() - 0.5) * WIND_SPAWN_AREA
     streak.y = tuning.lineY
     streak.z = centerZ + (Math.random() - 0.5) * WIND_SPAWN_AREA

@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import { displayColorOf } from '@/utils/color'
 import { floatDefines } from '@/utils/glsl'
 import { pickByShare, randomBetween, seededRandom } from '@/utils/random'
+import { createAdditiveMaterial } from '@/utils/materials'
 import { ARRIVAL_LEVEL } from '../constants'
 import { DEEPEST_LEVEL, levelDepth } from '../timeline/timeline'
 import {
@@ -53,7 +54,7 @@ export function buildMoteGeometry(): THREE.BufferGeometry {
 }
 
 export const createMoteMaterial = () =>
-  new THREE.ShaderMaterial({
+  createAdditiveMaterial({
     vertexShader: DEPTH_MOTES_VERT,
     fragmentShader: DEPTH_MOTES_FRAG,
     defines: floatDefines({
@@ -67,9 +68,6 @@ export const createMoteMaterial = () =>
       TWINKLE: MOTE_TWINKLE,
       TWINKLE_RATE: MOTE_TWINKLE_RATE,
     }),
-    transparent: true,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
     uniforms: {
       uTime: { value: 0 },
       uPixelScale: { value: 1 },

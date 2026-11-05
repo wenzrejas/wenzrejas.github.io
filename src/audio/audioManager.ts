@@ -1,3 +1,4 @@
+import { audibleRangeOf } from './audibleRange'
 import {
   CHANNEL_VOLUMES,
   DEFAULT_FADE,
@@ -7,9 +8,11 @@ import {
   MUSIC_DUCK_ATTACK,
   MUSIC_DUCK_RELEASE,
   MUTE_SMOOTHING,
-  SILENCE_THRESHOLD,
 } from './constants'
+import { SoundHandle } from './soundHandle'
+import { decodeSource, downloadSource, preferredSource } from './soundSources'
 import { SOUNDS, type Channel, type SoundDefinition, type SoundName } from './sounds'
+import { StreamPlayers } from './streamPlayers'
 
 interface PlayOptions {
   volume?: number
@@ -18,14 +21,12 @@ interface PlayOptions {
   fadeIn?: number
 }
 
-interface AudibleRange {
-  start: number
-  end: number
-}
-
-interface StreamPlayer {
-  element: HTMLAudioElement
-  source: MediaElementAudioSourceNode
+interface AudioGraph {
+  context: AudioContext
+  master: GainNode
+  channels: Record<Channel, GainNode>
+  visitorGains: Record<Channel, GainNode>
+  streams: StreamPlayers
 }
 
 const UNLOCK_EVENTS = [
@@ -37,141 +38,68 @@ const UNLOCK_EVENTS = [
   'click',
 ] as const
 const GESTURE_EVENTS = ['touchend', 'click', 'keydown'] as const
-const STREAM_PLAYERS = 4
 
-const MEDIA_TYPES: Record<string, string> = {
-  webm: 'audio/webm; codecs="opus"',
-  mp3: 'audio/mpeg',
+const definitionOf = (name: SoundName): SoundDefinition => SOUNDS[name]
+
+function buildAudioGraph(): AudioGraph {
+  const context = new AudioContext()
+  const master = context.createGain()
+  master.gain.value = MASTER_VOLUME
+  master.connect(context.destination)
+
+  const createVisitorGain = () => {
+    const gain = context.createGain()
+    gain.connect(master)
+    return gain
+  }
+  const visitorGains = {
+    music: createVisitorGain(),
+    ambience: createVisitorGain(),
+    sfx: createVisitorGain(),
+  }
+
+  const createChannel = (channel: Channel) => {
+    const gain = context.createGain()
+    gain.gain.value = CHANNEL_VOLUMES[channel]
+    gain.connect(visitorGains[channel])
+    return gain
+  }
+  const channels = {
+    music: createChannel('music'),
+    ambience: createChannel('ambience'),
+    sfx: createChannel('sfx'),
+  }
+
+  return { context, master, channels, visitorGains, streams: new StreamPlayers(context) }
 }
 
-let probe: HTMLAudioElement | null = null
-
-function playable(url: string): boolean {
-  const type = MEDIA_TYPES[url.split('.').pop() ?? '']
-  if (!type) return true
-  probe ??= new Audio()
-  return probe.canPlayType(type) !== ''
+function createEnvelope(context: AudioContext, name: SoundName, options: PlayOptions): GainNode {
+  const volume = (options.volume ?? 1) * SOUNDS[name].volume
+  const gain = context.createGain()
+  const now = context.currentTime
+  if (options.fadeIn) {
+    gain.gain.setValueAtTime(0, now)
+    gain.gain.linearRampToValueAtTime(volume, now + options.fadeIn)
+  } else {
+    gain.gain.setValueAtTime(volume, now)
+  }
+  return gain
 }
 
-function preferredSource(definition: SoundDefinition): string {
-  return definition.fallback && !playable(definition.url) ? definition.fallback : definition.url
-}
-
-function isStreamed(name: SoundName): boolean {
-  const definition: SoundDefinition = SOUNDS[name]
-  return definition.stream === true
-}
-
-async function download(url: string): Promise<void> {
-  const response = await fetch(url)
-  await response.arrayBuffer()
-}
-
-// ── Handle ────────────────────────────────────────────────────────────────────
-
-export class SoundHandle {
-  private context: AudioContext | null = null
-  private gain: GainNode | null = null
-  private halt: ((at: number) => void) | null = null
-  private baseVolume = 1
-  private stopped = false
-  private onDone: (() => void) | null = null
-
-  get active(): boolean {
-    return !this.stopped
-  }
-
-  whenDone(callback: () => void): void {
-    if (this.stopped) callback()
-    else this.onDone = callback
-  }
-
-  private release(): void {
-    const callback = this.onDone
-    this.onDone = null
-    callback?.()
-  }
-
-  attach(context: AudioContext, gain: GainNode, baseVolume: number, halt: (at: number) => void) {
-    this.context = context
-    this.gain = gain
-    this.baseVolume = baseVolume
-    this.halt = halt
-  }
-
-  finish(): void {
-    this.stopped = true
-    this.release()
-  }
-
-  setVolume(volume: number, seconds = DEFAULT_FADE): void {
-    if (!this.context || !this.gain || this.stopped) return
-    const now = this.context.currentTime
-    this.gain.gain.cancelScheduledValues(now)
-    this.gain.gain.setValueAtTime(this.gain.gain.value, now)
-    this.gain.gain.linearRampToValueAtTime(volume * this.baseVolume, now + seconds)
-  }
-
-  stop(fade = DEFAULT_FADE): void {
-    if (this.stopped) return
-    this.stopped = true
-    this.release()
-    if (!this.context || !this.gain || !this.halt) return
-    const now = this.context.currentTime
-    this.gain.gain.cancelScheduledValues(now)
-    this.gain.gain.setValueAtTime(this.gain.gain.value, now)
-    this.gain.gain.linearRampToValueAtTime(0, now + fade)
-    this.halt(now + fade + 0.05)
-  }
-}
-
-// ── Manager ───────────────────────────────────────────────────────────────────
+const warnResumeFailed = (error: unknown) => console.warn('Could not resume audio', error)
 
 class AudioManager {
-  private context: AudioContext | null = null
-  private master: GainNode | null = null
-  private channels: Record<Channel, GainNode> | null = null
-  private visitorGains: Record<Channel, GainNode> | null = null
+  private graph: AudioGraph | null = null
   private buffers = new Map<SoundName, Promise<AudioBuffer>>()
-  private audibleRanges = new WeakMap<AudioBuffer, AudibleRange>()
   private pending: (() => void)[] = []
-  private idleStreamPlayers: StreamPlayer[] = []
   private unlocked = false
   private ducks = 0
   private silences = 0
   private music: { name: SoundName; handle: SoundHandle } | null = null
 
   install(): void {
-    if (this.context) return
-    this.context = new AudioContext()
-    const master = this.context.createGain()
-    master.gain.value = MASTER_VOLUME
-    master.connect(this.context.destination)
-    this.master = master
-
-    const createVisitorGain = () => {
-      const gain = this.context!.createGain()
-      gain.connect(master)
-      return gain
-    }
-    this.visitorGains = {
-      music: createVisitorGain(),
-      ambience: createVisitorGain(),
-      sfx: createVisitorGain(),
-    }
-
-    const createChannel = (channel: Channel) => {
-      const gain = this.context!.createGain()
-      gain.gain.value = CHANNEL_VOLUMES[channel]
-      gain.connect(this.visitorGains![channel])
-      return gain
-    }
-    this.channels = {
-      music: createChannel('music'),
-      ambience: createChannel('ambience'),
-      sfx: createChannel('sfx'),
-    }
-
+    if (this.graph) return
+    this.graph = buildAudioGraph()
     for (const event of UNLOCK_EVENTS) window.addEventListener(event, this.unlock, true)
     for (const event of GESTURE_EVENTS)
       window.addEventListener(event, this.readyStreamPlayers, true)
@@ -179,30 +107,23 @@ class AudioManager {
   }
 
   get ready(): boolean {
-    return this.context?.state === 'running'
+    return this.graph?.context.state === 'running'
   }
 
   play(name: SoundName, options: PlayOptions = {}): SoundHandle {
     const handle = new SoundHandle()
-    if (!this.context || (!this.ready && !options.loop)) {
+    if (!this.graph || (!this.ready && !options.loop)) {
       handle.stop(0)
       return handle
     }
 
-    const definition: SoundDefinition = SOUNDS[name]
-    if (definition.stream) {
-      const start = () => this.startStream(handle, name, options)
-      if (this.ready) start()
-      else this.pending.push(start)
+    if (definitionOf(name).stream) {
+      this.startWhenReady(() => this.startStream(handle, name, options))
       return handle
     }
 
     this.load(name)
-      .then((buffer) => {
-        const start = () => this.start(handle, name, buffer, options)
-        if (this.ready) start()
-        else this.pending.push(start)
-      })
+      .then((buffer) => this.startWhenReady(() => this.start(handle, name, buffer, options)))
       .catch((error: unknown) => {
         this.buffers.delete(name)
         handle.stop(0)
@@ -211,18 +132,23 @@ class AudioManager {
     return handle
   }
 
+  private startWhenReady(start: () => void): void {
+    if (this.ready) start()
+    else this.pending.push(start)
+  }
+
   async preload(name: SoundName): Promise<void> {
-    const definition: SoundDefinition = SOUNDS[name]
+    const definition = definitionOf(name)
     try {
-      if (definition.stream) await download(preferredSource(definition))
-      else if (this.context) await this.load(name)
+      if (definition.stream) await downloadSource(preferredSource(definition))
+      else if (this.graph) await this.load(name)
     } catch {
       this.buffers.delete(name)
     }
   }
 
   async preloadBuffers(): Promise<void> {
-    const names = (Object.keys(SOUNDS) as SoundName[]).filter((name) => !isStreamed(name))
+    const names = (Object.keys(SOUNDS) as SoundName[]).filter((name) => !definitionOf(name).stream)
     await Promise.all(names.map((name) => this.preload(name)))
   }
 
@@ -240,10 +166,10 @@ class AudioManager {
   duck(): () => void {
     this.ducks++
     this.applyMusicLevel(MUSIC_DUCK_ATTACK)
-    let released = false
+    let isReleased = false
     return () => {
-      if (released) return
-      released = true
+      if (isReleased) return
+      isReleased = true
       this.ducks--
       this.applyMusicLevel(MUSIC_DUCK_RELEASE)
     }
@@ -252,10 +178,10 @@ class AudioManager {
   silenceMusic(fadeSeconds: number): (restoreSeconds: number) => void {
     this.silences++
     this.applyMusicLevel(fadeSeconds)
-    let released = false
+    let isReleased = false
     return (restoreSeconds) => {
-      if (released) return
-      released = true
+      if (isReleased) return
+      isReleased = true
       this.silences--
       this.applyMusicLevel(restoreSeconds)
     }
@@ -267,177 +193,81 @@ class AudioManager {
   }
 
   setMuted(isMuted: boolean): void {
-    if (!this.context || !this.master) return
+    if (!this.graph) return
     const volume = isMuted ? 0 : MASTER_VOLUME
-    this.master.gain.setTargetAtTime(volume, this.context.currentTime, MUTE_SMOOTHING)
+    this.graph.master.gain.setTargetAtTime(volume, this.graph.context.currentTime, MUTE_SMOOTHING)
   }
 
   setVisitorVolume(channel: Channel, volume: number): void {
-    if (!this.context || !this.visitorGains) return
-    const { gain } = this.visitorGains[channel]
-    gain.setTargetAtTime(volume, this.context.currentTime, MUTE_SMOOTHING)
+    if (!this.graph) return
+    const { gain } = this.graph.visitorGains[channel]
+    gain.setTargetAtTime(volume, this.graph.context.currentTime, MUTE_SMOOTHING)
   }
 
   setChannelVolume(channel: Channel, volume: number, seconds = DEFAULT_FADE): void {
-    if (!this.context || !this.channels) return
-    const gain = this.channels[channel].gain
-    const now = this.context.currentTime
+    if (!this.graph) return
+    const { gain } = this.graph.channels[channel]
+    const now = this.graph.context.currentTime
     gain.cancelScheduledValues(now)
     gain.setValueAtTime(gain.value, now)
     gain.linearRampToValueAtTime(volume, now + seconds)
   }
 
   private start(handle: SoundHandle, name: SoundName, buffer: AudioBuffer, options: PlayOptions) {
-    if (!handle.active || !this.context || !this.channels) return
-    const definition: SoundDefinition = SOUNDS[name]
-    const source = this.context.createBufferSource()
+    if (!handle.active || !this.graph) return
+    const { context, channels } = this.graph
+    const definition = definitionOf(name)
+    const source = context.createBufferSource()
     source.buffer = buffer
     source.playbackRate.value = options.rate ?? 1
 
-    let offset = definition.hasLeadIn ? this.audibleRange(buffer).start : 0
+    let offset = definition.hasLeadIn ? audibleRangeOf(buffer).start : 0
     if (options.loop) {
-      const range = this.audibleRange(buffer)
+      const range = audibleRangeOf(buffer)
       source.loop = true
       source.loopStart = range.start
       source.loopEnd = range.end
       offset = range.start
     }
 
-    const gain = this.createEnvelope(name, options)
-    source.connect(gain).connect(this.channels[definition.channel])
+    const envelope = createEnvelope(context, name, options)
+    source.connect(envelope).connect(channels[definition.channel])
     source.addEventListener('ended', () => handle.finish())
-    source.start(this.context.currentTime, offset)
-    handle.attach(this.context, gain, definition.volume, (at) => source.stop(at))
+    source.start(context.currentTime, offset)
+    handle.attach(context, envelope, definition.volume, (at) => source.stop(at))
   }
 
   private startStream(handle: SoundHandle, name: SoundName, options: PlayOptions) {
-    if (!handle.active || !this.context || !this.channels) return
-    const context = this.context
-    const definition: SoundDefinition = SOUNDS[name]
-    const player = this.idleStreamPlayers.pop() ?? this.createStreamPlayer()
-    const { element, source } = player
-    element.src = preferredSource(definition)
-    element.loop = options.loop ?? false
-    element.playbackRate = options.rate ?? 1
-
-    const gain = this.createEnvelope(name, options)
-    source.connect(gain).connect(this.channels[definition.channel])
-
-    const listening = new AbortController()
-    let released = false
-    const release = () => {
-      if (released) return
-      released = true
-      listening.abort()
-      element.pause()
-      element.removeAttribute('src')
-      element.load()
-      source.disconnect()
-      this.idleStreamPlayers.push(player)
-    }
-    element.addEventListener(
-      'ended',
-      () => {
-        handle.finish()
-        release()
-      },
-      { signal: listening.signal }
-    )
-
-    let swapped = false
-    const start = () => {
-      element.play().catch((error: unknown) => {
-        if (!swap()) {
-          handle.stop(0)
-          release()
-          console.warn(`Could not stream sound "${name}"`, error)
-        }
-      })
-    }
-    const swap = (): boolean => {
-      if (swapped || !definition.fallback || element.src.endsWith(definition.fallback)) return false
-      swapped = true
-      console.warn(`Falling back to "${definition.fallback}" for "${name}"`)
-      element.src = definition.fallback
-      element.load()
-      start()
-      return true
-    }
-    element.addEventListener(
-      'error',
-      () => {
-        if (handle.active) swap()
-      },
-      { signal: listening.signal }
-    )
-    start()
-    handle.attach(context, gain, definition.volume, (at) => {
-      window.setTimeout(release, Math.max(0, (at - context.currentTime) * 1000))
-    })
-  }
-
-  private createEnvelope(name: SoundName, options: PlayOptions): GainNode {
-    const volume = (options.volume ?? 1) * SOUNDS[name].volume
-    const gain = this.context!.createGain()
-    const now = this.context!.currentTime
-    if (options.fadeIn) {
-      gain.gain.setValueAtTime(0, now)
-      gain.gain.linearRampToValueAtTime(volume, now + options.fadeIn)
-    } else {
-      gain.gain.setValueAtTime(volume, now)
-    }
-    return gain
+    if (!handle.active || !this.graph) return
+    const { context, channels, streams } = this.graph
+    const definition = definitionOf(name)
+    const envelope = createEnvelope(context, name, options)
+    envelope.connect(channels[definition.channel])
+    streams.start({ handle, name, definition, envelope, loop: options.loop, rate: options.rate })
   }
 
   private load(name: SoundName): Promise<AudioBuffer> {
-    let buffer = this.buffers.get(name)
-    if (!buffer) {
-      const definition: SoundDefinition = SOUNDS[name]
-      const source = preferredSource(definition)
-      buffer = this.decode(source).catch((error: unknown) => {
-        if (!definition.fallback || definition.fallback === source) throw error
-        console.warn(`Falling back to "${definition.fallback}"`, error)
-        return this.decode(definition.fallback)
-      })
-      this.buffers.set(name, buffer)
-    }
+    const known = this.buffers.get(name)
+    if (known) return known
+    const graph = this.graph
+    if (!graph) return Promise.reject(new Error('Audio is not installed'))
+
+    const definition = definitionOf(name)
+    const source = preferredSource(definition)
+    const buffer = decodeSource(graph.context, source).catch((error: unknown) => {
+      if (!definition.fallback || definition.fallback === source) throw error
+      console.warn(`Falling back to "${definition.fallback}"`, error)
+      return decodeSource(graph.context, definition.fallback)
+    })
+    this.buffers.set(name, buffer)
     return buffer
-  }
-
-  private decode(url: string): Promise<AudioBuffer> {
-    return fetch(url)
-      .then((response) => response.arrayBuffer())
-      .then((data) => this.context!.decodeAudioData(data))
-  }
-
-  private audibleRange(buffer: AudioBuffer): AudibleRange {
-    const cached = this.audibleRanges.get(buffer)
-    if (cached) return cached
-
-    const samples = buffer.getChannelData(0)
-    let first = 0
-    while (first < samples.length && Math.abs(samples[first]) < SILENCE_THRESHOLD) first++
-    let last = samples.length - 1
-    while (last > first && Math.abs(samples[last]) < SILENCE_THRESHOLD) last--
-
-    const range = { start: first / buffer.sampleRate, end: (last + 1) / buffer.sampleRate }
-    this.audibleRanges.set(buffer, range)
-    return range
-  }
-
-  private createStreamPlayer(): StreamPlayer {
-    const element = new Audio()
-    return { element, source: this.context!.createMediaElementSource(element) }
   }
 
   private readyStreamPlayers = (): void => {
     for (const event of GESTURE_EVENTS) {
       window.removeEventListener(event, this.readyStreamPlayers, true)
     }
-    while (this.idleStreamPlayers.length < STREAM_PLAYERS) {
-      this.idleStreamPlayers.push(this.createStreamPlayer())
-    }
-    for (const { element } of this.idleStreamPlayers) element.load()
+    this.graph?.streams.prepare()
   }
 
   private startPending = (): void => {
@@ -445,17 +275,21 @@ class AudioManager {
   }
 
   private unlock = (): void => {
-    if (!this.context || (this.unlocked && this.ready)) return
-    this.context.resume().then(() => {
-      this.unlocked = true
-      this.startPending()
-    })
+    if (!this.graph || (this.unlocked && this.ready)) return
+    this.graph.context
+      .resume()
+      .then(() => {
+        this.unlocked = true
+        this.startPending()
+      })
+      .catch(warnResumeFailed)
   }
 
   private syncVisibility = (): void => {
-    if (!this.context || !this.unlocked) return
-    if (document.hidden) this.context.suspend()
-    else this.context.resume().then(this.startPending)
+    if (!this.graph || !this.unlocked) return
+    const { context } = this.graph
+    if (document.hidden) void context.suspend()
+    else context.resume().then(this.startPending).catch(warnResumeFailed)
   }
 }
 

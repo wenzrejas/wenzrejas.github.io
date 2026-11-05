@@ -1,9 +1,9 @@
 import { useDebugStore } from '@/store/debugStore'
 import type { IslandBodyProps } from '../shared/types'
+import IslandFrame from '../shared/IslandFrame'
 import { useIslandModel } from '../shared/islandModel'
 import { placeIsland } from '../shared/islandTransform'
 import { useLightingBake } from '../shared/lighting-bake/useLightingBake'
-import Coast from '@/world/shore/Coast'
 import { useCoastFields } from '@/world/shore/useCoastFields'
 import { TIMEWELL_MODEL_URL, TIMEWELL_OVERHEAD_SHADOW_STRENGTH } from './constants'
 import { runeSpillLevel, useRuneGlow } from './runeGlow'
@@ -11,7 +11,7 @@ import Whirlpool from './Whirlpool'
 import WhirlpoolSpray from './WhirlpoolSpray'
 
 export default function TimewellDepth({ islandKey, config }: IslandBodyProps) {
-  const tuning = useDebugStore((s) => s.islands.timewell)
+  const tuning = useDebugStore((state) => state.islands.timewell)
   const island = useIslandModel(TIMEWELL_MODEL_URL, tuning.brightness)
   useLightingBake(island, {
     overheadShadowStrength: TIMEWELL_OVERHEAD_SHADOW_STRENGTH,
@@ -24,25 +24,23 @@ export default function TimewellDepth({ islandKey, config }: IslandBodyProps) {
 
   return (
     <>
-      <group {...placement}>
-        <primitive object={island.model} />
+      <IslandFrame
+        islandKey={islandKey}
+        radius={config.radius}
+        tuning={tuning}
+        island={island}
+        placement={placement}
+        coast={coast}
+      >
         {coast && (
-          <>
-            <Coast
-              islandKey={islandKey}
-              fields={coast}
-              islandScale={placement.scale}
-              offsetY={tuning.offsetY}
-            />
-            <Whirlpool
-              shoreline={coast.shoreline}
-              center={island.center}
-              islandScale={placement.scale}
-              offsetY={tuning.offsetY}
-            />
-          </>
+          <Whirlpool
+            shoreline={coast.shoreline}
+            center={island.center}
+            islandScale={placement.scale}
+            offsetY={tuning.offsetY}
+          />
         )}
-      </group>
+      </IslandFrame>
       {coast && (
         <WhirlpoolSpray shoreline={coast.shoreline} center={island.center} placement={placement} />
       )}

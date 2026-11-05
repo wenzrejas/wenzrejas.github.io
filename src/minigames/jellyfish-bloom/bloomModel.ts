@@ -10,6 +10,7 @@ import {
   setJellyfishBody,
 } from '@/world/wildlife/shared/jellyfish-shape/jellyfishShapeModel'
 import JELLYFISH_FRAG from '@/world/wildlife/shared/jellyfish-shape/shaders/jellyfish.frag.glsl'
+import { createAdditiveMaterial } from '@/utils/materials'
 import { bloom } from './bloomState'
 import {
   JELLY_BRIGHTNESS,
@@ -47,7 +48,7 @@ export function buildBloomGeometry(): THREE.InstancedBufferGeometry {
 }
 
 export const createBloomMaterial = () =>
-  new THREE.ShaderMaterial({
+  createAdditiveMaterial({
     vertexShader: BLOOM_JELLY_VERT,
     fragmentShader: JELLYFISH_FRAG,
     defines: floatDefines({
@@ -59,9 +60,6 @@ export const createBloomMaterial = () =>
       WOBBLE_RATE: JELLY_WOBBLE_RATE,
       WOBBLE_SIZE: JELLY_WOBBLE_SIZE,
     }),
-    transparent: true,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
     side: THREE.DoubleSide,
     uniforms: {
       ...waveUniforms,

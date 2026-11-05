@@ -13,18 +13,18 @@ export default class DepthsErrorBoundary extends Component<
   DepthsErrorBoundaryProps,
   DepthsErrorBoundaryState
 > {
-  state: DepthsErrorBoundaryState = { hasFailed: false }
+  override state: DepthsErrorBoundaryState = { hasFailed: false }
 
   static getDerivedStateFromError(): DepthsErrorBoundaryState {
     return { hasFailed: true }
   }
 
-  componentDidCatch(error: unknown) {
+  override componentDidCatch(error: unknown) {
     console.error(error)
     this.props.onError()
   }
 
-  render() {
+  override render() {
     return this.state.hasFailed ? null : this.props.children
   }
 }

@@ -14,6 +14,7 @@ import {
 import FIREFLIES_VERT from './shaders/fireflies.vert.glsl'
 import FIREFLIES_FRAG from './shaders/fireflies.frag.glsl'
 import { islandLocalY } from '@/world/islands/shared/islandSpec'
+import { createAdditiveMaterial } from '@/utils/materials'
 
 interface Islet {
   x: number
@@ -55,29 +56,26 @@ export function buildFireflyGeometry({
     seeds[i * 4 + 3] = ((i + Math.random()) / FIREFLY_COUNT) * (1 - FIREFLY_FADE_BAND)
   }
 
-  const geo = new THREE.BufferGeometry()
-  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3))
-  geo.setAttribute('aSeed', new THREE.BufferAttribute(seeds, 4))
+  const geometry = new THREE.BufferGeometry()
+  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+  geometry.setAttribute('aSeed', new THREE.BufferAttribute(seeds, 4))
 
   const wander = FIREFLY_WANDER / islandScale
   const bob = FIREFLY_BOB / islandScale
-  geo.boundingSphere = new THREE.Box3()
+  geometry.boundingSphere = new THREE.Box3()
     .setFromArray(positions)
     .expandByVector(new THREE.Vector3(wander, bob, wander))
     .getBoundingSphere(new THREE.Sphere())
-  return geo
+  return geometry
 }
 
 // ── Material ──────────────────────────────────────────────────────────────────
 
 export function createFireflyMaterial(): THREE.ShaderMaterial {
-  return new THREE.ShaderMaterial({
+  return createAdditiveMaterial({
     vertexShader: FIREFLIES_VERT,
     fragmentShader: FIREFLIES_FRAG,
     defines: floatDefines({ FADE_BAND: FIREFLY_FADE_BAND }),
-    transparent: true,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
     uniforms: {
       uTime: { value: 0 },
       uSize: { value: 1 },

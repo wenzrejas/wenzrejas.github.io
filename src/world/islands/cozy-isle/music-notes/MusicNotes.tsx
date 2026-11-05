@@ -6,6 +6,7 @@ import { MAX_FRAME_SECONDS } from '@/utils/time'
 import type { HoverTimeline } from '@/world/islands/shared/hoverTimeline'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { pixelsPerUnit } from '@/utils/screen'
+import { disposeAll } from '@/utils/dispose'
 import { isBreakEngaged } from '../cafeBreak'
 import { NOTE_SIZE } from './constants'
 import { createMelody, hasNotesInFlight, stepMelody } from './melody'
@@ -25,14 +26,7 @@ export default function MusicNotes({ spot, islandScale, cafeBreak }: MusicNotesP
   const geometry = useMemo(() => buildNoteGeometry(), [])
   const material = useMemo(() => createNoteMaterial(atlas), [atlas])
 
-  useEffect(
-    () => () => {
-      atlas.dispose()
-      geometry.dispose()
-      material.dispose()
-    },
-    [atlas, geometry, material]
-  )
+  useEffect(() => () => disposeAll(atlas, geometry, material), [atlas, geometry, material])
 
   useFrame(({ camera, gl }, delta) => {
     const points = pointsRef.current

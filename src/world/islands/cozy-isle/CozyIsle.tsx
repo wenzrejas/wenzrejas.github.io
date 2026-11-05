@@ -5,13 +5,12 @@ import { openPanel } from '@/store/panelStore'
 import { setHovered } from '@/interaction/hover'
 import InteractionMarker from '@/interaction/InteractionMarker'
 import type { IslandBodyProps } from '../shared/types'
+import IslandFrame from '../shared/IslandFrame'
 import { useIslandModel } from '../shared/islandModel'
 import { createHoverTimeline } from '../shared/hoverTimeline'
 import { placeIsland } from '../shared/islandTransform'
 import { useLightingBake } from '../shared/lighting-bake/useLightingBake'
 import { useNightGlow } from '../shared/nightGlow'
-import IslandShadow from '../shared/IslandShadow'
-import Coast from '@/world/shore/Coast'
 import { useCoastFields } from '@/world/shore/useCoastFields'
 import {
   BOAT_NODE,
@@ -36,7 +35,7 @@ import LightsOnWave from './lights-on-wave/LightsOnWave'
 import MusicNotes from './music-notes/MusicNotes'
 
 export default function CozyIsle({ islandKey, config }: IslandBodyProps) {
-  const tuning = useDebugStore((s) => s.islands.cozy)
+  const tuning = useDebugStore((state) => state.islands.cozy)
   const island = useIslandModel(COZY_MODEL_URL, tuning.brightness)
   const cafeBreak = useMemo(() => createHoverTimeline(), [])
   useLightingBake(island, {
@@ -66,17 +65,15 @@ export default function CozyIsle({ islandKey, config }: IslandBodyProps) {
 
   return (
     <>
-      <IslandShadow radius={config.radius} tuning={tuning} blob={COZY_BLOB} />
-      <group {...placement}>
-        <primitive object={island.model} />
-        {coast && (
-          <Coast
-            islandKey={islandKey}
-            fields={coast}
-            islandScale={placement.scale}
-            offsetY={tuning.offsetY}
-          />
-        )}
+      <IslandFrame
+        islandKey={islandKey}
+        radius={config.radius}
+        tuning={tuning}
+        island={island}
+        placement={placement}
+        coast={coast}
+        blob={COZY_BLOB}
+      >
         {fire && (
           <>
             <CampfireFlames
@@ -117,7 +114,7 @@ export default function CozyIsle({ islandKey, config }: IslandBodyProps) {
             baseGap={cafeMarker.baseGap}
           />
         )}
-      </group>
+      </IslandFrame>
     </>
   )
 }

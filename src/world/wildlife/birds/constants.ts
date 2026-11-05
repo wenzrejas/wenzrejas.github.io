@@ -23,11 +23,11 @@ export const ALTITUDE_MIN = 100
 export const ALTITUDE_MAX = 130
 export const TURN_RATE = 0.13
 export const TURN_BIAS = 0.045
-export const TURN_FREQ_MIN = 0.06
-export const TURN_FREQ_MAX = 0.14
+export const TURN_FREQUENCY_MIN = 0.06
+export const TURN_FREQUENCY_MAX = 0.14
 export const BANK_FACTOR = 2.6
 export const BANK_LIMIT = 0.6
-export const BOB_AMP = 1.2
+export const BOB_AMPLITUDE = 1.2
 
 // ── Shadow ────────────────────────────────────────────────────────────────────
 export const SHADOW_Y = 0.15
@@ -36,11 +36,15 @@ export const SHADOW_OPACITY = 0.22
 export const SHADOW_MIN_SUN_HEIGHT = 0.5
 
 // ── Wings ─────────────────────────────────────────────────────────────────────
-export const FLAP_FREQ = 3.2
-export const FLAP_AMP = 0.6
+export const FLAP_FREQUENCY = 3.2
+export const FLAP_AMPLITUDE = 0.6
 export const GLIDE_LIFT = 0.12
 export const FLAP_BLEND_RATE = 3
 export const FLAP_TIME_MIN = 1.2
 export const FLAP_TIME_MAX = 3
 export const GLIDE_TIME_MIN = 1.5
 export const GLIDE_TIME_MAX = 4
+
+// ── Pose ──────────────────────────────────────────────────────────────────────
+export const BOB_RATE = 0.7
+export const SHADOW_FLATTEN = 0.01

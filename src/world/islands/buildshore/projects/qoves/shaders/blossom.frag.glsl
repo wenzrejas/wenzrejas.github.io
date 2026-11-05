@@ -10,9 +10,9 @@ varying float vTumble;
 
 void main() {
   vec2  point = gl_PointCoord * 2.0 - 1.0;
-  float c = cos(vSpin);
-  float s = sin(vSpin);
-  point = mat2(c, -s, s, c) * point;
+  float cosine = cos(vSpin);
+  float sine = sin(vSpin);
+  point = mat2(cosine, -sine, sine, cosine) * point;
   float tumble = 0.45 + 0.55 * abs(cos(vTumble));
   point.x /= tumble;
 

@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { DEFAULT_MUSIC } from '../audio/constants'
+import { DEFAULT_MUSIC } from '@/audio/constants'
 import type {
   OceanControls,
   ShipControls,
@@ -14,14 +14,14 @@ import type {
   RevealControls,
   WildlifeControls,
   MusicControls,
-} from '../app/debug/types'
+} from '@/app/debug/types'
 import { RUIN_PLACEMENTS } from '@/depths/scene/sunken-ruins/constants'
-import { OCEAN_DEFAULTS } from '../world/environment/ocean/constants'
+import { OCEAN_DEFAULTS } from '@/world/environment/ocean/constants'
 import {
   MODEL_TARGET_SIZE,
   MODEL_BRIGHTNESS,
   BASE_Y,
-  BOB_AMP,
+  BOB_AMPLITUDE,
   BOB_SPEED,
   MOVE_SPEED,
   TURN_SPEED,
@@ -34,20 +34,20 @@ import {
   WAKE_ARM_NEAR,
   WAKE_ARM_FAR,
   WAKE_ARM_HALF_WIDTH,
-  WAKE_MIN_SAMPLE_DIST,
+  WAKE_MIN_SAMPLE_DISTANCE,
   RIPPLE_LIFETIME,
   RIPPLE_EXPAND_SPEED,
-  RIPPLE_SPAWN_DIST,
+  RIPPLE_SPAWN_DISTANCE,
   RIPPLE_HALF_SPREAD,
   RIPPLE_DEPTH,
-} from '../world/ship/constants'
+} from '@/world/ship/constants'
 import {
   BOUNDARY_RADIUS,
   BOUNDARY_FALLOFF,
   BOUNDARY_BANK_HEIGHT,
-} from '../world/environment/boundary/constants'
-import type { IslandKey } from '../world/islands/shared/constants'
-import { ISLAND_MODEL_DEFAULTS } from '../world/islands/shared/islandSpecs'
+} from '@/world/environment/boundary/constants'
+import type { IslandKey } from '@/world/islands/shared/constants'
+import { ISLAND_MODEL_DEFAULTS } from '@/world/islands/shared/islandSpecs'
 import {
   WIND_ENABLED,
   WIND_SPEED,
@@ -58,31 +58,31 @@ import {
   LINE_WIDTH,
   SPAWN_INTERVAL,
   WIND_OPACITY,
-} from '../world/environment/wind-lines/constants'
+} from '@/world/environment/wind-lines/constants'
 import {
   CHECK_INTERVAL as ALGAE_INTERVAL,
   SPAWN_CHANCE as ALGAE_CHANCE,
-} from '../world/wildlife/algae/constants'
+} from '@/world/wildlife/algae/constants'
 import {
   SPAWN_DELAY_MAX as BIRD_DELAY_MAX,
   SPAWN_DELAY_MIN as BIRD_DELAY_MIN,
-} from '../world/wildlife/birds/constants'
+} from '@/world/wildlife/birds/constants'
 import {
   SPAWN_DELAY_MAX as FISH_DELAY_MAX,
   SPAWN_DELAY_MIN as FISH_DELAY_MIN,
-} from '../world/wildlife/fish/constants'
+} from '@/world/wildlife/fish/constants'
 import {
   CHECK_INTERVAL as DOLPHIN_INTERVAL,
   SPAWN_CHANCE as DOLPHIN_CHANCE,
-} from '../world/wildlife/dolphins/constants'
+} from '@/world/wildlife/dolphins/constants'
 import {
   CHECK_INTERVAL as TURTLE_INTERVAL,
   SPAWN_CHANCE as TURTLE_CHANCE,
-} from '../world/wildlife/turtles/constants'
+} from '@/world/wildlife/turtles/constants'
 import {
   CHECK_INTERVAL as WHALE_INTERVAL,
   SPAWN_CHANCE as WHALE_CHANCE,
-} from '../world/wildlife/whale/constants'
+} from '@/world/wildlife/whale/constants'
 
 interface DebugState {
   ocean: OceanControls
@@ -108,12 +108,12 @@ export const useDebugStore = create<DebugState>(() => ({
     moveSpeed: MOVE_SPEED,
     turnSpeed: TURN_SPEED,
     baseY: BASE_Y,
-    bobAmp: BOB_AMP,
+    bobAmplitude: BOB_AMPLITUDE,
     bobSpeed: BOB_SPEED,
     tiltMax: TILT_MAX,
     tiltSpeed: TILT_SPEED,
-    partLife: PARTICLE_LIFETIME,
-    partSpeed: PARTICLE_SPEED,
+    particleLife: PARTICLE_LIFETIME,
+    particleSpeed: PARTICLE_SPEED,
     foamReach: FOAM_REACH,
     foamY: FOAM_Y,
   },
@@ -123,10 +123,10 @@ export const useDebugStore = create<DebugState>(() => ({
     armNear: WAKE_ARM_NEAR,
     armFar: WAKE_ARM_FAR,
     armHalfWidth: WAKE_ARM_HALF_WIDTH,
-    minSampleDist: WAKE_MIN_SAMPLE_DIST,
+    minSampleDistance: WAKE_MIN_SAMPLE_DISTANCE,
     rippleLifetime: RIPPLE_LIFETIME,
     expandSpeed: RIPPLE_EXPAND_SPEED,
-    spawnDist: RIPPLE_SPAWN_DIST,
+    spawnDistance: RIPPLE_SPAWN_DISTANCE,
     halfSpread: RIPPLE_HALF_SPREAD,
     rippleDepth: RIPPLE_DEPTH,
   },

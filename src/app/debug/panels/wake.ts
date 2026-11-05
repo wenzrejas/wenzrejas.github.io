@@ -4,13 +4,12 @@ import {
   RIPPLE_EXPAND_SPEED,
   RIPPLE_HALF_SPREAD,
   RIPPLE_LIFETIME,
-  RIPPLE_SPAWN_DIST,
+  RIPPLE_SPAWN_DISTANCE,
   WAKE_ARM_FAR,
   WAKE_ARM_HALF_WIDTH,
   WAKE_ARM_NEAR,
-  WAKE_MIN_SAMPLE_DIST,
+  WAKE_MIN_SAMPLE_DISTANCE,
 } from '@/world/ship/constants'
-import type { WakeControls } from '../types'
 
 export function useWakeControls() {
   return useControls(
@@ -26,8 +25,8 @@ export function useWakeControls() {
           step: 0.1,
           label: 'arm width',
         },
-        minSampleDist: {
-          value: WAKE_MIN_SAMPLE_DIST,
+        minSampleDistance: {
+          value: WAKE_MIN_SAMPLE_DISTANCE,
           min: 0.1,
           max: 5,
           step: 0.1,
@@ -43,11 +42,17 @@ export function useWakeControls() {
           step: 0.5,
           label: 'expand speed',
         },
-        spawnDist: { value: RIPPLE_SPAWN_DIST, min: 1, max: 30, step: 0.5, label: 'spawn dist' },
+        spawnDistance: {
+          value: RIPPLE_SPAWN_DISTANCE,
+          min: 1,
+          max: 30,
+          step: 0.5,
+          label: 'spawn dist',
+        },
         halfSpread: { value: RIPPLE_HALF_SPREAD, min: 0, max: 20, step: 0.1, label: 'half spread' },
         rippleDepth: { value: RIPPLE_DEPTH, min: 0, max: 20, step: 0.1, label: 'depth' },
       }),
     },
     { collapsed: true }
-  ) as WakeControls
+  )
 }

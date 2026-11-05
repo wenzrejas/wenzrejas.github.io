@@ -13,7 +13,10 @@ export type ContactErrors = Partial<Record<ContactField, string>>
 const EMAIL_SHAPE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export function readDraft(formData: FormData): ContactDraft {
-  const text = (field: ContactField) => String(formData.get(field) ?? '').trim()
+  const text = (field: ContactField) => {
+    const value = formData.get(field)
+    return typeof value === 'string' ? value.trim() : ''
+  }
   return { name: text('name'), email: text('email'), message: text('message') }
 }
 

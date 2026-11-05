@@ -34,7 +34,9 @@ export default function LogoOrbs({ orbits, orbs }: LogoOrbsProps) {
   const stardustMaterial = useMemo(() => createStardustMaterial(orbits.length), [orbits])
 
   useEffect(() => {
-    paintLogoAtlas(atlas).then(() => gl.initTexture(atlas.texture))
+    paintLogoAtlas(atlas)
+      .then(() => gl.initTexture(atlas.texture))
+      .catch((error: unknown) => console.warn('Could not paint the logo atlas', error))
   }, [atlas, gl])
 
   useEffect(

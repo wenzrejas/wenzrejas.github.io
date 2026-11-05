@@ -6,9 +6,9 @@ interface Particle {
   x: number
   y: number
   z: number
-  vx: number
-  vy: number
-  vz: number
+  velocityX: number
+  velocityY: number
+  velocityZ: number
   size: number
   glow: number
 }
@@ -34,9 +34,9 @@ export class ParticlePool {
       x: 0,
       y: 0,
       z: 0,
-      vx: 0,
-      vy: 0,
-      vz: 0,
+      velocityX: 0,
+      velocityY: 0,
+      velocityZ: 0,
       size: 0,
       glow: 0,
     }))
@@ -46,9 +46,9 @@ export class ParticlePool {
     x: number,
     y: number,
     z: number,
-    vx: number,
-    vy: number,
-    vz: number,
+    velocityX: number,
+    velocityY: number,
+    velocityZ: number,
     size: number,
     life: number,
     glow = 0
@@ -64,9 +64,9 @@ export class ParticlePool {
       particle.x = x
       particle.y = y
       particle.z = z
-      particle.vx = vx
-      particle.vy = vy
-      particle.vz = vz
+      particle.velocityX = velocityX
+      particle.velocityY = velocityY
+      particle.velocityZ = velocityZ
       particle.size = size
       particle.glow = glow
       this.cursor = (index + 1) % total
@@ -106,10 +106,10 @@ export function updateFoam(
   for (const particle of pool.particles) {
     if (particle.age >= particle.life) continue
     particle.age += dt
-    particle.x += particle.vx * dt
-    particle.z += particle.vz * dt
-    particle.vx *= damping
-    particle.vz *= damping
+    particle.x += particle.velocityX * dt
+    particle.z += particle.velocityZ * dt
+    particle.velocityX *= damping
+    particle.velocityZ *= damping
 
     const progress = Math.min(particle.age / particle.life, 1)
     _dummy.position.set(particle.x, particle.y, particle.z)
@@ -136,10 +136,10 @@ export function updateDrops(
   for (const particle of pool.particles) {
     if (particle.age >= particle.life) continue
     particle.age += dt
-    particle.vy -= gravity * dt
-    particle.x += particle.vx * dt
-    particle.y += particle.vy * dt
-    particle.z += particle.vz * dt
+    particle.velocityY -= gravity * dt
+    particle.x += particle.velocityX * dt
+    particle.y += particle.velocityY * dt
+    particle.z += particle.velocityZ * dt
     if (particle.y < surfaceAt(particle.x, particle.z)) {
       particle.age = particle.life
       continue
@@ -161,10 +161,10 @@ export function updateSparks(pool: ParticlePool, mesh: THREE.InstancedMesh, dt: 
   for (const particle of pool.particles) {
     if (particle.age >= particle.life) continue
     particle.age += dt
-    particle.vx *= damping
-    particle.vz *= damping
-    particle.x += particle.vx * dt
-    particle.z += particle.vz * dt
+    particle.velocityX *= damping
+    particle.velocityZ *= damping
+    particle.x += particle.velocityX * dt
+    particle.z += particle.velocityZ * dt
 
     const progress = Math.min(particle.age / particle.life, 1)
     const flicker = 0.75 + 0.25 * Math.sin(particle.age * 18 + particle.size * 50)

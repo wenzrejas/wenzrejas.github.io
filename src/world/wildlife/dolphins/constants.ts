@@ -10,7 +10,7 @@ export const POD_MAX = 4
 export const FOLLOW_TIME_MIN = 30
 export const FOLLOW_TIME_MAX = 60
 
-// ── Time of day (and glowing algae, which draws pods out at night) ────────────
+// ── Time of day ───────────────────────────────────────────────────────────────
 export const ACTIVE_FROM = PHASES.sunrise - 0.03
 export const ACTIVE_UNTIL = (PHASES.morning + PHASES.noon) / 2
 export const NOON_UNTIL = (PHASES.noon + PHASES.afternoon) / 2
@@ -32,7 +32,7 @@ export const SEPARATION_STRENGTH = 20
 export const SHIP_CLEARANCE = 24
 export const WHALE_CLEARANCE = 32
 
-// ── Scattering from a whale ───────────────────────────────────────────────────
+// ── Whale scatter ─────────────────────────────────────────────────────────────
 export const SCATTER_SPEED = 45
 export const SCATTER_SPREAD = 0.6
 export const SCATTER_YAW_RATE = 2.2
@@ -48,14 +48,14 @@ export const ROAM_RATE = 0.25
 export const DOLPHIN_LENGTH = 14
 export const FOLLOW_GAIN = 1.2
 export const MAX_SPEED = 45
-export const ACCEL = 1.5
+export const ACCELERATION = 1.5
 export const TURN_GAIN = 1.5
 export const MAX_YAW_RATE = 1.0
 export const YAW_SMOOTH = 2
 export const TURN_SLOWDOWN = 0.35
 export const BANK_FACTOR = 0.5
 export const PITCH_SMOOTH = 8
-export const FLUKE_FREQ = 1.6
+export const FLUKE_FREQUENCY = 1.6
 
 // ── Depth ─────────────────────────────────────────────────────────────────────
 export const CRUISE_DEPTH_MIN = 3.6
@@ -98,3 +98,11 @@ export const SPLASH_RING = 12
 export const SPLASH_RING_SPEED = 4.5
 export const SPLASH_GLOW_FLASHES = 16
 export const SPLASH_GLOW_REACH = 8
+export const SPLASH_ENTRY_STRENGTH = 1.1
+export const SPLASH_EXIT_STRENGTH = 0.8
+
+// ── Pose ──────────────────────────────────────────────────────────────────────
+export const BANK_LIMIT = 0.5
+export const AIRBORNE_FLUKE_SHARE = 0.15
+export const FIN_BACK_SHARE = 0.1
+export const FIN_WAKE_MIN_SPEED = 2

@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { displayColorOf } from '@/utils/color'
 import { floatDefines } from '@/utils/glsl'
+import { createAdditiveMaterial } from '@/utils/materials'
 import {
   BUBBLE_COLOR,
   BUBBLE_DRAG,
@@ -56,7 +57,7 @@ export const createFoamMaterial = () =>
   })
 
 export const createBubbleMaterial = () =>
-  new THREE.ShaderMaterial({
+  createAdditiveMaterial({
     vertexShader: BUBBLE_VERT,
     fragmentShader: BUBBLE_FRAG,
     defines: floatDefines({
@@ -66,8 +67,5 @@ export const createBubbleMaterial = () =>
       WOBBLE_RATE: BUBBLE_WOBBLE_RATE,
       STRENGTH: BUBBLE_STRENGTH,
     }),
-    transparent: true,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
     uniforms: { ...sprayUniforms(), uColor: { value: displayColorOf(BUBBLE_COLOR) } },
   })

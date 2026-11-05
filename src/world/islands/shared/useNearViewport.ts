@@ -24,15 +24,15 @@ export function useNearViewport(groupRef: RefObject<THREE.Group | null>, islandK
     liftOffset(top, _lift)
 
     const run = _lift.lengthSq()
-    const t =
+    const liftShare =
       run > 0
         ? THREE.MathUtils.clamp(((_ground.x - x) * _lift.x + (_ground.y - z) * _lift.y) / run, 0, 1)
         : 0
 
-    const dx = x + _lift.x * t - _ground.x
-    const dz = z + _lift.y * t - _ground.y
-    const reach = groundReach(dx, dz) + islandExtent(islandKey, tuning) + VIEW_MARGIN
+    const deltaX = x + _lift.x * liftShare - _ground.x
+    const deltaZ = z + _lift.y * liftShare - _ground.y
+    const reach = groundReach(deltaX, deltaZ) + islandExtent(islandKey, tuning) + VIEW_MARGIN
 
-    group.visible = dx * dx + dz * dz < reach * reach
+    group.visible = deltaX * deltaX + deltaZ * deltaZ < reach * reach
   })
 }

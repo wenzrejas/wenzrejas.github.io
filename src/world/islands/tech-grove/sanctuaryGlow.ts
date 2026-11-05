@@ -12,7 +12,7 @@ export const sanctuaryGlow = () => dayNightGlow(GLOW_DAY_SHARE)
 
 export const orbGlow = () => dayNightGlow(ORB_GLOW_DAY_SHARE)
 
-const isPedestalLabel = ({ mat }: GlowTarget) => mat.name === PEDESTAL_LABEL_MATERIAL
+const isPedestalLabel = ({ material }: GlowTarget) => material.name === PEDESTAL_LABEL_MATERIAL
 
 export const sortSanctuaryGlows = (glows: GlowTarget[]) => ({
   shrineGlows: glows.filter((glow) => !isPedestalLabel(glow)),

@@ -52,7 +52,7 @@ export const createRainMaterial = () =>
     uniforms: {
       uTime: { value: 0 },
       uIntensity: { value: 0 },
-      uWindDir: { value: new THREE.Vector2() },
+      uWindDirection: { value: new THREE.Vector2() },
       uShipXZ: { value: new THREE.Vector2() },
       uColor: { value: useCycleStore.getState().foamColor },
     },

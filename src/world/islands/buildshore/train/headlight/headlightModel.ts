@@ -2,24 +2,26 @@ import * as THREE from 'three'
 import GLOW_POINT_FRAG from '@/shaders/glowPoint.frag.glsl'
 import UV_QUAD_VERT from '@/shaders/uvQuad.vert.glsl'
 import { displayColorOf } from '@/utils/color'
+import { buildBeamCone } from '@/utils/geometry'
 import { floatDefines } from '@/utils/glsl'
+import { createBeamConeMaterial } from '@/utils/materials'
 import { createAdditiveGlowMaterial } from '@/world/islands/shared/glowMaterial'
+import { createAdditiveMaterial } from '@/utils/materials'
 import {
+  BEAM_EDGE_LEVEL,
+  BEAM_FADE_IN,
+  BEAM_FALLOFF,
   BEAM_LENGTH,
   BEAM_SEGMENTS,
-  BEAM_SPREAD_DEG,
+  BEAM_SPREAD_DEGREES,
   HALO_STRENGTH,
   HEADLIGHT_COLOR,
   LANTERN_HALO_SHARE,
   POOL_NEAR_WIDTH,
 } from './constants'
 import type { Lamps } from './lamps'
-import BEAM_VERT from './shaders/headlightBeam.vert.glsl'
-import BEAM_FRAG from './shaders/headlightBeam.frag.glsl'
 import POOL_FRAG from './shaders/headlightPool.frag.glsl'
 import LAMP_HALO_VERT from './shaders/lampHalo.vert.glsl'
-
-const HALF_SPREAD = THREE.MathUtils.degToRad(BEAM_SPREAD_DEG) / 2
 
 const lightUniforms = () => ({
   uColor: { value: displayColorOf(HEADLIGHT_COLOR) },
@@ -28,39 +30,20 @@ const lightUniforms = () => ({
 
 // ── Beam ──────────────────────────────────────────────────────────────────────
 
-export function buildBeamGeometry(lensRadius: number): THREE.CylinderGeometry {
-  const startRadius = lensRadius / BEAM_LENGTH
-  const geometry = new THREE.CylinderGeometry(
-    startRadius,
-    startRadius + Math.tan(HALF_SPREAD),
-    1,
-    BEAM_SEGMENTS,
-    1,
-    true
-  )
-  geometry.rotateZ(Math.PI / 2)
-  geometry.translate(0.5, 0, 0)
-  return geometry
-}
+export const buildBeamGeometry = (lensRadius: number) =>
+  buildBeamCone(lensRadius, BEAM_LENGTH, BEAM_SEGMENTS, BEAM_SPREAD_DEGREES)
 
 export const createBeamMaterial = () =>
-  new THREE.ShaderMaterial({
-    transparent: true,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
-    side: THREE.DoubleSide,
-    vertexShader: BEAM_VERT,
-    fragmentShader: BEAM_FRAG,
-    uniforms: lightUniforms(),
+  createBeamConeMaterial(displayColorOf(HEADLIGHT_COLOR), {
+    fadeIn: BEAM_FADE_IN,
+    falloff: BEAM_FALLOFF,
+    edgeLevel: BEAM_EDGE_LEVEL,
   })
 
 // ── Track pool ────────────────────────────────────────────────────────────────
 
 export const createPoolMaterial = () =>
-  new THREE.ShaderMaterial({
-    transparent: true,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
+  createAdditiveMaterial({
     vertexShader: UV_QUAD_VERT,
     fragmentShader: POOL_FRAG,
     defines: floatDefines({ NEAR_WIDTH: POOL_NEAR_WIDTH }),

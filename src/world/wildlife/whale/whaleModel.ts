@@ -4,7 +4,7 @@ import { createWildlifeMaterial } from '../shared/wildlifeMaterial'
 import {
   BEND_SPAN,
   BEND_START,
-  FLIPPER_FREQ,
+  FLIPPER_FREQUENCY,
   FLIPPER_LIFT,
   FLIPPER_SPLAY_DEGREES,
   FLIPPER_SWEEP,
@@ -73,7 +73,7 @@ export function createWhaleMaterial(): THREE.MeshLambertMaterial {
       STROKE_AMPLITUDE,
       STROKE_SWAY,
       HEAD_NOD,
-      FLIPPER_FREQ,
+      FLIPPER_FREQUENCY,
       FLIPPER_SWEEP,
       FLIPPER_LIFT,
     },

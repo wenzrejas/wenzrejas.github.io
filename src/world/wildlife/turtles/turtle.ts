@@ -16,7 +16,7 @@ import {
   CRUISE_SPEED_MAX,
   CRUISE_SPEED_MIN,
   DIVE_RATE,
-  GLIDE_FREQ,
+  GLIDE_FREQUENCY,
   HIDDEN_DEPTH,
   LIFETIME_MAX,
   LIFETIME_MIN,
@@ -57,7 +57,7 @@ import {
   SPAWN_SPACING,
   SPAWN_VIEW_MARGIN,
   SPEED_RATE,
-  STROKE_FREQ,
+  STROKE_FREQUENCY,
   TURTLE_LENGTH,
   TURTLE_SIZE_JITTER,
   WANDER_RATE,
@@ -179,14 +179,14 @@ export function separate(turtles: Turtle[], dt: number): void {
     let pushZ = 0
     for (const other of turtles) {
       if (other === turtle) continue
-      const dx = turtle.x - other.x
-      const dz = turtle.z - other.z
-      const distance = Math.hypot(dx, dz)
+      const deltaX = turtle.x - other.x
+      const deltaZ = turtle.z - other.z
+      const distance = Math.hypot(deltaX, deltaZ)
       const reach = (turtle.size + other.size) * SEPARATION_FACTOR
       if (distance >= reach || distance < 1e-3) continue
       const strength = 1 - distance / reach
-      pushX += (dx / distance) * strength
-      pushZ += (dz / distance) * strength
+      pushX += (deltaX / distance) * strength
+      pushZ += (deltaZ / distance) * strength
     }
 
     const push = Math.hypot(pushX, pushZ)
@@ -302,5 +302,5 @@ export function updatePose(turtle: Turtle, time: number, dt: number): void {
 
   const stroking =
     turtle.shyTimer > 0 ? 1 : smoothstep(Math.sin(time * 0.45 + turtle.seed), -0.2, 0.6)
-  turtle.phase += dt * Math.PI * 2 * mix(GLIDE_FREQ, STROKE_FREQ, stroking)
+  turtle.phase += dt * Math.PI * 2 * mix(GLIDE_FREQUENCY, STROKE_FREQUENCY, stroking)
 }

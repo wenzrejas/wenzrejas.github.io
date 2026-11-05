@@ -35,9 +35,9 @@ export const GLIDE_SPEED = 14
 export const BLOW_SPEED = 7
 export const HOVER_TIME_MIN = 2
 export const HOVER_TIME_MAX = 3
-export const WANDER_FREQ = 0.15
+export const WANDER_FREQUENCY = 0.15
 export const WANDER_RATE = 0.05
-export const ACCEL = 0.8
+export const ACCELERATION = 0.8
 export const BANK_FACTOR = 1.6
 export const BANK_LIMIT = 0.25
 export const BANK_SMOOTH = 2
@@ -90,21 +90,21 @@ export const ROLL_SMOOTH = 1.5
 export const BREACH_ARCH = 0.25
 
 // ── Stroke ────────────────────────────────────────────────────────────────────
-export const STROKE_FREQ_GLIDE = 0.26
-export const STROKE_FREQ_CHARGE = 0.45
-export const STROKE_FREQ_AIR = 0.08
+export const STROKE_FREQUENCY_GLIDE = 0.26
+export const STROKE_FREQUENCY_CHARGE = 0.45
+export const STROKE_FREQUENCY_AIR = 0.08
 export const BEND_START = 0.2
 export const BEND_SPAN = 0.7
 export const STROKE_LAG = 2.6
 export const STROKE_AMPLITUDE = 0.07
 export const HEAD_NOD = 0.012
-export const FLIPPER_FREQ = 0.5
+export const FLIPPER_FREQUENCY = 0.5
 export const FLIPPER_SWEEP = 0.05
 export const FLIPPER_LIFT = 0.03
 export const STROKE_SWAY = 0.025
 export const STROKE_SMOOTH = 1.5
 
-// ── Body flex (curve per rad/s of turning or pitching) ────────────────────────
+// ── Body flex ─────────────────────────────────────────────────────────────────
 export const TURN_CURVE_GAIN = 2.5
 export const CLIMB_CURVE_GAIN = 0.6
 export const CURVE_LIMIT = 0.16

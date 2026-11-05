@@ -5,6 +5,7 @@ import { useWeatherStore } from '@/store/weatherStore'
 import { useWindStore } from '@/store/windStore'
 import { uniformsOf } from '@/utils/meshes'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
+import { disposeAll } from '@/utils/dispose'
 import { RAIN_VISIBLE_LEVEL } from './constants'
 import { buildRainGeometry, createRainMaterial } from './rainModel'
 
@@ -17,13 +18,7 @@ export default function Rain({ shipRef }: RainProps) {
   const geometry = useMemo(() => buildRainGeometry(), [])
   const material = useMemo(() => createRainMaterial(), [])
 
-  useEffect(
-    () => () => {
-      geometry.dispose()
-      material.dispose()
-    },
-    [geometry, material]
-  )
+  useEffect(() => () => disposeAll(geometry, material), [geometry, material])
 
   useFrame(({ clock }) => {
     const mesh = meshRef.current
@@ -37,7 +32,7 @@ export default function Rain({ shipRef }: RainProps) {
     const wind = useWindStore.getState()
     const ship = shipRef.current
     uniforms.uTime.value = clock.getElapsedTime()
-    uniforms.uWindDir.value.set(wind.dir.x, wind.dir.y)
+    uniforms.uWindDirection.value.set(wind.direction.x, wind.direction.y)
     uniforms.uShipXZ.value.set(ship?.position.x ?? 0, ship?.position.z ?? 0)
   })
 

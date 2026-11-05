@@ -43,11 +43,13 @@ function isWithinTier(mesh: THREE.Object3D) {
 }
 
 export function findCubeStack(ruin: THREE.Object3D): CubeStack {
-  const tiers = ruin.children.filter(isTier).sort((a, b) => a.position.y - b.position.y)
+  const tiers = ruin.children
+    .filter(isTier)
+    .sort((left, right) => left.position.y - right.position.y)
   const cubes = tiers.flatMap((tier) =>
     tier.children
       .filter((child) => child.userData.role === 'gem')
-      .sort((a, b) => a.position.x - b.position.x)
+      .sort((left, right) => left.position.x - right.position.x)
   )
   const runes = cubes
     .map((cube) => meshesOf(cube).filter((mesh) => materialNameOf(mesh).startsWith(RUNE_MATERIAL)))

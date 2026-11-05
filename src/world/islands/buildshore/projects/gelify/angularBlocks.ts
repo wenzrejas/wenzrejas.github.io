@@ -25,7 +25,7 @@ export function findAngularBlocks(model: THREE.Object3D): AngularBlock[] {
   model.traverse((child) => {
     if (child.name.startsWith(ANGULAR_CUBE_PREFIX)) nodes.push(child)
   })
-  nodes.sort((a, b) => a.name.localeCompare(b.name))
+  nodes.sort((left, right) => left.name.localeCompare(right.name))
   return nodes.map((node) => ({
     node,
     restY: node.position.y,

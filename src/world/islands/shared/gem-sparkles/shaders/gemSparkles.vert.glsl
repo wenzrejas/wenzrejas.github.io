@@ -13,8 +13,8 @@ void main() {
   vFlash = starFlash(cycle, FLASH_SHARE);
 
   float along = fract(aSeed.z + floor(cycle) * 0.618034);
-  vec3 pos = mix(position, aEnd, along) * LIFT;
+  vec3 sparklePosition = mix(position, aEnd, along) * LIFT;
 
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(sparklePosition, 1.0);
   gl_PointSize = uSize * vFlash;
 }

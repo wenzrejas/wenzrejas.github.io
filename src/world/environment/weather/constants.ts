@@ -3,49 +3,76 @@ import { CYCLE_DURATION, DAY_CYCLE_FRAME_PRIORITY } from '../day-night-cycle/con
 import type { SparkleField } from './sparkleField'
 import type { WeatherParams } from './weatherCycle'
 
+// ── Cloud shadows ─────────────────────────────────────────────────────────────
+export const CLOUD_TILE = 620
+export const CLOUD_PLANE_SIZE = 2600
+export const CLOUD_SCROLL_SPEED = 8
+export const CLOUD_MODEL_SHADOW_DARK = 0.5
+export const CLOUD_GAIN_PER_COVER = 0.85
+export const CLOUD_BIAS_PER_COVER = 0.14
+export const CLOUD_PLANE_Y = 0.06
+export const CLOUD_PLANE_MAX_OPACITY = 0.5
+export const CLOUD_SHADOW_COLOR = '#0a2233'
+
+// ── Cloud texture ─────────────────────────────────────────────────────────────
+export const CLOUD_TEXTURE_SIZE = 256
+export const CLOUD_TEXTURE_ANISOTROPY = 4
+export const CLOUD_NOISE_FREQUENCY = 3
+export const CLOUD_NOISE_OCTAVES = 5
+export const CLOUD_OCTAVE_FALLOFF = 0.5
+export const CLOUD_OCTAVE_GROWTH = 2
+export const CLOUD_SHAPE_THRESHOLD = 0.48
+export const CLOUD_SHAPE_SOFTNESS = 0.22
+export const CLOUD_WARP_STRENGTH = 0.28
+export const CLOUD_WARP_U_OFFSET: readonly [number, number] = [0.31, 0.77]
+export const CLOUD_WARP_V_OFFSET: readonly [number, number] = [0.83, 0.19]
+export const CLOUD_HASH_X = 127.1
+export const CLOUD_HASH_Y = 311.7
+export const CLOUD_HASH_SCALE = 43758.5453
+
 // ── Weather cycle ─────────────────────────────────────────────────────────────
 export const WEATHER_PARAMS: Record<WeatherType, WeatherParams> = {
   sunny: {
-    lightMult: 1.3,
-    moonMult: 0.5,
-    waveAmpMult: 1.0,
-    windMult: 0.6,
+    lightMultiplier: 1.3,
+    moonMultiplier: 0.5,
+    waveAmplitudeMultiplier: 1.0,
+    windMultiplier: 0.6,
     rainIntensity: 0.0,
     overcastAmount: 0.0,
     cloudShadow: 0.15,
   },
   cloudy: {
-    lightMult: 1.0,
-    moonMult: 0.7,
-    waveAmpMult: 1.1,
-    windMult: 1.0,
+    lightMultiplier: 1.0,
+    moonMultiplier: 0.7,
+    waveAmplitudeMultiplier: 1.1,
+    windMultiplier: 1.0,
     rainIntensity: 0.0,
     overcastAmount: 0.0,
     cloudShadow: 0.52,
   },
   rainy: {
-    lightMult: 0.45,
-    moonMult: 0.1,
-    waveAmpMult: 2.2,
-    windMult: 1.6,
+    lightMultiplier: 0.45,
+    moonMultiplier: 0.1,
+    waveAmplitudeMultiplier: 2.2,
+    windMultiplier: 1.6,
     rainIntensity: 1.0,
     overcastAmount: 0.8,
     cloudShadow: 0.9,
   },
   windy: {
-    lightMult: 0.85,
-    moonMult: 0.8,
-    waveAmpMult: 1.7,
-    windMult: 2.5,
+    lightMultiplier: 0.85,
+    moonMultiplier: 0.8,
+    waveAmplitudeMultiplier: 1.7,
+    windMultiplier: 2.5,
     rainIntensity: 0.0,
     overcastAmount: 0.2,
     cloudShadow: 0.35,
   },
   moonlit: {
-    lightMult: 0.9,
-    moonMult: 3.0,
-    waveAmpMult: 0.2,
-    windMult: 0.2,
+    lightMultiplier: 0.9,
+    moonMultiplier: 3.0,
+    waveAmplitudeMultiplier: 0.2,
+    windMultiplier: 0.2,
     rainIntensity: 0.0,
     overcastAmount: 0.0,
     cloudShadow: 0.1,
@@ -53,10 +80,10 @@ export const WEATHER_PARAMS: Record<WeatherType, WeatherParams> = {
 }
 
 export const CALM_WEATHER: WeatherParams = {
-  lightMult: 1,
-  moonMult: 1,
-  waveAmpMult: 1,
-  windMult: 1,
+  lightMultiplier: 1,
+  moonMultiplier: 1,
+  waveAmplitudeMultiplier: 1,
+  windMultiplier: 1,
   rainIntensity: 0,
   overcastAmount: 0,
   cloudShadow: 0,
@@ -87,7 +114,7 @@ export const LIGHTNING_ECHO_FADE = 6
 export const SPARKLE_Y = 1.5
 export const SPARKLE_VISIBLE_LEVEL = 0.005
 
-// ── Moon sparkles (moonlit nights) ────────────────────────────────────────────
+// ── Moon sparkles ─────────────────────────────────────────────────────────────
 export const MOON_SPARKLES: SparkleField = {
   count: 250,
   spread: 325,
@@ -103,7 +130,7 @@ export const MOON_SPARKLE_COLOR = '#c8f0ff'
 export const SPARKLE_MOON_RANGE = 2
 export const SPARKLE_NIGHT_START = 0.6
 
-// ── Ocean glitter (day and night; cloud shadow fades it) ─────────────────────
+// ── Ocean glitter ─────────────────────────────────────────────────────────────
 export const OCEAN_GLITTER: SparkleField = {
   count: 220,
   spread: 325,
@@ -120,6 +147,17 @@ export const GLITTER_NIGHT_STRENGTH = 0.75
 export const GLITTER_CLEAR_SHADOW = 0.15
 export const GLITTER_GONE_SHADOW = 0.6
 export const GLITTER_NIGHT_END = 0.3
+
+// ── Rain ripples ──────────────────────────────────────────────────────────────
+export const RAIN_RIPPLE_MAX = 250
+export const RAIN_RIPPLE_LIFETIME = 1.8
+export const RAIN_RIPPLE_SPAWN_RATE = 80
+export const RAIN_RIPPLE_SEGMENTS = 4
+export const RAIN_RIPPLE_WHIRLPOOL_EYE_SHARE = 0.05
+export const RAIN_RIPPLE_WHIRLPOOL_SWALLOW_SHARE = 0.2
+export const RAIN_RIPPLE_MIN_INTENSITY = 0.01
+export const RAIN_RIPPLE_VIEW_MARGIN = 1.15
+export const RAIN_RIPPLE_BOUNDS_RADIUS = 1e6
 
 // ── Rain ──────────────────────────────────────────────────────────────────────
 export const RAIN_DROPS = 600

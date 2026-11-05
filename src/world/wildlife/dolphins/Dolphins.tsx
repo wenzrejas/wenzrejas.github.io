@@ -1,200 +1,27 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import * as THREE from 'three'
-import { earnAchievement } from '@/store/achievementStore'
-import { eventDelta } from '@/store/cinematicStore'
-import { useCycleStore } from '@/store/cycleStore'
-import { useDebugStore } from '@/store/debugStore'
-import { wildlifePace } from '@/store/settingsStore'
-import { useShipStore } from '@/store/shipStore'
-import { isRaining } from '@/store/weatherStore'
-import { useWhaleStore } from '@/store/whaleStore'
-import { wrapAngle } from '@/utils/math'
+import type * as THREE from 'three'
+import { disposeAll } from '@/utils/dispose'
 import { MAX_FRAME_SECONDS } from '@/utils/time'
-import { ParticlePool } from '@/world/effects/particlePool'
 import Spray from '@/world/effects/Spray'
-import { depthFade } from '../shared/wildlifeMaterial'
-import { isOpenWater } from '@/world/islands/shared/islandZones'
-import { algaeAt, algaeUniforms } from '@/world/wildlife/algae/algaeField'
+import { algaeUniforms } from '@/world/wildlife/algae/algaeField'
+import { DROP_GRAVITY, POD_MAX } from './constants'
 import { buildDolphinGeometry, createDolphinMaterial } from './dolphinModel'
-import { emitFinWake, emitSplash, flashGlowingWater } from './spray'
-import {
-  BANK_FACTOR,
-  DOLPHIN_LENGTH,
-  DROP_GRAVITY,
-  DROP_POOL,
-  FADE_START_DEPTH,
-  FIN_HEIGHT,
-  FIN_WAKE_SPACING,
-  FIRST_CHECK_DELAY,
-  FLUKE_FREQ,
-  FOAM_POOL,
-  HIDDEN_DEPTH,
-  IDLE_SHIP_SPEED,
-  LEAP_PITCH_BOOST,
-  LEAP_PITCH_MAX,
-  OPEN_WATER_GAP,
-  ORBIT_RATE,
-  ORBIT_SETTLE,
-  PITCH_SMOOTH,
-  POD_MAX,
-  SPLASH_ENTRY_DROPS,
-  SPLASH_EXIT_DROPS,
-} from './constants'
-import {
-  createPod,
-  podChance,
-  pose,
-  scatterPod,
-  swim,
-  updateAction,
-  updateRoaming,
-  type Pod,
-} from './pod'
-import { updateDolphinCalls } from '@/audio/wildlifeSounds'
-
-const _dummy = new THREE.Object3D()
-const { clamp } = THREE.MathUtils
+import { createDolphinPopulation, stepDolphinPopulation } from './dolphinPopulation'
 
 export default function Dolphins() {
   const bodyRef = useRef<THREE.InstancedMesh>(null)
   const bodyGeometry = useMemo(() => buildDolphinGeometry(), [])
   const bodyMaterial = useMemo(() => createDolphinMaterial(), [])
+  const population = useMemo(() => createDolphinPopulation(bodyGeometry), [bodyGeometry])
 
-  useEffect(
-    () => () => {
-      bodyGeometry.dispose()
-      bodyMaterial.dispose()
-    },
-    [bodyGeometry, bodyMaterial]
-  )
-
-  const pod = useRef<Pod | null>(null)
-  const wasPresent = useRef(false)
-  const checkTimer = useRef(FIRST_CHECK_DELAY)
-  const foam = useMemo(() => new ParticlePool(FOAM_POOL), [])
-  const drops = useMemo(() => new ParticlePool(DROP_POOL), [])
+  useEffect(() => () => disposeAll(bodyGeometry, bodyMaterial), [bodyGeometry, bodyMaterial])
 
   useFrame(({ clock }, delta) => {
     const body = bodyRef.current
     if (!body) return
-
     const dt = Math.min(delta, MAX_FRAME_SECONDS)
-    const cycle = useCycleStore.getState()
-    const raining = isRaining()
-    const phaseAttr = bodyGeometry.getAttribute('aPhase') as THREE.InstancedBufferAttribute
-    const archAttr = bodyGeometry.getAttribute('aArch') as THREE.InstancedBufferAttribute
-    const fadeAttr = bodyGeometry.getAttribute('aFade') as THREE.InstancedBufferAttribute
-
-    const motion = useShipStore.getState()
-    const whale = useWhaleStore.getState()
-
-    const { dolphinChance, dolphinInterval } = useDebugStore.getState().wildlife
-    const checkInterval = dolphinInterval / wildlifePace()
-    checkTimer.current = Math.min(checkTimer.current, checkInterval) - eventDelta(dt)
-    if (checkTimer.current <= 0) {
-      checkTimer.current = checkInterval
-      if (
-        !pod.current &&
-        !raining &&
-        !whale.active &&
-        isOpenWater(motion.x, motion.z, OPEN_WATER_GAP) &&
-        Math.random() < dolphinChance * podChance(cycle.timeOfDay, algaeAt(motion.x, motion.z))
-      ) {
-        pod.current = createPod(motion)
-      }
-    }
-
-    const current = pod.current
-    let count = 0
-
-    if (current) {
-      current.age += dt
-      if (whale.active && current.scatteredAt === null) scatterPod(current, whale.x, whale.z)
-      if (!current.leaving && (raining || current.age > current.followTime)) {
-        current.leaving = true
-        for (const dolphin of current.dolphins) dolphin.targetDepth = HIDDEN_DEPTH
-      }
-
-      const idle = 1 - clamp(motion.speed / IDLE_SHIP_SPEED, 0, 1)
-      current.orbit = wrapAngle(current.orbit) + ORBIT_RATE * idle * dt
-      current.orbit *= Math.exp(-ORBIT_SETTLE * (1 - idle) * dt)
-      updateRoaming(current, motion, dt)
-
-      let submerged = true
-      for (const dolphin of current.dolphins) {
-        swim(dolphin, current, motion, dt)
-        updateAction(dolphin, current.leaving, dt)
-        submerged &&= dolphin.depth >= HIDDEN_DEPTH
-
-        const { y, climb, arch, roll } = pose(dolphin)
-        const pitchBoost = dolphin.action === 'leap' ? LEAP_PITCH_BOOST : 1
-        const targetPitch = clamp(
-          Math.atan2(climb, Math.max(dolphin.speed, 1)) * pitchBoost,
-          -LEAP_PITCH_MAX,
-          LEAP_PITCH_MAX
-        )
-        dolphin.pitch += (targetPitch - dolphin.pitch) * Math.min(1, PITCH_SMOOTH * dt)
-        dolphin.phase += dt * Math.PI * 2 * FLUKE_FREQ * (y > 0 ? 0.15 : 1)
-
-        const breaching = dolphin.action === 'leap' && dolphin.prevY < 0 && y >= 0
-        const entering = dolphin.prevY > 0 && y <= 0
-        if (breaching || entering) {
-          emitSplash(
-            foam,
-            drops,
-            dolphin.x,
-            dolphin.z,
-            dolphin.heading,
-            dolphin.speed,
-            entering ? SPLASH_ENTRY_DROPS : SPLASH_EXIT_DROPS,
-            entering ? 1.1 : 0.8
-          )
-          flashGlowingWater(dolphin.x, dolphin.z, clock.getElapsedTime())
-        }
-        dolphin.prevY = y
-
-        const finX = dolphin.x - Math.sin(dolphin.heading) * DOLPHIN_LENGTH * 0.1
-        const finZ = dolphin.z - Math.cos(dolphin.heading) * DOLPHIN_LENGTH * 0.1
-        const finBreaching = y < 0 && y + FIN_HEIGHT * DOLPHIN_LENGTH > 0 && dolphin.speed > 2
-        if (!finBreaching) {
-          dolphin.wakeX = finX
-          dolphin.wakeZ = finZ
-        } else if (Math.hypot(finX - dolphin.wakeX, finZ - dolphin.wakeZ) >= FIN_WAKE_SPACING) {
-          emitFinWake(foam, finX, finZ, dolphin.heading)
-          dolphin.wakeX = finX
-          dolphin.wakeZ = finZ
-        }
-
-        const bank = clamp(-dolphin.yawRate * BANK_FACTOR, -0.5, 0.5)
-        _dummy.position.set(dolphin.x, y, dolphin.z)
-        _dummy.rotation.set(-dolphin.pitch, dolphin.heading, bank + roll, 'YXZ')
-        _dummy.scale.setScalar(DOLPHIN_LENGTH)
-        _dummy.updateMatrix()
-        body.setMatrixAt(count, _dummy.matrix)
-        phaseAttr.setX(count, dolphin.phase)
-        archAttr.setX(count, arch)
-        fadeAttr.setX(count, depthFade(dolphin.depth, FADE_START_DEPTH, HIDDEN_DEPTH))
-        count++
-      }
-
-      if (current.leaving && submerged) pod.current = null
-    }
-
-    const present =
-      !!pod.current &&
-      !pod.current.leaving &&
-      pod.current.dolphins.some((dolphin) => dolphin.depth < FADE_START_DEPTH)
-    updateDolphinCalls(present, dt)
-    if (present && !wasPresent.current) earnAchievement('podPals')
-    wasPresent.current = present
-
-    body.count = count
-    body.visible = count > 0
-    body.instanceMatrix.needsUpdate = true
-    phaseAttr.needsUpdate = true
-    archAttr.needsUpdate = true
-    fadeAttr.needsUpdate = true
+    stepDolphinPopulation(population, body, clock.getElapsedTime(), dt)
   })
 
   return (
@@ -206,8 +33,8 @@ export default function Dolphins() {
         visible={false}
       />
       <Spray
-        foam={foam}
-        drops={drops}
+        foam={population.foam}
+        drops={population.drops}
         gravity={DROP_GRAVITY}
         glowTint={algaeUniforms.uAlgaeGlow.value}
       />

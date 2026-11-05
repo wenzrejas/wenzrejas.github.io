@@ -5,6 +5,7 @@ import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { zoomedOutBoost } from '@/app/experience/worldZoom'
 import { isRaceUnderway } from '@/store/checkpointStore'
 import { MAX_FRAME_SECONDS } from '@/utils/time'
+import { disposeAll } from '@/utils/dispose'
 import { LANTERN_CAPACITY, LANTERN_ZOOMED_OUT_BOOST_MAX } from './constants'
 import { drawFlock } from './lanternDraw'
 import { stepLanternEvent } from './lanternEvent'
@@ -29,12 +30,7 @@ export default function LanternField() {
   )
 
   useEffect(
-    () => () => {
-      bodyGeometry.dispose()
-      bodyMaterial.dispose()
-      glowGeometry.dispose()
-      glowMaterial.dispose()
-    },
+    () => () => disposeAll(bodyGeometry, bodyMaterial, glowGeometry, glowMaterial),
     [bodyGeometry, bodyMaterial, glowGeometry, glowMaterial]
   )
 

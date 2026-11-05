@@ -11,6 +11,6 @@ varying vec3 vWorldNormal;
 void main() {
   float dash = fract((vFlowUv.y + uFlowTime * vFlow.y) * HIGHLIGHT_DASHES + vFlow.x);
   if (dash > HIGHLIGHT_DASH_SHARE) discard;
-  vec3 water = oceanSurface(TONE_BASE * uMidPos, vWorldNormal, vWorldPosition).rgb;
+  vec3 water = oceanSurface(TONE_BASE * uMidPosition, vWorldNormal, vWorldPosition).rgb;
   gl_FragColor = vec4(mix(water, uFoamColor, HIGHLIGHT_STRENGTH), 1.0);
 }

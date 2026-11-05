@@ -16,7 +16,7 @@ const insertAfterChunks = (source: string, chunks: Record<string, string>) =>
   )
 
 export function cloneLit<T extends THREE.Material>(material: T): T {
-  const clone = material.clone() as T
+  const clone = material.clone()
   applyCloudShadow(clone)
   return clone
 }

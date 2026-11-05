@@ -3,7 +3,7 @@ export const QOVES_ROOT_NODE = 'Qoves_Root'
 export const LOOP_STONE_NODES = ['QVS Logo | Qoves sculpted loop', 'QVS Logo | Qoves sweeping tail']
 export const AMBER_GLOW_MATERIAL = 'Qoves | glow.001'
 
-// ── Loop light (radians, seconds) ─────────────────────────────────────────────
+// ── Loop light ────────────────────────────────────────────────────────────────
 export const LOOP_RISE_SECONDS = 0.4
 export const COMET_COLOR = '#ffb347'
 export const COMET_TURN_RATE = 1
@@ -13,10 +13,10 @@ export const COMET_TINT = 0.7
 export const COMET_GLOW = 1.4
 export const AMBER_GLOW_SWELL = 1.5
 
-// ── Plaza (Qoves_Root frame) ──────────────────────────────────────────────────
+// ── Plaza ─────────────────────────────────────────────────────────────────────
 export const PLAZA_CENTRE: [number, number, number] = [0, 6.7, -0.87]
 
-// ── Blossom drift (Qoves_Root frame, seconds) ─────────────────────────────────
+// ── Blossom drift ─────────────────────────────────────────────────────────────
 export const BLOSSOM_COUNT = 36
 export const BLOSSOM_LIFE_SECONDS = 4.6
 export const BLOSSOM_SPAWN_RADII: [number, number] = [4.3, 2.4]

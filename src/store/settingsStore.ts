@@ -38,7 +38,7 @@ const REDUCED_FLASH_STRENGTH = 0.2
 const DAY_PACES: Record<DayLength, number> = { short: 2, normal: 1, long: 0.5 }
 const WILDLIFE_PACES: Record<WildlifeActivity, number> = { calm: 0.5, normal: 1, lively: 2 }
 const SAILING_PACES: Record<SailingSpeed, number> = { leisurely: 0.7, normal: 1, brisk: 1.35 }
-const FRAME_INTERVALS_MS: Record<FrameRateLimit, number | null> = {
+const FRAME_INTERVALS_MILLISECONDS: Record<FrameRateLimit, number | null> = {
   thirty: 1000 / 30,
   sixty: 1000 / 60,
   unlimited: null,
@@ -78,7 +78,8 @@ export const scrollBehavior = (): ScrollBehavior => (isMotionReduced() ? 'auto' 
 
 export const isGraphicsSharp = () => useSettingsStore.getState().graphicsQuality === 'sharp'
 
-export const frameIntervalMs = () => FRAME_INTERVALS_MS[useSettingsStore.getState().frameRateLimit]
+export const frameIntervalMilliseconds = () =>
+  FRAME_INTERVALS_MILLISECONDS[useSettingsStore.getState().frameRateLimit]
 
 export const flashStrength = () =>
   useSettingsStore.getState().isFlashingReduced ? REDUCED_FLASH_STRENGTH : 1

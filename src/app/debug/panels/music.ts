@@ -1,7 +1,6 @@
 import { button, levaStore, useControls } from 'leva'
 import { MUSIC_TRACKS, type MusicTrack } from '@/audio/sounds'
 import { useDebugStore } from '@/store/debugStore'
-import type { MusicControls } from '../types'
 
 const TRACK_PATH = 'Music.track'
 const TRACKS = Object.values(MUSIC_TRACKS)
@@ -22,5 +21,5 @@ export function useMusicControls() {
       next: button((get) => stepTrack(get(TRACK_PATH), 1)),
     },
     { collapsed: true }
-  ) as MusicControls
+  )
 }

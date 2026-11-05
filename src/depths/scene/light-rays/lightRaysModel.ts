@@ -3,6 +3,7 @@ import { displayColorOf } from '@/utils/color'
 import { floatDefines } from '@/utils/glsl'
 import { mix } from '@/utils/math'
 import { randomBetween, seededRandom } from '@/utils/random'
+import { createAdditiveMaterial } from '@/utils/materials'
 import {
   RAY_COLOR,
   RAY_COUNT,
@@ -70,7 +71,7 @@ export function buildRayGeometry(): THREE.BufferGeometry {
 }
 
 export const createRayMaterial = () =>
-  new THREE.ShaderMaterial({
+  createAdditiveMaterial({
     vertexShader: LIGHT_RAYS_VERT,
     fragmentShader: LIGHT_RAYS_FRAG,
     defines: floatDefines({
@@ -80,9 +81,6 @@ export const createRayMaterial = () =>
       SHIMMER_RATE: RAY_SHIMMER_RATE,
       SWAY: RAY_SWAY,
     }),
-    transparent: true,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
     side: THREE.DoubleSide,
     uniforms: {
       uTime: { value: 0 },

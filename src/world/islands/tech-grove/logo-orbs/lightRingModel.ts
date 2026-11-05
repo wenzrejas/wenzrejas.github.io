@@ -1,4 +1,4 @@
-import * as THREE from 'three'
+import type * as THREE from 'three'
 import UV_QUAD_VERT from '@/shaders/uvQuad.vert.glsl'
 import { rand } from '@/utils/math'
 import { createAdditiveGlowMaterial } from '@/world/islands/shared/glowMaterial'

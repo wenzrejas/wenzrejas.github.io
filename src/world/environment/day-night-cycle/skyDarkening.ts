@@ -1,60 +1,48 @@
 import * as THREE from 'three'
 import { useCycleStore } from '@/store/cycleStore'
 import { mix } from '@/utils/math'
-import { BRIGHTEST_MOON, KFS, PHASES } from './dayNightKeyframes'
+import { BRIGHTEST_MOON, KEYFRAMES, PHASES } from './dayNightKeyframes'
 
-const NIGHT = KFS.find(({ t }) => t === PHASES.night)!
+const NIGHT = KEYFRAMES.find(({ time }) => time === PHASES.night)!
 
-const DARK = {
-  background: new THREE.Color(NIGHT.bg),
-  fog: new THREE.Color(NIGHT.fog),
-  hemiSky: new THREE.Color(NIGHT.hemiSky),
-  hemiGround: new THREE.Color(NIGHT.hemiGround),
-  sunColor: new THREE.Color(NIGHT.sunColor),
-  moonColor: new THREE.Color(NIGHT.moonColor),
-  oceanDeep: new THREE.Color(NIGHT.oceanDeep),
-  oceanMid: new THREE.Color(NIGHT.oceanMid),
-  foam: new THREE.Color(NIGHT.foam),
-  sparkle: new THREE.Color(NIGHT.sparkle),
-  sunDirection: new THREE.Vector3(...NIGHT.sunPos).normalize(),
-  moonDirection: new THREE.Vector3(...NIGHT.moonPos).normalize(),
-  moonPosition: new THREE.Vector3(...NIGHT.moonPos),
-}
+const NIGHT_SUN_DIRECTION = new THREE.Vector3(...NIGHT.sunPosition).normalize()
+const NIGHT_MOON_DIRECTION = new THREE.Vector3(...NIGHT.moonPosition).normalize()
+const NIGHT_MOON_POSITION = new THREE.Vector3(...NIGHT.moonPosition)
 
 export interface SkyLights {
   background: unknown
-  hemi: THREE.HemisphereLight | null
+  hemisphere: THREE.HemisphereLight | null
   sun: THREE.DirectionalLight | null
   moon: THREE.DirectionalLight | null
 }
 
-export function darkenSky(darkness: number, { background, hemi, sun, moon }: SkyLights) {
+export function darkenSky(darkness: number, { background, hemisphere, sun, moon }: SkyLights) {
   const cycle = useCycleStore.getState()
-  cycle.nightFactor = mix(cycle.nightFactor, NIGHT.moonInt / BRIGHTEST_MOON, darkness)
+  cycle.nightFactor = mix(cycle.nightFactor, NIGHT.moonIntensity / BRIGHTEST_MOON, darkness)
   cycle.fresnel = mix(cycle.fresnel, NIGHT.fresnel, darkness)
   cycle.specular = mix(cycle.specular, NIGHT.specular, darkness)
-  cycle.fogColor.lerp(DARK.fog, darkness)
-  cycle.oceanDeep.lerp(DARK.oceanDeep, darkness)
-  cycle.oceanMid.lerp(DARK.oceanMid, darkness)
-  cycle.foamColor.lerp(DARK.foam, darkness)
-  cycle.sparkleColor.lerp(DARK.sparkle, darkness)
-  cycle.oceanSunDir.lerp(DARK.sunDirection, darkness).normalize()
-  cycle.oceanMoonDir.lerp(DARK.moonDirection, darkness).normalize()
+  cycle.fogColor.lerp(NIGHT.fog, darkness)
+  cycle.oceanDeep.lerp(NIGHT.oceanDeep, darkness)
+  cycle.oceanMid.lerp(NIGHT.oceanMid, darkness)
+  cycle.foamColor.lerp(NIGHT.foam, darkness)
+  cycle.sparkleColor.lerp(NIGHT.sparkle, darkness)
+  cycle.oceanSunDirection.lerp(NIGHT_SUN_DIRECTION, darkness).normalize()
+  cycle.oceanMoonDirection.lerp(NIGHT_MOON_DIRECTION, darkness).normalize()
 
-  if (background instanceof THREE.Color) background.lerp(DARK.background, darkness)
+  if (background instanceof THREE.Color) background.lerp(NIGHT.background, darkness)
 
-  if (hemi) {
-    hemi.color.lerp(DARK.hemiSky, darkness)
-    hemi.groundColor.lerp(DARK.hemiGround, darkness)
-    hemi.intensity = mix(hemi.intensity, NIGHT.hemiInt, darkness)
+  if (hemisphere) {
+    hemisphere.color.lerp(NIGHT.hemisphereSky, darkness)
+    hemisphere.groundColor.lerp(NIGHT.hemisphereGround, darkness)
+    hemisphere.intensity = mix(hemisphere.intensity, NIGHT.hemisphereIntensity, darkness)
   }
   if (sun) {
-    sun.color.lerp(DARK.sunColor, darkness)
-    sun.intensity = mix(sun.intensity, NIGHT.sunInt, darkness)
+    sun.color.lerp(NIGHT.sunColor, darkness)
+    sun.intensity = mix(sun.intensity, NIGHT.sunIntensity, darkness)
   }
   if (moon) {
-    moon.color.lerp(DARK.moonColor, darkness)
-    moon.intensity = mix(moon.intensity, NIGHT.moonInt, darkness)
-    moon.position.lerp(DARK.moonPosition, darkness)
+    moon.color.lerp(NIGHT.moonColor, darkness)
+    moon.intensity = mix(moon.intensity, NIGHT.moonIntensity, darkness)
+    moon.position.lerp(NIGHT_MOON_POSITION, darkness)
   }
 }

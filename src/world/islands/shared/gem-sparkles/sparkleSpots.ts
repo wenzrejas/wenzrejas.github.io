@@ -63,7 +63,7 @@ function spotsOnCorners(mesh: THREE.Mesh, count: number): SparkleSpots {
   const position = mesh.geometry.getAttribute('position')
   const corners = Array.from({ length: position.count }, (_, i) =>
     new THREE.Vector3().fromBufferAttribute(position, i)
-  ).sort((a, b) => b.lengthSq() - a.lengthSq())
+  ).sort((left, right) => right.lengthSq() - left.lengthSq())
   const candidates = corners.slice(
     0,
     Math.max(count, Math.round(corners.length * CORNER_CANDIDATE_SHARE))

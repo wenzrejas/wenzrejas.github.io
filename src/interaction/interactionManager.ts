@@ -1,6 +1,6 @@
 import * as THREE from 'three'
-import { useShipStore } from '../store/shipStore'
-import { useInputStore } from '../store/inputStore'
+import { useShipStore } from '@/store/shipStore'
+import { useInputStore } from '@/store/inputStore'
 import { hullGap } from '@/world/ship/hullCollision'
 import {
   BASE_TOUCH_REACH,

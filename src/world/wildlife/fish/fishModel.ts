@@ -7,7 +7,7 @@ import BODY_FRAG_GLSL from './shaders/fishBody.frag.glsl'
 type Point = [number, number, number]
 
 interface Vertex {
-  p: Point
+  point: Point
   up: number
 }
 
@@ -40,9 +40,9 @@ export function buildFishGeometry(): THREE.BufferGeometry {
     colors.push(color.r, color.g, color.b)
   }
 
-  const bodyTri = (a: Vertex, b: Vertex, c: Vertex) => {
-    const color = (a.up + b.up + c.up) / 3 > -0.25 ? BACK_COLOR : BELLY_COLOR
-    for (const vertex of [a, b, c]) push(vertex.p, color)
+  const bodyTri = (cornerA: Vertex, cornerB: Vertex, cornerC: Vertex) => {
+    const color = (cornerA.up + cornerB.up + cornerC.up) / 3 > -0.25 ? BACK_COLOR : BELLY_COLOR
+    for (const vertex of [cornerA, cornerB, cornerC]) push(vertex.point, color)
   }
 
   const fin = (points: Point[]) => {
@@ -53,13 +53,13 @@ export function buildFishGeometry(): THREE.BufferGeometry {
     Array.from({ length: RING_SEGMENTS }, (_, k): Vertex => {
       const angle = (k / RING_SEGMENTS) * Math.PI * 2 + Math.PI / 2
       return {
-        p: [Math.cos(angle) * radius * BODY_FLATTEN, Math.sin(angle) * radius, z],
+        point: [Math.cos(angle) * radius * BODY_FLATTEN, Math.sin(angle) * radius, z],
         up: Math.sin(angle),
       }
     })
   )
-  const nose: Vertex = { p: [0, 0, NOSE_Z], up: 0 }
-  const tail: Vertex = { p: [0, 0, TAIL_Z], up: 0 }
+  const nose: Vertex = { point: [0, 0, NOSE_Z], up: 0 }
+  const tail: Vertex = { point: [0, 0, TAIL_Z], up: 0 }
 
   for (let k = 0; k < RING_SEGMENTS; k++) {
     const next = (k + 1) % RING_SEGMENTS
@@ -86,7 +86,7 @@ export function buildFishGeometry(): THREE.BufferGeometry {
   fin([
     [0, 0.115, 0.06],
     [0, 0.25, -0.06],
-    [0, 0.1, -0.16],
+    [0, 0.08, -0.16],
   ])
   fin([
     [0, -0.1, -0.02],
@@ -102,12 +102,12 @@ export function buildFishGeometry(): THREE.BufferGeometry {
     ])
   }
 
-  const geo = new THREE.BufferGeometry()
-  geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
-  geo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3))
-  addInstancedFloats(geo, ['aFade', 'aPhase'], MAX_FISH)
-  geo.computeVertexNormals()
-  return geo
+  const geometry = new THREE.BufferGeometry()
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
+  geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3))
+  addInstancedFloats(geometry, ['aFade', 'aPhase'], MAX_FISH)
+  geometry.computeVertexNormals()
+  return geometry
 }
 
 // ── Material ──────────────────────────────────────────────────────────────────

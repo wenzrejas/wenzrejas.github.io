@@ -12,7 +12,7 @@ export interface NoiseGrid {
   height: number
 }
 
-const fade = (t: number) => t * t * (3 - 2 * t)
+const fade = (share: number) => share * share * (3 - 2 * share)
 
 function latticeSpans(size: number, cells: number, shift: number) {
   const before = new Int32Array(size)

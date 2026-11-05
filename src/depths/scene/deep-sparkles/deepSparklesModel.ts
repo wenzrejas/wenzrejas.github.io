@@ -3,6 +3,7 @@ import { displayColorOf } from '@/utils/color'
 import { floatDefines } from '@/utils/glsl'
 import { mix } from '@/utils/math'
 import { pickByShare, randomBetween, seededRandom } from '@/utils/random'
+import { createAdditiveMaterial } from '@/utils/materials'
 import { DEEPEST_LEVEL, levelDepth } from '../timeline/timeline'
 import {
   SPARKLE_CORE_WHITENESS,
@@ -60,7 +61,7 @@ export function buildSparkleGeometry(): THREE.BufferGeometry {
 }
 
 export const createSparkleMaterial = () =>
-  new THREE.ShaderMaterial({
+  createAdditiveMaterial({
     vertexShader: DEEP_SPARKLES_VERT,
     fragmentShader: DEEP_SPARKLES_FRAG,
     defines: floatDefines({
@@ -75,9 +76,6 @@ export const createSparkleMaterial = () =>
       DEEP_BOOST: SPARKLE_DEEP_BOOST,
       FADE_DENSITY: SPARKLE_FADE_DENSITY,
     }),
-    transparent: true,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
     uniforms: {
       uTime: { value: 0 },
       uPixelScale: { value: 1 },

@@ -5,9 +5,10 @@ export function useFontLoaded(font: string) {
 
   useEffect(() => {
     let isCurrent = true
-    document.fonts.load(font).finally(() => {
+    const markLoaded = () => {
       if (isCurrent) setLoaded(true)
-    })
+    }
+    void document.fonts.load(font).then(markLoaded, markLoaded)
     return () => {
       isCurrent = false
     }

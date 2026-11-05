@@ -10,6 +10,7 @@ import {
 } from '@/world/islands/shared/fairWeatherPresence'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { pixelsPerUnit } from '@/utils/screen'
+import { disposeAll } from '@/utils/dispose'
 import {
   SMOKE_COLOR,
   SMOKE_DRIFT,
@@ -31,13 +32,7 @@ export default function ChimneySmoke({ islandScale }: { islandScale: number }) {
   const geometry = useMemo(() => buildSmokeGeometry(), [])
   const material = useMemo(() => createSmokeMaterial(), [])
 
-  useEffect(
-    () => () => {
-      geometry.dispose()
-      material.dispose()
-    },
-    [geometry, material]
-  )
+  useEffect(() => () => disposeAll(geometry, material), [geometry, material])
 
   useFrame(({ clock, camera, gl }, delta) => {
     const points = pointsRef.current
@@ -56,8 +51,8 @@ export default function ChimneySmoke({ islandScale }: { islandScale: number }) {
     if (!points.visible) return
 
     const { uniforms } = points.material as THREE.ShaderMaterial
-    const wind = useWindStore.getState().dir
-    const drift = SMOKE_DRIFT * islandScale * useWeatherStore.getState().windMult
+    const wind = useWindStore.getState().direction
+    const drift = SMOKE_DRIFT * islandScale * useWeatherStore.getState().windMultiplier
 
     uniforms.uTime.value = clock.getElapsedTime()
     uniforms.uSize.value = SMOKE_PUFF_SIZE * islandScale * pixelsPerUnit(camera, gl)

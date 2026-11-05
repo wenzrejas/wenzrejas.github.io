@@ -1,36 +1,32 @@
-import { useEffect, useMemo, useRef, type RefObject } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import type * as THREE from 'three'
+import { disposeAll } from '@/utils/dispose'
 import { uniformsOf } from '@/utils/meshes'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { SLIPSTREAM_HIDE_BELOW } from './constants'
 import { shipFadeUniforms } from './shipFade'
+import type { ShipSailing } from './shipSailing'
 import { buildSlipstreamGeometry, createSlipstreamMaterial } from './slipstreamModel'
 
 interface SlipstreamProps {
-  tailwindRef: RefObject<number>
+  sailing: ShipSailing
 }
 
-export default function Slipstream({ tailwindRef }: SlipstreamProps) {
+export default function Slipstream({ sailing }: SlipstreamProps) {
   const meshRef = useRef<THREE.Mesh>(null)
   const geometry = useMemo(() => buildSlipstreamGeometry(), [])
   const material = useMemo(() => createSlipstreamMaterial(), [])
 
-  useEffect(
-    () => () => {
-      geometry.dispose()
-      material.dispose()
-    },
-    [geometry, material]
-  )
+  useEffect(() => () => disposeAll(geometry, material), [geometry, material])
 
   useFrame(({ clock }) => {
     const mesh = meshRef.current
     if (!mesh) return
-    mesh.visible = tailwindRef.current > SLIPSTREAM_HIDE_BELOW
+    mesh.visible = sailing.sailFill > SLIPSTREAM_HIDE_BELOW
     const uniforms = uniformsOf(mesh)
     uniforms.uTime.value = clock.getElapsedTime()
-    uniforms.uStrength.value = tailwindRef.current * shipFadeUniforms.uShipFade.value
+    uniforms.uStrength.value = sailing.sailFill * shipFadeUniforms.uShipFade.value
   })
 
   return (

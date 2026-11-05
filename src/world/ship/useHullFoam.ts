@@ -4,11 +4,13 @@ import * as THREE from 'three'
 import { MODEL_BOW_OFFSET } from './constants'
 import { useDebugStore } from '@/store/debugStore'
 import { useCycleStore } from '@/store/cycleStore'
+import { disposeAll } from '@/utils/dispose'
 import { algaeAt, algaeUniforms } from '../wildlife/algae/algaeField'
 import { whirlpoolDip } from '../islands/timewell-depth/whirlpoolFunnel'
 import { createDistanceTexture } from '../shore/shorelineModel'
 import { foamReachAt, type HullOutline } from './hullOutline'
 import { buildHullFieldQuad, createHullFoamMaterial } from './hullFoamModel'
+import type { ShipSailing } from './shipSailing'
 
 const BOW_TURN = new THREE.Quaternion().setFromEuler(new THREE.Euler(0, MODEL_BOW_OFFSET, 0))
 
@@ -16,8 +18,7 @@ const _tilt = new THREE.Euler()
 
 export function useHullFoam(
   groupRef: RefObject<THREE.Group | null>,
-  headingRef: RefObject<number>,
-  leanRef: RefObject<THREE.Vector2>,
+  sailing: ShipSailing,
   hullOutline: HullOutline | null
 ) {
   const meshRef = useRef<THREE.Mesh>(null)
@@ -32,13 +33,7 @@ export function useHullFoam(
   )
 
   useEffect(() => () => material.dispose(), [material])
-  useEffect(
-    () => () => {
-      geometry?.dispose()
-      texture?.dispose()
-    },
-    [geometry, texture]
-  )
+  useEffect(() => () => disposeAll(geometry, texture), [geometry, texture])
 
   useFrame(({ clock }) => {
     const group = groupRef.current
@@ -50,11 +45,9 @@ export function useHullFoam(
     const cycle = useCycleStore.getState()
 
     const { x, z } = group.position
-    const lean = leanRef.current
+    const { lean, heading } = sailing
     mesh.position.set(x, tuning.foamY - whirlpoolDip(x, z), z)
-    mesh.quaternion
-      .setFromEuler(_tilt.set(lean.x, headingRef.current, lean.y, 'YXZ'))
-      .multiply(BOW_TURN)
+    mesh.quaternion.setFromEuler(_tilt.set(lean.x, heading, lean.y, 'YXZ')).multiply(BOW_TURN)
     mesh.scale.setScalar(hullOutline.modelScale)
 
     const { uniforms } = mesh.material as THREE.ShaderMaterial

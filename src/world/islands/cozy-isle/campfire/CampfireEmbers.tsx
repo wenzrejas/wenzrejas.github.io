@@ -4,6 +4,7 @@ import type * as THREE from 'three'
 import { uniformsOf } from '@/utils/meshes'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { pixelsPerUnit } from '@/utils/screen'
+import { disposeAll } from '@/utils/dispose'
 import { buildEmberGeometry, createEmberMaterial } from './campfireModel'
 import {
   EMBER_DRIFT,
@@ -37,13 +38,7 @@ export default function CampfireEmbers({
   const geometry = useMemo(() => buildEmberGeometry(width, height), [width, height])
   const material = useMemo(() => createEmberMaterial(), [])
 
-  useEffect(
-    () => () => {
-      geometry.dispose()
-      material.dispose()
-    },
-    [geometry, material]
-  )
+  useEffect(() => () => disposeAll(geometry, material), [geometry, material])
 
   useFrame(({ clock, camera, gl }) => {
     const points = pointsRef.current

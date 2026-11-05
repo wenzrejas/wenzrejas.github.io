@@ -18,13 +18,13 @@ varying float vCrest;
 void main() {
   vec3 spot = instanceMatrix[3].xyz;
   vec3 wave = waveSines(spot.xz) * shoreCalm(spot.xz);
-  vec2 slope = wave.yz * uWaveAmp * WAVE_TILT * aAfloat;
+  vec2 slope = wave.yz * uWaveAmplitude * WAVE_TILT * aAfloat;
 
   vec4 world = instanceMatrix * vec4(position, 1.0);
   vec3 reach = world.xyz - spot;
   world.x -= slope.x * reach.y;
   world.z -= slope.y * reach.y;
-  world.y += slope.x * reach.x + slope.y * reach.z + wave.x * uWaveAmp * aAfloat;
+  world.y += slope.x * reach.x + slope.y * reach.z + wave.x * uWaveAmplitude * aAfloat;
 
   vShape = shape;
   vAround = position.xz;

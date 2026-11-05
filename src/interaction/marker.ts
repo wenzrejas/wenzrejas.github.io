@@ -1,7 +1,7 @@
 import * as THREE from 'three'
-import { mix } from '../utils/math'
-import { boundsIn, meshesOf } from '../utils/meshes'
-import { MAX_FRAME_SECONDS } from '../utils/time'
+import { mix } from '@/utils/math'
+import { boundsIn, meshesOf } from '@/utils/meshes'
+import { MAX_FRAME_SECONDS } from '@/utils/time'
 import {
   HOVER_SNAP_GAP,
   MARKER_FADE_RATE,

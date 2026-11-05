@@ -20,7 +20,7 @@ void main() {
   float threshold = mix(FOAM_SPARSE, FOAM_DENSE, fromBank * fromBank);
 #endif
 
-  float tone    = mix(TONE_BASE, TONE_PEAK, fromBank * fromBank * fromBank) * uMidPos;
+  float tone    = mix(TONE_BASE, TONE_PEAK, fromBank * fromBank * fromBank) * uMidPosition;
   vec4  surface = oceanSurface(tone, vWorldNormal, vWorldPosition);
   gl_FragColor  = vec4(mix(surface.rgb, uFoamColor, step(threshold, cells) * FOAM_STRENGTH), 1.0);
 }

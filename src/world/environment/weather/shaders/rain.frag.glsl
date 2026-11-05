@@ -1,8 +1,8 @@
 uniform float uIntensity;
 uniform vec3  uColor;
 
-varying float vV;
-varying float vU;
+varying float vAlong;
+varying float vAcross;
 varying float vDistFade;
 
 void main() {
@@ -11,11 +11,11 @@ void main() {
   float lum  = dot(uColor, vec3(0.299, 0.587, 0.114));
   vec3  base = uColor * max(1.0, 0.14 / max(lum, 0.001));
 
-  vec3 color = mix(min(base * 1.2, vec3(1.0)), base, vV);
+  vec3 color = mix(min(base * 1.2, vec3(1.0)), base, vAlong);
 
-  float fade  = 1.0 - smoothstep(0.0, 1.0, vV * vV);
+  float fade  = 1.0 - smoothstep(0.0, 1.0, vAlong * vAlong);
 
-  float across    = vU * 2.0;
+  float across    = vAcross * 2.0;
   float widthBlur = exp(-across * across * 2.8);
 
   float alpha = fade * vDistFade * uIntensity * 0.30 * widthBlur;

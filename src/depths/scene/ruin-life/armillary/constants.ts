@@ -4,7 +4,7 @@ import type { GemHaloTuning } from '@/world/islands/shared/gem-halo/gemHaloModel
 export const ORB_PULSE = 0.3
 export const ORB_PULSE_RATE = 0.7
 
-// ── Rings (radians per second around each ring's local axis) ──────────────────
+// ── Rings ─────────────────────────────────────────────────────────────────────
 export const RING_ROLE = 'armillary_ring'
 export const RING_TURNS: Record<string, { axis: [number, number, number]; rate: number }> = {
   Armillary_Ring_EastWest: { axis: [0, 1, 0], rate: -0.12 },

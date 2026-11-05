@@ -1,5 +1,5 @@
-import { useRef, forwardRef } from 'react'
-import * as THREE from 'three'
+import { useRef, type RefObject } from 'react'
+import type * as THREE from 'three'
 import CheckpointRuns from '@/minigames/checkpoint-run/CheckpointRuns'
 import BottleField from '@/minigames/message-in-a-bottle/BottleField'
 import NightEvents from '@/minigames/night-events/NightEvents'
@@ -23,8 +23,11 @@ import Algae from './wildlife/algae/Algae'
 import Turtles from './wildlife/turtles/Turtles'
 import Whale from './wildlife/whale/Whale'
 
-const World = forwardRef<THREE.Group>((_props, forwardedRef) => {
-  const shipRef = useRef<THREE.Group>(null)
+interface WorldProps {
+  shipRef: RefObject<THREE.Group | null>
+}
+
+export default function World({ shipRef }: WorldProps) {
   const hullOutlineRef = useRef<HullOutline | null>(null)
 
   return (
@@ -33,14 +36,7 @@ const World = forwardRef<THREE.Group>((_props, forwardedRef) => {
       <Islands />
       <Ocean />
       <ShoreRipples />
-      <Ship
-        ref={(el) => {
-          ;(shipRef as React.MutableRefObject<THREE.Group | null>).current = el
-          if (typeof forwardedRef === 'function') forwardedRef(el)
-          else if (forwardedRef) forwardedRef.current = el
-        }}
-        hullOutlineRef={hullOutlineRef}
-      />
+      <Ship shipRef={shipRef} hullOutlineRef={hullOutlineRef} />
       <IslandReveal shipRef={shipRef} />
       <HullRipples shipRef={shipRef} hullOutlineRef={hullOutlineRef} />
       <WakeTrail shipRef={shipRef} />
@@ -59,7 +55,4 @@ const World = forwardRef<THREE.Group>((_props, forwardedRef) => {
       <CheckpointRuns />
     </>
   )
-})
-
-World.displayName = 'World'
-export default World
+}

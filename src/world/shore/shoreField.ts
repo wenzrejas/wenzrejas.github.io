@@ -162,20 +162,27 @@ function overhangFootprints(
 ): number[] {
   const footprints: number[] = []
   for (let first = 0; first < triangles.length; first += 9) {
-    const ax = triangles[first]
-    const az = triangles[first + 2]
-    const bx = triangles[first + 3]
-    const bz = triangles[first + 5]
-    const cx = triangles[first + 6]
-    const cz = triangles[first + 8]
+    const cornerAX = triangles[first]
+    const cornerAZ = triangles[first + 2]
+    const cornerBX = triangles[first + 3]
+    const cornerBZ = triangles[first + 5]
+    const cornerCX = triangles[first + 6]
+    const cornerCZ = triangles[first + 8]
     const isAboveWater =
       triangles[first + 1] > waterY &&
       triangles[first + 4] > waterY &&
       triangles[first + 7] > waterY
-    if (!isAboveWater || !isOverOpenWater(shoreline, (ax + bx + cx) / 3, (az + bz + cz) / 3)) {
+    if (
+      !isAboveWater ||
+      !isOverOpenWater(
+        shoreline,
+        (cornerAX + cornerBX + cornerCX) / 3,
+        (cornerAZ + cornerBZ + cornerCZ) / 3
+      )
+    ) {
       continue
     }
-    footprints.push(ax, az, bx, bz, cx, cz)
+    footprints.push(cornerAX, cornerAZ, cornerBX, cornerBZ, cornerCX, cornerCZ)
   }
   return footprints
 }
@@ -235,25 +242,26 @@ function markOutline(gridSegments: Float64Array, resolution: number): Uint8Array
 function fillFootprints(gridFootprints: Float64Array, outline: Uint8Array, resolution: number) {
   const last = resolution - 1
   for (let i = 0; i < gridFootprints.length; i += 6) {
-    const ax = gridFootprints[i]
-    const az = gridFootprints[i + 1]
-    const bx = gridFootprints[i + 2]
-    const bz = gridFootprints[i + 3]
-    const cx = gridFootprints[i + 4]
-    const cz = gridFootprints[i + 5]
-    const area = (bx - ax) * (cz - az) - (bz - az) * (cx - ax)
+    const cornerAX = gridFootprints[i]
+    const cornerAZ = gridFootprints[i + 1]
+    const cornerBX = gridFootprints[i + 2]
+    const cornerBZ = gridFootprints[i + 3]
+    const cornerCX = gridFootprints[i + 4]
+    const cornerCZ = gridFootprints[i + 5]
+    const area =
+      (cornerBX - cornerAX) * (cornerCZ - cornerAZ) - (cornerBZ - cornerAZ) * (cornerCX - cornerAX)
     if (area === 0) continue
 
-    const firstColumn = clamp(Math.floor(Math.min(ax, bx, cx)), 0, last)
-    const lastColumn = clamp(Math.floor(Math.max(ax, bx, cx)), 0, last)
-    const firstRow = clamp(Math.floor(Math.min(az, bz, cz)), 0, last)
-    const lastRow = clamp(Math.floor(Math.max(az, bz, cz)), 0, last)
+    const firstColumn = clamp(Math.floor(Math.min(cornerAX, cornerBX, cornerCX)), 0, last)
+    const lastColumn = clamp(Math.floor(Math.max(cornerAX, cornerBX, cornerCX)), 0, last)
+    const firstRow = clamp(Math.floor(Math.min(cornerAZ, cornerBZ, cornerCZ)), 0, last)
+    const lastRow = clamp(Math.floor(Math.max(cornerAZ, cornerBZ, cornerCZ)), 0, last)
     for (let row = firstRow; row <= lastRow; row++) {
       for (let column = firstColumn; column <= lastColumn; column++) {
         const x = column + 0.5
         const z = row + 0.5
-        const towardA = ((bx - x) * (cz - z) - (bz - z) * (cx - x)) / area
-        const towardB = ((cx - x) * (az - z) - (cz - z) * (ax - x)) / area
+        const towardA = ((cornerBX - x) * (cornerCZ - z) - (cornerBZ - z) * (cornerCX - x)) / area
+        const towardB = ((cornerCX - x) * (cornerAZ - z) - (cornerCZ - z) * (cornerAX - x)) / area
         if (towardA >= 0 && towardB >= 0 && towardA + towardB <= 1) {
           outline[row * resolution + column] = 1
         }

@@ -5,9 +5,9 @@ interface CycleState {
   fogColor: THREE.Color
   oceanDeep: THREE.Color
   oceanMid: THREE.Color
-  oceanSunDir: THREE.Vector3
+  oceanSunDirection: THREE.Vector3
   clockSunHeight: number
-  oceanMoonDir: THREE.Vector3
+  oceanMoonDirection: THREE.Vector3
   foamColor: THREE.Color
   sparkleColor: THREE.Color
   nightFactor: number
@@ -22,9 +22,9 @@ export const useCycleStore = create<CycleState>(() => ({
   fogColor: new THREE.Color('#c8dff0'),
   oceanDeep: new THREE.Color('#27a3d8'),
   oceanMid: new THREE.Color('#59c0e8'),
-  oceanSunDir: INITIAL_SUN_DIRECTION.clone(),
+  oceanSunDirection: INITIAL_SUN_DIRECTION.clone(),
   clockSunHeight: INITIAL_SUN_DIRECTION.y,
-  oceanMoonDir: new THREE.Vector3(5, 80, 5).normalize(),
+  oceanMoonDirection: new THREE.Vector3(5, 80, 5).normalize(),
   foamColor: new THREE.Color('#ffffff'),
   sparkleColor: new THREE.Color('#fff1d0'),
   nightFactor: 0,

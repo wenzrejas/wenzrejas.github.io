@@ -19,7 +19,7 @@ export const STAR_POSITIONS = DIAL_STARS.map(([time, reach]) => wheelPosition(ti
 const skyStops = DIAL_SKY.map(([phase, color]) => ({
   percent: (1 - PHASES[phase]) * 100,
   color,
-})).sort((a, b) => a.percent - b.percent)
+})).sort((left, right) => left.percent - right.percent)
 const wrapStop = { percent: 0, color: skyStops[skyStops.length - 1].color }
 
 export const DIAL_SKY_GRADIENT = `conic-gradient(from 90deg, ${[wrapStop, ...skyStops]

@@ -12,6 +12,7 @@ import type {
   SparkleGem,
 } from '@/world/islands/shared/gem-sparkles/sparkleSpots'
 import { RUIN_LIFE_FRAME_PRIORITY } from '@/depths/scene/constants'
+import { disposeAll } from '@/utils/dispose'
 import { flashGlints } from './glintFlash'
 
 interface RuinGlintsProps {
@@ -25,13 +26,7 @@ export default function RuinGlints({ gem, tuning, clock, glow }: RuinGlintsProps
   const geometry = useMemo(() => buildSparkleGeometry(gem.sparkleSpots, tuning), [gem, tuning])
   const material = useMemo(() => createSparkleMaterial(gem.color, tuning), [gem, tuning])
 
-  useEffect(
-    () => () => {
-      geometry.dispose()
-      material.dispose()
-    },
-    [geometry, material]
-  )
+  useEffect(() => () => disposeAll(geometry, material), [geometry, material])
 
   useFrame(
     ({ camera, gl, size }) =>

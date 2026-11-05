@@ -9,7 +9,7 @@ import { nightGlow } from '@/world/islands/shared/nightGlow'
 import {
   BEAM_LENGTH,
   BEAM_STRENGTH,
-  BEAM_TILT_DEG,
+  BEAM_TILT_DEGREES,
   HALO_SIZE,
   HEADLIGHT_VISIBLE_LEVEL,
   POOL_HEIGHT,
@@ -27,7 +27,7 @@ import {
   createPoolMaterial,
 } from './headlightModel'
 
-const BEAM_TILT = THREE.MathUtils.degToRad(BEAM_TILT_DEG)
+const BEAM_TILT = THREE.MathUtils.degToRad(BEAM_TILT_DEGREES)
 
 interface HeadlightProps {
   lamps: Lamps

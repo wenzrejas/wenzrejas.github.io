@@ -1,11 +1,11 @@
 import { useEffect } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import { isRaceOnScreen, useCheckpointStore } from '../store/checkpointStore'
-import { isCinematicPlaying } from '../store/cinematicStore'
-import { isIntroductionPending } from '../store/guideStore'
-import { isPanelOpen } from '../store/panelStore'
-import { isRevealPlaying } from '../store/revealStore'
-import { isWorldInView } from '../store/viewStore'
+import { isRaceOnScreen, useCheckpointStore } from '@/store/checkpointStore'
+import { isCinematicPlaying } from '@/store/cinematicStore'
+import { isIntroductionPending } from '@/store/guideStore'
+import { isPanelOpen } from '@/store/panelStore'
+import { isRevealPlaying } from '@/store/revealStore'
+import { isWorldInView } from '@/store/viewStore'
 import { interactions } from './interactionManager'
 
 export default function InteractionLayer() {

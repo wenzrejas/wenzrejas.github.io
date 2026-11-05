@@ -4,6 +4,7 @@ import type * as THREE from 'three'
 import { uniformsOf } from '@/utils/meshes'
 import { MAX_FRAME_SECONDS } from '@/utils/time'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
+import { disposeAll } from '@/utils/dispose'
 import { SPARKLE_VISIBLE_LEVEL } from './constants'
 import { respawnSparkles, type SparkleField } from './sparkleField'
 import { buildSparkleGeometry, createSparkleMaterial } from './sparkleFieldModel'
@@ -20,13 +21,7 @@ export default function OceanSparkles({ shipRef, field, intensityOf, color }: Oc
   const geometry = useMemo(() => buildSparkleGeometry(field), [field])
   const material = useMemo(() => createSparkleMaterial(field, color), [field, color])
 
-  useEffect(
-    () => () => {
-      geometry.dispose()
-      material.dispose()
-    },
-    [geometry, material]
-  )
+  useEffect(() => () => disposeAll(geometry, material), [geometry, material])
 
   useFrame((_, delta) => {
     const points = pointsRef.current

@@ -1,4 +1,4 @@
-// ── Traced from the panel reference ───────────────────────────────────────────
+// ── Sheet outline ─────────────────────────────────────────────────────────────
 export const TRACED_SHEET_WIDTH = 639.2
 export const TRACED_SHEET_HEIGHT = 633.3
 

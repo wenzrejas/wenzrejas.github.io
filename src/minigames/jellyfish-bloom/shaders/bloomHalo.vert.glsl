@@ -12,7 +12,7 @@ varying float vGlow;
 void main() {
   float radius = bellRadius * uScale;
   float ride = waveRideAt(origin.xz);
-  float height = origin.y + radius * HALO_LIFT + ride * uWaveAmp;
+  float height = origin.y + radius * HALO_LIFT + ride * uWaveAmplitude;
   vec4 viewPosition = viewMatrix * vec4(origin.x, height, origin.z, 1.0);
   viewPosition.xy += position.xy * radius * HALO_SIZE;
   vUv = uv;

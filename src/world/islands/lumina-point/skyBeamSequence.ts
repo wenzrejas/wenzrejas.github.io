@@ -54,7 +54,7 @@ export interface SkyBeamAnchor {
   origin: THREE.Vector3
 }
 
-interface SkyBeamStage {
+export interface SkyBeamStage {
   sparks: number
   charge: number
   motes: number
@@ -177,8 +177,8 @@ export function beginSkyBeam(run: SkyBeamRun, anchor: THREE.Object3D) {
   cinematic.focusZoom = FOCUS_ZOOM
   cinematic.isPlaying = true
   requestClearSkies()
-  audio.preload('skyBeamCharge')
-  audio.preload('skyBeamShoot')
+  void audio.preload('skyBeamCharge')
+  void audio.preload('skyBeamShoot')
   run.restoreMusic = audio.silenceMusic(DARKEN_SECONDS)
 }
 

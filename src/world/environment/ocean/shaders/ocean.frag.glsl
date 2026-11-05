@@ -1,4 +1,6 @@
 #include "./oceanSurface.glsl"
+#include "/shaders/quinticNoise.glsl"
+#include "/shaders/smoothMin.glsl"
 
 uniform float uTime;
 uniform float uScale;
@@ -18,51 +20,32 @@ varying vec3  vPos;
 varying vec3  vNormal;
 varying float vWaveHeight;
 
-vec2 hash2(vec2 p) {
-  p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
-  return fract(sin(p) * 43758.5453);
-}
-
-float smin(float a, float b, float k) {
-  float h = max(k - abs(a - b), 0.0) / k;
-  return min(a, b) - h * h * h * k / 6.0;
+vec2 hash2(vec2 point) {
+  point = vec2(dot(point, vec2(127.1, 311.7)), dot(point, vec2(269.5, 183.3)));
+  return fract(sin(point) * 43758.5453);
 }
 
 vec2 cellPt(vec2 seed) {
   return 0.5 + 0.5 * sin(uTime * uCellSpeed + 6.2831 * seed);
 }
 
-vec2 voronoiEdge(vec2 p) {
-  vec2 i = floor(p), f = p - i;
-  float md = 8.0, res = 8.0;
+vec2 voronoiEdge(vec2 point) {
+  vec2 i = floor(point), f = point - i;
+  float nearest = 8.0, blended = 8.0;
   for (int y = -1; y <= 1; y++)
     for (int x = -1; x <= 1; x++) {
-      vec2  n = vec2(float(x), float(y));
-      float d = length(n + cellPt(hash2(i + n)) - f);
-      md  = min(md, d);
-      res = smin(res, d, uSmoothness);
+      vec2  neighbour = vec2(float(x), float(y));
+      float cellGap = length(neighbour + cellPt(hash2(i + neighbour)) - f);
+      nearest  = min(nearest, cellGap);
+      blended = smin(blended, cellGap, uSmoothness);
     }
-  return vec2(md, res);
+  return vec2(nearest, blended);
 }
 
-float nHash(vec2 p) {
-  p = fract(p * vec2(127.1, 311.7));
-  p += dot(p, p + 45.32);
-  return fract(p.x * p.y);
-}
-float vnoise(vec2 p) {
-  vec2 i = floor(p), f = fract(p);
-  f = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
-  return mix(
-    mix(nHash(i),                  nHash(i + vec2(1.0, 0.0)), f.x),
-    mix(nHash(i + vec2(0.0, 1.0)), nHash(i + vec2(1.0, 1.0)), f.x),
-    f.y
-  );
-}
-float fbm(vec2 p) {
-  float v = 0.0, a = 0.5;
-  for (int i = 0; i < 2; i++) { v += a * vnoise(p); p *= 2.0; a *= 0.5; }
-  return v;
+float fbm(vec2 point) {
+  float value = 0.0, amplitude = 0.5;
+  for (int i = 0; i < 2; i++) { value += amplitude * vnoise(point); point *= 2.0; amplitude *= 0.5; }
+  return value;
 }
 
 void main() {
@@ -78,8 +61,8 @@ void main() {
   vec2  vor  = voronoiEdge(uv);
   float edge = vor.x - vor.y;
 
-  float t = oceanTone(edge);
-  vec4 surface = oceanSurface(t, vNormal, vPos);
+  float tone = oceanTone(edge);
+  vec4 surface = oceanSurface(tone, vNormal, vPos);
   vec3 color = surface.rgb;
 
   float crestFactor = smoothstep(0.1, 0.72, vWaveHeight);

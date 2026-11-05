@@ -1,7 +1,7 @@
 uniform sampler2D uCellMap;
 
-float cellDistance(vec2 p) {
-  return texture2D(uCellMap, p / CELL_TEXTURE_CELLS).r * CELL_TEXTURE_RANGE;
+float cellDistance(vec2 point) {
+  return texture2D(uCellMap, point / CELL_TEXTURE_CELLS).r * CELL_TEXTURE_RANGE;
 }
 
 float foamCells(vec2 uv, vec2 flow, float seed) {

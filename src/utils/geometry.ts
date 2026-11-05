@@ -9,6 +9,46 @@ export function mergeParts(parts: THREE.BufferGeometry[]) {
 
 export const buildFlatQuad = () => new THREE.PlaneGeometry(1, 1).rotateX(-Math.PI / 2)
 
+export function buildBeamCone(
+  lensRadius: number,
+  beamLength: number,
+  segments: number,
+  spreadDegrees: number
+): THREE.CylinderGeometry {
+  const startRadius = lensRadius / beamLength
+  const halfSpread = THREE.MathUtils.degToRad(spreadDegrees) / 2
+  const geometry = new THREE.CylinderGeometry(
+    startRadius,
+    startRadius + Math.tan(halfSpread),
+    1,
+    segments,
+    1,
+    true
+  )
+  geometry.rotateZ(Math.PI / 2)
+  geometry.translate(0.5, 0, 0)
+  return geometry
+}
+
+export type TrianglePoint = [number, number, number]
+
+export function createTriangleSoup() {
+  const positions: number[] = []
+  const colors: number[] = []
+  const addTriangle = (
+    color: THREE.Color,
+    cornerA: TrianglePoint,
+    cornerB: TrianglePoint,
+    cornerC: TrianglePoint
+  ) => {
+    for (const corner of [cornerA, cornerB, cornerC]) {
+      positions.push(...corner)
+      colors.push(color.r, color.g, color.b)
+    }
+  }
+  return { positions, colors, addTriangle }
+}
+
 export const dynamicInstancedAttribute = (count: number, itemSize = 1) =>
   new THREE.InstancedBufferAttribute(new Float32Array(count * itemSize), itemSize).setUsage(
     THREE.DynamicDrawUsage

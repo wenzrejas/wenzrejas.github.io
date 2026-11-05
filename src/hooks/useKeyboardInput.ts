@@ -11,17 +11,25 @@ export function useKeyboardInput(): React.RefObject<Keys> {
   const keys = useRef<Keys>({ forward: false, backward: false, left: false, right: false })
 
   useEffect(() => {
-    const down = (e: KeyboardEvent) => {
-      if (e.key === 'w' || e.key === 'W' || e.key === 'ArrowUp') keys.current.forward = true
-      if (e.key === 's' || e.key === 'S' || e.key === 'ArrowDown') keys.current.backward = true
-      if (e.key === 'a' || e.key === 'A' || e.key === 'ArrowLeft') keys.current.left = true
-      if (e.key === 'd' || e.key === 'D' || e.key === 'ArrowRight') keys.current.right = true
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'w' || event.key === 'W' || event.key === 'ArrowUp')
+        keys.current.forward = true
+      if (event.key === 's' || event.key === 'S' || event.key === 'ArrowDown')
+        keys.current.backward = true
+      if (event.key === 'a' || event.key === 'A' || event.key === 'ArrowLeft')
+        keys.current.left = true
+      if (event.key === 'd' || event.key === 'D' || event.key === 'ArrowRight')
+        keys.current.right = true
     }
-    const up = (e: KeyboardEvent) => {
-      if (e.key === 'w' || e.key === 'W' || e.key === 'ArrowUp') keys.current.forward = false
-      if (e.key === 's' || e.key === 'S' || e.key === 'ArrowDown') keys.current.backward = false
-      if (e.key === 'a' || e.key === 'A' || e.key === 'ArrowLeft') keys.current.left = false
-      if (e.key === 'd' || e.key === 'D' || e.key === 'ArrowRight') keys.current.right = false
+    const onKeyUp = (event: KeyboardEvent) => {
+      if (event.key === 'w' || event.key === 'W' || event.key === 'ArrowUp')
+        keys.current.forward = false
+      if (event.key === 's' || event.key === 'S' || event.key === 'ArrowDown')
+        keys.current.backward = false
+      if (event.key === 'a' || event.key === 'A' || event.key === 'ArrowLeft')
+        keys.current.left = false
+      if (event.key === 'd' || event.key === 'D' || event.key === 'ArrowRight')
+        keys.current.right = false
     }
     const release = () => {
       keys.current.forward = false
@@ -32,13 +40,13 @@ export function useKeyboardInput(): React.RefObject<Keys> {
     const releaseWhenHidden = () => {
       if (document.hidden) release()
     }
-    window.addEventListener('keydown', down)
-    window.addEventListener('keyup', up)
+    window.addEventListener('keydown', onKeyDown)
+    window.addEventListener('keyup', onKeyUp)
     window.addEventListener('blur', release)
     document.addEventListener('visibilitychange', releaseWhenHidden)
     return () => {
-      window.removeEventListener('keydown', down)
-      window.removeEventListener('keyup', up)
+      window.removeEventListener('keydown', onKeyDown)
+      window.removeEventListener('keyup', onKeyUp)
       window.removeEventListener('blur', release)
       document.removeEventListener('visibilitychange', releaseWhenHidden)
     }

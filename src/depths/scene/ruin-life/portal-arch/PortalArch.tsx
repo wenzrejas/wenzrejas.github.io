@@ -2,6 +2,7 @@ import { useEffect, useMemo } from 'react'
 import { createPortal, useFrame } from '@react-three/fiber'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { RUIN_LIFE_FRAME_PRIORITY } from '@/depths/scene/constants'
+import { disposeAll } from '@/utils/dispose'
 import type { MilestoneProps } from '../shared/milestone'
 import RuinGlints from '../shared/RuinGlints'
 import RuinHalo from '../shared/RuinHalo'
@@ -16,13 +17,7 @@ export default function PortalArch({ ruin, level, timeline, clock }: MilestonePr
   const material = useMemo(() => createRingGlowMaterial(), [])
   const strength = () => wakeStrength(wakeShare(timeline, level))
 
-  useEffect(
-    () => () => {
-      geometry.dispose()
-      material.dispose()
-    },
-    [geometry, material]
-  )
+  useEffect(() => () => disposeAll(geometry, material), [geometry, material])
 
   useFrame(() => {
     const wake = wakeShare(timeline, level)

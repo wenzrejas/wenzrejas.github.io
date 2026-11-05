@@ -1,16 +1,20 @@
-interface KF {
-  t: number
-  bg: string
+import * as THREE from 'three'
+
+type Position = [number, number, number]
+
+interface RawKeyframe {
+  time: number
+  background: string
   fog: string
-  hemiSky: string
-  hemiGround: string
-  hemiInt: number
+  hemisphereSky: string
+  hemisphereGround: string
+  hemisphereIntensity: number
   sunColor: string
-  sunInt: number
-  sunPos: [number, number, number]
+  sunIntensity: number
+  sunPosition: Position
   moonColor: string
-  moonInt: number
-  moonPos: [number, number, number]
+  moonIntensity: number
+  moonPosition: Position
   oceanDeep: string
   oceanMid: string
   foam: string
@@ -19,42 +23,70 @@ interface KF {
   specular: number
 }
 
-export const KFS: KF[] = [
-  // ── pre-dawn / night ─────────────────────────────────────────────────
+interface Keyframe {
+  time: number
+  background: THREE.Color
+  fog: THREE.Color
+  hemisphereSky: THREE.Color
+  hemisphereGround: THREE.Color
+  hemisphereIntensity: number
+  sunColor: THREE.Color
+  sunIntensity: number
+  sunPosition: Position
+  moonColor: THREE.Color
+  moonIntensity: number
+  moonPosition: Position
+  oceanDeep: THREE.Color
+  oceanMid: THREE.Color
+  foam: THREE.Color
+  sparkle: THREE.Color
+  fresnel: number
+  specular: number
+}
+
+export interface KeyframeSample {
+  from: Keyframe
+  to: Keyframe
+  blend: number
+}
+
+const PRE_DAWN: RawKeyframe = {
+  time: 0.0,
+  background: '#0a0620',
+  fog: '#080515',
+  hemisphereSky: '#120830',
+  hemisphereGround: '#080415',
+  hemisphereIntensity: 0.1,
+  sunColor: '#000000',
+  sunIntensity: 0.0,
+  sunPosition: [30, -15, 20],
+  moonColor: '#8899cc',
+  moonIntensity: 1.1,
+  moonPosition: [5, 80, 5],
+  oceanDeep: '#030710',
+  oceanMid: '#060c1a',
+  foam: '#7c88bc',
+  sparkle: '#d8dcff',
+  fresnel: 0.3,
+  specular: 0.12,
+}
+
+const RAW_KEYFRAMES: RawKeyframe[] = [
+  PRE_DAWN,
+  // ── First light ─────────────────────────────────────────────────────────────
   {
-    t: 0.0,
-    bg: '#0a0620',
-    fog: '#080515',
-    hemiSky: '#120830',
-    hemiGround: '#080415',
-    hemiInt: 0.1,
-    sunColor: '#000000',
-    sunInt: 0.0,
-    sunPos: [30, -15, 20],
-    moonColor: '#8899cc',
-    moonInt: 1.1,
-    moonPos: [5, 80, 5],
-    oceanDeep: '#030710',
-    oceanMid: '#060c1a',
-    foam: '#7c88bc',
-    sparkle: '#d8dcff',
-    fresnel: 0.3,
-    specular: 0.12,
-  },
-  // ── first light ──────────────────────────────────────────────────────
-  {
-    t: 0.1,
-    bg: '#1a0800',
+    time: 0.1,
+    background: '#1a0800',
     fog: '#180700',
-    hemiSky: '#2a1000',
-    hemiGround: '#0e0600',
-    hemiInt: 0.25,
+    hemisphereSky: '#2a1000',
+    hemisphereGround: '#0e0600',
+    hemisphereIntensity: 0.25,
     sunColor: '#cc4000',
-    sunInt: 0.15,
-    sunPos: [65, 4, 22],
+    sunIntensity: 0.15,
+    sunPosition: [65, 4, 22],
     moonColor: '#8899cc',
-    moonInt: 0.18,
-    moonPos: [-28, 42, 10],
+    moonIntensity: 0.18,
+    moonPosition: [-28, 42, 10],
     oceanDeep: '#0e1e30',
     oceanMid: '#162438',
     foam: '#9a8470',
@@ -62,20 +94,20 @@ export const KFS: KF[] = [
     fresnel: 0.45,
     specular: 0.35,
   },
-  // ── sunrise / golden hour ────────────────────────────────────────────
+  // ── Sunrise ─────────────────────────────────────────────────────────────────
   {
-    t: 0.18,
-    bg: '#dea050',
+    time: 0.18,
+    background: '#dea050',
     fog: '#e8bc98',
-    hemiSky: '#e8a858',
-    hemiGround: '#382008',
-    hemiInt: 0.8,
+    hemisphereSky: '#e8a858',
+    hemisphereGround: '#382008',
+    hemisphereIntensity: 0.8,
     sunColor: '#ffd878',
-    sunInt: 0.9,
-    sunPos: [68, 22, 20],
+    sunIntensity: 0.9,
+    sunPosition: [68, 22, 20],
     moonColor: '#8899cc',
-    moonInt: 0.0,
-    moonPos: [-28, 42, 10],
+    moonIntensity: 0.0,
+    moonPosition: [-28, 42, 10],
     oceanDeep: '#2a4e6a',
     oceanMid: '#3a6882',
     foam: '#d4a860',
@@ -83,20 +115,20 @@ export const KFS: KF[] = [
     fresnel: 0.85,
     specular: 0.9,
   },
-  // ── morning ──────────────────────────────────────────────────────────
+  // ── Morning ─────────────────────────────────────────────────────────────────
   {
-    t: 0.28,
-    bg: '#6ab8dc',
+    time: 0.28,
+    background: '#6ab8dc',
     fog: '#e4dcd8',
-    hemiSky: '#88c8ee',
-    hemiGround: '#223a1a',
-    hemiInt: 0.9,
+    hemisphereSky: '#88c8ee',
+    hemisphereGround: '#223a1a',
+    hemisphereIntensity: 0.9,
     sunColor: '#ffe0a0',
-    sunInt: 1.25,
-    sunPos: [38, 58, 14],
+    sunIntensity: 1.25,
+    sunPosition: [38, 58, 14],
     moonColor: '#8899cc',
-    moonInt: 0.0,
-    moonPos: [0, 80, 5],
+    moonIntensity: 0.0,
+    moonPosition: [0, 80, 5],
     oceanDeep: '#1e8ab8',
     oceanMid: '#40aad4',
     foam: '#e8e0d0',
@@ -104,20 +136,20 @@ export const KFS: KF[] = [
     fresnel: 1.0,
     specular: 1.0,
   },
-  // ── noon ─────────────────────────────────────────────────────────────
+  // ── Noon ────────────────────────────────────────────────────────────────────
   {
-    t: 0.38,
-    bg: '#2090bc',
+    time: 0.38,
+    background: '#2090bc',
     fog: '#d8eaf8',
-    hemiSky: '#d8eeff',
-    hemiGround: '#1a3a5c',
-    hemiInt: 1.5,
+    hemisphereSky: '#d8eeff',
+    hemisphereGround: '#1a3a5c',
+    hemisphereIntensity: 1.5,
     sunColor: '#fff8e0',
-    sunInt: 2.2,
-    sunPos: [10, 100, 10],
+    sunIntensity: 2.2,
+    sunPosition: [10, 100, 10],
     moonColor: '#8899cc',
-    moonInt: 0.0,
-    moonPos: [0, 80, 5],
+    moonIntensity: 0.0,
+    moonPosition: [0, 80, 5],
     oceanDeep: '#27a3d8',
     oceanMid: '#59c0e8',
     foam: '#ffffff',
@@ -125,20 +157,20 @@ export const KFS: KF[] = [
     fresnel: 1.0,
     specular: 1.0,
   },
-  // ── afternoon ────────────────────────────────────────────────────────
+  // ── Afternoon ───────────────────────────────────────────────────────────────
   {
-    t: 0.5,
-    bg: '#2888b8',
+    time: 0.5,
+    background: '#2888b8',
     fog: '#b0d0e8',
-    hemiSky: '#a8ccee',
-    hemiGround: '#182840',
-    hemiInt: 1.0,
+    hemisphereSky: '#a8ccee',
+    hemisphereGround: '#182840',
+    hemisphereIntensity: 1.0,
     sunColor: '#ffd890',
-    sunInt: 1.3,
-    sunPos: [-42, 68, 14],
+    sunIntensity: 1.3,
+    sunPosition: [-42, 68, 14],
     moonColor: '#8899cc',
-    moonInt: 0.0,
-    moonPos: [0, 80, 5],
+    moonIntensity: 0.0,
+    moonPosition: [0, 80, 5],
     oceanDeep: '#2092c2',
     oceanMid: '#4aaee0',
     foam: '#f0f2f8',
@@ -146,20 +178,20 @@ export const KFS: KF[] = [
     fresnel: 1.0,
     specular: 1.0,
   },
-  // ── sunset / golden hour ─────────────────────────────────────────────
+  // ── Sunset ──────────────────────────────────────────────────────────────────
   {
-    t: 0.6,
-    bg: '#c07010',
+    time: 0.6,
+    background: '#c07010',
     fog: '#d8b080',
-    hemiSky: '#d08020',
-    hemiGround: '#2e1800',
-    hemiInt: 0.6,
+    hemisphereSky: '#d08020',
+    hemisphereGround: '#2e1800',
+    hemisphereIntensity: 0.6,
     sunColor: '#ffb030',
-    sunInt: 0.65,
-    sunPos: [-72, 18, 18],
+    sunIntensity: 0.65,
+    sunPosition: [-72, 18, 18],
     moonColor: '#8899cc',
-    moonInt: 0.0,
-    moonPos: [40, 30, -15],
+    moonIntensity: 0.0,
+    moonPosition: [40, 30, -15],
     oceanDeep: '#2a4060',
     oceanMid: '#3a5878',
     foam: '#d4a840',
@@ -167,20 +199,20 @@ export const KFS: KF[] = [
     fresnel: 0.9,
     specular: 0.9,
   },
-  // ── dusk / twilight ──────────────────────────────────────────────────
+  // ── Dusk / twilight ─────────────────────────────────────────────────────────
   {
-    t: 0.68,
-    bg: '#180540',
+    time: 0.68,
+    background: '#180540',
     fog: '#120430',
-    hemiSky: '#1e0a50',
-    hemiGround: '#0e0620',
-    hemiInt: 0.15,
+    hemisphereSky: '#1e0a50',
+    hemisphereGround: '#0e0620',
+    hemisphereIntensity: 0.15,
     sunColor: '#000000',
-    sunInt: 0.0,
-    sunPos: [-72, -8, 14],
+    sunIntensity: 0.0,
+    sunPosition: [-72, -8, 14],
     moonColor: '#8899cc',
-    moonInt: 0.5,
-    moonPos: [30, 35, -12],
+    moonIntensity: 0.5,
+    moonPosition: [30, 35, -12],
     oceanDeep: '#080a1a',
     oceanMid: '#0c1225',
     foam: '#8a97b8',
@@ -188,20 +220,20 @@ export const KFS: KF[] = [
     fresnel: 0.5,
     specular: 0.3,
   },
-  // ── night ────────────────────────────────────────────────────────────
+  // ── Night ───────────────────────────────────────────────────────────────────
   {
-    t: 0.76,
-    bg: '#050818',
+    time: 0.76,
+    background: '#050818',
     fog: '#040612',
-    hemiSky: '#060c1c',
-    hemiGround: '#03080e',
-    hemiInt: 0.1,
+    hemisphereSky: '#060c1c',
+    hemisphereGround: '#03080e',
+    hemisphereIntensity: 0.1,
     sunColor: '#000000',
-    sunInt: 0.0,
-    sunPos: [-40, -60, 0],
+    sunIntensity: 0.0,
+    sunPosition: [-40, -60, 0],
     moonColor: '#8899cc',
-    moonInt: 1.0,
-    moonPos: [15, 60, -8],
+    moonIntensity: 1.0,
+    moonPosition: [15, 60, -8],
     oceanDeep: '#030712',
     oceanMid: '#060a18',
     foam: '#7f8bbe',
@@ -209,20 +241,20 @@ export const KFS: KF[] = [
     fresnel: 0.3,
     specular: 0.12,
   },
-  // ── midnight ─────────────────────────────────────────────────────────
+  // ── Midnight ────────────────────────────────────────────────────────────────
   {
-    t: 0.88,
-    bg: '#020408',
+    time: 0.88,
+    background: '#020408',
     fog: '#020306',
-    hemiSky: '#04080e',
-    hemiGround: '#020406',
-    hemiInt: 0.07,
+    hemisphereSky: '#04080e',
+    hemisphereGround: '#020406',
+    hemisphereIntensity: 0.07,
     sunColor: '#000000',
-    sunInt: 0.0,
-    sunPos: [0, -80, -10],
+    sunIntensity: 0.0,
+    sunPosition: [0, -80, -10],
     moonColor: '#9aaade',
-    moonInt: 1.2,
-    moonPos: [5, 80, 5],
+    moonIntensity: 1.2,
+    moonPosition: [5, 80, 5],
     oceanDeep: '#020510',
     oceanMid: '#040816',
     foam: '#8b96c8',
@@ -230,28 +262,24 @@ export const KFS: KF[] = [
     fresnel: 0.25,
     specular: 0.08,
   },
-  // ── back to pre-dawn (seamless loop) ─────────────────────────────────
-  {
-    t: 1.0,
-    bg: '#0a0620',
-    fog: '#080515',
-    hemiSky: '#120830',
-    hemiGround: '#080415',
-    hemiInt: 0.1,
-    sunColor: '#000000',
-    sunInt: 0.0,
-    sunPos: [30, -15, 20],
-    moonColor: '#8899cc',
-    moonInt: 1.1,
-    moonPos: [5, 80, 5],
-    oceanDeep: '#030710',
-    oceanMid: '#060c1a',
-    foam: '#7c88bc',
-    sparkle: '#d8dcff',
-    fresnel: 0.3,
-    specular: 0.12,
-  },
+  { ...PRE_DAWN, time: 1 },
 ]
+
+const parseKeyframe = (raw: RawKeyframe): Keyframe => ({
+  ...raw,
+  background: new THREE.Color(raw.background),
+  fog: new THREE.Color(raw.fog),
+  hemisphereSky: new THREE.Color(raw.hemisphereSky),
+  hemisphereGround: new THREE.Color(raw.hemisphereGround),
+  sunColor: new THREE.Color(raw.sunColor),
+  moonColor: new THREE.Color(raw.moonColor),
+  oceanDeep: new THREE.Color(raw.oceanDeep),
+  oceanMid: new THREE.Color(raw.oceanMid),
+  foam: new THREE.Color(raw.foam),
+  sparkle: new THREE.Color(raw.sparkle),
+})
+
+export const KEYFRAMES = RAW_KEYFRAMES.map(parseKeyframe)
 
 export const BRIGHTEST_MOON = 1.2
 
@@ -270,16 +298,22 @@ export const PHASES = {
 
 export type PhaseName = keyof typeof PHASES
 
-export function sampleKeyframes(ct: number): { lo: KF; hi: KF; a: number } {
-  for (let i = 0; i < KFS.length - 1; i++) {
-    if (ct <= KFS[i + 1].t) {
-      const lo = KFS[i]
-      const hi = KFS[i + 1]
-      const span = hi.t - lo.t
-      return { lo, hi, a: span > 0 ? (ct - lo.t) / span : 0 }
+const _sample: KeyframeSample = { from: KEYFRAMES[0], to: KEYFRAMES[1], blend: 0 }
+
+export function sampleKeyframes(cycleTime: number): KeyframeSample {
+  for (let i = 0; i < KEYFRAMES.length - 1; i++) {
+    if (cycleTime <= KEYFRAMES[i + 1].time) {
+      const from = KEYFRAMES[i]
+      const to = KEYFRAMES[i + 1]
+      const span = to.time - from.time
+      _sample.from = from
+      _sample.to = to
+      _sample.blend = span > 0 ? (cycleTime - from.time) / span : 0
+      return _sample
     }
   }
-  const lo = KFS[KFS.length - 2]
-  const hi = KFS[KFS.length - 1]
-  return { lo, hi, a: 1 }
+  _sample.from = KEYFRAMES[KEYFRAMES.length - 2]
+  _sample.to = KEYFRAMES[KEYFRAMES.length - 1]
+  _sample.blend = 1
+  return _sample
 }

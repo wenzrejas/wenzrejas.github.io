@@ -14,7 +14,7 @@ interface Flipper {
   tip: ShapePoint
 }
 
-// ── Body (along, top, bottom; length 1, snout at +0.5) ────────────────────────
+// ── Body ──────────────────────────────────────────────────────────────────────
 export const WHALE_RING_SEGMENTS = 14
 export const WHALE_RING_ROUNDNESS = 0.85
 export const WHALE_WIDTH_SHARE = 0.42
@@ -45,7 +45,7 @@ export const WHALE_PROFILE: WhaleStation[] = [
   [-0.355, 0.021, -0.01],
 ]
 
-// ── Flukes (along, height) ────────────────────────────────────────────────────
+// ── Flukes ────────────────────────────────────────────────────────────────────
 export const WHALE_FLUKE_NOTCH: OutlinePoint = [-0.404, 0.006]
 export const WHALE_UPPER_FLUKE: FlukeLobe = {
   leading: [
@@ -78,12 +78,12 @@ export const WHALE_LOWER_FLUKE: FlukeLobe = {
   tip: [-0.5, -0.062],
 }
 
-// ── Solid fluke cross-section (shares of the chord and of the thickness) ──────
+// ── Solid fluke cross-section ─────────────────────────────────────────────────
 export const WHALE_FLUKE_RIDGE_AT = 0.35
 export const WHALE_FLUKE_LEADING_SHARE = 0.6
 export const WHALE_FLUKE_TRAILING_SHARE = 0.15
 
-// ── Pectoral flipper (across, height, along; mirrored; root inside the body) ──
+// ── Pectoral flipper ──────────────────────────────────────────────────────────
 export const WHALE_FLIPPER_ROOT_THICKNESS = 0.022
 export const WHALE_FLIPPER_TIP_THICKNESS = 0.005
 export const WHALE_FLIPPER: Flipper = {

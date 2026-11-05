@@ -2,11 +2,11 @@ import * as THREE from 'three'
 import { displayColorOf } from '@/utils/color'
 import { createAdditiveGlowMaterial } from '@/world/islands/shared/glowMaterial'
 import { AWAKEN_COLOR } from '../constants'
+import type { VORTEX_BEAM_LAYERS } from './constants'
 import {
   VORTEX_BEAM_FLOW_DENSITY,
   VORTEX_BEAM_FLOW_DEPTH,
   VORTEX_BEAM_HEIGHT,
-  VORTEX_BEAM_LAYERS,
   VORTEX_BEAM_RADIUS,
   VORTEX_BEAM_SEGMENTS,
   VORTEX_BEAM_TOP_FADE,

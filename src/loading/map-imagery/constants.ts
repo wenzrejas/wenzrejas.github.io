@@ -10,17 +10,17 @@ export const CHART_STRETCH_LIMIT = 1.3
 export const GLYPH_SHRINK = 0.72
 export const COMPASS_SHRINK = 0.66
 
-// ── Muting (lets the centre group lead) ───────────────────────────────────────
+// ── Muting ────────────────────────────────────────────────────────────────────
 export const IMAGERY_OPACITY = 0.88
 
-// ── Mist masks (pre-baked; clear share = radius of the clear core) ────────────
+// ── Mist masks ────────────────────────────────────────────────────────────────
 export const MIST_REVEAL_MASKS = [
   { url: '/images/loading/mist-reveal-1.webp', clearShare: 0.3177 },
   { url: '/images/loading/mist-reveal-2.webp', clearShare: 0.3884 },
   { url: '/images/loading/mist-reveal-3.webp', clearShare: 0.3439 },
 ]
 
-// ── Reveal windows (loading percent, from → clear) ────────────────────────────
+// ── Reveal windows ────────────────────────────────────────────────────────────
 export const MIST_REVEALS: Record<MapPieceKey, [number, number]> = {
   compass: [-22, 18],
   starCompassNorth: [6, 16],

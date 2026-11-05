@@ -3,6 +3,7 @@ import { SPARKLE_Y } from './constants'
 import { scatterAround, sparkleLife, sparkleSize, type SparkleField } from './sparkleField'
 import SPARKLE_VERT from './shaders/sparkle.vert.glsl'
 import SPARKLE_FRAG from './shaders/sparkle.frag.glsl'
+import { createAdditiveMaterial } from '@/utils/materials'
 
 export function buildSparkleGeometry(field: SparkleField): THREE.BufferGeometry {
   const positions = new Float32Array(field.count * 3)
@@ -28,12 +29,9 @@ export function buildSparkleGeometry(field: SparkleField): THREE.BufferGeometry 
 }
 
 export const createSparkleMaterial = (field: SparkleField, color: THREE.Color) =>
-  new THREE.ShaderMaterial({
+  createAdditiveMaterial({
     vertexShader: SPARKLE_VERT,
     fragmentShader: SPARKLE_FRAG,
-    transparent: true,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
     uniforms: {
       uIntensity: { value: 0 },
       uColor: { value: color },

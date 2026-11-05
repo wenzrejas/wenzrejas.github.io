@@ -36,9 +36,9 @@ export const scatterAround = (field: SparkleField, center: number) =>
   center + (Math.random() - 0.5) * field.spread * 2
 
 export function moonSparkleIntensity(): number {
-  const { moonMult } = useWeatherStore.getState()
+  const { moonMultiplier } = useWeatherStore.getState()
   const { nightFactor } = useCycleStore.getState()
-  const moonFactor = Math.max(0, (moonMult - 1) / SPARKLE_MOON_RANGE)
+  const moonFactor = Math.max(0, (moonMultiplier - 1) / SPARKLE_MOON_RANGE)
   const nightGate = clamp((nightFactor - SPARKLE_NIGHT_START) / (1 - SPARKLE_NIGHT_START), 0, 1)
   return moonFactor * nightGate
 }

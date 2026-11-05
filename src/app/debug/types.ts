@@ -6,7 +6,7 @@ import type { WeatherType } from '@/store/weatherStore'
 import type { MusicTrack } from '@/audio/sounds'
 
 export interface OceanControls {
-  waveAmp: number
+  waveAmplitude: number
   waveSpeed: number
   waterScale: number
   cellSmoothness: number
@@ -20,7 +20,7 @@ export interface OceanControls {
   distortAmount: number
   deepColor: string
   midColor: string
-  midPos: number
+  midPosition: number
   highlightColor: string
   opacity: number
   deepOpacity: number
@@ -41,12 +41,12 @@ export interface ShipControls {
   moveSpeed: number
   turnSpeed: number
   baseY: number
-  bobAmp: number
+  bobAmplitude: number
   bobSpeed: number
   tiltMax: number
   tiltSpeed: number
-  partLife: number
-  partSpeed: number
+  particleLife: number
+  particleSpeed: number
   foamReach: number
   foamY: number
 }
@@ -59,10 +59,10 @@ export interface WakeControls {
   armNear: number
   armFar: number
   armHalfWidth: number
-  minSampleDist: number
+  minSampleDistance: number
   rippleLifetime: number
   expandSpeed: number
-  spawnDist: number
+  spawnDistance: number
   halfSpread: number
   rippleDepth: number
 }

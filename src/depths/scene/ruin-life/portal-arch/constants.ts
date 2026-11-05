@@ -5,7 +5,7 @@ export const PORTAL_GLOW_MATERIAL = 'Magic | luminous cyan'
 export const PORTAL_CIRCLE_NODE = 'Portal_Summoning_Circle'
 export const PORTAL_KEYSTONE_NODE = 'Portal_Keystone_Jewel'
 
-// ── Summoning circle (radians per second) ─────────────────────────────────────
+// ── Summoning circle ──────────────────────────────────────────────────────────
 export const CIRCLE_TURN_RATE = 0.12
 
 // ── Base ring glow ────────────────────────────────────────────────────────────

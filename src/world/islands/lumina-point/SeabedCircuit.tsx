@@ -7,6 +7,7 @@ import { OCEAN_Y } from '@/world/environment/ocean/constants'
 import { SHORE_Y } from '@/world/shore/constants'
 import type { ShoreField } from '@/world/shore/shoreField'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
+import { disposeAll } from '@/utils/dispose'
 import { islandLocalY } from '../shared/islandSpec'
 import { createCircuitPower, powerCircuit } from './circuitPower'
 import { MAIN_ISLAND_NODE } from './constants'
@@ -44,10 +45,7 @@ export default function SeabedCircuit({
   const conduitMaterial = useMemo(() => createConduitMaterial(ringYellow), [ringYellow])
 
   useEffect(
-    () => () => {
-      conduitGeometry.dispose()
-      conduitMaterial.dispose()
-    },
+    () => () => disposeAll(conduitGeometry, conduitMaterial),
     [conduitGeometry, conduitMaterial]
   )
 

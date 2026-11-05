@@ -51,8 +51,8 @@ export const WANDER_RATE = 0.35
 export const FOLLOW_RATE = 1.5
 export const CATCHUP_SPEED = 10
 export const HEADING_RATE = 4
-export const TAIL_FREQ = 2.2
-export const FLEE_TAIL_FREQ = 7
+export const TAIL_FREQUENCY = 2.2
+export const FLEE_TAIL_FREQUENCY = 7
 
 // ── Depth ─────────────────────────────────────────────────────────────────────
 export const CRUISE_DEPTH_MIN = 1.5

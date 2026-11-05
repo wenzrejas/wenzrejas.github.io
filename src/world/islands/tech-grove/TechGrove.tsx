@@ -5,12 +5,11 @@ import { openPanel } from '@/store/panelStore'
 import { setHovered } from '@/interaction/hover'
 import InteractionMarker from '@/interaction/InteractionMarker'
 import type { IslandBodyProps } from '../shared/types'
+import IslandFrame from '../shared/IslandFrame'
 import { useIslandModel } from '../shared/islandModel'
 import { placeIsland } from '../shared/islandTransform'
 import { nightLampLevel } from '../shared/lighting-bake/lightingBakeLevels'
 import { useLightingBake } from '../shared/lighting-bake/useLightingBake'
-import IslandShadow from '../shared/IslandShadow'
-import Coast from '@/world/shore/Coast'
 import { useCoastFields } from '@/world/shore/useCoastFields'
 import RockSurf from '../shared/rock-surf/RockSurf'
 import {
@@ -35,7 +34,7 @@ import LogoOrbs from './logo-orbs/LogoOrbs'
 import ShrineGlow from './shrine-glow/ShrineGlow'
 
 export default function TechGrove({ islandKey, config }: IslandBodyProps) {
-  const tuning = useDebugStore((s) => s.islands.tech)
+  const tuning = useDebugStore((state) => state.islands.tech)
   const island = useIslandModel(TECH_MODEL_URL, tuning.brightness)
   const shrines = useMemo(() => findShrines(island.model), [island])
   const { orbits, orbs } = useMemo(() => arrangeOrbs(shrines.statues), [shrines])
@@ -55,17 +54,15 @@ export default function TechGrove({ islandKey, config }: IslandBodyProps) {
 
   return (
     <>
-      <IslandShadow radius={config.radius} tuning={tuning} blob={TECH_BLOB} />
-      <group {...placement}>
-        <primitive object={island.model} />
-        {coast && (
-          <Coast
-            islandKey={islandKey}
-            fields={coast}
-            islandScale={placement.scale}
-            offsetY={tuning.offsetY}
-          />
-        )}
+      <IslandFrame
+        islandKey={islandKey}
+        radius={config.radius}
+        tuning={tuning}
+        island={island}
+        placement={placement}
+        coast={coast}
+        blob={TECH_BLOB}
+      >
         <Fireflies
           islets={TECH_ISLETS}
           center={island.center}
@@ -88,7 +85,7 @@ export default function TechGrove({ islandKey, config }: IslandBodyProps) {
             baseGap={orbit.statue.baseGap}
           />
         ))}
-      </group>
+      </IslandFrame>
       {coast && (
         <RockSurf
           model={island.model}

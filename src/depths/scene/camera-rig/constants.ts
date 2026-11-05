@@ -22,7 +22,7 @@ export const PARALLAX_EASE_RATE = 2.5
 export const TOUCH_MAX_SPEED = 2
 export const TOUCH_GLIDE_DECAY = 7
 export const TOUCH_STOP_SPEED = 0.005
-export const TOUCH_RELEASE_WINDOW_MS = 100
+export const TOUCH_RELEASE_WINDOW_MILLISECONDS = 100
 export const TOUCH_MIN_SAMPLE_SECONDS = 1 / 120
 
 // ── Surfacing ─────────────────────────────────────────────────────────────────

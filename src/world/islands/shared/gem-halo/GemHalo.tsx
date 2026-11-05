@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import type * as THREE from 'three'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { pixelsPerUnit } from '@/utils/screen'
+import { disposeAll } from '@/utils/dispose'
 import {
   buildGemHaloGeometry,
   createGemHaloMaterial,
@@ -22,13 +23,7 @@ export default function GemHalo({ gems, tuning, islandScale, level }: GemHaloPro
   const geometry = useMemo(() => buildGemHaloGeometry(gems, tuning), [gems, tuning])
   const material = useMemo(() => createGemHaloMaterial(tuning), [tuning])
 
-  useEffect(
-    () => () => {
-      geometry.dispose()
-      material.dispose()
-    },
-    [geometry, material]
-  )
+  useEffect(() => () => disposeAll(geometry, material), [geometry, material])
 
   useFrame(({ camera, gl }) => {
     const halo = haloRef.current

@@ -1,22 +1,14 @@
-import { useEffect, useMemo, useRef, type RefObject } from 'react'
-import { useFrame } from '@react-three/fiber'
+import { useRef, type RefObject } from 'react'
 import type * as THREE from 'three'
 import { useDebugStore } from '@/store/debugStore'
-import { buildFlatQuad } from '@/utils/geometry'
-import { createRippleMaterial } from '@/world/effects/rippleModel'
-import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import {
   RIPPLE_MAX_GROUPS,
   RIPPLE_SPRITES_PER_GROUP,
   TOTAL_RIPPLE_SPRITES,
   WAKE_RIPPLE_Y,
 } from './constants'
-import {
-  createRippleSprites,
-  drawRippleSprites,
-  hideRippleInstances,
-  spawnWakeRipples,
-} from './rippleSprites'
+import RippleSpriteMesh from './RippleSpriteMesh'
+import { drawRippleSprites, spawnWakeRipples, type RippleSprite } from './rippleSprites'
 import { isShipHidden } from './shipFade'
 
 interface WakeRipplesProps {
@@ -24,29 +16,14 @@ interface WakeRipplesProps {
 }
 
 export default function WakeRipples({ shipRef }: WakeRipplesProps) {
-  const meshRef = useRef<THREE.InstancedMesh>(null)
-  const sprites = useRef(createRippleSprites(TOTAL_RIPPLE_SPRITES))
   const groupIndex = useRef(0)
   const lastSpawnPoint = useRef<{ x: number; z: number } | null>(null)
-  const geometry = useMemo(() => buildFlatQuad(), [])
-  const material = useMemo(() => createRippleMaterial(), [])
 
-  useEffect(() => {
-    const mesh = meshRef.current
-    if (mesh) hideRippleInstances(mesh, TOTAL_RIPPLE_SPRITES)
-    return () => {
-      geometry.dispose()
-      material.dispose()
-    }
-  }, [geometry, material])
-
-  useFrame(({ clock }) => {
+  const stepWake = (sprites: RippleSprite[], mesh: THREE.InstancedMesh, time: number) => {
     const ship = shipRef.current
-    const mesh = meshRef.current
-    if (!ship || !mesh) return
+    if (!ship) return
 
     const wake = useDebugStore.getState().wake
-    const time = clock.getElapsedTime()
     const { x, z } = ship.position
     lastSpawnPoint.current ??= { x, z }
     const lastSpawn = lastSpawnPoint.current
@@ -54,30 +31,16 @@ export default function WakeRipples({ shipRef }: WakeRipplesProps) {
     if (isShipHidden()) {
       lastSpawn.x = x
       lastSpawn.z = z
-    } else if (Math.hypot(x - lastSpawn.x, z - lastSpawn.z) >= wake.spawnDist) {
+    } else if (Math.hypot(x - lastSpawn.x, z - lastSpawn.z) >= wake.spawnDistance) {
       const slotBase = (groupIndex.current % RIPPLE_MAX_GROUPS) * RIPPLE_SPRITES_PER_GROUP
-      spawnWakeRipples(sprites.current, slotBase, time, ship, wake)
+      spawnWakeRipples(sprites, slotBase, time, ship, wake)
       groupIndex.current++
       lastSpawn.x = x
       lastSpawn.z = z
     }
 
-    drawRippleSprites(
-      sprites.current,
-      mesh,
-      time,
-      wake.rippleLifetime,
-      wake.expandSpeed,
-      WAKE_RIPPLE_Y
-    )
-  })
+    drawRippleSprites(sprites, mesh, time, wake.rippleLifetime, wake.expandSpeed, WAKE_RIPPLE_Y)
+  }
 
-  return (
-    <instancedMesh
-      ref={meshRef}
-      args={[geometry, material, TOTAL_RIPPLE_SPRITES]}
-      frustumCulled={false}
-      renderOrder={RENDER_LAYER.effects}
-    />
-  )
+  return <RippleSpriteMesh total={TOTAL_RIPPLE_SPRITES} onFrame={stepWake} />
 }

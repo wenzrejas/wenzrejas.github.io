@@ -10,7 +10,6 @@ import {
   WIND_OPACITY,
   WIND_SPEED,
 } from '@/world/environment/wind-lines/constants'
-import type { WindLineControls } from '../types'
 
 export function useWindLinesControls() {
   return useControls(
@@ -33,5 +32,5 @@ export function useWindLinesControls() {
       windOpacity: { value: WIND_OPACITY, min: 0, max: 1, step: 0.01, label: 'opacity' },
     },
     { collapsed: true }
-  ) as WindLineControls
+  )
 }

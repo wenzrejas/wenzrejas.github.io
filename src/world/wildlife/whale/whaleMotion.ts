@@ -1,10 +1,10 @@
 import * as THREE from 'three'
-import { useShipStore } from '@/store/shipStore'
+import type { ShipState } from '@/store/shipStore'
 import { rand, wrapAngle } from '@/utils/math'
 import { isOpenWater } from '@/world/islands/shared/islandZones'
 import { depthFade } from '../shared/wildlifeMaterial'
 import {
-  ACCEL,
+  ACCELERATION,
   BANK_FACTOR,
   BANK_LIMIT,
   BANK_SMOOTH,
@@ -55,14 +55,14 @@ import {
   SINK_DEPTH,
   SPAWN_LEAD_SECONDS,
   SPOUT_DROPS,
-  STROKE_FREQ_AIR,
-  STROKE_FREQ_CHARGE,
-  STROKE_FREQ_GLIDE,
+  STROKE_FREQUENCY_AIR,
+  STROKE_FREQUENCY_CHARGE,
+  STROKE_FREQUENCY_GLIDE,
   STROKE_SMOOTH,
   SURFACE_BOB,
   TURN_CURVE_GAIN,
   WAKE_FADE_DEPTH,
-  WANDER_FREQ,
+  WANDER_FREQUENCY,
   WANDER_RATE,
   WHALE_LENGTH,
 } from './constants'
@@ -101,11 +101,9 @@ export interface WhaleView {
   isInView: boolean
 }
 
-type ShipMotion = ReturnType<typeof useShipStore.getState>
-
 const _blowhole = { x: 0, z: 0 }
 const { clamp, damp, degToRad } = THREE.MathUtils
-const LAUNCH_ACCEL = (BREACH_GRAVITY * BREACH_HEIGHT) / CHARGE_DEPTH
+const LAUNCH_ACCELERATION = (BREACH_GRAVITY * BREACH_HEIGHT) / CHARGE_DEPTH
 const CROSSING_ANGLE = degToRad(CROSSING_ANGLE_DEGREES)
 
 export const isDaylight = (timeOfDay: number) =>
@@ -113,7 +111,7 @@ export const isDaylight = (timeOfDay: number) =>
 
 const isBreaching = (whale: Whale) => whale.stage === 'launch' || whale.stage === 'flight'
 
-export function createWhale(ship: ShipMotion, cameraPosition: THREE.Vector3): Whale {
+export function createWhale(ship: ShipState, cameraPosition: THREE.Vector3): Whale {
   const towardCamera = Math.atan2(cameraPosition.x - ship.x, cameraPosition.z - ship.z)
   const heading = towardCamera + Math.sign(Math.random() - 0.5) * CROSSING_ANGLE
   const lead = ship.speed * SPAWN_LEAD_SECONDS
@@ -133,7 +131,7 @@ export function createWhale(ship: ShipMotion, cameraPosition: THREE.Vector3): Wh
     roll: 0,
     turnCurve: 0,
     climbCurve: 0,
-    strokeRate: STROKE_FREQ_GLIDE,
+    strokeRate: STROKE_FREQUENCY_GLIDE,
     phase: Math.random() * Math.PI * 2,
     seed: Math.random() * 100,
     age: 0,
@@ -256,16 +254,16 @@ const cruiseSpeed = (whale: Whale) => {
 }
 
 const strokeFrequency = (whale: Whale) => {
-  if (whale.depth < 0) return STROKE_FREQ_AIR
+  if (whale.depth < 0) return STROKE_FREQUENCY_AIR
   return whale.stage === 'charge' || whale.stage === 'launch'
-    ? STROKE_FREQ_CHARGE
-    : STROKE_FREQ_GLIDE
+    ? STROKE_FREQUENCY_CHARGE
+    : STROKE_FREQUENCY_GLIDE
 }
 
 // ── Motion ────────────────────────────────────────────────────────────────────
 
 function moveVertically(whale: Whale, dt: number): void {
-  if (whale.stage === 'launch') whale.climb += LAUNCH_ACCEL * dt
+  if (whale.stage === 'launch') whale.climb += LAUNCH_ACCELERATION * dt
   else if (whale.stage === 'flight') whale.climb -= BREACH_GRAVITY * dt
   else {
     const wanted = clamp((whale.depth - targetDepth(whale)) * DEPTH_GAIN, -DIVE_RATE, RISE_RATE)
@@ -306,7 +304,7 @@ function flexBody(whale: Whale, yawRate: number, pitchRate: number, dt: number):
 
 export function updateWhale(
   whale: Whale,
-  ship: ShipMotion,
+  ship: ShipState,
   time: number,
   dt: number,
   view: WhaleView
@@ -319,10 +317,10 @@ export function updateWhale(
   const previousHeading = whale.heading
   const previousPitch = whale.pitch
   if (isCruising(whale)) {
-    whale.heading += Math.sin(time * WANDER_FREQ + whale.seed) * WANDER_RATE * dt
+    whale.heading += Math.sin(time * WANDER_FREQUENCY + whale.seed) * WANDER_RATE * dt
   }
 
-  whale.speed = damp(whale.speed, cruiseSpeed(whale), ACCEL, dt)
+  whale.speed = damp(whale.speed, cruiseSpeed(whale), ACCELERATION, dt)
   whale.x += Math.sin(whale.heading) * whale.speed * dt
   whale.z += Math.cos(whale.heading) * whale.speed * dt
   moveVertically(whale, dt)

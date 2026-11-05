@@ -13,6 +13,7 @@ import { ParticlePool } from '@/world/effects/particlePool'
 import type { HoverTimeline } from '@/world/islands/shared/hoverTimeline'
 import { nightGlow } from '@/world/islands/shared/nightGlow'
 import { BUILDSHORE_SMOKESTACK_TOP } from '@/world/islands/buildshore/shoreProfile'
+import { disposeAll } from '@/utils/dispose'
 import type { TrainMotion } from '../trainMotion'
 import { pointOnVehicle, type TrainRig } from '../trainRig'
 import {
@@ -42,13 +43,7 @@ export default function TrainSmoke({ rig, motion, hover, islandScale }: TrainSmo
   const { geometry, buffers } = useMemo(() => buildSmokeGeometry(), [])
   const material = useMemo(() => createSmokeMaterial(), [])
 
-  useEffect(
-    () => () => {
-      geometry.dispose()
-      material.dispose()
-    },
-    [geometry, material]
-  )
+  useEffect(() => () => disposeAll(geometry, material), [geometry, material])
 
   useFrame(({ camera, gl }, delta) => {
     const points = pointsRef.current
@@ -61,8 +56,8 @@ export default function TrainSmoke({ rig, motion, hover, islandScale }: TrainSmo
     advanceSmoke(pool, buffers, dt)
     markSmokeChanged(points.geometry)
 
-    const wind = useWindStore.getState().dir
-    const drift = SMOKE_DRIFT * islandScale * useWeatherStore.getState().windMult
+    const wind = useWindStore.getState().direction
+    const drift = SMOKE_DRIFT * islandScale * useWeatherStore.getState().windMultiplier
     const uniforms = uniformsOf(points)
     uniforms.uSize.value = islandScale * pixelsPerUnit(camera, gl)
     uniforms.uDrift.value.set(wind.x * drift, wind.y * drift)

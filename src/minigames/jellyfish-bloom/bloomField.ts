@@ -170,7 +170,7 @@ export function stepBloom(dt: number, time: number, camera: Camera, boost: numbe
     reach: viewReach(camera, ship.x, ship.z),
     isOn,
     isDrifting: !isMotionReduced(),
-    wind: useWindStore.getState().dir,
+    wind: useWindStore.getState().direction,
     time,
     dt,
   }

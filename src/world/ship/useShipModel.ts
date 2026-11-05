@@ -1,7 +1,7 @@
 import { useLayoutEffect, useMemo } from 'react'
 import { useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
-import { flatFootprint } from '@/utils/meshes'
+import { flatFootprint, replaceMaterials } from '@/utils/meshes'
 import { MODEL_BOW_OFFSET, SHIP_MODEL_URL } from './constants'
 import { applyCloudShadow } from '../environment/weather/cloudShadow'
 import type { GlowTarget } from '../islands/shared/nightGlow'
@@ -21,32 +21,23 @@ export function useShipModel(brightness: number) {
 
     const glows: GlowTarget[] = []
     const tints: TintTarget[] = []
-    const cache = new Map<THREE.Material, THREE.Material>()
-    const cloneMat = (m: THREE.Material): THREE.Material => {
-      const cached = cache.get(m)
-      if (cached) return cached
-      const mat = m.clone() as THREE.MeshStandardMaterial
-      applyCloudShadow(mat)
-      dressLivery(mat)
-      dressShipFade(mat)
-      writeShipMask(mat)
-      if (mat.map) {
-        mat.map.magFilter = THREE.NearestFilter
-        mat.map.minFilter = THREE.NearestMipmapNearestFilter
-        mat.map.needsUpdate = true
-      }
-      if (mat.emissive.getHex() !== 0) glows.push({ mat, base: mat.emissiveIntensity })
-      tints.push({ mat, base: mat.color.clone() })
-      cache.set(m, mat)
-      return mat
-    }
 
-    clone.traverse((obj) => {
-      const mesh = obj as THREE.Mesh
-      if (!mesh.isMesh) return
-      mesh.material = Array.isArray(mesh.material)
-        ? mesh.material.map(cloneMat)
-        : cloneMat(mesh.material)
+    replaceMaterials(clone, (source) => {
+      const material = source.clone() as THREE.MeshStandardMaterial
+      applyCloudShadow(material)
+      dressLivery(material)
+      dressShipFade(material)
+      writeShipMask(material)
+      if (material.map) {
+        material.map.magFilter = THREE.NearestFilter
+        material.map.minFilter = THREE.NearestMipmapNearestFilter
+        material.map.needsUpdate = true
+      }
+      if (material.emissive.getHex() !== 0) {
+        glows.push({ material: material, base: material.emissiveIntensity })
+      }
+      tints.push({ material: material, base: material.color.clone() })
+      return material
     })
 
     return {

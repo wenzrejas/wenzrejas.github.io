@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { floatDefines } from '@/utils/glsl'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
+import { createAdditiveMaterial } from '@/utils/materials'
 import {
   HOLOGRAM_SCAN_DENSITY,
   HOLOGRAM_SCAN_SPEED,
@@ -64,7 +65,7 @@ export function buildProjectionGeometry({
 }
 
 export const createProjectionMaterial = (shared: HologramUniforms) =>
-  new THREE.ShaderMaterial({
+  createAdditiveMaterial({
     vertexShader: PROJECTION_VERT,
     fragmentShader: PROJECTION_FRAG,
     defines: floatDefines({
@@ -72,9 +73,6 @@ export const createProjectionMaterial = (shared: HologramUniforms) =>
       SCAN_DEPTH: PROJECTION_SCAN_DEPTH,
       STRENGTH: PROJECTION_STRENGTH,
     }),
-    transparent: true,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
     side: THREE.DoubleSide,
     uniforms: { uTime: shared.uTime, uLevel: shared.projectorLevel },
   })

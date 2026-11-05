@@ -4,6 +4,7 @@ import type * as THREE from 'three'
 import { uniformsOf } from '@/utils/meshes'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { buildFlameGeometry, createFlameMaterial } from '@/world/effects/flame/flameModel'
+import { disposeAll } from '@/utils/dispose'
 import {
   FIRE_VISIBLE_LEVEL,
   FLAME_GLOW,
@@ -28,13 +29,7 @@ export default function CampfireFlames({ base, height, islandScale, flare }: Cam
   )
   const material = useMemo(() => createFlameMaterial(FLAME_GLOW), [])
 
-  useEffect(
-    () => () => {
-      geometry.dispose()
-      material.dispose()
-    },
-    [geometry, material]
-  )
+  useEffect(() => () => disposeAll(geometry, material), [geometry, material])
 
   useFrame(({ clock }) => {
     const mesh = meshRef.current

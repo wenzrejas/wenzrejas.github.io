@@ -29,7 +29,7 @@ export const TOUCH_SPOT_RADIUS = 2.5
 export const PROJECT_MARKER_HEIGHT = 0.5
 export const SHORE_RAYS_PER_SECTOR = 3
 
-// ── Hovers (seconds) ──────────────────────────────────────────────────────────
+// ── Hovers ────────────────────────────────────────────────────────────────────
 export const PROJECT_HOVER_RELEASE_SECONDS = 0.5
 export const PROJECT_HOVER_FULL_SECONDS = 6
 export const PROJECT_HOVER_GLOW_MATERIALS = [INSET_GLOW_MATERIAL, AMBER_GLOW_MATERIAL]

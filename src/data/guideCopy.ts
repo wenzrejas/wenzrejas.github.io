@@ -98,7 +98,7 @@ const WELCOME_BACK: DialoguePage[] = [
   },
 ]
 
-// ── Remarks (day and night) ───────────────────────────────────────────────────
+// ── Remarks ───────────────────────────────────────────────────────────────────
 const SUNRISE: DialoguePage[] = [
   {
     mood: 'happy',
@@ -130,7 +130,7 @@ const STARRY_NIGHT: DialoguePage[] = [
   },
 ]
 
-// ── Remarks (weather and sea) ─────────────────────────────────────────────────
+// ── Remarks ───────────────────────────────────────────────────────────────────
 const RAIN_BEGINS: DialoguePage[] = [
   {
     mood: 'surprised',
@@ -166,7 +166,7 @@ const RIDING_THE_WIND: DialoguePage[] = [
   },
 ]
 
-// ── Remarks (voyage) ──────────────────────────────────────────────────────────
+// ── Remarks ───────────────────────────────────────────────────────────────────
 const SAILING_FOR_A_WHILE: DialoguePage[] = [
   {
     mood: 'curious',
@@ -198,7 +198,7 @@ const STAYING_IDLE: DialoguePage[] = [
   },
 ]
 
-// ── Remarks (world map) ───────────────────────────────────────────────────────
+// ── Remarks ───────────────────────────────────────────────────────────────────
 const OPENED_WORLD_MAP: DialoguePage[] = [
   {
     mood: 'talking',
@@ -206,7 +206,7 @@ const OPENED_WORLD_MAP: DialoguePage[] = [
   },
 ]
 
-// ── Remarks (island reveals) ──────────────────────────────────────────────────
+// ── Remarks ───────────────────────────────────────────────────────────────────
 const REACHED_BUILDSHORE: DialoguePage[] = [
   {
     mood: 'curious',
@@ -263,7 +263,7 @@ const REACHED_COZY_ISLE: DialoguePage[] = [
   },
 ]
 
-// ── Remarks (Lumina Point) ────────────────────────────────────────────────────
+// ── Remarks ───────────────────────────────────────────────────────────────────
 const SENT_MESSAGE: DialoguePage[] = [
   {
     mood: 'excited',
@@ -275,7 +275,7 @@ const SENT_MESSAGE: DialoguePage[] = [
   },
 ]
 
-// ── Remarks (bottles) ─────────────────────────────────────────────────────────
+// ── Remarks ───────────────────────────────────────────────────────────────────
 const SPOTTED_BOTTLE: DialoguePage[] = [
   {
     mood: 'surprised',
@@ -317,7 +317,7 @@ const LAST_BOTTLE_WASHED_UP: DialoguePage[] = [
   },
 ]
 
-// ── Remarks (Regatta) ─────────────────────────────────────────────────────────
+// ── Remarks ───────────────────────────────────────────────────────────────────
 const SPOTTED_RACE_BUOY: DialoguePage[] = [
   {
     mood: 'surprised',
@@ -383,7 +383,7 @@ const LANDED_AT_THE_CLOCK: DialoguePage[] = [
   },
 ]
 
-// ── Promotions (achievement ranks) ────────────────────────────────────────────
+// ── Promotions ────────────────────────────────────────────────────────────────
 const PROMOTED_TO_DECKHAND: DialoguePage[] = [
   {
     mood: 'achievement',

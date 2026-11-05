@@ -1,6 +1,7 @@
-import { useWeatherStore } from '../store/weatherStore'
-import { rand } from '../utils/math'
-import { audio, type SoundHandle } from './audioManager'
+import { useWeatherStore } from '@/store/weatherStore'
+import { rand } from '@/utils/math'
+import { audio } from './audioManager'
+import type { SoundHandle } from './soundHandle'
 import {
   DEFAULT_FADE,
   RAIN_CUTOFF,

@@ -5,12 +5,13 @@ import { animated, useSpring } from '@react-spring/web'
 import * as THREE from 'three'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { audio } from '@/audio/audioManager'
-import { isRaceOnScreen, useCheckpointStore } from '../store/checkpointStore'
-import { useIsTouchInput } from '../store/inputStore'
-import { isPanelOpen } from '../store/panelStore'
-import { isRevealPlaying } from '../store/revealStore'
-import { isWorldScene, useViewStore } from '../store/viewStore'
-import { uniformsOf } from '../utils/meshes'
+import { disposeAll } from '@/utils/dispose'
+import { isRaceOnScreen, useCheckpointStore } from '@/store/checkpointStore'
+import { useIsTouchInput } from '@/store/inputStore'
+import { isPanelOpen } from '@/store/panelStore'
+import { isRevealPlaying } from '@/store/revealStore'
+import { isWorldScene, useViewStore } from '@/store/viewStore'
+import { uniformsOf } from '@/utils/meshes'
 import {
   INTERACTION_LAYER,
   MARKER_COLOR,
@@ -89,13 +90,7 @@ export default function InteractionMarker({
     config: MARKER_LABEL_SPRING,
   })
 
-  useEffect(
-    () => () => {
-      geometry.dispose()
-      material.dispose()
-    },
-    [geometry, material]
-  )
+  useEffect(() => () => disposeAll(geometry, material), [geometry, material])
 
   useEffect(() => {
     const mesh = meshRef.current

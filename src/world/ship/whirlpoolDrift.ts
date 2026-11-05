@@ -18,9 +18,9 @@ export function whirlpoolCurrent(x: number, z: number, out: THREE.Vector2): THRE
   const whirlpool = useWhirlpoolStore.getState()
   if (!whirlpool.active) return out
 
-  const dx = x - whirlpool.x
-  const dz = z - whirlpool.z
-  const distance = Math.hypot(dx, dz)
+  const offsetX = x - whirlpool.x
+  const offsetZ = z - whirlpool.z
+  const distance = Math.hypot(offsetX, offsetZ)
   const share = distance / whirlpool.radius
   const grip =
     (1 - smoothstep(share, WHIRLPOOL_FULL_GRIP_SHARE, WHIRLPOOL_PULL_REACH_SHARE)) * eyeCalm(share)
@@ -28,7 +28,7 @@ export function whirlpoolCurrent(x: number, z: number, out: THREE.Vector2): THRE
 
   const swirl = (WHIRLPOOL_SWIRL_SPEED * grip) / distance
   const pull = (WHIRLPOOL_PULL_SPEED * grip) / distance
-  return out.set(swirl * dz - pull * dx, -swirl * dx - pull * dz)
+  return out.set(swirl * offsetZ - pull * offsetX, -swirl * offsetX - pull * offsetZ)
 }
 
 export function whirlpoolLean(
@@ -41,17 +41,17 @@ export function whirlpoolLean(
   const whirlpool = useWhirlpoolStore.getState()
   if (!whirlpool.active) return out
 
-  const dx = x - whirlpool.x
-  const dz = z - whirlpool.z
-  const distance = Math.hypot(dx, dz)
+  const offsetX = x - whirlpool.x
+  const offsetZ = z - whirlpool.z
+  const distance = Math.hypot(offsetX, offsetZ)
   const share = distance / whirlpool.radius
   if (share >= 1 || distance === 0) return out
 
   const slope =
     (whirlpool.depth * whirlpool.curve * (1 - share) ** (whirlpool.curve - 1)) / whirlpool.radius
   const lean = Math.atan(slope) * WHIRLPOOL_LEAN * eyeCalm(share)
-  const towardX = -dx / distance
-  const towardZ = -dz / distance
+  const towardX = -offsetX / distance
+  const towardZ = -offsetZ / distance
   const ahead = -towardX * Math.sin(heading) - towardZ * Math.cos(heading)
   const aside = towardX * Math.cos(heading) - towardZ * Math.sin(heading)
   return out.set(-lean * ahead, -lean * aside)

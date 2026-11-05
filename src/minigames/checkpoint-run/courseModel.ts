@@ -199,7 +199,7 @@ const paint = (color: string) =>
 
 const createFlagMaterial = () =>
   patchShader(new THREE.MeshBasicMaterial({ side: THREE.DoubleSide }), {
-    uniforms: { ...waveUniforms, uFlagDir: { value: useWindStore.getState().dir } },
+    uniforms: { ...waveUniforms, uFlagDirection: { value: useWindStore.getState().direction } },
     defines: floatDefines({
       BUOY_WAVE_TILT,
       BUOY_FLAG_FLAP,

@@ -9,11 +9,11 @@ varying vec2  vUv;
 varying vec2  vWorldPos;
 
 void main() {
-  float n  = noise(vWorldPos * 0.80 + vec2(uTime * 0.06, -uTime * 0.05));
-  float nq = floor(n * 4.0) / 4.0;
+  float noiseValue  = noise(vWorldPos * 0.80 + vec2(uTime * 0.06, -uTime * 0.05));
+  float steppedNoise = floor(noiseValue * 4.0) / 4.0;
 
-  float outerJag = 0.14 + (nq - 0.30) * 0.38;
-  float innerJag = 0.84 - (nq - 0.30) * 0.32;
+  float outerJag = 0.14 + (steppedNoise - 0.30) * 0.38;
+  float innerJag = 0.84 - (steppedNoise - 0.30) * 0.32;
   if (vUv.x < outerJag || vUv.x > innerJag) discard;
 
   float normAge = clamp(vUv.y * uInvActiveMax, 0.0, 1.0);

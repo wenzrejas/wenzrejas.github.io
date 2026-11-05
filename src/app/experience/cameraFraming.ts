@@ -115,11 +115,11 @@ export function frameShip(
 
   const lookY = y + CAMERA_LOOK_Y_OFFSET
   const revealLook = lookPointThrough(target, lookY, offset, _revealLook)
-  const dx = revealLook.x - shipX
-  const dz = revealLook.y - shipZ
-  const gap = Math.hypot(dx, dz)
+  const deltaX = revealLook.x - shipX
+  const deltaZ = revealLook.y - shipZ
+  const gap = Math.hypot(deltaX, deltaZ)
   const reach = gap > 0 ? Math.max(gap - REVEAL_STOP_SHORT, 0) / gap : 0
-  _revealFrame.set(shipX + dx * reach, shipZ + dz * reach)
+  _revealFrame.set(shipX + deltaX * reach, shipZ + deltaZ * reach)
   if (islandScreenTop !== null) {
     keepTitleClear(
       _revealFrame,
@@ -138,11 +138,11 @@ export function frameShip(
   const framedZ = mix(mix(shipZ, _revealFrame.y, blend), panelLook.y, panelBlend)
 
   const focusLook = lookPointThrough(focus, lookY, offset, _focusLook)
-  const fx = mix(framedX, focusLook.x, focusBlend)
-  const fz = mix(framedZ, focusLook.y, focusBlend)
+  const focusX = mix(framedX, focusLook.x, focusBlend)
+  const focusZ = mix(framedZ, focusLook.y, focusBlend)
 
-  camera.position.set(fx + offset.x, y + offset.y, fz + offset.z)
-  camera.lookAt(fx, lookY, fz)
+  camera.position.set(focusX + offset.x, y + offset.y, focusZ + offset.z)
+  camera.lookAt(focusX, lookY, focusZ)
   shakeCamera(camera, shake, time)
 
   const panelZoom = mix(1, PANEL_FRAMING_ZOOM, panelBlend)

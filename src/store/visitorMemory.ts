@@ -29,14 +29,13 @@ export function rememberedItems<Item extends string>(memory: Memory, items: read
   return items.filter((item) => stored.includes(item))
 }
 
-export const rememberedText = (memory: Memory) =>
-  IS_DEBUG ? null : readStored(MEMORY_KEYS[memory])
+const rememberedText = (memory: Memory) => (IS_DEBUG ? null : readStored(MEMORY_KEYS[memory]))
 
 export function rememberedRecord<Saved extends object>(memory: Memory, fresh: Saved): Saved {
   const stored = rememberedText(memory)
   if (!stored) return fresh
   try {
-    return { ...fresh, ...JSON.parse(stored) }
+    return { ...fresh, ...(JSON.parse(stored) as Partial<Saved>) }
   } catch {
     return fresh
   }

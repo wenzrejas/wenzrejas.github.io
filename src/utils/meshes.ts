@@ -12,6 +12,25 @@ export function meshesOf(object: THREE.Object3D): THREE.Mesh[] {
   return meshes
 }
 
+export function replaceMaterials(
+  root: THREE.Object3D,
+  replace: (material: THREE.Material) => THREE.Material
+) {
+  const replacements = new Map<THREE.Material, THREE.Material>()
+  const replaceOnce = (source: THREE.Material) => {
+    const known = replacements.get(source)
+    if (known) return known
+    const replacement = replace(source)
+    replacements.set(source, replacement)
+    return replacement
+  }
+  for (const mesh of meshesOf(root)) {
+    mesh.material = Array.isArray(mesh.material)
+      ? mesh.material.map(replaceOnce)
+      : replaceOnce(mesh.material)
+  }
+}
+
 export function flatFootprint(object: THREE.Object3D) {
   const size = new THREE.Box3().setFromObject(object).getSize(new THREE.Vector3())
   return Math.max(size.x, size.z)

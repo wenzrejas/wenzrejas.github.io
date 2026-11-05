@@ -1,6 +1,7 @@
-import { isBelowSurface, useViewStore } from '../store/viewStore'
-import { rand } from '../utils/math'
-import { audio, type SoundHandle } from './audioManager'
+import { isBelowSurface, useViewStore } from '@/store/viewStore'
+import { rand } from '@/utils/math'
+import { audio } from './audioManager'
+import type { SoundHandle } from './soundHandle'
 import {
   DOLPHIN_CALL_MAX,
   DOLPHIN_CALL_MIN,

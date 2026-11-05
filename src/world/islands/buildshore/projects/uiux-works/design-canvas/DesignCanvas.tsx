@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef } from 'react'
 import { createPortal, useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
+import { disposeAll } from '@/utils/dispose'
 import { buildFlatQuad } from '@/utils/geometry'
 import { pixelsPerUnit } from '@/utils/screen'
 import type { HoverTimeline } from '@/world/islands/shared/hoverTimeline'
@@ -63,13 +64,17 @@ export default function DesignCanvas({ gem, plazaCentre, plazaReach, hover }: De
   )
 
   useEffect(
-    () => () => {
-      for (const resource of [gridGeometry, screenQuad, gridMaterial, boxMaterial])
-        resource.dispose()
-      for (const resource of [nameMaterial, sizeMaterial, nameLabel.texture, sizeLabel.texture]) {
-        resource.dispose()
-      }
-    },
+    () => () =>
+      disposeAll(
+        gridGeometry,
+        screenQuad,
+        gridMaterial,
+        boxMaterial,
+        nameMaterial,
+        sizeMaterial,
+        nameLabel.texture,
+        sizeLabel.texture
+      ),
     [
       gridGeometry,
       screenQuad,

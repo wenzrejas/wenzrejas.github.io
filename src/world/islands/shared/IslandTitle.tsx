@@ -7,8 +7,8 @@ import { useDebugStore } from '@/store/debugStore'
 import './IslandTitle.scss'
 
 export default function IslandTitle() {
-  const activeKey = useRevealStore((s) => s.activeKey)
-  const previewCard = useDebugStore((s) => s.reveal.previewCard)
+  const activeKey = useRevealStore((state) => state.activeKey)
+  const previewCard = useDebugStore((state) => state.reveal.previewCard)
   const cardRef = useRef<HTMLDivElement>(null)
 
   const pinned = previewCard !== 'off'
@@ -26,9 +26,13 @@ export default function IslandTitle() {
 
     let frame = 0
     const tick = () => {
-      const t = THREE.MathUtils.smoothstep(useRevealStore.getState().blend, REVEAL_TITLE_IN, 1)
-      card.style.opacity = String(t)
-      card.style.transform = `translateY(${(1 - t) * 16}px)`
+      const titleShare = THREE.MathUtils.smoothstep(
+        useRevealStore.getState().blend,
+        REVEAL_TITLE_IN,
+        1
+      )
+      card.style.opacity = String(titleShare)
+      card.style.transform = `translateY(${(1 - titleShare) * 16}px)`
       frame = requestAnimationFrame(tick)
     }
     frame = requestAnimationFrame(tick)

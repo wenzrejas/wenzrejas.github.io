@@ -1,5 +1,6 @@
-import * as THREE from 'three'
+import type * as THREE from 'three'
 import { floatDefines } from '@/utils/glsl'
+import { createAdditiveMaterial } from '@/utils/materials'
 
 export function createAdditiveGlowMaterial(
   vertexShader: string,
@@ -7,13 +8,10 @@ export function createAdditiveGlowMaterial(
   defines: Record<string, number>,
   uniforms: Record<string, THREE.IUniform>
 ): THREE.ShaderMaterial {
-  return new THREE.ShaderMaterial({
+  return createAdditiveMaterial({
     vertexShader,
     fragmentShader,
     defines: floatDefines(defines),
-    transparent: true,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
     uniforms: { uGlow: { value: 0 }, ...uniforms },
   })
 }

@@ -12,7 +12,7 @@ export const LANTERN_CAPACITY = LANTERN_AFLOAT_COUNT + LANTERN_FINALE_COUNT
 export const LANTERN_VIEW_MARGIN = 1.25
 export const LANTERN_ZOOMED_OUT_BOOST_MAX = 1.3
 
-// ── Cluster (world units) ─────────────────────────────────────────────────────
+// ── Cluster ───────────────────────────────────────────────────────────────────
 export const LANTERN_CLUSTER_ATTEMPTS = 12
 export const LANTERN_CLUSTER_SPOT_ATTEMPTS = 16
 export const LANTERN_CLUSTER_BEARING_SPREAD = 2.4
@@ -30,12 +30,12 @@ export const LANTERN_SHORE_GAP = 45
 export const LANTERN_BOUNDARY_GAP = 120
 export const LANTERN_REGATHER_DISTANCE = 700
 
-// ── Reach (world units from the hull) ─────────────────────────────────────────
+// ── Reach ─────────────────────────────────────────────────────────────────────
 export const LANTERN_TOUCH_REACH = 9
 export const LANTERN_TOUCH_CHECK_DISTANCE = 70
 export const LANTERN_SPOTTED_REACH = 220
 
-// ── Finale (gaps are on screen, in camera units, so lanterns never overlap) ───
+// ── Finale ────────────────────────────────────────────────────────────────────
 export const LANTERN_FINALE_SECONDS = 20
 export const LANTERN_FINALE_SPOT_ATTEMPTS = 16
 export const LANTERN_FINALE_SHORE_GAP = 6
@@ -46,7 +46,7 @@ export const LANTERN_FINALE_HIGHEST = 0.5
 export const LANTERN_FINALE_GAP_ACROSS = 9
 export const LANTERN_FINALE_GAP_UP = 12
 
-// ── Shape (world units, base to top; round at the base, softly square on top) ─
+// ── Shape ─────────────────────────────────────────────────────────────────────
 export const LANTERN_PROFILE = [
   { height: 0, radius: 3.5, squareShare: 0, cap: 0 },
   { height: 0.9, radius: 3.65, squareShare: 0.05, cap: 0 },
@@ -114,7 +114,7 @@ export const LANTERN_IGNITE_FLARE = 0.8
 export const LANTERN_IGNITE_FLARE_SECONDS = 1.4
 export const LANTERN_UNLIT_HALO = 0.04
 
-// ── Light on the sea (stays where the lantern lifted off, shrinking as it climbs) ─
+// ── Sea light ─────────────────────────────────────────────────────────────────
 export const LANTERN_POOL_SIZE = 44
 export const LANTERN_POOL_Y = 0.3
 export const LANTERN_POOL_STRENGTH = 0.38

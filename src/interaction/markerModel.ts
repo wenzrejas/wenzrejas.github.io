@@ -1,6 +1,6 @@
 import * as THREE from 'three'
-import { displayColorOf } from '../utils/color'
-import { floatDefines } from '../utils/glsl'
+import { displayColorOf } from '@/utils/color'
+import { floatDefines } from '@/utils/glsl'
 import {
   MARKER_CENTER_COLOR,
   MARKER_CENTER_SHARE,

@@ -59,11 +59,11 @@ function isInReach(
   tuning: Record<IslandKey, IslandControls>,
   margin: number
 ) {
-  const dx = shipX - x
-  const dz = shipZ - z
+  const deltaX = shipX - x
+  const deltaZ = shipZ - z
   const lead = ISLAND_SPECS[key].revealLead ?? REVEAL_LEAD
-  const range = groundReach(dx, dz) + islandExtent(key, tuning[key]) + lead + margin
-  return dx * dx + dz * dz < range * range
+  const range = groundReach(deltaX, deltaZ) + islandExtent(key, tuning[key]) + lead + margin
+  return deltaX * deltaX + deltaZ * deltaZ < range * range
 }
 
 export function enterReachedIsland(

@@ -1,3 +1,4 @@
+import { waitSeconds } from '@/utils/time'
 import {
   DEV_SEND_SECONDS,
   DEV_SEND_SUCCEEDS,
@@ -11,7 +12,7 @@ interface Web3FormsReply {
 
 async function simulateDelivery(formData: FormData): Promise<boolean> {
   console.info('Dev mode: this message was not sent.', Object.fromEntries(formData))
-  await new Promise((resolve) => setTimeout(resolve, DEV_SEND_SECONDS * 1000))
+  await waitSeconds(DEV_SEND_SECONDS)
   return DEV_SEND_SUCCEEDS
 }
 
@@ -20,7 +21,7 @@ export async function deliverContact(formData: FormData): Promise<boolean> {
   formData.append('access_key', WEB3FORMS_ACCESS_KEY)
   try {
     const response = await fetch(WEB3FORMS_ENDPOINT, { method: 'POST', body: formData })
-    const reply: Web3FormsReply = await response.json()
+    const reply = (await response.json()) as Web3FormsReply
     return response.ok && reply.success
   } catch {
     return false

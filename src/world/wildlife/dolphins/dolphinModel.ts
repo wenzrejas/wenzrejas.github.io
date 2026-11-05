@@ -44,17 +44,27 @@ function addLoft(skin: Skin, rings: ShapePoint[][], paint: (segment: number) => 
   const first = skin.positions.length / 3
   for (const ring of rings) for (const point of ring) skin.positions.push(...point)
 
-  const at = (ring: number, segment: number) => first + ring * count + (segment % count)
-  const face = (color: THREE.Color, a: number, b: number, c: number) => {
-    skin.indices.push(a, b, c)
+  const vertexAt = (ring: number, segment: number) => first + ring * count + (segment % count)
+  const face = (color: THREE.Color, cornerA: number, cornerB: number, cornerC: number) => {
+    skin.indices.push(cornerA, cornerB, cornerC)
     skin.faceColors.push(color)
   }
 
   for (let ring = 0; ring < rings.length - 1; ring++) {
     for (let segment = 0; segment < count; segment++) {
       const color = paint(segment)
-      face(color, at(ring, segment), at(ring, segment + 1), at(ring + 1, segment + 1))
-      face(color, at(ring, segment), at(ring + 1, segment + 1), at(ring + 1, segment))
+      face(
+        color,
+        vertexAt(ring, segment),
+        vertexAt(ring, segment + 1),
+        vertexAt(ring + 1, segment + 1)
+      )
+      face(
+        color,
+        vertexAt(ring, segment),
+        vertexAt(ring + 1, segment + 1),
+        vertexAt(ring + 1, segment)
+      )
     }
   }
 }
@@ -167,12 +177,12 @@ export function buildDolphinGeometry(): THREE.BufferGeometry {
   smooth.setIndex(skin.indices)
   smooth.computeVertexNormals()
 
-  const geo = smooth.toNonIndexed()
+  const geometry = smooth.toNonIndexed()
   smooth.dispose()
   const colors = skin.faceColors.flatMap(({ r, g, b }) => [r, g, b, r, g, b, r, g, b])
-  geo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3))
-  addInstancedFloats(geo, ['aPhase', 'aArch', 'aFade'], POD_MAX)
-  return geo
+  geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3))
+  addInstancedFloats(geometry, ['aPhase', 'aArch', 'aFade'], POD_MAX)
+  return geometry
 }
 
 // ── Materials ─────────────────────────────────────────────────────────────────

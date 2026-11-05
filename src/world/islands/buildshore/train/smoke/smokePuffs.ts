@@ -108,12 +108,12 @@ export function advanceSmoke(pool: ParticlePool, buffers: SmokeBuffers, dt: numb
     }
 
     puff.age += dt
-    puff.vx *= damping
-    puff.vy *= damping
-    puff.vz *= damping
-    puff.x += puff.vx * dt
-    puff.y += puff.vy * dt
-    puff.z += puff.vz * dt
+    puff.velocityX *= damping
+    puff.velocityY *= damping
+    puff.velocityZ *= damping
+    puff.x += puff.velocityX * dt
+    puff.y += puff.velocityY * dt
+    puff.z += puff.velocityZ * dt
     buffers.positions[slot * 3] = puff.x
     buffers.positions[slot * 3 + 1] = puff.y
     buffers.positions[slot * 3 + 2] = puff.z

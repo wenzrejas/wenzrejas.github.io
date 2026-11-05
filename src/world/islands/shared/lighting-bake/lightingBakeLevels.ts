@@ -20,8 +20,8 @@ export function updateLightingBakeLevels(
   overheadShadowStrength: number,
   lampLevel: number
 ): void {
-  const { clockSunHeight, oceanMoonDir } = useCycleStore.getState()
+  const { clockSunHeight, oceanMoonDirection } = useCycleStore.getState()
   levels.uOverheadShadow.value =
-    overheadLightLevel(clockSunHeight, oceanMoonDir.y) * overheadShadowStrength
+    overheadLightLevel(clockSunHeight, oceanMoonDirection.y) * overheadShadowStrength
   levels.uLampSpill.value = lampLevel
 }

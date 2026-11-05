@@ -1,11 +1,27 @@
 import * as THREE from 'three'
-import { CLOUD_PLANE_SIZE, CLOUD_TILE } from './cloudTexture'
+import { useWeatherStore } from '@/store/weatherStore'
+import { useWindStore } from '@/store/windStore'
+import { floatDefines } from '@/utils/glsl'
+import {
+  CLOUD_BIAS_PER_COVER,
+  CLOUD_GAIN_PER_COVER,
+  CLOUD_MODEL_SHADOW_DARK,
+  CLOUD_PLANE_MAX_OPACITY,
+  CLOUD_PLANE_SIZE,
+  CLOUD_SCROLL_SPEED,
+  CLOUD_TILE,
+} from './constants'
+import MODEL_SHADOW_FRAGMENT from './shaders/modelCloudShadow.frag.glsl'
+import MODEL_SHADOW_FRAGMENT_PARS from './shaders/modelCloudShadowPars.frag.glsl'
+import MODEL_SHADOW_VERTEX_PARS from './shaders/modelCloudShadowPars.vert.glsl'
+import MODEL_SHADOW_WORLD_VERTEX from './shaders/modelCloudShadowWorld.vert.glsl'
 
-const DRIFT_SPEED = 8
-const HALF = CLOUD_PLANE_SIZE / 2
-const MODEL_SHADOW_DARK = 0.5
+const MODEL_SHADOW_DEFINES = floatDefines({
+  CLOUD_HALF_PLANE: CLOUD_PLANE_SIZE / 2,
+  CLOUD_MODEL_SHADOW_DARK,
+})
 
-// ── Per-pixel cloud shadow on lit models ─────────────────────────────────────
+// ── Cloud shadow ──────────────────────────────────────────────────────────────
 
 export const cloudShadowUniforms = {
   uCloudMap: { value: null as THREE.Texture | null },
@@ -17,41 +33,22 @@ export const cloudShadowUniforms = {
 }
 
 export function applyCloudShadow(material: THREE.Material): void {
+  material.defines = { ...material.defines, ...MODEL_SHADOW_DEFINES }
   material.onBeforeCompile = (shader) => {
     Object.assign(shader.uniforms, cloudShadowUniforms)
 
     shader.vertexShader = shader.vertexShader
-      .replace('#include <common>', '#include <common>\nvarying vec3 vCloudWorld;')
+      .replace('#include <common>', `#include <common>\n${MODEL_SHADOW_VERTEX_PARS}`)
       .replace(
         '#include <project_vertex>',
-        'vCloudWorld = ( modelMatrix * vec4( transformed, 1.0 ) ).xyz;\n#include <project_vertex>'
+        `${MODEL_SHADOW_WORLD_VERTEX}\n#include <project_vertex>`
       )
 
     shader.fragmentShader = shader.fragmentShader
-      .replace(
-        '#include <common>',
-        [
-          '#include <common>',
-          'varying vec3 vCloudWorld;',
-          'uniform sampler2D uCloudMap;',
-          'uniform float uCloudTile;',
-          'uniform vec2 uCloudOffset;',
-          'uniform float uCloudStrength;',
-          'uniform float uCloudGain;',
-          'uniform float uCloudBias;',
-        ].join('\n')
-      )
+      .replace('#include <common>', `#include <common>\n${MODEL_SHADOW_FRAGMENT_PARS}`)
       .replace(
         '#include <tonemapping_fragment>',
-        [
-          '{',
-          `  vec2 cuv = vec2( vCloudWorld.x + ${HALF.toFixed(1)}, ${HALF.toFixed(1)} - vCloudWorld.z ) / uCloudTile + uCloudOffset;`,
-          '  float d = texture2D( uCloudMap, cuv ).a;',
-          '  float cloud = clamp( d * uCloudGain + uCloudBias, 0.0, 1.0 ) * uCloudStrength;',
-          `  gl_FragColor.rgb *= 1.0 - cloud * ${MODEL_SHADOW_DARK.toFixed(2)};`,
-          '}',
-          '#include <tonemapping_fragment>',
-        ].join('\n')
+        `${MODEL_SHADOW_FRAGMENT}\n#include <tonemapping_fragment>`
       )
   }
   material.needsUpdate = true
@@ -59,20 +56,31 @@ export function applyCloudShadow(material: THREE.Material): void {
 
 // ── Scroll ────────────────────────────────────────────────────────────────────
 
-export const cloudScroll = { x: 0, z: 0 }
+const cloudScroll = { x: 0, z: 0 }
 
-export function updateCloudScroll(dt: number, dirX: number, dirZ: number): void {
-  cloudScroll.x += dirX * DRIFT_SPEED * dt
-  cloudScroll.z += dirZ * DRIFT_SPEED * dt
+function updateCloudScroll(dt: number, directionX: number, directionZ: number): void {
+  cloudScroll.x += directionX * CLOUD_SCROLL_SPEED * dt
+  cloudScroll.z += directionZ * CLOUD_SCROLL_SPEED * dt
   cloudScroll.x %= CLOUD_TILE
   cloudScroll.z %= CLOUD_TILE
 }
 
-export function cloudRemap(cover: number) {
-  const c = Math.max(0, cover)
-  return {
-    strength: c,
-    gain: 1 + c * 0.85,
-    bias: c * 0.14,
-  }
+export function stepCloudShadows(planeUniforms: Record<string, THREE.IUniform>, dt: number) {
+  const { direction: wind } = useWindStore.getState()
+  updateCloudScroll(dt, wind.x, wind.y)
+  const strength = Math.max(0, useWeatherStore.getState().cloudShadow)
+  const gain = 1 + strength * CLOUD_GAIN_PER_COVER
+  const bias = strength * CLOUD_BIAS_PER_COVER
+  const offsetU = cloudScroll.x / CLOUD_TILE
+  const offsetV = cloudScroll.z / CLOUD_TILE
+
+  planeUniforms.uOpacity.value = strength * CLOUD_PLANE_MAX_OPACITY
+  planeUniforms.uGain.value = gain
+  planeUniforms.uBias.value = bias
+  ;(planeUniforms.uOffset.value as THREE.Vector2).set(offsetU, offsetV)
+
+  cloudShadowUniforms.uCloudStrength.value = strength
+  cloudShadowUniforms.uCloudGain.value = gain
+  cloudShadowUniforms.uCloudBias.value = bias
+  cloudShadowUniforms.uCloudOffset.value.set(offsetU, offsetV)
 }

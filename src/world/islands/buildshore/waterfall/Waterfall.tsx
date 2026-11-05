@@ -6,6 +6,7 @@ import { quietLoop } from '@/audio/proximityLoop'
 import { useCycleStore } from '@/store/cycleStore'
 import { useShipStore } from '@/store/shipStore'
 import { isBelowSurface, useViewStore } from '@/store/viewStore'
+import { disposeAll } from '@/utils/dispose'
 import { mix } from '@/utils/math'
 import { pixelsPerUnit } from '@/utils/screen'
 import type { IslandPlacement } from '@/world/islands/shared/islandTransform'
@@ -50,19 +51,11 @@ export default function Waterfall({ cascades, placement, offsetY }: WaterfallPro
   useEffect(() => () => quietLoop(sound), [sound])
 
   useEffect(
-    () => () => {
-      for (const material of Object.values(cascadeMaterials)) material.dispose()
-      padMaterial.dispose()
-      splashMaterial.dispose()
-    },
+    () => () => disposeAll(...Object.values(cascadeMaterials), padMaterial, splashMaterial),
     [cascadeMaterials, padMaterial, splashMaterial]
   )
   useEffect(
-    () => () => {
-      for (const geometry of cascadeGeometries.values()) geometry.dispose()
-      padGeometry.dispose()
-      splashGeometry.dispose()
-    },
+    () => () => disposeAll(...cascadeGeometries.values(), padGeometry, splashGeometry),
     [cascadeGeometries, padGeometry, splashGeometry]
   )
   useLayoutEffect(

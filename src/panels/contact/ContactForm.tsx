@@ -72,7 +72,7 @@ export default function ContactForm() {
   }
 
   return (
-    <form ref={formRef} className="contact-form" noValidate onSubmit={send}>
+    <form ref={formRef} className="contact-form" noValidate onSubmit={(event) => void send(event)}>
       <ContactInput
         field="name"
         icon="person"

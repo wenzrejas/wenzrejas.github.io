@@ -1,6 +1,7 @@
 #include "/shaders/noise.glsl"
 #include "/shaders/foam.glsl"
 #include "/world/environment/ocean/shaders/oceanSurface.glsl"
+#include "/shaders/smoothMin.glsl"
 
 uniform float uTime;
 uniform sampler2D uShoreField;
@@ -33,27 +34,22 @@ float latticeHash(vec2 cell) {
 }
 
 float swirlNoise(float turn, float along, float cells) {
-  vec2 p = vec2(turn * cells, along);
-  vec2 cell = floor(p);
-  vec2 f = fract(p);
-  f = f * f * (3.0 - 2.0 * f);
+  vec2 point = vec2(turn * cells, along);
+  vec2 cell = floor(point);
+  vec2 fraction = fract(point);
+  fraction = fraction * fraction * (3.0 - 2.0 * fraction);
   float left = mod(cell.x, cells);
   float right = mod(cell.x + 1.0, cells);
   return mix(
-    mix(latticeHash(vec2(left, cell.y)), latticeHash(vec2(right, cell.y)), f.x),
-    mix(latticeHash(vec2(left, cell.y + 1.0)), latticeHash(vec2(right, cell.y + 1.0)), f.x),
-    f.y
+    mix(latticeHash(vec2(left, cell.y)), latticeHash(vec2(right, cell.y)), fraction.x),
+    mix(latticeHash(vec2(left, cell.y + 1.0)), latticeHash(vec2(right, cell.y + 1.0)), fraction.x),
+    fraction.y
   );
 }
 
-float smin(float a, float b, float k) {
-  float h = max(k - abs(a - b), 0.0) / k;
-  return min(a, b) - h * h * h * k / 6.0;
-}
-
-vec3 swirlCells(vec2 p, float cellsAround) {
-  vec2 cell = floor(p);
-  vec2 f = fract(p);
+vec3 swirlCells(vec2 point, float cellsAround) {
+  vec2 cell = floor(point);
+  vec2 fraction = fract(point);
   float nearest = 8.0;
   float second = 8.0;
   float blended = 8.0;
@@ -63,7 +59,7 @@ vec3 swirlCells(vec2 p, float cellsAround) {
       vec2 id = vec2(mod(cell.x + offset.x, cellsAround), cell.y + offset.y);
       vec2 seed = vec2(latticeHash(id), latticeHash(id + 17.3));
       vec2 drift = 0.5 + 0.5 * sin(uTime * uCellSpeed + TAU * seed);
-      float reach = length(offset + drift - f);
+      float reach = length(offset + drift - fraction);
       second = min(second, max(nearest, reach));
       nearest = min(nearest, reach);
       blended = smin(blended, reach, uSmoothness);

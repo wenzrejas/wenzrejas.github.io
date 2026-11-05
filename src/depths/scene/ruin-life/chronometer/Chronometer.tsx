@@ -3,6 +3,7 @@ import { createPortal, useFrame } from '@react-three/fiber'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { RUIN_LIFE_FRAME_PRIORITY } from '@/depths/scene/constants'
 import { useDepthsStore } from '@/store/depthsStore'
+import { disposeAll } from '@/utils/dispose'
 import type { MilestoneProps } from '../shared/milestone'
 import { wakeShare } from '../shared/ruinWake'
 import { buildChimeRing, createChimeRingMaterial } from './chimeRingModel'
@@ -22,13 +23,7 @@ export default function Chronometer({ ruin, level, timeline, surfacing, clock }:
   const geometry = useMemo(() => buildChimeRing(), [])
   const material = useMemo(() => createChimeRingMaterial(), [])
 
-  useEffect(
-    () => () => {
-      geometry.dispose()
-      material.dispose()
-    },
-    [geometry, material]
-  )
+  useEffect(() => () => disposeAll(geometry, material), [geometry, material])
 
   useFrame(() => {
     const epochSeconds = Date.now() / 1000

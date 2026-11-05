@@ -13,7 +13,7 @@ void main() {
   vec4 worldPosition = modelMatrix * instanceMatrix * vec4(position, 1.0);
   vNormal = normalize(mat3(modelMatrix) * mat3(instanceMatrix) * normal);
   vViewDirection = normalize(cameraPosition - worldPosition.xyz);
-  vAboveWater = worldPosition.y - waveRideAt(worldPosition.xz) * uWaveAmp;
+  vAboveWater = worldPosition.y - waveRideAt(worldPosition.xz) * uWaveAmplitude;
   vGlow = aGlow;
   vPulse = aPulse;
   gl_Position = projectionMatrix * viewMatrix * worldPosition;

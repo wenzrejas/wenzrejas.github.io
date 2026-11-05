@@ -4,6 +4,7 @@ import type * as THREE from 'three'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { zoomedOutBoost } from '@/app/experience/worldZoom'
 import { MAX_FRAME_SECONDS } from '@/utils/time'
+import { disposeAll } from '@/utils/dispose'
 import { stepBloom } from './bloomField'
 import {
   buildBloomGeometry,
@@ -28,12 +29,7 @@ export default function JellyfishBloom() {
   )
 
   useEffect(
-    () => () => {
-      geometry.dispose()
-      material.dispose()
-      haloGeometry.dispose()
-      haloMaterial.dispose()
-    },
+    () => () => disposeAll(geometry, material, haloGeometry, haloMaterial),
     [geometry, material, haloGeometry, haloMaterial]
   )
 

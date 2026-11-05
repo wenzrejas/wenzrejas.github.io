@@ -9,6 +9,6 @@ void main() {
   float calm = shoreCalm(world.xz);
   vWorld = world.xz;
   vWave = wave.x * calm;
-  world.y += wave.x * uWaveAmp * calm;
+  world.y += wave.x * uWaveAmplitude * calm;
   gl_Position = projectionMatrix * viewMatrix * world;
 }

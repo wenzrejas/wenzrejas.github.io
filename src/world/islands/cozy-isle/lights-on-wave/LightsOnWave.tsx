@@ -7,6 +7,7 @@ import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { pixelsPerUnit } from '@/utils/screen'
 import { buildBulbHaloGeometry, createBulbHaloMaterial } from './bulbHaloModel'
 import type { HoverTimeline } from '@/world/islands/shared/hoverTimeline'
+import { disposeAll } from '@/utils/dispose'
 import type { Bulb } from '../cafeLights'
 import { BULB_HALO_SIZE, BULB_HALO_VISIBLE_LEVEL } from './constants'
 
@@ -22,13 +23,7 @@ export default function LightsOnWave({ bulbs, islandScale, cafeBreak }: LightsOn
   const geometry = useMemo(() => buildBulbHaloGeometry(bulbs), [bulbs])
   const material = useMemo(() => createBulbHaloMaterial(), [])
 
-  useEffect(
-    () => () => {
-      geometry.dispose()
-      material.dispose()
-    },
-    [geometry, material]
-  )
+  useEffect(() => () => disposeAll(geometry, material), [geometry, material])
 
   useFrame(({ camera, gl }) => {
     const points = pointsRef.current

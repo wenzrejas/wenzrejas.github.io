@@ -15,10 +15,10 @@ import {
 } from './constants'
 
 export interface WeatherParams {
-  lightMult: number
-  moonMult: number
-  waveAmpMult: number
-  windMult: number
+  lightMultiplier: number
+  moonMultiplier: number
+  waveAmplitudeMultiplier: number
+  windMultiplier: number
   rainIntensity: number
   overcastAmount: number
   cloudShadow: number
@@ -93,16 +93,20 @@ export function advanceWeatherCycle(cycle: WeatherCycle, dt: number, wantsClearS
   }
 }
 
-export function applyWeather(weather: WeatherState, type: WeatherType, params: WeatherParams) {
+export function applyWeather(
+  weather: WeatherState,
+  type: WeatherType,
+  weatherParams: WeatherParams
+) {
   weather.type = type
   weather.comingType = type
-  weather.lightMult = params.lightMult
-  weather.moonMult = params.moonMult
-  weather.waveAmpMult = params.waveAmpMult
-  weather.windMult = params.windMult
-  weather.rainIntensity = params.rainIntensity
-  weather.overcastAmount = params.overcastAmount
-  weather.cloudShadow = params.cloudShadow
+  weather.lightMultiplier = weatherParams.lightMultiplier
+  weather.moonMultiplier = weatherParams.moonMultiplier
+  weather.waveAmplitudeMultiplier = weatherParams.waveAmplitudeMultiplier
+  weather.windMultiplier = weatherParams.windMultiplier
+  weather.rainIntensity = weatherParams.rainIntensity
+  weather.overcastAmount = weatherParams.overcastAmount
+  weather.cloudShadow = weatherParams.cloudShadow
 }
 
 export function blendWeather(weather: WeatherState, cycle: WeatherCycle) {
@@ -111,10 +115,14 @@ export function blendWeather(weather: WeatherState, cycle: WeatherCycle) {
   const from = WEATHER_PARAMS[cycle.current]
   const to = WEATHER_PARAMS[cycle.next]
 
-  weather.lightMult = mix(from.lightMult, to.lightMult, eased)
-  weather.moonMult = mix(from.moonMult, to.moonMult, eased)
-  weather.waveAmpMult = mix(from.waveAmpMult, to.waveAmpMult, eased)
-  weather.windMult = mix(from.windMult, to.windMult, eased)
+  weather.lightMultiplier = mix(from.lightMultiplier, to.lightMultiplier, eased)
+  weather.moonMultiplier = mix(from.moonMultiplier, to.moonMultiplier, eased)
+  weather.waveAmplitudeMultiplier = mix(
+    from.waveAmplitudeMultiplier,
+    to.waveAmplitudeMultiplier,
+    eased
+  )
+  weather.windMultiplier = mix(from.windMultiplier, to.windMultiplier, eased)
   weather.rainIntensity = mix(from.rainIntensity, to.rainIntensity, eased)
   const dominant = progress > 0.5 ? cycle.next : cycle.current
   weather.type = weather.rainIntensity >= RAIN_SHOWN_INTENSITY ? 'rainy' : dominant
@@ -124,7 +132,7 @@ export function blendWeather(weather: WeatherState, cycle: WeatherCycle) {
 }
 
 export function driftClouds(weather: WeatherState, windDirection: THREE.Vector2, dt: number) {
-  const drift = CLOUD_DRIFT_SPEED * weather.windMult * dt
+  const drift = CLOUD_DRIFT_SPEED * weather.windMultiplier * dt
   weather.cloudOffset.x += windDirection.x * drift
   weather.cloudOffset.y += windDirection.y * drift
 }

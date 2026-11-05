@@ -1,8 +1,8 @@
-// ── Motion (keyframe names in WorldMap.scss) ──────────────────────────────────
+// ── Motion ────────────────────────────────────────────────────────────────────
 export const UNFOLD_ANIMATION = 'world-map-unfold'
 export const FOLD_ANIMATION = 'world-map-fold'
 
-// ── Fast travel (world units, side turns in radians) ──────────────────────────
+// ── Fast travel ───────────────────────────────────────────────────────────────
 export const ARRIVAL_SHORE_GAP = 35
 export const ARRIVAL_BOUNDARY_GAP = 60
 export const ARRIVAL_SEARCH_STEP = 4

@@ -1,8 +1,8 @@
-// ── Gates (world units) ───────────────────────────────────────────────────────
+// ── Gates ─────────────────────────────────────────────────────────────────────
 export const GATE_HALF_WIDTH = 45
 export const PASS_TOLERANCE = 6
 
-// ── Starting (world units and seconds) ────────────────────────────────────────
+// ── Starting ──────────────────────────────────────────────────────────────────
 export const START_BESIDE_BUOY = 30
 export const START_MARKER_HEIGHT = 18
 export const START_MARKER_PIXELS = 22
@@ -24,7 +24,7 @@ export const SEEN_REACH = 320
 export const BUOY_SPOTTED_REACH = 130
 export const RACE_WIND_STRENGTH = 1
 
-// ── Clean-line surge (world units, seconds, speed shares) ─────────────────────
+// ── Clean-line surge ──────────────────────────────────────────────────────────
 export const PERFECT_REACH = 15
 export const SURGE_SECONDS = 3.5
 export const SURGE_LEVELS = [0.15, 0.25, 0.35]
@@ -86,7 +86,7 @@ export const BUOY_COLOR = '#f5871f'
 export const BUOY_STRIPE_COLOR = '#f4efe6'
 export const BUOY_LANTERN_COLOR = '#ffc65c'
 
-// ── Buoy tower (heights in shares of the tower) ───────────────────────────────
+// ── Buoy tower ────────────────────────────────────────────────────────────────
 export const BUOY_TOWER_HEIGHT = 11
 export const BUOY_TOWER_BASE_HALF_WIDTH = 3.4
 export const BUOY_TOWER_TOP_HALF_WIDTH = 1.4
@@ -145,7 +145,7 @@ export const PASSED_ARCH_GLOW = 0.08
 export const ARCH_GLOW_RATE = 6
 export const COURSE_FADE_SECONDS = 0.6
 
-// ── Ghost ship (world units and seconds) ──────────────────────────────────────
+// ── Ghost ship ────────────────────────────────────────────────────────────────
 export const GHOST_TRACK_STEP = 0.2
 export const GHOST_TRACK_MIN_VALUES = 4
 export const GHOST_TRACK_VALUES_PER_SAMPLE = 2

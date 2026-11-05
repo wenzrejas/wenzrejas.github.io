@@ -45,14 +45,14 @@ function splashAlpha(random: Random) {
   for (let y = 0; y < SPLASH_PIXELS; y++) {
     for (let x = 0; x < SPLASH_PIXELS; x++) {
       const index = y * SPLASH_PIXELS + x
-      const dx = x + 0.5 - center
-      const dy = y + 0.5 - center
-      const angle = Math.atan2(dy, dx)
+      const deltaX = x + 0.5 - center
+      const deltaY = y + 0.5 - center
+      const angle = Math.atan2(deltaY, deltaX)
       let edge = 1 + (ragged[index] - 0.5) * SPLASH_RAGGEDNESS
       for (const { frequency, strength, phase } of lobes) {
         edge += strength * Math.sin(frequency * angle + phase)
       }
-      const gap = edge - Math.hypot(dx, dy) / radius
+      const gap = edge - Math.hypot(deltaX, deltaY) / radius
       const coverage = smoothstep(gap, 0, SPLASH_EDGE_SOFTNESS)
       const rim = 1 - smoothstep(gap, 0, SPLASH_RIM_WIDTH)
       const density = SPLASH_BODY + (mottle[index] - 0.5) * SPLASH_MOTTLE + rim * SPLASH_RIM_BOOST

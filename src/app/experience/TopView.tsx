@@ -6,7 +6,7 @@ import { TOP_VIEW_HEIGHT, TOP_VIEW_MARGIN } from './constants'
 import { useDebugStore } from '@/store/debugStore'
 
 export default function TopView() {
-  const get = useThree((s) => s.get)
+  const get = useThree((state) => state.get)
 
   useLayoutEffect(() => {
     const camera = get().camera as THREE.OrthographicCamera
