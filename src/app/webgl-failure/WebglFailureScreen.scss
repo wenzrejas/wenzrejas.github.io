@@ -1,0 +1,181 @@
+@use '@/styles/breakpoints';
+@use '@/styles/parchment' as *;
+
+$ship-width: 204px;
+$ship-width-short: 150px;
+$ship-width-very-short: 104px;
+$notice-width: 34rem;
+$notice-width-side-by-side: 46rem;
+$links-width: 24rem;
+$crowded-card-fill: 'f4deb9';
+
+.webgl-failure {
+  position: fixed;
+  inset: 0;
+  overflow-y: auto;
+  color: $ink;
+
+  &__map {
+    position: fixed;
+    inset: 0;
+  }
+
+  &__notice {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: min(#{$notice-width}, 100%);
+    min-height: 100%;
+    margin-inline: auto;
+    padding: max(1.5rem, var(--safe-top)) max(1.5rem, var(--safe-right))
+      max(1.5rem, var(--safe-bottom)) max(1.5rem, var(--safe-left));
+  }
+
+  &__heading,
+  &__details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+  }
+
+  &__ship {
+    width: $ship-width;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  &__title {
+    margin-top: 1rem;
+    @include handwritten;
+    font-size: 2.25rem;
+    font-weight: 400;
+    line-height: 1.2;
+    text-align: center;
+    text-wrap: balance;
+  }
+
+  &__message {
+    margin-top: 0.75rem;
+    color: $ink-soft;
+    font-size: 1rem;
+    line-height: 1.55;
+    text-align: center;
+    text-wrap: pretty;
+  }
+
+  &__retry {
+    margin-top: 1.5rem;
+
+    @include cartouche-button;
+  }
+
+  &__retry-label {
+    @include cartouche-label;
+  }
+
+  &__links {
+    width: min(#{$links-width}, 100%);
+    margin-top: 1.5rem;
+  }
+
+  &__links-heading {
+    margin-bottom: 0.6rem;
+    @include handwritten;
+    font-size: 1.2rem;
+    font-weight: 400;
+    text-align: center;
+  }
+
+  @include breakpoints.map-crowded {
+    &__notice {
+      padding-block: max(1rem, var(--safe-top)) max(1rem, var(--safe-bottom));
+    }
+
+    &__links .social-link:not(:hover) {
+      border-image-source: card-frame-image(1, $crowded-card-fill);
+    }
+
+    &__ship {
+      width: $ship-width-short;
+    }
+
+    &__title {
+      margin-top: 0.5rem;
+      font-size: 1.9rem;
+    }
+
+    &__message {
+      margin-top: 0.5rem;
+    }
+
+    &__retry,
+    &__links {
+      margin-top: 1rem;
+    }
+
+    &__links-heading {
+      margin-bottom: 0.4rem;
+    }
+  }
+
+  @include breakpoints.very-short-screen {
+    &__ship {
+      width: $ship-width-very-short;
+    }
+
+    &__title {
+      font-size: 1.6rem;
+    }
+
+    &__message {
+      font-size: 0.875rem;
+      line-height: 1.45;
+    }
+
+    &__retry,
+    &__links {
+      margin-top: 0.75rem;
+    }
+
+    &__links-heading {
+      font-size: 1.05rem;
+    }
+  }
+
+  @include breakpoints.phone-landscape {
+    &__ship {
+      display: none;
+    }
+  }
+
+  @include breakpoints.side-by-side {
+    &__notice {
+      flex-direction: row;
+      gap: 1.5rem;
+      width: min(#{$notice-width-side-by-side}, 100%);
+    }
+
+    &__heading {
+      flex: 1;
+    }
+
+    &__details {
+      flex: 1.3;
+    }
+
+    &__ship {
+      display: block;
+      width: $ship-width-short;
+    }
+  }
+
+  @include breakpoints.narrow-phone {
+    &__links .social-link__arrow {
+      display: none;
+    }
+  }
+}

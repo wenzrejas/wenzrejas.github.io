@@ -1,6 +1,8 @@
 import { lazy, Suspense } from 'react'
 import Achievements from './achievements/Achievements'
 import Experience from './app/experience/Experience'
+import FailureBoundary from './app/FailureBoundary'
+import WebglFailureScreen from './app/webgl-failure/WebglFailureScreen'
 import IslandTitle from './world/islands/shared/IslandTitle'
 import { IS_DEBUG } from './app/experience/constants'
 import Soundscape from './audio/Soundscape'
@@ -14,12 +16,17 @@ import RaceCountdown from './minigames/checkpoint-run/countdown/RaceCountdown'
 import RunResults from './minigames/checkpoint-run/results/RunResults'
 import StartPrompt from './minigames/checkpoint-run/start-prompt/StartPrompt'
 import Panels from './panels/Panels'
+import { reportWebglFailure, useWebglStore } from './store/webglStore'
 import WorldMap from './world-map/WorldMap'
 
 const DebugTools =
   import.meta.env.DEV && IS_DEBUG ? lazy(() => import('./app/debug/DebugTools')) : null
 
 export default function App() {
+  const hasWebglFailed = useWebglStore((state) => state.hasFailed)
+
+  if (hasWebglFailed) return <WebglFailureScreen />
+
   return (
     <>
       {DebugTools && (
@@ -28,7 +35,9 @@ export default function App() {
         </Suspense>
       )}
       <Soundscape />
-      <Experience />
+      <FailureBoundary onError={reportWebglFailure}>
+        <Experience />
+      </FailureBoundary>
       <DepthsOverlay />
       <IslandTitle />
       <Hud />

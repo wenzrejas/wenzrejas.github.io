@@ -1,7 +1,7 @@
 import { Suspense, useEffect, useState, type ComponentType } from 'react'
+import FailureBoundary from '@/app/FailureBoundary'
 import { failDepths } from '@/store/depthsStore'
 import { isDepthsMounted, useViewStore } from '@/store/viewStore'
-import DepthsErrorBoundary from './DepthsErrorBoundary'
 import { loadDepthsScene } from './depthsSceneLoader'
 
 export default function DepthsStage() {
@@ -28,10 +28,10 @@ export default function DepthsStage() {
   if (!isMounted || !DepthsScene) return null
 
   return (
-    <DepthsErrorBoundary onError={failDepths}>
+    <FailureBoundary onError={failDepths}>
       <Suspense fallback={null}>
         <DepthsScene />
       </Suspense>
-    </DepthsErrorBoundary>
+    </FailureBoundary>
   )
 }

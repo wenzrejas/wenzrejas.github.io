@@ -1,21 +1,18 @@
 import { Component, type ReactNode } from 'react'
 
-interface DepthsErrorBoundaryProps {
+interface FailureBoundaryProps {
   onError: () => void
   children: ReactNode
 }
 
-interface DepthsErrorBoundaryState {
+interface FailureBoundaryState {
   hasFailed: boolean
 }
 
-export default class DepthsErrorBoundary extends Component<
-  DepthsErrorBoundaryProps,
-  DepthsErrorBoundaryState
-> {
-  override state: DepthsErrorBoundaryState = { hasFailed: false }
+export default class FailureBoundary extends Component<FailureBoundaryProps, FailureBoundaryState> {
+  override state: FailureBoundaryState = { hasFailed: false }
 
-  static getDerivedStateFromError(): DepthsErrorBoundaryState {
+  static getDerivedStateFromError(): FailureBoundaryState {
     return { hasFailed: true }
   }
 

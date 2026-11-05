@@ -7,9 +7,11 @@ import Bloom from './bloom/Bloom'
 import FramePacer from './frame-pacer/FramePacer'
 import CameraRig from './CameraRig'
 import { baseZoom } from './worldZoom'
+import { createWorldRenderer } from './worldRenderer'
 import TopView from './TopView'
 import SceneRenderer from './SceneRenderer'
 import WorldPause from './WorldPause'
+import ContextLossWatch from '../webgl-failure/ContextLossWatch'
 import DepthsStage from '@/depths/DepthsStage'
 import DiveTransition from '@/depths/dive/DiveTransition'
 import InteractionLayer from '@/interaction/InteractionLayer'
@@ -46,11 +48,12 @@ export default function Experience() {
         near: CAMERA_NEAR,
         far: CAMERA_FAR,
       }}
-      gl={{ antialias: true, stencil: true }}
+      gl={createWorldRenderer}
       dpr={PIXEL_RATIOS[graphicsQuality]}
       frameloop="demand"
     >
       <FramePacer />
+      <ContextLossWatch />
       <Suspense fallback={null}>
         <color attach="background" args={['#1a7fa8']} />
         {Perf && (

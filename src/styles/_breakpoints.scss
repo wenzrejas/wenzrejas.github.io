@@ -6,6 +6,10 @@ $sheet-portrait: '(max-width: 1023px) and (orientation: portrait)';
 $sheet-landscape: '(max-width: 1023px) and (orientation: landscape), #{$phone-landscape} and (orientation: landscape)';
 $depths-fitted: '(max-width: 1365px), (max-height: 639px)';
 $short-screen: '(max-height: 820px)';
+$map-crowded: '(max-height: 914px)';
+$very-short-screen: '(max-height: 600px)';
+$side-by-side: '(max-height: 500px) and (min-width: 560px)';
+$narrow-phone: '(max-width: 359px)';
 $portrait: '(orientation: portrait)';
 $touch-target: 2.75rem;
 $touch-root: ':root[data-input="touch"]';
@@ -54,6 +58,30 @@ $touch-root: ':root[data-input="touch"]';
 
 @mixin short-screen {
   @media #{$short-screen} {
+    @content;
+  }
+}
+
+@mixin map-crowded {
+  @media #{$map-crowded} {
+    @content;
+  }
+}
+
+@mixin very-short-screen {
+  @media #{$very-short-screen} {
+    @content;
+  }
+}
+
+@mixin side-by-side {
+  @media #{$side-by-side} {
+    @content;
+  }
+}
+
+@mixin narrow-phone {
+  @media #{$narrow-phone} {
     @content;
   }
 }
