@@ -16,7 +16,7 @@ import {
   WIND_TURN_RATE,
 } from './constants'
 
-interface WindStreak {
+export interface WindStreak {
   isActive: boolean
   progress: number
   duration: number

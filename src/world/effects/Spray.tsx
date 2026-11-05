@@ -6,6 +6,7 @@ import { MAX_FRAME_SECONDS } from '@/utils/time'
 import { useCycleStore } from '@/store/cycleStore'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { updateDrops, updateFoam, type ParticlePool } from './particlePool'
+import { SPRAY_FOAM_OPACITY } from './constants'
 
 interface SprayProps {
   foam: ParticlePool
@@ -32,7 +33,12 @@ export default function Spray({
   const foamGeometry = useMemo(() => buildFlatQuad(), [])
   const dropGeometry = useMemo(() => new THREE.BoxGeometry(1, 1, 1), [])
   const material = useMemo(
-    () => new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.8, depthWrite: false }),
+    () =>
+      new THREE.MeshBasicMaterial({
+        transparent: true,
+        opacity: SPRAY_FOAM_OPACITY,
+        depthWrite: false,
+      }),
     []
   )
 

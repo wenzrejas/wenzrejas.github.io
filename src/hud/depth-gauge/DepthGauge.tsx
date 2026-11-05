@@ -3,6 +3,7 @@ import { DEPTHS_COPY } from '@/data/depthsCopy'
 import { DEPTH_GAUGE_COPY } from '@/data/hudCopy'
 import { useDepthsStore } from '@/store/depthsStore'
 import { beginSurfacing } from '@/store/viewStore'
+import { loopAnimationFrames } from '@/utils/time'
 import { MILESTONE_MARKS, tapeOffset } from './milestoneTape'
 import './DepthGauge.scss'
 
@@ -18,17 +19,12 @@ export default function DepthGauge({ isTapeShown, isLocked }: DepthGaugeProps) {
     const tape = tapeRef.current
     if (!tape) return
 
-    let frame = 0
-    const tick = () => {
+    return loopAnimationFrames(() => {
       const { timeline } = useDepthsStore.getState()
       if (timeline) {
         tape.style.transform = `translateY(${tapeOffset(timeline.viewedLevel)}px)`
       }
-      frame = requestAnimationFrame(tick)
-    }
-    frame = requestAnimationFrame(tick)
-
-    return () => cancelAnimationFrame(frame)
+    })
   }, [])
 
   return (

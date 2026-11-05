@@ -106,3 +106,24 @@ export const BANK_LIMIT = 0.5
 export const AIRBORNE_FLUKE_SHARE = 0.15
 export const FIN_BACK_SHARE = 0.1
 export const FIN_WAKE_MIN_SPEED = 2
+
+// ── Spray jitter ──────────────────────────────────────────────────────────────
+export const FIN_WAKE_DRIFT_JITTER = [0.6, 1.2] as const
+export const FIN_WAKE_SIDE_GAP = 0.4
+export const FIN_WAKE_SIZE_JITTER = [0.7, 1.1] as const
+export const FIN_WAKE_LIFE_JITTER = [0.8, 1.2] as const
+export const SPLASH_CARRY_SHARE = 0.25
+export const SPLASH_DROP_SPREAD = [2, 7] as const
+export const SPLASH_DROP_SCATTER = 0.8
+export const SPLASH_DROP_Y = 0.3
+export const SPLASH_DROP_RISE = [8, 15] as const
+export const SPLASH_DROP_SIZE_JITTER = [0.6, 1.3] as const
+export const SPLASH_DROP_LIFE = 3
+export const SPLASH_RING_ANGLE_JITTER = 0.2
+export const SPLASH_RING_SPEED_JITTER = [0.7, 1.2] as const
+export const SPLASH_RING_RADIUS = 1.2
+export const SPLASH_RING_SIZE_JITTER = [1, 1.6] as const
+export const SPLASH_RING_LIFE_JITTER = [0.9, 1.3] as const
+
+// ── Depth ─────────────────────────────────────────────────────────────────────
+export const DEPTH_SETTLED_WITHIN = 0.3

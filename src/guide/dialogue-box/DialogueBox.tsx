@@ -4,6 +4,7 @@ import { DIALOGUES, GUIDE_COPY } from '@/data/guideCopy'
 import { endDialogue, showNextPage, showPreviousPage, useGuideStore } from '@/store/guideStore'
 import { useIsTouchInput } from '@/store/inputStore'
 import { useCompactLayout } from '@/utils/layout'
+import { toMilliseconds } from '@/utils/time'
 import { MODAL_DIALOGUES } from '../constants'
 import { animationSeconds } from '../mascot/mascotPlayback'
 import { BOX_CLOSE_SPRING, BOX_SPRING, HIDDEN_BOX_SCALE } from './constants'
@@ -13,7 +14,7 @@ import './DialogueBox.scss'
 
 const HIDDEN_BOX = { opacity: 0, scale: HIDDEN_BOX_SCALE }
 const SHOWN_BOX = { opacity: 1, scale: 1 }
-const SHOWN_BOX_AFTER_MASCOT = { ...SHOWN_BOX, delay: animationSeconds('appear') * 1000 }
+const SHOWN_BOX_AFTER_MASCOT = { ...SHOWN_BOX, delay: toMilliseconds(animationSeconds('appear')) }
 const CLOSING_BOX = { ...HIDDEN_BOX, config: BOX_CLOSE_SPRING }
 
 const visibilityAt = (opacity: number) => (opacity > 0 ? 'visible' : 'hidden')

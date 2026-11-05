@@ -1,5 +1,5 @@
 import { useEffect, useEffectEvent, useState, type RefObject } from 'react'
-import { MAX_FRAME_SECONDS } from '@/utils/time'
+import { MAX_FRAME_SECONDS, toMilliseconds, toSeconds } from '@/utils/time'
 import { holdSeconds, messageAt, progressCeiling } from './loadingMessages'
 import { advanceProgress } from './loadingProgress'
 
@@ -34,7 +34,7 @@ export function useLoadingPace(
     let previousTime = performance.now()
     let frame = 0
     const step = (time: number) => {
-      const seconds = Math.min(Math.max(0, (time - previousTime) / 1000), MAX_FRAME_SECONDS)
+      const seconds = Math.min(Math.max(0, toSeconds(time - previousTime)), MAX_FRAME_SECONDS)
       previousTime = time
       shown = advanceProgress(shown, readGoal(), seconds)
       gaugeRef.current?.style.setProperty('--progress', shown.toFixed(4))
@@ -50,7 +50,7 @@ export function useLoadingPace(
     if (!canWrite) return
     const timer = window.setTimeout(
       () => setMessages((current) => ({ ...current, isSettled: true })),
-      holdSeconds(shown, fading !== null) * 1000
+      toMilliseconds(holdSeconds(shown, fading !== null))
     )
     return () => window.clearTimeout(timer)
   }, [canWrite, shown, fading])

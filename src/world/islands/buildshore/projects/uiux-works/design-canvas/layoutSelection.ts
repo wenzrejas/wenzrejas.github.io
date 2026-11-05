@@ -17,13 +17,15 @@ interface SelectionFrame {
 const { smoothstep } = THREE.MathUtils
 const _linear = new THREE.Matrix3()
 const _right = new THREE.Vector3()
+const BOX_CORNERS = 8
+
 const _up = new THREE.Vector3()
 const _offset = new THREE.Vector3()
 
 export function frameSelection(gem: THREE.Mesh): SelectionFrame {
   gem.geometry.computeBoundingBox()
   const { min, max } = gem.geometry.boundingBox!
-  const restOffsets = Array.from({ length: 8 }, (_, corner) =>
+  const restOffsets = Array.from({ length: BOX_CORNERS }, (_, corner) =>
     new THREE.Vector3(
       corner & 1 ? max.x : min.x,
       corner & 2 ? max.y : min.y,

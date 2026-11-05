@@ -6,6 +6,8 @@ import {
   SPLASH_EDGE_SOFTNESS,
   SPLASH_LOBE_COUNT,
   SPLASH_LOBE_STRENGTH,
+  SPLASH_LOBE_STRENGTH_FLOOR,
+  SPLASH_LOBE_STRENGTH_RANGE,
   SPLASH_MOTTLE,
   SPLASH_MOTTLE_OCTAVES,
   SPLASH_PIXELS,
@@ -29,7 +31,10 @@ function octaveNoise(octaves: NoiseOctave[], random: Random) {
 function splashLobes(random: Random) {
   return Array.from({ length: SPLASH_LOBE_COUNT }, (_, i) => ({
     frequency: i + 2,
-    strength: (SPLASH_LOBE_STRENGTH * (0.4 + 0.6 * random())) / Math.sqrt(i + 1),
+    strength:
+      (SPLASH_LOBE_STRENGTH *
+        (SPLASH_LOBE_STRENGTH_FLOOR + SPLASH_LOBE_STRENGTH_RANGE * random())) /
+      Math.sqrt(i + 1),
     phase: random() * Math.PI * 2,
   }))
 }

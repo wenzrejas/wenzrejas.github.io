@@ -1,9 +1,10 @@
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
-import { REVEAL_SUBTITLE_COLORS, REVEAL_TITLE_IN } from './constants'
+import { REVEAL_SUBTITLE_COLORS, REVEAL_TITLE_IN, TITLE_RISE_PIXELS } from './constants'
 import { ISLAND_COPY } from '@/data/islandCopy'
 import { useRevealStore } from '@/store/revealStore'
 import { useDebugStore } from '@/store/debugStore'
+import { loopAnimationFrames } from '@/utils/time'
 import './IslandTitle.scss'
 
 export default function IslandTitle() {
@@ -24,20 +25,15 @@ export default function IslandTitle() {
       return
     }
 
-    let frame = 0
-    const tick = () => {
+    return loopAnimationFrames(() => {
       const titleShare = THREE.MathUtils.smoothstep(
         useRevealStore.getState().blend,
         REVEAL_TITLE_IN,
         1
       )
       card.style.opacity = String(titleShare)
-      card.style.transform = `translateY(${(1 - titleShare) * 16}px)`
-      frame = requestAnimationFrame(tick)
-    }
-    frame = requestAnimationFrame(tick)
-
-    return () => cancelAnimationFrame(frame)
+      card.style.transform = `translateY(${(1 - titleShare) * TITLE_RISE_PIXELS}px)`
+    })
   }, [key, pinned])
 
   if (!key) return null

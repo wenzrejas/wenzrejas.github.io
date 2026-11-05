@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useShipStore } from '@/store/shipStore'
+import { loopAnimationFrames } from '@/utils/time'
 import { TAPE_MARKS, tapeOffset } from './tape'
 import './Compass.scss'
 
@@ -10,14 +11,9 @@ export default function Compass() {
     const tape = tapeRef.current
     if (!tape) return
 
-    let frame = 0
-    const tick = () => {
+    return loopAnimationFrames(() => {
       tape.style.transform = `translateX(${tapeOffset(useShipStore.getState().heading)}px)`
-      frame = requestAnimationFrame(tick)
-    }
-    frame = requestAnimationFrame(tick)
-
-    return () => cancelAnimationFrame(frame)
+    })
   }, [])
 
   return (

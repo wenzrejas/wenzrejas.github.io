@@ -158,3 +158,22 @@ export const GHOST_EDGE_ANGLE = 30
 export const GHOST_SHOW_SECONDS = 0.5
 export const GHOST_END_FADE_SECONDS = 0.8
 export const GHOST_TURN_RATE = 8
+
+// ── Spray jitter ──────────────────────────────────────────────────────────────
+export const RING_SPARK_BURST_JITTER = [0.4, 1] as const
+export const RING_SPARK_THROUGH_JITTER = [0.4, 1] as const
+export const RING_SPLASH_SPEED_JITTER = [0.3, 1] as const
+export const RING_SPLASH_DROP_Y = 0.5
+export const RING_SPLASH_RISE_JITTER = [0.5, 1] as const
+export const RING_SPLASH_DROP_SIZE = [0.5, 1] as const
+export const RING_SPLASH_FOAM_Y = 0.4
+export const RING_SPLASH_FOAM_SIZE_JITTER = [0.6, 1.2] as const
+export const SURGE_SPRAY_OUT_JITTER = [0.5, 1] as const
+export const SURGE_DROP_Y = 0.6
+export const SURGE_SPRAY_RISE_JITTER = [0.5, 1] as const
+export const SURGE_DROP_SIZE_JITTER = [0.6, 1.2] as const
+export const SURGE_FOAM_Y = 0.4
+export const SURGE_FOAM_SIZE_JITTER = [0.6, 1.3] as const
+
+// ── Buoy look ─────────────────────────────────────────────────────────────────
+export const BUOY_ROUGHNESS = 0.55

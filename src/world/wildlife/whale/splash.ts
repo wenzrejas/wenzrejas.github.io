@@ -15,17 +15,24 @@ import {
   SPLASH_DROP_SIZE_MIN,
   SPLASH_DROP_Y,
   SPLASH_FOAM,
+  SPLASH_FOAM_ANGLE_JITTER,
   SPLASH_FOAM_LIFE,
+  SPLASH_FOAM_LIFE_JITTER,
   SPLASH_FOAM_SIZE_MAX,
   SPLASH_FOAM_SIZE_MIN,
   SPLASH_FOAM_SPEED,
+  SPLASH_FOAM_SPEED_JITTER,
   SPLASH_OUTWARD_MAX,
   SPLASH_OUTWARD_MIN,
   SPLASH_RADIUS,
   WAKE_DRIFT,
+  WAKE_DRIFT_JITTER,
+  WAKE_GAP_JITTER,
   WAKE_LIFE,
+  WAKE_LIFE_JITTER,
   WAKE_SIDE_GAP,
   WAKE_SIZE,
+  WAKE_SIZE_JITTER,
   WAKE_SPACING,
 } from './constants'
 import { blowholeOf, wakeStrength, type Whale } from './whaleMotion'
@@ -80,8 +87,9 @@ export function emitSplash(
   }
 
   for (let i = 0; i < SPLASH_FOAM; i++) {
-    const angle = (i / SPLASH_FOAM) * Math.PI * 2 + rand(-0.1, 0.1)
-    const speed = SPLASH_FOAM_SPEED * rand(0.6, 1.2) * strength
+    const angle =
+      (i / SPLASH_FOAM) * Math.PI * 2 + rand(-SPLASH_FOAM_ANGLE_JITTER, SPLASH_FOAM_ANGLE_JITTER)
+    const speed = SPLASH_FOAM_SPEED * rand(...SPLASH_FOAM_SPEED_JITTER) * strength
     foam.spawn(
       x + Math.cos(angle) * SPLASH_RADIUS,
       FOAM_Y,
@@ -90,7 +98,7 @@ export function emitSplash(
       0,
       Math.sin(angle) * speed,
       rand(SPLASH_FOAM_SIZE_MIN, SPLASH_FOAM_SIZE_MAX),
-      SPLASH_FOAM_LIFE * rand(0.8, 1.2)
+      SPLASH_FOAM_LIFE * rand(...SPLASH_FOAM_LIFE_JITTER)
     )
   }
 }
@@ -108,8 +116,8 @@ export function trailWake(foam: ParticlePool, whale: Whale): void {
   const sideX = Math.cos(whale.heading)
   const sideZ = -Math.sin(whale.heading)
   for (const side of [-1, 1]) {
-    const gap = WAKE_SIDE_GAP * rand(0.4, 1.6) * side
-    const drift = WAKE_DRIFT * rand(0.6, 1.2) * side
+    const gap = WAKE_SIDE_GAP * rand(...WAKE_GAP_JITTER) * side
+    const drift = WAKE_DRIFT * rand(...WAKE_DRIFT_JITTER) * side
     foam.spawn(
       x + sideX * gap,
       FOAM_Y,
@@ -117,8 +125,8 @@ export function trailWake(foam: ParticlePool, whale: Whale): void {
       sideX * drift,
       0,
       sideZ * drift,
-      WAKE_SIZE * strength * rand(0.5, 1.2),
-      WAKE_LIFE * rand(0.8, 1.2)
+      WAKE_SIZE * strength * rand(...WAKE_SIZE_JITTER),
+      WAKE_LIFE * rand(...WAKE_LIFE_JITTER)
     )
   }
 }

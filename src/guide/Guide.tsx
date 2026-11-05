@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { startDialogue, useGuideStore } from '@/store/guideStore'
 import { useLoadingStore } from '@/store/loadingStore'
 import { useIsPanelCoveringScreen } from '@/store/panelStore'
+import { toMilliseconds } from '@/utils/time'
 import { INTRODUCTION_DELAY_SECONDS } from './constants'
 import DialogueBox from './dialogue-box/DialogueBox'
 import Mascot from './mascot/Mascot'
@@ -25,7 +26,7 @@ export default function Guide() {
     if (!isLoaderGone || hasFinishedIntroduction) return
     const greeting = window.setTimeout(
       () => startDialogue('introduction'),
-      INTRODUCTION_DELAY_SECONDS * 1000
+      toMilliseconds(INTRODUCTION_DELAY_SECONDS)
     )
     return () => window.clearTimeout(greeting)
   }, [isLoaderGone, hasFinishedIntroduction])

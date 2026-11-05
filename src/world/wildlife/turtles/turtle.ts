@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { useWhaleStore } from '@/store/whaleStore'
-import { mix, rand, turnToward, wrapAngle } from '@/utils/math'
+import { mix, NEAR_ZERO, rand, randomSeed, turnToward, wrapAngle } from '@/utils/math'
 import { isOnScreen } from '@/utils/screen'
 import type { ParticlePool } from '@/world/effects/particlePool'
 import { headingFromWhirlpool, isOpenWater, whirlpoolGap } from '@/world/islands/shared/islandZones'
@@ -10,11 +10,14 @@ import {
   BREATH_DELAY_MAX,
   BREATH_DELAY_MIN,
   BREATH_DURATION,
+  BREATH_RIPPLE_AT,
+  BREATH_RISE_GAIN,
   BREATH_SURFACE_Y,
   CRUISE_DEPTH_MAX,
   CRUISE_DEPTH_MIN,
   CRUISE_SPEED_MAX,
   CRUISE_SPEED_MIN,
+  DEPTH_SETTLED_WITHIN,
   DIVE_RATE,
   GLIDE_FREQUENCY,
   HIDDEN_DEPTH,
@@ -58,8 +61,13 @@ import {
   SPAWN_VIEW_MARGIN,
   SPEED_RATE,
   STROKE_FREQUENCY,
+  SWIM_PULSE_RANGE,
+  SWIM_PULSE_RATE,
+  TURTLE_BANK_LIMIT,
+  TURTLE_BANK_RATE,
   TURTLE_LENGTH,
   TURTLE_SIZE_JITTER,
+  TURTLE_WANDER_WAVE_RATE,
   WANDER_RATE,
   WHALE_SHY_MARGIN,
 } from './constants'
@@ -106,7 +114,7 @@ function createTurtle(x: number, z: number, heading: number): Turtle {
     pitch: 0,
     bank: 0,
     phase: Math.random() * Math.PI * 2,
-    seed: Math.random() * 100,
+    seed: randomSeed(),
     size: TURTLE_LENGTH * rand(1 - TURTLE_SIZE_JITTER, 1 + TURTLE_SIZE_JITTER),
     age: 0,
     lifetime: rand(LIFETIME_MIN, LIFETIME_MAX),
@@ -139,7 +147,7 @@ export function steer(
   dt: number
 ): void {
   const previousHeading = turtle.heading
-  turtle.heading += Math.sin(time * 0.2 + turtle.seed) * WANDER_RATE * dt
+  turtle.heading += Math.sin(time * TURTLE_WANDER_WAVE_RATE + turtle.seed) * WANDER_RATE * dt
 
   startle(turtle, shipX, shipZ, SHY_RADIUS)
   const whale = useWhaleStore.getState()
@@ -166,7 +174,9 @@ export function steer(
   keepOffShore(turtle, SHORE_GAP)
 
   const yawRate = dt > 0 ? wrapAngle(turtle.heading - previousHeading) / dt : 0
-  turtle.bank += (clamp(-yawRate * BANK_FACTOR, -0.4, 0.4) - turtle.bank) * Math.min(1, 3 * dt)
+  turtle.bank +=
+    (clamp(-yawRate * BANK_FACTOR, -TURTLE_BANK_LIMIT, TURTLE_BANK_LIMIT) - turtle.bank) *
+    Math.min(1, TURTLE_BANK_RATE * dt)
 
   const depthTarget = targetDepth(turtle)
   const depthRate = depthTarget < turtle.depth ? RISE_RATE : DIVE_RATE
@@ -183,7 +193,7 @@ export function separate(turtles: Turtle[], dt: number): void {
       const deltaZ = turtle.z - other.z
       const distance = Math.hypot(deltaX, deltaZ)
       const reach = (turtle.size + other.size) * SEPARATION_FACTOR
-      if (distance >= reach || distance < 1e-3) continue
+      if (distance >= reach || distance < NEAR_ZERO) continue
       const strength = 1 - distance / reach
       pushX += (deltaX / distance) * strength
       pushZ += (deltaZ / distance) * strength
@@ -255,10 +265,10 @@ export function breathe(turtle: Turtle, dt: number): boolean {
       turtle.breathProgress = -1
       turtle.breathTimer = rand(BREATH_DELAY_MIN, BREATH_DELAY_MAX)
     }
-    return before < 0.3 && turtle.breathProgress >= 0.3
+    return before < BREATH_RIPPLE_AT && turtle.breathProgress >= BREATH_RIPPLE_AT
   }
 
-  const settled = Math.abs(turtle.depth - turtle.cruiseDepth) < 0.3
+  const settled = Math.abs(turtle.depth - turtle.cruiseDepth) < DEPTH_SETTLED_WITHIN
   if (turtle.leaving || turtle.shyTimer > 0 || !settled) return false
   turtle.breathTimer -= dt
   if (turtle.breathTimer <= 0) turtle.breathProgress = 0
@@ -288,7 +298,9 @@ export function emitBreathRipple(ripples: ParticlePool, turtle: Turtle): void {
 
 export function updatePose(turtle: Turtle, time: number, dt: number): void {
   const surfacing =
-    turtle.breathProgress >= 0 ? Math.min(1, Math.sin(Math.PI * turtle.breathProgress) * 1.8) : 0
+    turtle.breathProgress >= 0
+      ? Math.min(1, Math.sin(Math.PI * turtle.breathProgress) * BREATH_RISE_GAIN)
+      : 0
   const y = mix(-turtle.depth, BREATH_SURFACE_Y, surfacing)
   const climb = dt > 0 ? (y - turtle.y) / dt : 0
   turtle.y = y
@@ -301,6 +313,8 @@ export function updatePose(turtle: Turtle, time: number, dt: number): void {
   turtle.pitch += (targetPitch - turtle.pitch) * Math.min(1, PITCH_SMOOTH * dt)
 
   const stroking =
-    turtle.shyTimer > 0 ? 1 : smoothstep(Math.sin(time * 0.45 + turtle.seed), -0.2, 0.6)
+    turtle.shyTimer > 0
+      ? 1
+      : smoothstep(Math.sin(time * SWIM_PULSE_RATE + turtle.seed), ...SWIM_PULSE_RANGE)
   turtle.phase += dt * Math.PI * 2 * mix(GLIDE_FREQUENCY, STROKE_FREQUENCY, stroking)
 }

@@ -28,3 +28,6 @@ export const BELL_GLOW = 0.35
 export const RIM_GLOW = 1.1
 export const RIM_POWER = 2
 export const TENTACLE_GLOW = 0.45
+
+// ── Facets ────────────────────────────────────────────────────────────────────
+export const DEGENERATE_FACET_SIZE = 1e-10

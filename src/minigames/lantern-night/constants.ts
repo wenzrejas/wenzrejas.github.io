@@ -119,3 +119,6 @@ export const LANTERN_POOL_SIZE = 44
 export const LANTERN_POOL_Y = 0.3
 export const LANTERN_POOL_STRENGTH = 0.38
 export const LANTERN_POOL_GONE_HEIGHT = 110
+
+// ── Sway ──────────────────────────────────────────────────────────────────────
+export const LANTERN_SWAY_Z_SHARE = 0.6

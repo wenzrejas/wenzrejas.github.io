@@ -44,6 +44,7 @@ import {
   BUOY_ROOF_HEIGHT,
   BUOY_ROOF_RADIUS,
   BUOY_ROOF_RIM_HEIGHT,
+  BUOY_ROUGHNESS,
   BUOY_SCALE,
   BUOY_STRIPE_BOTTOM_SHARE,
   BUOY_STRIPE_COLOR,
@@ -195,7 +196,7 @@ const rideWaves = <Material extends THREE.Material>(material: Material) =>
   })
 
 const paint = (color: string) =>
-  rideWaves(new THREE.MeshStandardMaterial({ color, roughness: 0.55, flatShading: true }))
+  rideWaves(new THREE.MeshStandardMaterial({ color, roughness: BUOY_ROUGHNESS, flatShading: true }))
 
 const createFlagMaterial = () =>
   patchShader(new THREE.MeshBasicMaterial({ side: THREE.DoubleSide }), {

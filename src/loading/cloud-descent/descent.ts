@@ -1,12 +1,13 @@
 import * as THREE from 'three'
 import { useLoadingStore } from '@/store/loadingStore'
+import { toSeconds } from '@/utils/time'
 import { ARRIVAL_ZOOM_FROM, CLOUD_LAYERS, CLOUD_ZOOM_LIMIT, DESCENT_SECONDS } from './constants'
 
 function descentProgress() {
   const { descentStartedAt, isLoaderGone } = useLoadingStore.getState()
   if (isLoaderGone) return 1
   if (descentStartedAt === null) return 0
-  const seconds = (performance.now() - descentStartedAt) / 1000
+  const seconds = toSeconds(performance.now() - descentStartedAt)
   return THREE.MathUtils.smoothstep(seconds, 0, DESCENT_SECONDS)
 }
 

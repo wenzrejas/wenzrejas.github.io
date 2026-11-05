@@ -8,6 +8,8 @@ import {
   NEON_FLICKER_DIM,
   NEON_FLICKER_RATE,
   NEON_FLICKER_SECONDS,
+  NEON_NOISE_RATE,
+  NEON_NOISE_SCALE,
 } from './constants'
 
 const NEON_LIT_SECONDS = NEON_FLICKER_DELAY_SECONDS + NEON_FLICKER_SECONDS
@@ -30,7 +32,7 @@ export const waveLevel = (cafeBreak: HoverTimeline) =>
   timelineStage(cafeBreak, NEON_FLICKER_DELAY_SECONDS)
 
 const flickerNoise = (step: number) => {
-  const noise = Math.sin(step * 12.9898) * 43758.5453
+  const noise = Math.sin(step * NEON_NOISE_RATE) * NEON_NOISE_SCALE
   return noise - Math.floor(noise)
 }
 

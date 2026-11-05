@@ -46,3 +46,14 @@ export const ISLAND_LEAVE_MARGIN = 120
 
 export type IslandKey = keyof typeof WORLD_LOCATIONS
 export type IslandConfig = (typeof WORLD_LOCATIONS)[IslandKey]
+
+// ── Night glow ────────────────────────────────────────────────────────────────
+export const NIGHT_GLOW_START = 0.05
+export const NIGHT_GLOW_FULL = 0.42
+
+// ── Model and title defaults ──────────────────────────────────────────────────
+export const DEFAULT_ISLAND_BRIGHTNESS = 1.05
+export const TITLE_RISE_PIXELS = 16
+
+// ── Ground glow motes ─────────────────────────────────────────────────────────
+export const GROUND_MOTE_SIZE_JITTER = [0.6, 1.2] as const

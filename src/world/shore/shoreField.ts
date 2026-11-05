@@ -34,6 +34,9 @@ interface CoastFieldSettings {
 
 type FieldFrame = Omit<DistanceField, 'distances'>
 
+const TRIANGLE_FLOATS = 9
+const FOOTPRINT_FLOATS = 6
+
 const { clamp } = THREE.MathUtils
 
 const _worldToModel = new THREE.Matrix4()
@@ -80,14 +83,14 @@ function readTriangles(model: THREE.Object3D): Float32Array {
 
 function trianglesWithin(triangles: Float32Array, center: THREE.Vector3, radius: number) {
   const kept: number[] = []
-  for (let first = 0; first < triangles.length; first += 9) {
+  for (let first = 0; first < triangles.length; first += TRIANGLE_FLOATS) {
     let isInside = true
-    for (let corner = first; corner < first + 9; corner += 3) {
+    for (let corner = first; corner < first + TRIANGLE_FLOATS; corner += 3) {
       if (Math.hypot(triangles[corner] - center.x, triangles[corner + 2] - center.z) > radius) {
         isInside = false
       }
     }
-    if (isInside) kept.push(...triangles.subarray(first, first + 9))
+    if (isInside) kept.push(...triangles.subarray(first, first + TRIANGLE_FLOATS))
   }
   return Float32Array.from(kept)
 }
@@ -114,7 +117,7 @@ function sliceEdge(
 
 function sliceAtWaterline(triangles: Float32Array, waterY: number): number[] {
   const segments: number[] = []
-  for (let first = 0; first < triangles.length; first += 9) {
+  for (let first = 0; first < triangles.length; first += TRIANGLE_FLOATS) {
     const crossings =
       Number(sliceEdge(triangles, first, first + 3, waterY, segments)) +
       Number(sliceEdge(triangles, first + 3, first + 6, waterY, segments)) +
@@ -161,7 +164,7 @@ function overhangFootprints(
   shoreline: DistanceField
 ): number[] {
   const footprints: number[] = []
-  for (let first = 0; first < triangles.length; first += 9) {
+  for (let first = 0; first < triangles.length; first += TRIANGLE_FLOATS) {
     const cornerAX = triangles[first]
     const cornerAZ = triangles[first + 2]
     const cornerBX = triangles[first + 3]
@@ -241,7 +244,7 @@ function markOutline(gridSegments: Float64Array, resolution: number): Uint8Array
 
 function fillFootprints(gridFootprints: Float64Array, outline: Uint8Array, resolution: number) {
   const last = resolution - 1
-  for (let i = 0; i < gridFootprints.length; i += 6) {
+  for (let i = 0; i < gridFootprints.length; i += FOOTPRINT_FLOATS) {
     const cornerAX = gridFootprints[i]
     const cornerAZ = gridFootprints[i + 1]
     const cornerBX = gridFootprints[i + 2]

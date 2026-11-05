@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { NEAR_ZERO } from '@/utils/math'
 
 const _direction = new THREE.Vector3()
 
@@ -6,7 +7,7 @@ const frame = { x: 0, z: 0, fwdX: 0, fwdZ: 0, halfW: 0, halfD: 0, lift: 0 }
 
 export function sampleGroundFrame(camera: THREE.Camera, out?: THREE.Vector2): void {
   camera.getWorldDirection(_direction)
-  const drop = Math.max(Math.abs(_direction.y), 1e-3)
+  const drop = Math.max(Math.abs(_direction.y), NEAR_ZERO)
   const flat = Math.hypot(_direction.x, _direction.z) || 1
 
   frame.fwdX = _direction.x / flat

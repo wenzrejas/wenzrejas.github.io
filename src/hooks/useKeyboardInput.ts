@@ -7,49 +7,42 @@ export interface Keys {
   right: boolean
 }
 
+const NO_KEYS: Keys = { forward: false, backward: false, left: false, right: false }
+
+const DIRECTION_BY_KEY = new Map<string, keyof Keys>([
+  ['w', 'forward'],
+  ['W', 'forward'],
+  ['ArrowUp', 'forward'],
+  ['s', 'backward'],
+  ['S', 'backward'],
+  ['ArrowDown', 'backward'],
+  ['a', 'left'],
+  ['A', 'left'],
+  ['ArrowLeft', 'left'],
+  ['d', 'right'],
+  ['D', 'right'],
+  ['ArrowRight', 'right'],
+])
+
 export function useKeyboardInput(): React.RefObject<Keys> {
-  const keys = useRef<Keys>({ forward: false, backward: false, left: false, right: false })
+  const keys = useRef<Keys>({ ...NO_KEYS })
 
   useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'w' || event.key === 'W' || event.key === 'ArrowUp')
-        keys.current.forward = true
-      if (event.key === 's' || event.key === 'S' || event.key === 'ArrowDown')
-        keys.current.backward = true
-      if (event.key === 'a' || event.key === 'A' || event.key === 'ArrowLeft')
-        keys.current.left = true
-      if (event.key === 'd' || event.key === 'D' || event.key === 'ArrowRight')
-        keys.current.right = true
+    const setKey = ({ key }: KeyboardEvent, isDown: boolean) => {
+      const direction = DIRECTION_BY_KEY.get(key)
+      if (direction) keys.current[direction] = isDown
     }
-    const onKeyUp = (event: KeyboardEvent) => {
-      if (event.key === 'w' || event.key === 'W' || event.key === 'ArrowUp')
-        keys.current.forward = false
-      if (event.key === 's' || event.key === 'S' || event.key === 'ArrowDown')
-        keys.current.backward = false
-      if (event.key === 'a' || event.key === 'A' || event.key === 'ArrowLeft')
-        keys.current.left = false
-      if (event.key === 'd' || event.key === 'D' || event.key === 'ArrowRight')
-        keys.current.right = false
-    }
-    const release = () => {
-      keys.current.forward = false
-      keys.current.backward = false
-      keys.current.left = false
-      keys.current.right = false
-    }
+    const release = () => Object.assign(keys.current, NO_KEYS)
     const releaseWhenHidden = () => {
       if (document.hidden) release()
     }
-    window.addEventListener('keydown', onKeyDown)
-    window.addEventListener('keyup', onKeyUp)
-    window.addEventListener('blur', release)
-    document.addEventListener('visibilitychange', releaseWhenHidden)
-    return () => {
-      window.removeEventListener('keydown', onKeyDown)
-      window.removeEventListener('keyup', onKeyUp)
-      window.removeEventListener('blur', release)
-      document.removeEventListener('visibilitychange', releaseWhenHidden)
-    }
+    const listening = new AbortController()
+    const { signal } = listening
+    window.addEventListener('keydown', (event) => setKey(event, true), { signal })
+    window.addEventListener('keyup', (event) => setKey(event, false), { signal })
+    window.addEventListener('blur', release, { signal })
+    document.addEventListener('visibilitychange', releaseWhenHidden, { signal })
+    return () => listening.abort()
   }, [])
 
   return keys

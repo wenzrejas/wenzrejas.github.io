@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import type { Channel } from '@/audio/sounds'
 import type { PhaseName } from '@/world/environment/day-night-cycle/dayNightKeyframes'
+import { MILLISECONDS_PER_SECOND } from '@/utils/time'
 import type { WeatherType } from './weatherStore'
 import { hasFinePointer } from './inputStore'
 import { rememberedRecord, rememberText } from './visitorMemory'
@@ -39,8 +40,8 @@ const DAY_PACES: Record<DayLength, number> = { short: 2, normal: 1, long: 0.5 }
 const WILDLIFE_PACES: Record<WildlifeActivity, number> = { calm: 0.5, normal: 1, lively: 2 }
 const SAILING_PACES: Record<SailingSpeed, number> = { leisurely: 0.7, normal: 1, brisk: 1.35 }
 const FRAME_INTERVALS_MILLISECONDS: Record<FrameRateLimit, number | null> = {
-  thirty: 1000 / 30,
-  sixty: 1000 / 60,
+  thirty: MILLISECONDS_PER_SECOND / 30,
+  sixty: MILLISECONDS_PER_SECOND / 60,
   unlimited: null,
 }
 

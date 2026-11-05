@@ -166,3 +166,31 @@ export const SPIRAL_STREAKS = 1.4
 export const CORE_BOOST = 1.2
 export const CORE_SHIFT = 0.6
 export const MOTE_AWAKEN_BOOST = 1.5
+
+// ── Spray jitter ──────────────────────────────────────────────────────────────
+export const WHIRLPOOL_SPLASH_STRENGTH_BASE = 0.6
+export const WHIRLPOOL_SPLASH_STRENGTH_PER_IMPACT = 0.4
+export const WHIRLPOOL_SPLASH_STRENGTH_JITTER = [0.8, 1.2] as const
+export const WHIRLPOOL_SPLASH_RECOIL_JITTER = [0.3, 1.3] as const
+export const WHIRLPOOL_SPLASH_CARRY_JITTER = [-0.4, 1] as const
+export const WHIRLPOOL_SPLASH_SCATTER = 1
+export const WHIRLPOOL_SPLASH_RISE_JITTER = [0.6, 1.2] as const
+export const WHIRLPOOL_SPLASH_DROP_SIZE_JITTER = [0.6, 1.3] as const
+export const WHIRLPOOL_DROP_LIFE = 3
+export const WHIRLPOOL_SPLASH_FOAM_SWEEP = 0.7
+export const WHIRLPOOL_SPLASH_FOAM_SPEED_JITTER = [0.5, 1.1] as const
+export const WHIRLPOOL_SPLASH_FOAM_LEAD = 0.8
+export const WHIRLPOOL_SPLASH_FOAM_SIZE_JITTER = [0.8, 1.4] as const
+export const WHIRLPOOL_SPLASH_FOAM_LIFE_JITTER = [0.8, 1.2] as const
+export const WHIRLPOOL_SPRAY_SPEED_JITTER = [0.6, 1.2] as const
+export const WHIRLPOOL_SPRAY_SCATTER = 0.6
+export const WHIRLPOOL_SPRAY_SIDE_DRIFT = 1.5
+export const WHIRLPOOL_SPRAY_RISE_JITTER = [0.6, 1.2] as const
+export const WHIRLPOOL_SPRAY_DROP_SIZE_JITTER = [0.6, 1.3] as const
+export const WHIRLPOOL_SPRAY_FOAM_DRIFT_JITTER = [0.2, 0.5] as const
+export const WHIRLPOOL_SPRAY_FOAM_SCATTER = 0.8
+export const WHIRLPOOL_SPRAY_FOAM_SIZE_JITTER = [0.6, 1.1] as const
+export const WHIRLPOOL_SPRAY_FOAM_LIFE_JITTER = [0.6, 1] as const
+
+// ── Mote jitter ───────────────────────────────────────────────────────────────
+export const WHIRLPOOL_MOTE_SIZE_JITTER = [0.6, 1.3] as const

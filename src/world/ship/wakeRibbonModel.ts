@@ -3,6 +3,7 @@ import { algaeDefines, algaeUniforms } from '../wildlife/algae/algaeField'
 import { WAKE_FADE_MAX, WAKE_TOTAL_VERTS, WAKE_TRAIL_LENGTH } from './constants'
 import WAKE_VERT from './shaders/wake.vert.glsl'
 import WAKE_FRAG from './shaders/wake.frag.glsl'
+import { createUnboundedSphere } from '@/utils/geometry'
 
 export function buildWakeRibbonGeometry(): THREE.BufferGeometry {
   const positions = new Float32Array(WAKE_TOTAL_VERTS * 3)
@@ -32,7 +33,7 @@ export function buildWakeRibbonGeometry(): THREE.BufferGeometry {
   geometry.setAttribute('uv', new THREE.BufferAttribute(uvs, 2))
   geometry.setIndex(indices)
   geometry.setDrawRange(0, 0)
-  geometry.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 1e6)
+  geometry.boundingSphere = createUnboundedSphere()
   return geometry
 }
 

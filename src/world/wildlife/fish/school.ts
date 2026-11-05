@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { useWhaleStore } from '@/store/whaleStore'
-import { rand, turnToward } from '@/utils/math'
+import { NEAR_ZERO, rand, randomSeed, turnToward } from '@/utils/math'
 import {
   headingFromWhirlpool,
   ISLAND_ZONES,
@@ -14,21 +14,26 @@ import {
   CRUISE_DEPTH_MAX,
   CRUISE_DEPTH_MIN,
   DIVE_RATE,
-  FIN_REACH,
-  FISH_SIZE_JITTER,
   ESCAPE_BOOST,
+  FIN_REACH,
+  FISH_MOVING_SPEED,
+  FISH_SIZE_JITTER,
   FLEE_DAMPING,
   FLEE_DURATION,
   FLEE_SPEED,
+  FLEE_SPEED_JITTER,
   FLEE_SPREAD,
-  FLEE_TURN_RATE,
-  FLEE_TURN_LIMIT,
   FLEE_TAIL_FREQUENCY,
+  FLEE_TURN_LIMIT,
+  FLEE_TURN_RATE,
   FOLLOW_RATE,
   HEADING_RATE,
   HIDDEN_DEPTH,
   LIFETIME_MAX,
   LIFETIME_MIN,
+  LONE_FISH_ACROSS_SCATTER,
+  LONE_FISH_BEHIND,
+  LONE_FISH_CHANCE,
   LONE_FISH_SIZE,
   LONE_SPEED,
   RISE_RATE,
@@ -47,11 +52,15 @@ import {
   SCHOOL_MIN,
   SCHOOL_SPEED,
   SCHOOL_SPREAD,
+  SCHOOL_WANDER_WAVE_RATE,
   SHORE_AVOID_DISTANCE,
   SHORE_AVOID_RATE,
+  SLOT_SWAY,
+  SLOT_SWAY_RATE,
   SPEED_JITTER,
   SURFACE_CLEARANCE,
   TAIL_FREQUENCY,
+  TAIL_RATE_JITTER,
   WANDER_RATE,
   WHALE_SCATTER_MARGIN,
 } from './constants'
@@ -117,11 +126,11 @@ function createFish(slotX: number, slotZ: number, size: number, heading: number)
       scale * FIN_REACH + SURFACE_CLEARANCE
     ),
     phase: Math.random() * Math.PI * 2,
-    tailFrequency: TAIL_FREQUENCY * rand(0.8, 1.2),
+    tailFrequency: TAIL_FREQUENCY * rand(...TAIL_RATE_JITTER),
     size: scale,
     slotX,
     slotZ,
-    seed: Math.random() * 100,
+    seed: randomSeed(),
   }
 }
 
@@ -159,8 +168,15 @@ export function createSchool(x: number, z: number, freeSlots: number): School {
     fish = cluster(count, SCHOOL_SPREAD, SCHOOL_LENGTH, SCHOOL_FISH_SIZE, heading)
   } else {
     fish = [createFish(0, 0, LONE_FISH_SIZE, heading)]
-    if (Math.random() < 0.4 && freeSlots >= 2) {
-      fish.push(createFish(rand(-3, 3), -rand(3, 6), LONE_FISH_SIZE, heading))
+    if (Math.random() < LONE_FISH_CHANCE && freeSlots >= 2) {
+      fish.push(
+        createFish(
+          rand(-LONE_FISH_ACROSS_SCATTER, LONE_FISH_ACROSS_SCATTER),
+          -rand(...LONE_FISH_BEHIND),
+          LONE_FISH_SIZE,
+          heading
+        )
+      )
     }
   }
 
@@ -171,7 +187,7 @@ export function createSchool(x: number, z: number, freeSlots: number): School {
     heading,
     speed: SHOAL_SPEEDS[kind] + rand(-SPEED_JITTER, SPEED_JITTER),
     boost: 0,
-    seed: Math.random() * 100,
+    seed: randomSeed(),
     age: 0,
     lifetime: rand(LIFETIME_MIN, LIFETIME_MAX),
     leaving: false,
@@ -192,7 +208,7 @@ export function createSchool(x: number, z: number, freeSlots: number): School {
 function slotPosition(school: School, fish: FishState, time: number): THREE.Vector2 {
   const directionX = Math.sin(school.heading)
   const directionZ = Math.cos(school.heading)
-  const slotX = fish.slotX + Math.sin(time * 0.8 + fish.seed) * 1.2
+  const slotX = fish.slotX + Math.sin(time * SLOT_SWAY_RATE + fish.seed) * SLOT_SWAY
   return _slot.set(
     school.x + directionZ * slotX + directionX * fish.slotZ,
     school.z - directionX * slotX + directionZ * fish.slotZ
@@ -231,7 +247,7 @@ function scatter(school: School, threatX: number, threatZ: number): void {
   for (const fish of school.fish) {
     const away = Math.atan2(fish.x - threatX, fish.z - threatZ) + rand(-FLEE_SPREAD, FLEE_SPREAD)
     fish.fleeHeading = turnToward(fish.heading, away, FLEE_TURN_LIMIT)
-    fish.fleeSpeed = FLEE_SPEED * rand(0.7, 1.1)
+    fish.fleeSpeed = FLEE_SPEED * rand(...FLEE_SPEED_JITTER)
   }
 }
 
@@ -244,7 +260,7 @@ export function regroup(school: School): void {
 }
 
 export function steerSchool(school: School, time: number, dt: number): void {
-  school.heading += Math.sin(time * 0.3 + school.seed) * WANDER_RATE * dt
+  school.heading += Math.sin(time * SCHOOL_WANDER_WAVE_RATE + school.seed) * WANDER_RATE * dt
   for (const zone of ISLAND_ZONES) {
     if (shoreGap(zone, school.x, school.z) < SHORE_AVOID_DISTANCE) {
       const away = Math.atan2(school.x - zone.x, school.z - zone.z)
@@ -273,14 +289,14 @@ export function updateFish(school: School, fish: FishState, time: number, dt: nu
     const target = slotPosition(school, fish, time)
     const catchupX = (target.x - fish.x) * FOLLOW_RATE
     const catchupZ = (target.y - fish.z) * FOLLOW_RATE
-    const catchup = Math.min(1, CATCHUP_SPEED / Math.max(Math.hypot(catchupX, catchupZ), 1e-3))
+    const catchup = Math.min(1, CATCHUP_SPEED / Math.max(Math.hypot(catchupX, catchupZ), NEAR_ZERO))
     fish.velocityX = Math.sin(school.heading) * speed + catchupX * catchup
     fish.velocityZ = Math.cos(school.heading) * speed + catchupZ * catchup
   }
 
   fish.x += fish.velocityX * dt
   fish.z += fish.velocityZ * dt
-  if (!fleeing && Math.hypot(fish.velocityX, fish.velocityZ) > 0.3) {
+  if (!fleeing && Math.hypot(fish.velocityX, fish.velocityZ) > FISH_MOVING_SPEED) {
     fish.heading = turnToward(
       fish.heading,
       Math.atan2(fish.velocityX, fish.velocityZ),

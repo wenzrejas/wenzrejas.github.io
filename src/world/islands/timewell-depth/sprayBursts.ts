@@ -8,31 +8,54 @@ import { outwardAt, type ShoreField } from '@/world/shore/shoreField'
 import { nightGlow } from '../shared/nightGlow'
 import { placeOnIsland, scanShore, turnToIsland, type SiteFrame } from '../shared/shoreSites'
 import {
+  WHIRLPOOL_DROP_LIFE,
   WHIRLPOOL_FADE_START,
   WHIRLPOOL_GLOW_COLOR,
   WHIRLPOOL_RADIUS,
   WHIRLPOOL_SHORE_BLEND,
   WHIRLPOOL_SPLASH_CARRY,
+  WHIRLPOOL_SPLASH_CARRY_JITTER,
   WHIRLPOOL_SPLASH_DROP_SIZE,
+  WHIRLPOOL_SPLASH_DROP_SIZE_JITTER,
   WHIRLPOOL_SPLASH_DROPS,
   WHIRLPOOL_SPLASH_FOAM_BLOBS,
+  WHIRLPOOL_SPLASH_FOAM_LEAD,
   WHIRLPOOL_SPLASH_FOAM_LIFE,
+  WHIRLPOOL_SPLASH_FOAM_LIFE_JITTER,
   WHIRLPOOL_SPLASH_FOAM_SIZE,
+  WHIRLPOOL_SPLASH_FOAM_SIZE_JITTER,
+  WHIRLPOOL_SPLASH_FOAM_SPEED_JITTER,
+  WHIRLPOOL_SPLASH_FOAM_SWEEP,
   WHIRLPOOL_SPLASH_FOAM_Y,
   WHIRLPOOL_SPLASH_MIN_IMPACT,
   WHIRLPOOL_SPLASH_RECOIL,
+  WHIRLPOOL_SPLASH_RECOIL_JITTER,
   WHIRLPOOL_SPLASH_RISE,
+  WHIRLPOOL_SPLASH_RISE_JITTER,
+  WHIRLPOOL_SPLASH_SCATTER,
   WHIRLPOOL_SPLASH_SITE_BAND,
+  WHIRLPOOL_SPLASH_STRENGTH_BASE,
+  WHIRLPOOL_SPLASH_STRENGTH_JITTER,
+  WHIRLPOOL_SPLASH_STRENGTH_PER_IMPACT,
   WHIRLPOOL_SPLASH_Y,
   WHIRLPOOL_SPRAY_DROP_SIZE,
+  WHIRLPOOL_SPRAY_DROP_SIZE_JITTER,
   WHIRLPOOL_SPRAY_DROPS,
   WHIRLPOOL_SPRAY_FOAM_BLOBS,
+  WHIRLPOOL_SPRAY_FOAM_DRIFT_JITTER,
+  WHIRLPOOL_SPRAY_FOAM_LIFE_JITTER,
+  WHIRLPOOL_SPRAY_FOAM_SCATTER,
+  WHIRLPOOL_SPRAY_FOAM_SIZE_JITTER,
   WHIRLPOOL_SPRAY_INNER,
   WHIRLPOOL_SPRAY_NIGHT_TINT,
   WHIRLPOOL_SPRAY_OUTER,
   WHIRLPOOL_SPRAY_RISE,
+  WHIRLPOOL_SPRAY_RISE_JITTER,
+  WHIRLPOOL_SPRAY_SCATTER,
+  WHIRLPOOL_SPRAY_SIDE_DRIFT,
   WHIRLPOOL_SPRAY_SITE_STEP,
   WHIRLPOOL_SPRAY_SPEED,
+  WHIRLPOOL_SPRAY_SPEED_JITTER,
   WHIRLPOOL_SPRAY_VIEW_REACH,
   WHIRLPOOL_TWIST,
 } from './constants'
@@ -144,65 +167,67 @@ export function findSpraySites(
 // ── Bursts ────────────────────────────────────────────────────────────────────
 
 export function emitRockSplash(foam: ParticlePool, drops: ParticlePool, site: SplashSite): void {
-  const strength = (0.6 + 0.4 * site.impact) * rand(0.8, 1.2)
+  const strength =
+    (WHIRLPOOL_SPLASH_STRENGTH_BASE + WHIRLPOOL_SPLASH_STRENGTH_PER_IMPACT * site.impact) *
+    rand(...WHIRLPOOL_SPLASH_STRENGTH_JITTER)
 
   for (let i = 0; i < WHIRLPOOL_SPLASH_DROPS; i++) {
-    const recoil = WHIRLPOOL_SPLASH_RECOIL * rand(0.3, 1.3) * strength
-    const carry = WHIRLPOOL_SPLASH_CARRY * rand(-0.4, 1)
+    const recoil = WHIRLPOOL_SPLASH_RECOIL * rand(...WHIRLPOOL_SPLASH_RECOIL_JITTER) * strength
+    const carry = WHIRLPOOL_SPLASH_CARRY * rand(...WHIRLPOOL_SPLASH_CARRY_JITTER)
     drops.spawn(
-      site.x + rand(-1, 1),
+      site.x + rand(-WHIRLPOOL_SPLASH_SCATTER, WHIRLPOOL_SPLASH_SCATTER),
       WHIRLPOOL_SPLASH_Y,
-      site.z + rand(-1, 1),
+      site.z + rand(-WHIRLPOOL_SPLASH_SCATTER, WHIRLPOOL_SPLASH_SCATTER),
       site.awayX * recoil + site.flowX * carry,
-      WHIRLPOOL_SPLASH_RISE * rand(0.6, 1.2) * strength,
+      WHIRLPOOL_SPLASH_RISE * rand(...WHIRLPOOL_SPLASH_RISE_JITTER) * strength,
       site.awayZ * recoil + site.flowZ * carry,
-      WHIRLPOOL_SPLASH_DROP_SIZE * rand(0.6, 1.3),
-      3
+      WHIRLPOOL_SPLASH_DROP_SIZE * rand(...WHIRLPOOL_SPLASH_DROP_SIZE_JITTER),
+      WHIRLPOOL_DROP_LIFE
     )
   }
 
   for (let i = 0; i < WHIRLPOOL_SPLASH_FOAM_BLOBS; i++) {
-    const sweep = rand(-0.7, 0.7)
-    const speed = WHIRLPOOL_SPLASH_RECOIL * rand(0.5, 1.1) * strength
+    const sweep = rand(-WHIRLPOOL_SPLASH_FOAM_SWEEP, WHIRLPOOL_SPLASH_FOAM_SWEEP)
+    const speed = WHIRLPOOL_SPLASH_RECOIL * rand(...WHIRLPOOL_SPLASH_FOAM_SPEED_JITTER) * strength
     foam.spawn(
-      site.x + site.awayX * 0.8,
+      site.x + site.awayX * WHIRLPOOL_SPLASH_FOAM_LEAD,
       WHIRLPOOL_SPLASH_FOAM_Y,
-      site.z + site.awayZ * 0.8,
+      site.z + site.awayZ * WHIRLPOOL_SPLASH_FOAM_LEAD,
       (site.awayX + site.flowX * sweep) * speed,
       0,
       (site.awayZ + site.flowZ * sweep) * speed,
-      WHIRLPOOL_SPLASH_FOAM_SIZE * rand(0.8, 1.4),
-      WHIRLPOOL_SPLASH_FOAM_LIFE * rand(0.8, 1.2)
+      WHIRLPOOL_SPLASH_FOAM_SIZE * rand(...WHIRLPOOL_SPLASH_FOAM_SIZE_JITTER),
+      WHIRLPOOL_SPLASH_FOAM_LIFE * rand(...WHIRLPOOL_SPLASH_FOAM_LIFE_JITTER)
     )
   }
 }
 
 export function emitSwirlSpray(foam: ParticlePool, drops: ParticlePool, site: SpraySite): void {
   for (let i = 0; i < WHIRLPOOL_SPRAY_DROPS; i++) {
-    const speed = WHIRLPOOL_SPRAY_SPEED * rand(0.6, 1.2)
+    const speed = WHIRLPOOL_SPRAY_SPEED * rand(...WHIRLPOOL_SPRAY_SPEED_JITTER)
     drops.spawn(
-      site.x + rand(-0.6, 0.6),
+      site.x + rand(-WHIRLPOOL_SPRAY_SCATTER, WHIRLPOOL_SPRAY_SCATTER),
       site.y + WHIRLPOOL_SPLASH_Y,
-      site.z + rand(-0.6, 0.6),
-      site.flowX * speed + rand(-1.5, 1.5),
-      WHIRLPOOL_SPRAY_RISE * rand(0.6, 1.2),
-      site.flowZ * speed + rand(-1.5, 1.5),
-      WHIRLPOOL_SPRAY_DROP_SIZE * rand(0.6, 1.3),
-      3
+      site.z + rand(-WHIRLPOOL_SPRAY_SCATTER, WHIRLPOOL_SPRAY_SCATTER),
+      site.flowX * speed + rand(-WHIRLPOOL_SPRAY_SIDE_DRIFT, WHIRLPOOL_SPRAY_SIDE_DRIFT),
+      WHIRLPOOL_SPRAY_RISE * rand(...WHIRLPOOL_SPRAY_RISE_JITTER),
+      site.flowZ * speed + rand(-WHIRLPOOL_SPRAY_SIDE_DRIFT, WHIRLPOOL_SPRAY_SIDE_DRIFT),
+      WHIRLPOOL_SPRAY_DROP_SIZE * rand(...WHIRLPOOL_SPRAY_DROP_SIZE_JITTER),
+      WHIRLPOOL_DROP_LIFE
     )
   }
 
   for (let i = 0; i < WHIRLPOOL_SPRAY_FOAM_BLOBS; i++) {
-    const drift = WHIRLPOOL_SPRAY_SPEED * rand(0.2, 0.5)
+    const drift = WHIRLPOOL_SPRAY_SPEED * rand(...WHIRLPOOL_SPRAY_FOAM_DRIFT_JITTER)
     foam.spawn(
-      site.x + rand(-0.8, 0.8),
+      site.x + rand(-WHIRLPOOL_SPRAY_FOAM_SCATTER, WHIRLPOOL_SPRAY_FOAM_SCATTER),
       site.y + WHIRLPOOL_SPLASH_FOAM_Y,
-      site.z + rand(-0.8, 0.8),
+      site.z + rand(-WHIRLPOOL_SPRAY_FOAM_SCATTER, WHIRLPOOL_SPRAY_FOAM_SCATTER),
       site.flowX * drift,
       0,
       site.flowZ * drift,
-      WHIRLPOOL_SPLASH_FOAM_SIZE * rand(0.6, 1.1),
-      WHIRLPOOL_SPLASH_FOAM_LIFE * rand(0.6, 1)
+      WHIRLPOOL_SPLASH_FOAM_SIZE * rand(...WHIRLPOOL_SPRAY_FOAM_SIZE_JITTER),
+      WHIRLPOOL_SPLASH_FOAM_LIFE * rand(...WHIRLPOOL_SPRAY_FOAM_LIFE_JITTER)
     )
   }
 }

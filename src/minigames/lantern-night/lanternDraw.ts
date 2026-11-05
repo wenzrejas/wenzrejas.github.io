@@ -22,6 +22,7 @@ import {
   LANTERN_SWAY,
   LANTERN_SWAY_FULL_HEIGHT,
   LANTERN_SWAY_RATE,
+  LANTERN_SWAY_Z_SHARE,
   LANTERN_UNLIT_HALO,
   LANTERN_VIEW_MARGIN,
 } from './constants'
@@ -57,7 +58,7 @@ function poseBody(lantern: Lantern, time: number, boost: number, height: number)
   _pose.position.set(
     x + driftX + sway,
     LANTERN_FLOAT_HEIGHT + height - sink,
-    z + driftZ - sway * 0.6
+    z + driftZ - sway * LANTERN_SWAY_Z_SHARE
   )
   _pose.rotation.set(sway * LANTERN_ROLL * 0.5, phase, -sway * LANTERN_ROLL, 'XYZ')
   _pose.scale.setScalar(boost * LANTERN_SCALE)

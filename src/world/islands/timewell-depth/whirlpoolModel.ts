@@ -67,6 +67,7 @@ import {
   WHIRLPOOL_MOTE_LIFETIME,
   WHIRLPOOL_MOTE_REACH,
   WHIRLPOOL_MOTE_RISE,
+  WHIRLPOOL_MOTE_SIZE_JITTER,
   WHIRLPOOL_MOTE_STRENGTH,
   WHIRLPOOL_MOTES,
   WHIRLPOOL_PATCH_CELLS,
@@ -113,7 +114,7 @@ export function buildMoteGeometry(islandScale: number): THREE.BufferGeometry {
         (i + rand(0, 0.5)) / WHIRLPOOL_MOTES,
         rand(0, Math.PI * 2),
         WHIRLPOOL_MOTE_REACH * Math.random() ** WHIRLPOOL_MOTE_CENTER_BIAS,
-        rand(0.6, 1.3),
+        rand(...WHIRLPOOL_MOTE_SIZE_JITTER),
       ],
       i * 4
     )

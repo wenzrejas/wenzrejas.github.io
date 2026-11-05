@@ -7,7 +7,11 @@ export function mergeParts(parts: THREE.BufferGeometry[]) {
   return merged
 }
 
+const UNBOUNDED_RADIUS = 1e6
+
 export const buildFlatQuad = () => new THREE.PlaneGeometry(1, 1).rotateX(-Math.PI / 2)
+
+export const createUnboundedSphere = () => new THREE.Sphere(new THREE.Vector3(), UNBOUNDED_RADIUS)
 
 export function buildBeamCone(
   lensRadius: number,

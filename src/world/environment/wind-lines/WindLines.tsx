@@ -3,12 +3,13 @@ import { useFrame } from '@react-three/fiber'
 import type * as THREE from 'three'
 import { useDebugStore } from '@/store/debugStore'
 import { useWeatherStore } from '@/store/weatherStore'
-import { uniformsOf } from '@/utils/meshes'
+import { disposeAll } from '@/utils/dispose'
 import { MAX_FRAME_SECONDS } from '@/utils/time'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { WIND_SETTLED_ANGLE, WIND_STREAK_POOL } from './constants'
 import { buildWindStreakGeometry, createWindStreakMaterial } from './windStreakModel'
-import { advanceStreak, createWindState, spawnStreak, turnWind } from './windStreaks'
+import { drawStreaks } from './windStreakLook'
+import { createWindState, spawnStreak, turnWind } from './windStreaks'
 
 interface WindLinesProps {
   shipRef: RefObject<THREE.Group | null>
@@ -23,36 +24,14 @@ export default function WindLines({ shipRef }: WindLinesProps) {
   const meshRefs = useRef<(THREE.Mesh | null)[]>([])
   const wind = useRef(createWindState())
 
-  useEffect(
-    () => () => {
-      geometry.dispose()
-      for (const material of materials) material.dispose()
-    },
-    [geometry, materials]
-  )
+  useEffect(() => () => disposeAll(geometry, ...materials), [geometry, materials])
 
   useFrame(({ clock }, delta) => {
     const dt = Math.min(delta, MAX_FRAME_SECONDS)
     const tuning = useDebugStore.getState().windLines
     const turning = turnWind(wind.current, dt)
 
-    wind.current.streaks.forEach((streak, i) => {
-      const mesh = meshRefs.current[i]
-      if (!mesh) return
-      if (!streak.isActive || !tuning.windEnabled) {
-        mesh.visible = false
-        return
-      }
-      advanceStreak(streak, dt)
-      mesh.visible = streak.isActive
-      mesh.position.set(streak.x, streak.y, streak.z)
-      mesh.rotation.y = streak.angle
-      mesh.scale.set(streak.length, streak.amplitude, 1)
-      const uniforms = uniformsOf(mesh)
-      uniforms.uProgress.value = streak.progress
-      uniforms.uOpacity.value = tuning.windOpacity
-      uniforms.uThickness.value = tuning.lineWidth
-    })
+    drawStreaks(meshRefs.current, wind.current.streaks, tuning, dt)
 
     if (!tuning.windEnabled || turning > WIND_SETTLED_ANGLE) return
     const ship = shipRef.current

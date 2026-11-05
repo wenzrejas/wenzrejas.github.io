@@ -19,3 +19,7 @@ export const SKY_FLASH_BACKGROUND = 0.6
 export const SKY_FLASH_FOG = 0.5
 export const SKY_FLASH_SEA = 0.35
 export const SKY_FLASH_LIGHT = 5
+
+// ── Start values ──────────────────────────────────────────────────────────────
+export const INITIAL_SUN_POSITION: readonly [number, number, number] = [2.5, 3.5, 0]
+export const INITIAL_MOON_POSITION: readonly [number, number, number] = [5, 80, 5]

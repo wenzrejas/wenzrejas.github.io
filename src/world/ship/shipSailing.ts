@@ -13,7 +13,7 @@ import { useShipStore, type ShipState } from '@/store/shipStore'
 import { useWeatherStore } from '@/store/weatherStore'
 import { useWindStore } from '@/store/windStore'
 import { mix } from '@/utils/math'
-import { FALLBACK_FRAME_SECONDS, MAX_FRAME_SECONDS } from '@/utils/time'
+import { clampFrameSeconds } from '@/utils/time'
 import { BOUNDARY_RADIUS } from '../environment/boundary/constants'
 import { REVEAL_SPEED } from '../islands/shared/constants'
 import { ISLAND_KEYS, ISLAND_SPECS } from '../islands/shared/islandSpecs'
@@ -74,9 +74,6 @@ export function restartSailingAt(sailing: ShipSailing, group: THREE.Group, ship:
   sailing.tailwind = 0
   sailing.lean.set(0, 0)
 }
-
-const safeFrameSeconds = (delta: number) =>
-  isFinite(delta) && delta >= 0 ? Math.min(delta, MAX_FRAME_SECONDS) : FALLBACK_FRAME_SECONDS
 
 function steerVelocity(
   sailing: ShipSailing,
@@ -200,7 +197,7 @@ export function stepSailing(
   time: number,
   delta: number
 ) {
-  const dt = safeFrameSeconds(delta)
+  const dt = clampFrameSeconds(delta)
   const { throttle, turn, steering } = sailingInput(pressedKeys, sailing.heading)
   const tuning = useDebugStore.getState().ship
   const { run } = useCheckpointStore.getState()

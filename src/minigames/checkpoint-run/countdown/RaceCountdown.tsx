@@ -2,6 +2,7 @@ import { useEffect, useState, type CSSProperties } from 'react'
 import { CHECKPOINT_RUN_COPY } from '@/data/minigameCopy'
 import { isRaceClockRunning, useCheckpointStore } from '@/store/checkpointStore'
 import { useSettingsStore } from '@/store/settingsStore'
+import { loopAnimationFrames } from '@/utils/time'
 import { GO_SECONDS } from '../constants'
 import { isArriving } from '../raceArrival'
 import './RaceCountdown.scss'
@@ -19,15 +20,7 @@ function CountdownCall() {
   const [call, setCall] = useState(readCall)
   const isMotionReduced = useSettingsStore((state) => state.isMotionReduced)
 
-  useEffect(() => {
-    let frame = 0
-    const tick = () => {
-      setCall(readCall())
-      frame = requestAnimationFrame(tick)
-    }
-    frame = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(frame)
-  }, [])
+  useEffect(() => loopAnimationFrames(() => setCall(readCall())), [])
 
   if (call === null) return null
   const isGo = call === CHECKPOINT_RUN_COPY.hud.go

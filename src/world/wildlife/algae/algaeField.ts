@@ -1,5 +1,11 @@
 import * as THREE from 'three'
-import { GLOW_COLOR, MAX_GLOW_HITS, MAX_PATCHES } from './constants'
+import {
+  GLOW_COLOR,
+  MAX_GLOW_HITS,
+  MAX_PATCHES,
+  PATCH_EDGE_SHARE,
+  PATCH_FADE_START_SHARE,
+} from './constants'
 
 export const algaeUniforms = {
   uAlgaePatches: {
@@ -30,9 +36,14 @@ export function algaeAt(x: number, z: number): number {
   let coverage = 0
   for (const zone of algaeUniforms.uAlgaePatches.value) {
     if (zone.w <= 0) continue
-    const edge = zone.z * 0.95
+    const edge = zone.z * PATCH_EDGE_SHARE
     const reach =
-      1 - THREE.MathUtils.smoothstep(Math.hypot(x - zone.x, z - zone.y), edge * 0.55, edge)
+      1 -
+      THREE.MathUtils.smoothstep(
+        Math.hypot(x - zone.x, z - zone.y),
+        edge * PATCH_FADE_START_SHARE,
+        edge
+      )
     coverage = Math.max(coverage, reach * zone.w)
   }
   return coverage * intensity

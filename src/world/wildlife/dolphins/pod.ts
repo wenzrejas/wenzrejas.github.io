@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import type { ShipState } from '@/store/shipStore'
 import { useWhaleStore } from '@/store/whaleStore'
-import { mix, rand, wrapAngle } from '@/utils/math'
+import { mix, NEAR_ZERO, rand, wrapAngle } from '@/utils/math'
 import { ISLAND_ZONES, isOpenWater, shoreGap } from '@/world/islands/shared/islandZones'
 import {
   ACCELERATION,
@@ -12,6 +12,7 @@ import {
   ALGAE_LURE_GLOW,
   CRUISE_DEPTH_MAX,
   CRUISE_DEPTH_MIN,
+  DEPTH_SETTLED_WITHIN,
   DIVE_RATE,
   FOLLOW_GAIN,
   FOLLOW_TIME_MAX,
@@ -213,7 +214,7 @@ function addRepulsion(dolphin: Dolphin, x: number, z: number, radius: number): v
   const deltaX = dolphin.x - x
   const deltaZ = dolphin.z - z
   const distance = Math.hypot(deltaX, deltaZ)
-  if (distance >= radius || distance < 1e-3) return
+  if (distance >= radius || distance < NEAR_ZERO) return
   const strength = (1 - distance / radius) * SEPARATION_STRENGTH
   _push.x += (deltaX / distance) * strength
   _push.y += (deltaZ / distance) * strength
@@ -283,7 +284,7 @@ export function updateAction(dolphin: Dolphin, leaving: boolean, dt: number): vo
     return
   }
 
-  const settled = Math.abs(dolphin.depth - dolphin.targetDepth) < 0.3
+  const settled = Math.abs(dolphin.depth - dolphin.targetDepth) < DEPTH_SETTLED_WITHIN
   if (leaving || !settled) return
   dolphin.actionTimer -= dt
   if (dolphin.actionTimer > 0) return

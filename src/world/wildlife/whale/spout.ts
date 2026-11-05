@@ -4,9 +4,11 @@ import {
   SPOUT_BASE_Y,
   SPOUT_DROP_LIFE,
   SPOUT_DROP_SIZE,
+  SPOUT_DROP_SIZE_JITTER,
   SPOUT_DROPS,
   SPOUT_RISE_MAX,
   SPOUT_RISE_MIN,
+  SPOUT_SCATTER,
   SPOUT_SECONDS,
   SPOUT_SPREAD_MAX,
   SPOUT_SPREAD_MIN,
@@ -22,13 +24,13 @@ export function emitSpout(drops: ParticlePool, whale: Whale, dt: number): void {
     const angle = Math.random() * Math.PI * 2
     const spread = rand(SPOUT_SPREAD_MIN, SPOUT_SPREAD_MAX)
     drops.spawn(
-      x + rand(-1, 1),
+      x + rand(-SPOUT_SCATTER, SPOUT_SCATTER),
       SPOUT_BASE_Y,
-      z + rand(-1, 1),
+      z + rand(-SPOUT_SCATTER, SPOUT_SCATTER),
       Math.cos(angle) * spread,
       rand(SPOUT_RISE_MIN, SPOUT_RISE_MAX),
       Math.sin(angle) * spread,
-      SPOUT_DROP_SIZE * rand(0.6, 1.4),
+      SPOUT_DROP_SIZE * rand(...SPOUT_DROP_SIZE_JITTER),
       SPOUT_DROP_LIFE
     )
   }

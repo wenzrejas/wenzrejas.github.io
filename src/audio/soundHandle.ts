@@ -1,4 +1,4 @@
-import { DEFAULT_FADE } from './constants'
+import { DEFAULT_FADE, STOP_MARGIN_SECONDS } from './constants'
 
 export class SoundHandle {
   private context: AudioContext | null = null
@@ -55,5 +55,3 @@ export class SoundHandle {
     this.halt(now + fade + STOP_MARGIN_SECONDS)
   }
 }
-
-const STOP_MARGIN_SECONDS = 0.05

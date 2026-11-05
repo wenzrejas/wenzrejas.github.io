@@ -1,4 +1,15 @@
 import * as THREE from 'three'
+import {
+  DROP_TUMBLE_RATE_X,
+  DROP_TUMBLE_RATE_Y,
+  FOAM_SHRINK,
+  SPARK_DRAG,
+  SPARK_FADE_IN_RATE,
+  SPARK_FLICKER_DEPTH,
+  SPARK_FLICKER_FLOOR,
+  SPARK_FLICKER_RATE,
+  SPARK_FLICKER_SIZE_PHASE,
+} from './constants'
 
 interface Particle {
   age: number
@@ -114,7 +125,7 @@ export function updateFoam(
     const progress = Math.min(particle.age / particle.life, 1)
     _dummy.position.set(particle.x, particle.y, particle.z)
     _dummy.rotation.set(0, 0, 0)
-    _dummy.scale.setScalar(particle.size * Math.max(0, 1 - progress * 1.25))
+    _dummy.scale.setScalar(particle.size * Math.max(0, 1 - progress * FOAM_SHRINK))
     _dummy.updateMatrix()
     if (paint) paintGlow(mesh, count, particle, paint)
     mesh.setMatrixAt(count++, _dummy.matrix)
@@ -146,7 +157,7 @@ export function updateDrops(
     }
 
     _dummy.position.set(particle.x, particle.y, particle.z)
-    _dummy.rotation.set(particle.age * 7, particle.age * 5, 0)
+    _dummy.rotation.set(particle.age * DROP_TUMBLE_RATE_X, particle.age * DROP_TUMBLE_RATE_Y, 0)
     _dummy.scale.setScalar(particle.size)
     _dummy.updateMatrix()
     if (paint) paintGlow(mesh, count, particle, paint)
@@ -156,7 +167,7 @@ export function updateDrops(
 }
 
 export function updateSparks(pool: ParticlePool, mesh: THREE.InstancedMesh, dt: number): void {
-  const damping = Math.exp(-1.5 * dt)
+  const damping = Math.exp(-SPARK_DRAG * dt)
   let count = 0
   for (const particle of pool.particles) {
     if (particle.age >= particle.life) continue
@@ -167,8 +178,11 @@ export function updateSparks(pool: ParticlePool, mesh: THREE.InstancedMesh, dt: 
     particle.z += particle.velocityZ * dt
 
     const progress = Math.min(particle.age / particle.life, 1)
-    const flicker = 0.75 + 0.25 * Math.sin(particle.age * 18 + particle.size * 50)
-    const fade = Math.min(progress * 8, 1) * (1 - progress)
+    const flicker =
+      SPARK_FLICKER_FLOOR +
+      SPARK_FLICKER_DEPTH *
+        Math.sin(particle.age * SPARK_FLICKER_RATE + particle.size * SPARK_FLICKER_SIZE_PHASE)
+    const fade = Math.min(progress * SPARK_FADE_IN_RATE, 1) * (1 - progress)
     _dummy.position.set(particle.x, particle.y, particle.z)
     _dummy.rotation.set(0, 0, 0)
     _dummy.scale.setScalar(particle.size * fade * flicker)

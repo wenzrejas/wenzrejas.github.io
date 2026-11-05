@@ -66,3 +66,8 @@ export const CRICKET_SILENT_GAP = 180
 export const CRICKET_RAMP = 1
 export const CRICKET_FADE = 2
 export const CRICKET_LEVEL_STEP = 0.02
+
+// ── Handles and calls ─────────────────────────────────────────────────────────
+export const STOP_MARGIN_SECONDS = 0.05
+export const DOLPHIN_CALL_VOLUME = [0.7, 1] as const
+export const SEAGULL_CALL_VOLUME = [0.8, 1] as const

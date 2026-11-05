@@ -2,17 +2,13 @@ import { useEffect, useMemo, useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
-import { audio } from '@/audio/audioManager'
-import { isSailingHeld } from '@/controls/sailingInput'
-import { findBottle, useBottleStore } from '@/store/bottleStore'
+import { useBottleStore } from '@/store/bottleStore'
 import { isRaceUnderway } from '@/store/checkpointStore'
-import { isRevealPlaying } from '@/store/revealStore'
-import { useShipStore } from '@/store/shipStore'
-import { useWeatherStore } from '@/store/weatherStore'
-import { isOnScreen } from '@/utils/screen'
 import GemSparkles from '@/world/islands/shared/gem-sparkles/GemSparkles'
 import { disposeAll } from '@/utils/dispose'
-import { bottleScaleFor, poseBottle } from './bottleDrift'
+import { drawBottles } from './bottleDraw'
+import { collectReachedBottle } from './bottlePickup'
+import { bottleScaleFor } from './bottleDrift'
 import {
   bottleGlintGem,
   buildBottleContents,
@@ -20,16 +16,8 @@ import {
   createBottleContentsMaterial,
   createBottleGlassMaterial,
 } from './bottleModel'
-import { ALL_BOTTLES, BOTTLE_SPOTS, bottlesAfloat, bottleWithin } from './bottleSpots'
-import {
-  BOTTLE_GLINT_SIZE,
-  BOTTLE_GLINT_TUNING,
-  BOTTLE_REACH,
-  BOTTLE_SCALE,
-  BOTTLE_VIEW_MARGIN,
-} from './constants'
-
-const _pose = new THREE.Object3D()
+import { ALL_BOTTLES, bottlesAfloat } from './bottleSpots'
+import { BOTTLE_GLINT_SIZE, BOTTLE_GLINT_TUNING, BOTTLE_SCALE } from './constants'
 
 export default function BottleField() {
   const fieldRef = useRef<THREE.Group>(null)
@@ -65,30 +53,8 @@ export default function BottleField() {
       return
     }
 
-    const time = clock.getElapsedTime()
-    const swell = useWeatherStore.getState().waveAmplitudeMultiplier
-    let drawn = 0
-    for (const bottle of afloat) {
-      poseBottle(_pose, BOTTLE_SPOTS[bottle], scale, time, swell)
-      if (!isOnScreen(_pose.position, camera, BOTTLE_VIEW_MARGIN)) continue
-      contents.setMatrixAt(drawn, _pose.matrix)
-      glass.setMatrixAt(drawn, _pose.matrix)
-      drawn++
-    }
-    contents.count = drawn
-    glass.count = drawn
-    field.visible = drawn > 0
-    if (field.visible) {
-      contents.instanceMatrix.needsUpdate = true
-      glass.instanceMatrix.needsUpdate = true
-    }
-
-    if (isSailingHeld() || isRevealPlaying()) return
-    const { x, z } = useShipStore.getState()
-    const reached = bottleWithin(afloat, x, z, BOTTLE_REACH)
-    if (!reached) return
-    audio.play('bottleClink')
-    findBottle(reached)
+    field.visible = drawBottles(contents, glass, afloat, scale, clock.getElapsedTime(), camera) > 0
+    collectReachedBottle(afloat)
   })
 
   return (

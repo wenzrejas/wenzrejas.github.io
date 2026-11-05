@@ -5,10 +5,12 @@ import type { SoundHandle } from './soundHandle'
 import {
   DOLPHIN_CALL_MAX,
   DOLPHIN_CALL_MIN,
+  DOLPHIN_CALL_VOLUME,
   DOLPHIN_FIRST_CALL_MAX,
   DOLPHIN_FIRST_CALL_MIN,
   DOLPHIN_PITCH_MAX,
   DOLPHIN_PITCH_MIN,
+  SEAGULL_CALL_VOLUME,
   SEAGULL_CHANCE,
   SEAGULL_COOLDOWN,
   SEAGULL_FADE_IN,
@@ -30,7 +32,7 @@ export function updateDolphinCalls(present: boolean, dt: number): void {
   dolphinTimer = rand(DOLPHIN_CALL_MIN, DOLPHIN_CALL_MAX)
   makeRoom(
     audio.play('dolphin', {
-      volume: rand(0.7, 1),
+      volume: rand(...DOLPHIN_CALL_VOLUME),
       rate: rand(DOLPHIN_PITCH_MIN, DOLPHIN_PITCH_MAX),
     })
   )
@@ -44,7 +46,9 @@ export function maybeSeagullCall(time: number): SoundHandle | null {
   )
     return null
   lastSeagullCall = time
-  return makeRoom(audio.play('seagulls', { volume: rand(0.8, 1), fadeIn: SEAGULL_FADE_IN }))
+  return makeRoom(
+    audio.play('seagulls', { volume: rand(...SEAGULL_CALL_VOLUME), fadeIn: SEAGULL_FADE_IN })
+  )
 }
 
 export function playWhaleCall(): void {

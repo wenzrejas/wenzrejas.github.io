@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { stitchRibbon } from '@/utils/geometry'
+import { createUnboundedSphere, stitchRibbon } from '@/utils/geometry'
 import { WIND_CURVE_DIVISIONS, WIND_CURVE_HANDLES } from './constants'
 import WIND_VERT from './shaders/windlines.vert.glsl'
 import WIND_FRAG from './shaders/windlines.frag.glsl'
@@ -20,7 +20,7 @@ export function buildWindStreakGeometry(): THREE.BufferGeometry {
   for (let i = 0; i < count; i++) {
     const point = points[i]
     const vertex = i * 2
-    positions.set([point.x, point.y, point.z, point.x, point.y, point.z], i * 6)
+    positions.set([point.x, point.y, point.z, point.x, point.y, point.z], vertex * 3)
     ratios[vertex] = ratios[vertex + 1] = i / (count - 1)
     sides[vertex] = -0.5
     sides[vertex + 1] = 0.5
@@ -32,7 +32,7 @@ export function buildWindStreakGeometry(): THREE.BufferGeometry {
   geometry.setAttribute('ratio', new THREE.BufferAttribute(ratios, 1))
   geometry.setAttribute('side', new THREE.BufferAttribute(sides, 1))
   geometry.setIndex(indices)
-  geometry.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 1e6)
+  geometry.boundingSphere = createUnboundedSphere()
   return geometry
 }
 

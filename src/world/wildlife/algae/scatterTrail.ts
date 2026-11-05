@@ -1,8 +1,8 @@
 import * as THREE from 'three'
-import { TRAIL_POINTS } from './constants'
+import { TRAIL_POINTS, TRAIL_UNVISITED_TIME } from './constants'
 
 export const trailUniform = {
-  value: Array.from({ length: TRAIL_POINTS }, () => new THREE.Vector3(0, 0, -1e6)),
+  value: Array.from({ length: TRAIL_POINTS }, () => new THREE.Vector3(0, 0, TRAIL_UNVISITED_TIME)),
 }
 
 export function recordTrail(x: number, z: number, time: number): void {

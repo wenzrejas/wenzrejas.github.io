@@ -80,3 +80,14 @@ export const WAG_AMPLITUDE = 0.1
 export const WAG_LAG = 3
 export const FIN_REACH = 0.25
 export const SURFACE_CLEARANCE = 1
+
+// ── School jitter ─────────────────────────────────────────────────────────────
+export const TAIL_RATE_JITTER = [0.8, 1.2] as const
+export const LONE_FISH_CHANCE = 0.4
+export const LONE_FISH_ACROSS_SCATTER = 3
+export const LONE_FISH_BEHIND = [3, 6] as const
+export const SLOT_SWAY_RATE = 0.8
+export const SLOT_SWAY = 1.2
+export const FLEE_SPEED_JITTER = [0.7, 1.1] as const
+export const SCHOOL_WANDER_WAVE_RATE = 0.3
+export const FISH_MOVING_SPEED = 0.3

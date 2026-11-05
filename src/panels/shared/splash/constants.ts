@@ -23,3 +23,7 @@ export const SPLASH_BODY = 0.6
 export const SPLASH_EDGE_SOFTNESS = 0.03
 export const SPLASH_RIM_WIDTH = 0.12
 export const SPLASH_RIM_BOOST = 0.32
+
+// ── Lobes ─────────────────────────────────────────────────────────────────────
+export const SPLASH_LOBE_STRENGTH_FLOOR = 0.4
+export const SPLASH_LOBE_STRENGTH_RANGE = 0.6

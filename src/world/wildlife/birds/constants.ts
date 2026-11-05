@@ -48,3 +48,13 @@ export const GLIDE_TIME_MAX = 4
 // ── Pose ──────────────────────────────────────────────────────────────────────
 export const BOB_RATE = 0.7
 export const SHADOW_FLATTEN = 0.01
+
+// ── Flock jitter ──────────────────────────────────────────────────────────────
+export const FLAP_RATE_JITTER = [0.85, 1.15] as const
+export const FLOCK_ACROSS_SHARE = 0.8
+export const FLOCK_ACROSS_SCATTER = 2
+export const FLOCK_BEHIND_SHARE = 0.7
+export const FLOCK_BEHIND_SCATTER = 2.5
+export const STRAGGLER_ACROSS = [3, 6] as const
+export const STRAGGLER_HEIGHT_SCATTER = 2
+export const STRAGGLER_BEHIND = [2, 6] as const

@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import type { ShipState } from '@/store/shipStore'
-import { rand, wrapAngle } from '@/utils/math'
+import { rand, randomSeed, wrapAngle } from '@/utils/math'
 import { isOpenWater } from '@/world/islands/shared/islandZones'
 import { depthFade } from '../shared/wildlifeMaterial'
 import {
@@ -133,7 +133,7 @@ export function createWhale(ship: ShipState, cameraPosition: THREE.Vector3): Wha
     climbCurve: 0,
     strokeRate: STROKE_FREQUENCY_GLIDE,
     phase: Math.random() * Math.PI * 2,
-    seed: Math.random() * 100,
+    seed: randomSeed(),
     age: 0,
     stage: 'rise',
     stageTime: 0,

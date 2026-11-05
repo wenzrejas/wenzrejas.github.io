@@ -9,6 +9,7 @@ import {
   NIGHT_FROM,
   NIGHT_UNTIL,
   PATCH_EDGE_REACH,
+  PATCH_MIN_SHORE_GAP_SHARE,
   PATCH_RADIUS_MAX,
   PATCH_RADIUS_MIN,
   PLANE_Y,
@@ -53,7 +54,7 @@ export const patchReach = (patch: Patch) => patch.radius * PATCH_EDGE_REACH
 export function isBlockedByIsland(x: number, z: number, radius: number): boolean {
   return ISLAND_ZONES.some((zone) => {
     const gap = shoreGap(zone, x, z)
-    if (gap < radius * 0.3) return true
+    if (gap < radius * PATCH_MIN_SHORE_GAP_SHARE) return true
     return AVOID_ISLANDS.includes(zone.key) && gap < radius * PATCH_EDGE_REACH + AVOID_ISLAND_GAP
   })
 }

@@ -70,3 +70,13 @@ export const SHY_DEPTH = 7
 export const SHY_SPEED_BOOST = 3
 export const SHY_TURN_RATE = 1.2
 export const WHALE_SHY_MARGIN = 15
+
+// ── Pose ──────────────────────────────────────────────────────────────────────
+export const TURTLE_WANDER_WAVE_RATE = 0.2
+export const TURTLE_BANK_LIMIT = 0.4
+export const TURTLE_BANK_RATE = 3
+export const BREATH_RIPPLE_AT = 0.3
+export const DEPTH_SETTLED_WITHIN = 0.3
+export const BREATH_RISE_GAIN = 1.8
+export const SWIM_PULSE_RATE = 0.45
+export const SWIM_PULSE_RANGE = [-0.2, 0.6] as const

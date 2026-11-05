@@ -11,6 +11,7 @@ import {
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { pixelsPerUnit } from '@/utils/screen'
 import { disposeAll } from '@/utils/dispose'
+import { NEAR_ZERO } from '@/utils/math'
 import {
   SMOKE_COLOR,
   SMOKE_DRIFT,
@@ -47,7 +48,7 @@ export default function ChimneySmoke({ islandScale }: { islandScale: number }) {
       SMOKE_RAIN_RATE
     )
 
-    points.visible = level > 0.001
+    points.visible = level > NEAR_ZERO
     if (!points.visible) return
 
     const { uniforms } = points.material as THREE.ShaderMaterial

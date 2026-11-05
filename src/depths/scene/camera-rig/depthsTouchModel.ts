@@ -1,6 +1,6 @@
 import { MathUtils } from 'three'
 import { followCanvasDrag } from '@/utils/canvasDrag'
-import { MAX_FRAME_SECONDS } from '@/utils/time'
+import { MAX_FRAME_SECONDS, toSeconds } from '@/utils/time'
 import { SCROLL_LEVELS_PER_PIXEL } from '../timeline/constants'
 import { scrollTimeline, type Timeline } from '../timeline/timeline'
 import {
@@ -49,7 +49,7 @@ export function bindDepthsTouch(
         return
       }
       const levels = (travel.y - clientY) * SCROLL_LEVELS_PER_PIXEL
-      const dt = Math.max((timeStamp - travel.stamp) / 1000, TOUCH_MIN_SAMPLE_SECONDS)
+      const dt = Math.max(toSeconds(timeStamp - travel.stamp), TOUCH_MIN_SAMPLE_SECONDS)
       scrollTimeline(timeline, levels)
       travel.velocity = MathUtils.clamp(levels / dt, -TOUCH_MAX_SPEED, TOUCH_MAX_SPEED)
       travel.y = clientY

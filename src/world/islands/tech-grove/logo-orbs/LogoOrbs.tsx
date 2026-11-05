@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import type * as THREE from 'three'
-import { uniformsOf } from '@/utils/meshes'
+import { disposeAll } from '@/utils/dispose'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import {
   buildOrbGeometry,
@@ -11,7 +11,8 @@ import {
   createStardustMaterial,
   paintLogoAtlas,
 } from './logoOrbModel'
-import { floatOrb, orbitReveal, type LogoOrb, type Orbit } from './orbits'
+import { paintOrbs, paintStardust } from './logoOrbLook'
+import type { LogoOrb, Orbit } from './orbits'
 import { orbGlow } from '../sanctuaryGlow'
 
 interface LogoOrbsProps {
@@ -40,47 +41,17 @@ export default function LogoOrbs({ orbits, orbs }: LogoOrbsProps) {
   }, [atlas, gl])
 
   useEffect(
-    () => () => {
-      atlas.texture.dispose()
-      geometry.dispose()
-      for (const material of materials) material.dispose()
-      stardustGeometry.dispose()
-      stardustMaterial.dispose()
-    },
+    () => () =>
+      disposeAll(atlas.texture, geometry, ...materials, stardustGeometry, stardustMaterial),
     [atlas, geometry, materials, stardustGeometry, stardustMaterial]
   )
 
   useFrame(({ clock }) => {
     const time = clock.getElapsedTime()
     const glow = orbGlow()
-    orbs.forEach((orb, i) => {
-      const mesh = meshes.current[i]
-      if (!mesh) return
-      if (orb.orbit.presence === 0) {
-        mesh.visible = false
-        return
-      }
-      floatOrb(orb, time)
-      mesh.visible = orb.opacity > 0
-      mesh.position.copy(orb.position)
-      mesh.scale.setScalar(orb.size)
-      const uniforms = uniformsOf(mesh)
-      uniforms.uOpacity.value = orb.opacity
-      uniforms.uGlow.value = glow
-      uniforms.uTime.value = time
-    })
+    paintOrbs(meshes.current, orbs, time, glow)
     const stardust = stardustRef.current
-    if (!stardust) return
-    const uniforms = uniformsOf(stardust)
-    const reveals: number[] = uniforms.uReveal.value
-    orbits.forEach((orbit, i) => {
-      reveals[i] = orbitReveal(orbit)
-    })
-    stardust.visible = reveals.some((reveal) => reveal > 0)
-    if (!stardust.visible) return
-    uniforms.uGlow.value = glow
-    uniforms.uTime.value = time
-    uniforms.uPixelRatio.value = gl.getPixelRatio()
+    if (stardust) paintStardust(stardust, orbits, time, glow, gl.getPixelRatio())
   })
 
   return (

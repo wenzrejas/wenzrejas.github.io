@@ -145,3 +145,14 @@ export const WAKE_DRIFT = 3
 export const WAKE_FADE_DEPTH = 30
 export const WAKE_SIZE = 2
 export const WAKE_LIFE = 2.4
+
+// ── Spray jitter ──────────────────────────────────────────────────────────────
+export const SPLASH_FOAM_ANGLE_JITTER = 0.1
+export const SPLASH_FOAM_SPEED_JITTER = [0.6, 1.2] as const
+export const SPLASH_FOAM_LIFE_JITTER = [0.8, 1.2] as const
+export const WAKE_GAP_JITTER = [0.4, 1.6] as const
+export const WAKE_DRIFT_JITTER = [0.6, 1.2] as const
+export const WAKE_SIZE_JITTER = [0.5, 1.2] as const
+export const WAKE_LIFE_JITTER = [0.8, 1.2] as const
+export const SPOUT_SCATTER = 1
+export const SPOUT_DROP_SIZE_JITTER = [0.6, 1.4] as const

@@ -5,28 +5,42 @@ import {
   ARCH_LIFT,
   GATE_HALF_WIDTH,
   RING_END_REACH,
+  RING_SPARK_BURST_JITTER,
   RING_SPARK_LIFE_MAX,
   RING_SPARK_LIFE_MIN,
   RING_SPARK_SIZE_MAX,
   RING_SPARK_SIZE_MIN,
   RING_SPARK_SPREAD,
   RING_SPARK_THROUGH,
+  RING_SPARK_THROUGH_JITTER,
   RING_SPLASH_DROP_LIFE,
+  RING_SPLASH_DROP_SIZE,
+  RING_SPLASH_DROP_Y,
   RING_SPLASH_FOAM_LIFE,
   RING_SPLASH_FOAM_SIZE,
+  RING_SPLASH_FOAM_SIZE_JITTER,
+  RING_SPLASH_FOAM_Y,
   RING_SPLASH_RISE,
+  RING_SPLASH_RISE_JITTER,
   RING_SPLASH_SCATTER,
+  RING_SPLASH_SPEED_JITTER,
   RING_SPLASH_SPREAD,
   SURGE_DROP_CARRY,
   SURGE_DROP_LIFE,
   SURGE_DROP_SIZE,
+  SURGE_DROP_SIZE_JITTER,
+  SURGE_DROP_Y,
   SURGE_FOAM_CARRY,
   SURGE_FOAM_LIFE,
   SURGE_FOAM_SIZE,
+  SURGE_FOAM_SIZE_JITTER,
+  SURGE_FOAM_Y,
   SURGE_SPRAY_BOW,
   SURGE_SPRAY_FLARE,
   SURGE_SPRAY_OUT,
+  SURGE_SPRAY_OUT_JITTER,
   SURGE_SPRAY_RISE,
+  SURGE_SPRAY_RISE_JITTER,
   SURGE_SPRAY_RUN,
   SURGE_SPRAY_STEM_BEAM,
 } from './constants'
@@ -48,8 +62,8 @@ export function emitRingSparks(sparks: ParticlePool, gate: Gate, count: number) 
     const height = ARCH_LIFT + up * GATE_HALF_WIDTH
     if (height < 0) continue
     const across = out * GATE_HALF_WIDTH
-    const burst = rand(0.4, 1) * RING_SPARK_SPREAD
-    const through = rand(0.4, 1) * RING_SPARK_THROUGH
+    const burst = rand(...RING_SPARK_BURST_JITTER) * RING_SPARK_SPREAD
+    const through = rand(...RING_SPARK_THROUGH_JITTER) * RING_SPARK_THROUGH
     sparks.spawn(
       acrossGateX(gate, across),
       height,
@@ -69,27 +83,27 @@ export function emitRingSplash(foam: ParticlePool, drops: ParticlePool, gate: Ga
     const endZ = acrossGateZ(gate, RING_END_REACH * side)
     for (let i = 0; i < count; i++) {
       const angle = rand(0, Math.PI * 2)
-      const speed = rand(0.3, 1) * RING_SPLASH_SPREAD
+      const speed = rand(...RING_SPLASH_SPEED_JITTER) * RING_SPLASH_SPREAD
       const scatterX = Math.cos(angle)
       const scatterZ = Math.sin(angle)
       drops.spawn(
         endX + scatterX * RING_SPLASH_SCATTER,
-        0.5,
+        RING_SPLASH_DROP_Y,
         endZ + scatterZ * RING_SPLASH_SCATTER,
         scatterX * speed,
-        rand(0.5, 1) * RING_SPLASH_RISE,
+        rand(...RING_SPLASH_RISE_JITTER) * RING_SPLASH_RISE,
         scatterZ * speed,
-        rand(0.5, 1),
+        rand(...RING_SPLASH_DROP_SIZE),
         RING_SPLASH_DROP_LIFE
       )
       foam.spawn(
         endX + scatterX * RING_SPLASH_SCATTER * 2,
-        0.4,
+        RING_SPLASH_FOAM_Y,
         endZ + scatterZ * RING_SPLASH_SCATTER * 2,
         scatterX * speed,
         0,
         scatterZ * speed,
-        RING_SPLASH_FOAM_SIZE * rand(0.6, 1.2),
+        RING_SPLASH_FOAM_SIZE * rand(...RING_SPLASH_FOAM_SIZE_JITTER),
         RING_SPLASH_FOAM_LIFE
       )
     }
@@ -109,27 +123,27 @@ export function emitSurgeSpray(
   const beam = (SURGE_SPRAY_STEM_BEAM + back * SURGE_SPRAY_FLARE) * side
   const spotX = x + forwardX * ahead + forwardZ * beam
   const spotZ = z + forwardZ * ahead - forwardX * beam
-  const out = rand(0.5, 1) * SURGE_SPRAY_OUT * side
+  const out = rand(...SURGE_SPRAY_OUT_JITTER) * SURGE_SPRAY_OUT * side
   const outX = forwardZ * out
   const outZ = -forwardX * out
   drops.spawn(
     spotX,
-    0.6,
+    SURGE_DROP_Y,
     spotZ,
     velocityX * SURGE_DROP_CARRY + outX,
-    rand(0.5, 1) * SURGE_SPRAY_RISE,
+    rand(...SURGE_SPRAY_RISE_JITTER) * SURGE_SPRAY_RISE,
     velocityZ * SURGE_DROP_CARRY + outZ,
-    SURGE_DROP_SIZE * rand(0.6, 1.2),
+    SURGE_DROP_SIZE * rand(...SURGE_DROP_SIZE_JITTER),
     SURGE_DROP_LIFE
   )
   foam.spawn(
     spotX,
-    0.4,
+    SURGE_FOAM_Y,
     spotZ,
     velocityX * SURGE_FOAM_CARRY + outX,
     0,
     velocityZ * SURGE_FOAM_CARRY + outZ,
-    SURGE_FOAM_SIZE * rand(0.6, 1.3),
+    SURGE_FOAM_SIZE * rand(...SURGE_FOAM_SIZE_JITTER),
     SURGE_FOAM_LIFE
   )
 }

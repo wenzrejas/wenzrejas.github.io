@@ -1,5 +1,6 @@
 import { useWeatherStore } from '@/store/weatherStore'
 import { rand } from '@/utils/math'
+import { toMilliseconds } from '@/utils/time'
 import { audio } from './audioManager'
 import type { SoundHandle } from './soundHandle'
 import {
@@ -39,7 +40,7 @@ export function createWeatherSounds() {
           rate: rand(THUNDER_PITCH_MIN, THUNDER_PITCH_MAX),
         })
       },
-      rand(THUNDER_DELAY_MIN, THUNDER_DELAY_MAX) * 1000
+      toMilliseconds(rand(THUNDER_DELAY_MIN, THUNDER_DELAY_MAX))
     )
     thunderTimers.add(timer)
   }

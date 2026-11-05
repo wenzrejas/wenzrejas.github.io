@@ -5,6 +5,7 @@ import { LEVEL_DROP } from '../constants'
 import { wakeShare } from '../ruin-life/shared/ruinWake'
 import { levelDepth, levelSpot, type Timeline } from '../timeline/timeline'
 import {
+  CARD_HIDDEN_BELOW_PRESENCE,
   DOCK_FULL_LEVELS,
   DOCK_GONE_LEVELS,
   PANEL_ACROSS,
@@ -130,5 +131,5 @@ export function stepPanelReveal(
 export function showPanel(card: HTMLElement, slideSide: number, presence: number) {
   card.style.opacity = presence.toFixed(3)
   card.style.transform = `translateX(${(slideSide * (1 - presence) * PANEL_SLIDE_PIXELS).toFixed(1)}px)`
-  card.style.visibility = presence > 0.002 ? 'visible' : 'hidden'
+  card.style.visibility = presence > CARD_HIDDEN_BELOW_PRESENCE ? 'visible' : 'hidden'
 }

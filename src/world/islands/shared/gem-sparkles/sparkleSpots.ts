@@ -22,10 +22,13 @@ export interface CornerSparkleTuning extends GemSparkleTuning {
 
 // ── Spots ─────────────────────────────────────────────────────────────────────
 
+const POINT_FLOATS = 3
+const EDGE_FLOATS = POINT_FLOATS * 2
+
 function edgeLengthsUpTo(edges: Float32Array): number[] {
   const reached: number[] = []
   let total = 0
-  for (let i = 0; i < edges.length; i += 6) {
+  for (let i = 0; i < edges.length; i += EDGE_FLOATS) {
     total += Math.hypot(
       edges[i + 3] - edges[i],
       edges[i + 4] - edges[i + 1],
@@ -53,8 +56,9 @@ export function spotsAlongEdges(
       0,
       reached.findIndex((length) => length >= pick)
     )
-    starts.set(edges.subarray(edge * 6, edge * 6 + 3), i * 3)
-    ends.set(edges.subarray(edge * 6 + 3, edge * 6 + 6), i * 3)
+    const edgeStart = edge * EDGE_FLOATS
+    starts.set(edges.subarray(edgeStart, edgeStart + POINT_FLOATS), i * POINT_FLOATS)
+    ends.set(edges.subarray(edgeStart + POINT_FLOATS, edgeStart + EDGE_FLOATS), i * POINT_FLOATS)
   }
   return { starts, ends }
 }

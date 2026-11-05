@@ -9,6 +9,7 @@ import {
 } from '@/world/islands/shared/fairWeatherPresence'
 import { pixelsPerUnit } from '@/utils/screen'
 import { disposeAll } from '@/utils/dispose'
+import { NEAR_ZERO } from '@/utils/math'
 import {
   FIREFLY_BOB,
   FIREFLY_PRESENCE_RATE,
@@ -43,7 +44,7 @@ export default function Fireflies({ islets, center, islandScale, offsetY }: Fire
       FIREFLY_RAIN_RATE
     )
 
-    points.visible = level > 0.001
+    points.visible = level > NEAR_ZERO
     if (!points.visible) return
 
     const { uniforms } = points.material as THREE.ShaderMaterial

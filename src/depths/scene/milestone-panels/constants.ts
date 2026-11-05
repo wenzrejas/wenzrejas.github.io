@@ -22,3 +22,6 @@ export const UNDER_GONE = 0.92
 // ── Docked ────────────────────────────────────────────────────────────────────
 export const DOCK_FULL_LEVELS = 0.42
 export const DOCK_GONE_LEVELS = 0.58
+
+// ── Visibility ────────────────────────────────────────────────────────────────
+export const CARD_HIDDEN_BELOW_PRESENCE = 0.002

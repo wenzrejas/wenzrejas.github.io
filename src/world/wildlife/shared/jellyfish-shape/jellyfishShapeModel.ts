@@ -4,6 +4,7 @@ import {
   BELL_GLOW,
   BELL_PROFILE,
   BELL_SEGMENTS,
+  DEGENERATE_FACET_SIZE,
   JELLYFISH_LEAN,
   PULSE_SECONDS,
   PULSE_SQUEEZE,
@@ -53,7 +54,7 @@ function addFacet(body: Body, corners: Point[], shapes: Point[]) {
   _edge.set(cornerB[0] - cornerA[0], cornerB[1] - cornerA[1], cornerB[2] - cornerA[2])
   _side.set(cornerC[0] - cornerA[0], cornerC[1] - cornerA[1], cornerC[2] - cornerA[2])
   _facing.crossVectors(_edge, _side)
-  if (_facing.lengthSq() < 1e-10) return
+  if (_facing.lengthSq() < DEGENERATE_FACET_SIZE) return
   _facing.normalize()
   for (const [index, corner] of corners.entries()) {
     body.positions.push(...corner)

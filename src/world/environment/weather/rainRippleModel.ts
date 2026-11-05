@@ -2,8 +2,8 @@ import * as THREE from 'three'
 import { useCycleStore } from '@/store/cycleStore'
 import { floatDefines } from '@/utils/glsl'
 import { whirlpoolFunnelUniforms } from '@/world/islands/timewell-depth/whirlpoolFunnel'
+import { createUnboundedSphere } from '@/utils/geometry'
 import {
-  RAIN_RIPPLE_BOUNDS_RADIUS,
   RAIN_RIPPLE_LIFETIME,
   RAIN_RIPPLE_MAX,
   RAIN_RIPPLE_SEGMENTS,
@@ -21,7 +21,7 @@ export function buildRainRippleGeometry() {
   geometry.setAttribute('position', quad.getAttribute('position'))
   geometry.setIndex(quad.getIndex())
   geometry.instanceCount = RAIN_RIPPLE_MAX
-  geometry.boundingSphere = new THREE.Sphere(new THREE.Vector3(), RAIN_RIPPLE_BOUNDS_RADIUS)
+  geometry.boundingSphere = createUnboundedSphere()
   geometry.setAttribute(
     'aProgress',
     new THREE.InstancedBufferAttribute(new Float32Array(RAIN_RIPPLE_MAX).fill(1), 1)

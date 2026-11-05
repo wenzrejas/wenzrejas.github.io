@@ -1,6 +1,7 @@
 import type { SoundHandle } from './soundHandle'
 import { preferredSource } from './soundSources'
 import type { SoundDefinition } from './sounds'
+import { toMilliseconds } from '@/utils/time'
 
 interface StreamPlayer {
   element: HTMLAudioElement
@@ -95,7 +96,7 @@ export class StreamPlayers {
     )
     startPlaying()
     handle.attach(context, envelope, definition.volume, (at) => {
-      window.setTimeout(release, Math.max(0, (at - context.currentTime) * 1000))
+      window.setTimeout(release, Math.max(0, toMilliseconds(at - context.currentTime)))
     })
   }
 }

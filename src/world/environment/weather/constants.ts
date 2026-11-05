@@ -157,7 +157,6 @@ export const RAIN_RIPPLE_WHIRLPOOL_EYE_SHARE = 0.05
 export const RAIN_RIPPLE_WHIRLPOOL_SWALLOW_SHARE = 0.2
 export const RAIN_RIPPLE_MIN_INTENSITY = 0.01
 export const RAIN_RIPPLE_VIEW_MARGIN = 1.15
-export const RAIN_RIPPLE_BOUNDS_RADIUS = 1e6
 
 // ── Rain ──────────────────────────────────────────────────────────────────────
 export const RAIN_DROPS = 600

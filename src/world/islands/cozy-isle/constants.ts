@@ -50,3 +50,15 @@ export const COZY_BLOB: ContactBlob = {
   color: '#0b3a52',
   opacity: 0.38,
 }
+
+// ── Boat bob ──────────────────────────────────────────────────────────────────
+export const BOAT_BOB_AMPLITUDE = 0.04
+export const BOAT_BOB_SPEED = 1.5
+export const BOAT_ROLL_AMPLITUDE = 0.035
+export const BOAT_PITCH_AMPLITUDE = 0.02
+export const BOAT_ROLL_RATE = 0.8
+export const BOAT_PITCH_RATE = 0.55
+
+// ── Neon flicker noise ────────────────────────────────────────────────────────
+export const NEON_NOISE_RATE = 12.9898
+export const NEON_NOISE_SCALE = 43758.5453

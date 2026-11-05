@@ -4,6 +4,7 @@ import { scatterAround, sparkleLife, sparkleSize, type SparkleField } from './sp
 import SPARKLE_VERT from './shaders/sparkle.vert.glsl'
 import SPARKLE_FRAG from './shaders/sparkle.frag.glsl'
 import { createAdditiveMaterial } from '@/utils/materials'
+import { createUnboundedSphere } from '@/utils/geometry'
 
 export function buildSparkleGeometry(field: SparkleField): THREE.BufferGeometry {
   const positions = new Float32Array(field.count * 3)
@@ -24,7 +25,7 @@ export function buildSparkleGeometry(field: SparkleField): THREE.BufferGeometry 
   geometry.setAttribute('aLifetime', new THREE.BufferAttribute(lifetimes, 1))
   geometry.setAttribute('aMaxLifetime', new THREE.BufferAttribute(maxLifetimes, 1))
   geometry.setAttribute('aSize', new THREE.BufferAttribute(sizes, 1))
-  geometry.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 1e6)
+  geometry.boundingSphere = createUnboundedSphere()
   return geometry
 }
 

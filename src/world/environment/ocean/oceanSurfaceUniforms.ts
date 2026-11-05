@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import { OCEAN_DEFAULTS } from './constants'
+import { INITIAL_MOON_POSITION } from '../day-night-cycle/constants'
 
 export const oceanSurfaceUniforms = {
   uSmoothness: { value: OCEAN_DEFAULTS.cellSmoothness },
@@ -19,6 +20,6 @@ export const oceanSurfaceUniforms = {
   uSunDirection: {
     value: new THREE.Vector3(OCEAN_DEFAULTS.sunX, OCEAN_DEFAULTS.sunY, OCEAN_DEFAULTS.sunZ),
   },
-  uMoonDirection: { value: new THREE.Vector3(5, 80, 5).normalize() },
+  uMoonDirection: { value: new THREE.Vector3(...INITIAL_MOON_POSITION).normalize() },
   uMoonIntensity: { value: 0 },
 }

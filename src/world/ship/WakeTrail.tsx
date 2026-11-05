@@ -5,7 +5,7 @@ import { useCycleStore } from '@/store/cycleStore'
 import { useDebugStore } from '@/store/debugStore'
 import { onShipPlaced } from '@/store/shipStore'
 import { uniformsOf } from '@/utils/meshes'
-import { FALLBACK_FRAME_SECONDS, MAX_FRAME_SECONDS } from '@/utils/time'
+import { clampFrameSeconds } from '@/utils/time'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { disposeAll } from '@/utils/dispose'
 import { WAKE_STERN_SHIFT } from './constants'
@@ -43,8 +43,7 @@ export default function WakeTrail({ shipRef }: WakeTrailProps) {
     const mesh = meshRef.current
     if (!ship || !mesh) return
 
-    const dt =
-      isFinite(delta) && delta >= 0 ? Math.min(delta, MAX_FRAME_SECONDS) : FALLBACK_FRAME_SECONDS
+    const dt = clampFrameSeconds(delta)
     const wake = useDebugStore.getState().wake
     const uniforms = uniformsOf(mesh)
     uniforms.uTime.value = clock.getElapsedTime()

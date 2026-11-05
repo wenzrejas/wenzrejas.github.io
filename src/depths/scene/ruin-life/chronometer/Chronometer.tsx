@@ -4,6 +4,7 @@ import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { RUIN_LIFE_FRAME_PRIORITY } from '@/depths/scene/constants'
 import { useDepthsStore } from '@/store/depthsStore'
 import { disposeAll } from '@/utils/dispose'
+import { toSeconds } from '@/utils/time'
 import type { MilestoneProps } from '../shared/milestone'
 import { wakeShare } from '../shared/ruinWake'
 import { buildChimeRing, createChimeRingMaterial } from './chimeRingModel'
@@ -26,7 +27,7 @@ export default function Chronometer({ ruin, level, timeline, surfacing, clock }:
   useEffect(() => () => disposeAll(geometry, material), [geometry, material])
 
   useFrame(() => {
-    const epochSeconds = Date.now() / 1000
+    const epochSeconds = toSeconds(Date.now())
     stepClockRewind(chronometer, surfacing, clock.delta)
     listenForLanding(chronometer, useDepthsStore.getState().isShipLanded, clock.elapsed)
     tickClock(chronometer, epochSeconds)

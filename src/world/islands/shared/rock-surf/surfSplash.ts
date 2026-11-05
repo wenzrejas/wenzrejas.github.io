@@ -7,11 +7,20 @@ import { placeOnIsland, scanShore, turnToIsland, type SiteFrame } from '../shore
 import {
   SAND_WARMTH,
   SURF_DROP_LIFE,
+  SURF_DROP_RECOIL_JITTER,
+  SURF_DROP_RISE_JITTER,
+  SURF_DROP_SIZE_JITTER,
+  SURF_DROP_SWEEP,
   SURF_FOAM_LEAD,
   SURF_FOAM_LIFE,
+  SURF_FOAM_LIFE_JITTER,
+  SURF_FOAM_SIZE_JITTER,
+  SURF_FOAM_SPEED_JITTER,
+  SURF_FOAM_SWEEP,
   SURF_FOAM_Y,
   SURF_SCATTER,
   SURF_SITE_BAND,
+  SURF_STRENGTH_JITTER,
   SURF_TERRAIN_REACH,
   SURF_WATERLINE_BAND,
   SURF_Y,
@@ -139,26 +148,26 @@ export function emitSurfSplash(
   site: SurfSite,
   tuning: SurfTuning
 ): void {
-  const strength = rand(0.7, 1.2)
+  const strength = rand(...SURF_STRENGTH_JITTER)
 
   for (let i = 0; i < tuning.drops; i++) {
-    const recoil = tuning.recoil * rand(0.3, 1.2) * strength
-    const sweep = tuning.recoil * rand(-0.5, 0.5)
+    const recoil = tuning.recoil * rand(...SURF_DROP_RECOIL_JITTER) * strength
+    const sweep = tuning.recoil * rand(-SURF_DROP_SWEEP, SURF_DROP_SWEEP)
     drops.spawn(
       site.x + rand(-1, 1) * SURF_SCATTER,
       SURF_Y,
       site.z + rand(-1, 1) * SURF_SCATTER,
       site.awayX * recoil - site.awayZ * sweep,
-      tuning.rise * rand(0.6, 1.2) * strength,
+      tuning.rise * rand(...SURF_DROP_RISE_JITTER) * strength,
       site.awayZ * recoil + site.awayX * sweep,
-      tuning.dropSize * rand(0.6, 1.3),
+      tuning.dropSize * rand(...SURF_DROP_SIZE_JITTER),
       SURF_DROP_LIFE
     )
   }
 
   for (let i = 0; i < tuning.foamBlobs; i++) {
-    const sweep = rand(-0.7, 0.7)
-    const speed = tuning.recoil * rand(0.5, 1.1) * strength
+    const sweep = rand(-SURF_FOAM_SWEEP, SURF_FOAM_SWEEP)
+    const speed = tuning.recoil * rand(...SURF_FOAM_SPEED_JITTER) * strength
     foam.spawn(
       site.x + site.awayX * SURF_FOAM_LEAD,
       SURF_FOAM_Y,
@@ -166,8 +175,8 @@ export function emitSurfSplash(
       (site.awayX - site.awayZ * sweep) * speed,
       0,
       (site.awayZ + site.awayX * sweep) * speed,
-      tuning.foamSize * rand(0.8, 1.4),
-      SURF_FOAM_LIFE * rand(0.8, 1.2)
+      tuning.foamSize * rand(...SURF_FOAM_SIZE_JITTER),
+      SURF_FOAM_LIFE * rand(...SURF_FOAM_LIFE_JITTER)
     )
   }
 }

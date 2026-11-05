@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { WEATHER_COPY } from '@/data/hudCopy'
 import { useCycleStore } from '@/store/cycleStore'
+import { loopAnimationFrames } from '@/utils/time'
 import { readWeather, readWindPoint } from './conditions'
 import {
   DIAL_SKY_GRADIENT,
@@ -22,17 +23,12 @@ export default function WeatherPanel() {
     const wheel = wheelRef.current
     if (!wheel) return
 
-    let frame = 0
-    const tick = () => {
+    return loopAnimationFrames(() => {
       setWeather(readWeather())
       setWindPoint(readWindPoint())
       const turn = wheelTurnDegrees(useCycleStore.getState().timeOfDay)
       wheel.style.setProperty('--wheel-turn', `${turn}deg`)
-      frame = requestAnimationFrame(tick)
-    }
-    frame = requestAnimationFrame(tick)
-
-    return () => cancelAnimationFrame(frame)
+    })
   }, [])
 
   return (

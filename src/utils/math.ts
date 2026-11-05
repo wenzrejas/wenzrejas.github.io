@@ -1,12 +1,17 @@
 import * as THREE from 'three'
 
 export const FULL_TURN = Math.PI * 2
+export const NEAR_ZERO = 1e-3
+
+const SEED_RANGE = 100
 
 export function mix(from: number, to: number, blend: number): number {
   return from + (to - from) * blend
 }
 
 export const rand = (min: number, max: number) => mix(min, max, Math.random())
+
+export const randomSeed = () => Math.random() * SEED_RANGE
 
 export const wrapAngle = (angle: number) => Math.atan2(Math.sin(angle), Math.cos(angle))
 

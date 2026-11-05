@@ -9,12 +9,17 @@ import {
   FLAP_AMPLITUDE,
   FLAP_BLEND_RATE,
   FLAP_FREQUENCY,
+  FLAP_RATE_JITTER,
   FLAP_TIME_MAX,
   FLAP_TIME_MIN,
   FLIGHT_LANE,
   FLIGHT_RADIUS,
   FLIGHT_SPEED,
   FLIGHT_SPEED_JITTER,
+  FLOCK_ACROSS_SCATTER,
+  FLOCK_ACROSS_SHARE,
+  FLOCK_BEHIND_SCATTER,
+  FLOCK_BEHIND_SHARE,
   FLOCK_CHANCE,
   FLOCK_MAX,
   FLOCK_MIN,
@@ -22,6 +27,9 @@ import {
   GLIDE_LIFT,
   GLIDE_TIME_MAX,
   GLIDE_TIME_MIN,
+  STRAGGLER_ACROSS,
+  STRAGGLER_BEHIND,
+  STRAGGLER_HEIGHT_SCATTER,
   TURN_BIAS,
   TURN_FREQUENCY_MAX,
   TURN_FREQUENCY_MIN,
@@ -64,7 +72,7 @@ function createBird(offsetX: number, offsetY: number, offsetZ: number): Bird {
     offsetZ,
     size: BIRD_SPAN * rand(1 - BIRD_SIZE_JITTER, 1 + BIRD_SIZE_JITTER),
     phase: Math.random() * Math.PI * 2,
-    flapRate: FLAP_FREQUENCY * rand(0.85, 1.15),
+    flapRate: FLAP_FREQUENCY * rand(...FLAP_RATE_JITTER),
     flapping,
     timer: flapping ? rand(FLAP_TIME_MIN, FLAP_TIME_MAX) : rand(GLIDE_TIME_MIN, GLIDE_TIME_MAX),
     blend: flapping ? 1 : 0,
@@ -79,16 +87,24 @@ function createFormation(freeSlots: number): Bird[] {
       const side = i % 2 === 0 ? -1 : 1
       const rank = Math.ceil(i / 2)
       return createBird(
-        side * rank * FLOCK_SPACING * 0.8 + rand(-2, 2),
+        side * rank * FLOCK_SPACING * FLOCK_ACROSS_SHARE +
+          rand(-FLOCK_ACROSS_SCATTER, FLOCK_ACROSS_SCATTER),
         rand(-2, 2),
-        -rank * FLOCK_SPACING * 0.7 + rand(-2.5, 2.5)
+        -rank * FLOCK_SPACING * FLOCK_BEHIND_SHARE +
+          rand(-FLOCK_BEHIND_SCATTER, FLOCK_BEHIND_SCATTER)
       )
     })
   }
 
   const birds = [createBird(0, 0, 0)]
   if (Math.random() < 0.5 && freeSlots >= 2) {
-    birds.push(createBird(rand(3, 6) * Math.sign(Math.random() - 0.5), rand(-2, 2), -rand(2, 6)))
+    birds.push(
+      createBird(
+        rand(...STRAGGLER_ACROSS) * Math.sign(Math.random() - 0.5),
+        rand(-STRAGGLER_HEIGHT_SCATTER, STRAGGLER_HEIGHT_SCATTER),
+        -rand(...STRAGGLER_BEHIND)
+      )
+    )
   }
   return birds
 }

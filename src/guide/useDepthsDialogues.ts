@@ -10,6 +10,7 @@ import {
   useGuideStore,
 } from '@/store/guideStore'
 import { isDepthsInView, isDepthsScene, useViewStore } from '@/store/viewStore'
+import { toMilliseconds } from '@/utils/time'
 import {
   ARRIVAL_DIALOGUE_DELAY_SECONDS,
   DEPTHS_DIALOGUES,
@@ -23,7 +24,7 @@ function useDialogueAfter(isMomentReached: boolean, dialogue: DialogueKey, delay
     const pause = window.setTimeout(() => {
       if (isDepthsInView()) startDialogue(dialogue)
       else stopAwaitingDialogue(dialogue)
-    }, delaySeconds * 1000)
+    }, toMilliseconds(delaySeconds))
     return () => {
       window.clearTimeout(pause)
       stopAwaitingDialogue(dialogue)

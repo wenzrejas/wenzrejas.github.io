@@ -1,5 +1,10 @@
 import { create } from 'zustand'
 import * as THREE from 'three'
+import {
+  INITIAL_MOON_POSITION,
+  INITIAL_SUN_POSITION,
+  STARTING_CYCLE_TIME,
+} from '@/world/environment/day-night-cycle/constants'
 
 interface CycleState {
   fogColor: THREE.Color
@@ -16,7 +21,7 @@ interface CycleState {
   specular: number
 }
 
-const INITIAL_SUN_DIRECTION = new THREE.Vector3(2.5, 3.5, 0).normalize()
+const INITIAL_SUN_DIRECTION = new THREE.Vector3(...INITIAL_SUN_POSITION).normalize()
 
 export const useCycleStore = create<CycleState>(() => ({
   fogColor: new THREE.Color('#c8dff0'),
@@ -24,11 +29,11 @@ export const useCycleStore = create<CycleState>(() => ({
   oceanMid: new THREE.Color('#59c0e8'),
   oceanSunDirection: INITIAL_SUN_DIRECTION.clone(),
   clockSunHeight: INITIAL_SUN_DIRECTION.y,
-  oceanMoonDirection: new THREE.Vector3(5, 80, 5).normalize(),
+  oceanMoonDirection: new THREE.Vector3(...INITIAL_MOON_POSITION).normalize(),
   foamColor: new THREE.Color('#ffffff'),
   sparkleColor: new THREE.Color('#fff1d0'),
   nightFactor: 0,
-  timeOfDay: 0.28,
+  timeOfDay: STARTING_CYCLE_TIME,
   fresnel: 1,
   specular: 1,
 }))

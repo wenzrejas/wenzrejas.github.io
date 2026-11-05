@@ -74,3 +74,31 @@ export const SPLASH_LIFT = 7
 export const PATCHES_CLEAR_BELOW_INTENSITY = 0.01
 export const PLANE_HIDDEN_BELOW_INTENSITY = 0.001
 export const SPARK_CRUISE_SPEED = 30
+
+// ── Spray jitter ──────────────────────────────────────────────────────────────
+export const HULL_SPARK_ALONG = [-1.2, 1] as const
+export const HULL_SPARK_BEAM_GAP = 1.5
+export const HULL_SPARK_OUTWARD_JITTER = [0.4, 1] as const
+export const HULL_SPARK_BACKDRIFT = 1.5
+export const HULL_SPARK_SIZE_JITTER = [0.6, 1.4] as const
+export const BOW_SPLASH_ALONG = [0.1, 0.9] as const
+export const BOW_SPLASH_BEAM_GAP = 0.5
+export const BOW_SPLASH_OUTWARD_JITTER = [0.5, 1.2] as const
+export const BOW_SPLASH_Y = 0.4
+export const BOW_SPLASH_CARRY_SHARE = 0.4
+export const BOW_SPLASH_LIFT_JITTER = [0.6, 1.2] as const
+export const BOW_SPLASH_SIZE_JITTER = [0.6, 1.3] as const
+export const SPLASH_DROP_LIFE = 3
+export const GLOW_FLASH_SIZE_JITTER = [0.7, 1.2] as const
+export const GLOW_FLASH_DROP_Y = 0.3
+export const GLOW_FLASH_DROP_SPREAD = 1.5
+export const GLOW_FLASH_DROP_RISE = [3, 5] as const
+export const GLOW_FLASH_DROP_SIZE_JITTER = [0.5, 0.8] as const
+
+// ── Patch shape ───────────────────────────────────────────────────────────────
+export const PATCH_EDGE_SHARE = 0.95
+export const PATCH_FADE_START_SHARE = 0.55
+export const PATCH_MIN_SHORE_GAP_SHARE = 0.3
+
+// ── Scatter trail ─────────────────────────────────────────────────────────────
+export const TRAIL_UNVISITED_TIME = -1e6

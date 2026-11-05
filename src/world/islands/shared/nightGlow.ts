@@ -2,9 +2,7 @@ import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useCycleStore } from '@/store/cycleStore'
 import { mix } from '@/utils/math'
-
-const GLOW_START = 0.05
-const GLOW_FULL = 0.42
+import { NIGHT_GLOW_FULL, NIGHT_GLOW_START } from './constants'
 
 export interface GlowTarget {
   material: THREE.MeshStandardMaterial
@@ -12,7 +10,11 @@ export interface GlowTarget {
 }
 
 export const nightGlow = () =>
-  THREE.MathUtils.smoothstep(useCycleStore.getState().nightFactor, GLOW_START, GLOW_FULL)
+  THREE.MathUtils.smoothstep(
+    useCycleStore.getState().nightFactor,
+    NIGHT_GLOW_START,
+    NIGHT_GLOW_FULL
+  )
 
 export const dayNightGlow = (dayShare: number) => mix(dayShare, 1, nightGlow())
 

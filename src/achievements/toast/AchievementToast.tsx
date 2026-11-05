@@ -8,6 +8,7 @@ import { isRaceOnScreen, useCheckpointStore } from '@/store/checkpointStore'
 import { usePanelStore } from '@/store/panelStore'
 import { useRevealStore } from '@/store/revealStore'
 import { isMapUnfolded, useViewStore } from '@/store/viewStore'
+import { toMilliseconds } from '@/utils/time'
 import {
   ACHIEVEMENT_BADGE_URL,
   TOAST_CLOSE_SPRING,
@@ -41,7 +42,7 @@ export default function AchievementToast() {
     if (!shown) return
     lastShown.current = shown
     audio.play('achievementPop')
-    const showing = window.setTimeout(finishAnnouncement, TOAST_SHOW_SECONDS * 1000)
+    const showing = window.setTimeout(finishAnnouncement, toMilliseconds(TOAST_SHOW_SECONDS))
     return () => window.clearTimeout(showing)
   }, [shown])
 

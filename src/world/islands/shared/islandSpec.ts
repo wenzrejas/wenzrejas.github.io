@@ -1,4 +1,5 @@
 import type { ShoreTuning } from '@/world/shore/constants'
+import { DEFAULT_ISLAND_BRIGHTNESS } from './constants'
 
 export interface IslandModelTuning {
   scale: number
@@ -54,7 +55,7 @@ export const BASE_TUNING: IslandModelTuning = {
   offsetX: 0,
   offsetY: 0,
   offsetZ: 0,
-  brightness: 1.05,
+  brightness: DEFAULT_ISLAND_BRIGHTNESS,
 }
 
 export const islandLocalY = (worldY: number, islandScale: number, offsetY: number) =>

@@ -6,6 +6,7 @@ import GROUND_HALO_VERT from './shaders/groundHalo.vert.glsl'
 import GROUND_HALO_FRAG from './shaders/groundHalo.frag.glsl'
 import GROUND_MOTES_VERT from './shaders/groundMotes.vert.glsl'
 import GROUND_MOTES_FRAG from './shaders/groundMotes.frag.glsl'
+import { GROUND_MOTE_SIZE_JITTER } from '../constants'
 
 const HALO_CORNERS = [
   [-1, -1],
@@ -87,7 +88,7 @@ export function buildMoteGeometry(
           (i + rand(0, 0.5)) / tuning.motesPerSite,
           rand(0, Math.PI * 2),
           mix(tuning.moteInnerShare, 1, Math.sqrt(Math.random())),
-          rand(0.6, 1.2),
+          rand(...GROUND_MOTE_SIZE_JITTER),
         ],
         mote * 4
       )

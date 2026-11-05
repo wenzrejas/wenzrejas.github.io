@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { animated, useSpring } from '@react-spring/web'
 import { currentPage, useGuideStore } from '@/store/guideStore'
 import { useResizeEffect } from '@/hooks/useResizeEffect'
+import { loopAnimationFrames, toSeconds } from '@/utils/time'
 import { BOX_CLOSE_SPRING } from '../dialogue-box/constants'
 import { MAX_MASCOT_PIXEL_RATIO } from './constants'
 import { createPlayback, stepPlayback } from './mascotPlayback'
@@ -32,18 +33,13 @@ export default function Mascot({ isMirrored }: { isMirrored: boolean }) {
   useEffect(() => {
     const context = canvasRef.current?.getContext('2d')
     if (!context) return
-    let frame = 0
-    const tick = (milliseconds: number) => {
+    return loopAnimationFrames((milliseconds) => {
       const guide = useGuideStore.getState()
       const page = currentPage(guide)
-      if (stepPlayback(playback.current, page, guide.isDismissed, milliseconds / 1000)) {
+      if (stepPlayback(playback.current, page, guide.isDismissed, toSeconds(milliseconds))) {
         drawMascotFrame(context, playback.current)
       }
-      frame = requestAnimationFrame(tick)
-    }
-    frame = requestAnimationFrame(tick)
-
-    return () => cancelAnimationFrame(frame)
+    })
   }, [])
 
   return (
