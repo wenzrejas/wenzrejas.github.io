@@ -5,3 +5,5 @@ export const SOCIAL_LINKS = {
   resume: 'https://drive.google.com/file/d/1LgThWagZpmlQqqaxsTY0zZdaABLtshSd/view?usp=drive_link',
   kofi: 'https://ko-fi.com/wenzrej',
 }
+
+export type SocialPlatform = keyof typeof SOCIAL_LINKS

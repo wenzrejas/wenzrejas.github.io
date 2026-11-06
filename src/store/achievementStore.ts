@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { trackEvent } from '@/analytics/analytics'
 import { IS_DEBUG } from '@/app/experience/constants'
 import {
   ACHIEVEMENT_KEYS,
@@ -63,6 +64,7 @@ const hasEarnedAllOthers = (earned: AchievementKey[]) =>
 export function earnAchievement(achievement: AchievementKey) {
   const { earned, announcements } = useAchievementStore.getState()
   if (earned.includes(achievement)) return
+  trackEvent('achievement_earned', { achievement })
   useAchievementStore.setState({
     earned: [...earned, achievement],
     announcements: [...announcements, achievement],

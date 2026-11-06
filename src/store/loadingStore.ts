@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { trackEvent } from '@/analytics/analytics'
 import { IS_DEBUG } from '@/app/experience/constants'
 
 export const LOADING_TASKS = ['scene', 'assets', 'panels'] as const
@@ -20,9 +21,12 @@ export const useLoadingStore = create<LoadingState>(() => ({
 }))
 
 export function finishLoadingTask(task: LoadingTask) {
-  useLoadingStore.setState(({ pendingTasks }) => ({
-    pendingTasks: pendingTasks.filter((pending) => pending !== task),
-  }))
+  const { pendingTasks } = useLoadingStore.getState()
+  if (!pendingTasks.includes(task)) return
+  const stillPending = pendingTasks.filter((pending) => pending !== task)
+  useLoadingStore.setState({ pendingTasks: stillPending })
+  if (stillPending.length === 0)
+    trackEvent('loading_completed', { load_seconds: Math.round(performance.now() / 1000) })
 }
 
 export const setSail = () => useLoadingStore.setState({ hasSetSail: true })

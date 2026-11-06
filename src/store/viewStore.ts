@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { trackEvent } from '@/analytics/analytics'
 import { closePanel } from './panelStore'
 
 type ScenePhase = 'world' | 'diving' | 'depths' | 'surfacing'
@@ -32,7 +33,9 @@ export const isBelowSurface = ({ scenePhase }: ViewState) =>
 export const isDepthsMounted = ({ scenePhase }: ViewState) => scenePhase !== 'world'
 
 export function openWorldMap() {
-  if (isSceneChanging(useViewStore.getState())) return
+  const view = useViewStore.getState()
+  if (isSceneChanging(view)) return
+  if (!isMapUnfolded(view)) trackEvent('world_map_opened')
   useViewStore.setState(({ mapPhase }) => ({
     mapPhase: mapPhase === 'open' ? 'open' : 'unfolding',
     hasMapOpened: true,
@@ -62,7 +65,11 @@ const changeScene = (from: ScenePhase, to: ScenePhase) =>
 
 export const beginDive = () => changeScene('world', 'diving')
 
-export const arriveInDepths = () => changeScene('diving', 'depths')
+export function arriveInDepths() {
+  if (!isDiving()) return
+  changeScene('diving', 'depths')
+  trackEvent('depths_entered')
+}
 
 export const abortDive = () => changeScene('diving', 'world')
 

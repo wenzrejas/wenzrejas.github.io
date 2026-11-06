@@ -1,4 +1,5 @@
 import { useFrame } from '@react-three/fiber'
+import { trackEvent } from '@/analytics/analytics'
 import { earnAchievement } from '@/store/achievementStore'
 import { openInNewTab } from '@/utils/links'
 import { setHovered } from '@/interaction/hover'
@@ -21,6 +22,7 @@ export default function MonolithLinks({ monoliths }: MonolithLinksProps) {
       onHover={(isHovered) => setHovered(monolith, isHovered)}
       onActivate={() => {
         openInNewTab(monolith.link)
+        trackEvent('social_link_clicked', { platform: monolith.platform, source: 'monolith' })
         earnAchievement('followingTheLights')
       }}
       shipReach={MONOLITH_SHIP_REACH}

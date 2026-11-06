@@ -25,3 +25,4 @@ export const DOCK_GONE_LEVELS = 0.58
 
 // ── Visibility ────────────────────────────────────────────────────────────────
 export const CARD_HIDDEN_BELOW_PRESENCE = 0.002
+export const CARD_VIEWED_ABOVE_PRESENCE = 0.9

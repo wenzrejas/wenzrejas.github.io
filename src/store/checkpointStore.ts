@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { trackEvent } from '@/analytics/analytics'
 import {
   isLapUsable,
   medalFor,
@@ -71,6 +72,7 @@ function rememberRecord() {
 }
 
 export function startRun(course: CourseKey) {
+  trackEvent('regatta_started', { course })
   const lap = useCheckpointStore.getState().laps[course]
   useCheckpointStore.setState({
     run: {
@@ -113,6 +115,12 @@ export function finishRun() {
   const previousBest = bests[run.course]
   const isNewBest = previousBest === undefined || run.seconds < previousBest
   const bestSeconds = isNewBest ? run.seconds : previousBest
+  const medal = medalFor(run.course, run.seconds)
+  trackEvent('regatta_finished', {
+    course: run.course,
+    medal: medal ?? 'none',
+    seconds: Math.round(run.seconds),
+  })
   useCheckpointStore.setState({
     run: null,
     bests: { ...bests, [run.course]: bestSeconds },
@@ -120,7 +128,7 @@ export function finishRun() {
     result: {
       course: run.course,
       seconds: run.seconds,
-      medal: medalFor(run.course, run.seconds),
+      medal,
       bestSeconds,
       isNewBest,
       perfects: run.perfects,
@@ -129,7 +137,11 @@ export function finishRun() {
   rememberRecord()
 }
 
-export const abandonRun = () => useCheckpointStore.setState({ run: null })
+export function abandonRun() {
+  const { run } = useCheckpointStore.getState()
+  if (run) trackEvent('regatta_abandoned', { course: run.course })
+  useCheckpointStore.setState({ run: null })
+}
 
 export const dismissResult = () => useCheckpointStore.setState({ result: null })
 

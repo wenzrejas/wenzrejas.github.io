@@ -1,3 +1,4 @@
+import { trackEvent } from '@/analytics/analytics'
 import { waitSeconds } from '@/utils/time'
 import {
   DEV_SEND_SECONDS,
@@ -16,8 +17,7 @@ async function simulateDelivery(formData: FormData): Promise<boolean> {
   return DEV_SEND_SUCCEEDS
 }
 
-export async function deliverContact(formData: FormData): Promise<boolean> {
-  if (import.meta.env.DEV) return simulateDelivery(formData)
+async function sendToWeb3Forms(formData: FormData): Promise<boolean> {
   formData.append('access_key', WEB3FORMS_ACCESS_KEY)
   try {
     const response = await fetch(WEB3FORMS_ENDPOINT, { method: 'POST', body: formData })
@@ -26,4 +26,12 @@ export async function deliverContact(formData: FormData): Promise<boolean> {
   } catch {
     return false
   }
+}
+
+export async function deliverContact(formData: FormData): Promise<boolean> {
+  const isDelivered = import.meta.env.DEV
+    ? await simulateDelivery(formData)
+    : await sendToWeb3Forms(formData)
+  trackEvent(isDelivered ? 'contact_form_submitted' : 'contact_form_failed')
+  return isDelivered
 }

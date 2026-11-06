@@ -1,13 +1,15 @@
 import type { CSSProperties } from 'react'
+import { trackEvent } from '@/analytics/analytics'
+import type { SocialPlatform } from '@/data/socialLinks'
 import PanelIcon from '../PanelIcon'
 import { splashMasks } from '../splash/splashModel'
-import SocialGlyph, { type SocialGlyphName } from './SocialGlyph'
+import SocialGlyph from './SocialGlyph'
 import './SocialLinks.scss'
 
 export interface SocialLink {
   label: string
   href: string
-  glyph: SocialGlyphName
+  glyph: SocialPlatform
 }
 
 interface SocialLinksProps {
@@ -26,6 +28,7 @@ export default function SocialLinks({ links }: SocialLinksProps) {
             href={href}
             target="_blank"
             rel="noreferrer"
+            onClick={() => trackEvent('social_link_clicked', { platform: glyph, source: 'panel' })}
           >
             <span className="social-link__badge">
               <span

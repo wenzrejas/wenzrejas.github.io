@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { trackEvent } from '@/analytics/analytics'
 import { CAMERA_OFFSET } from '@/app/experience/constants'
 import { earnAchievement } from '@/store/achievementStore'
 import { useCoastStore } from '@/store/coastStore'
@@ -88,5 +89,6 @@ export function sailTo(island: IslandKey) {
   leaveDepths()
   placeShip(arrival.x, arrival.z, arrival.heading)
   closeWorldMap()
+  trackEvent('fast_travel', { island })
   earnAchievement('chartedCourse')
 }

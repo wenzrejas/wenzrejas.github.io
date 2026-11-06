@@ -1,4 +1,4 @@
-import { SOCIAL_LINKS } from '@/data/socialLinks'
+import type { SocialPlatform } from '@/data/socialLinks'
 import { BASE_TUNING, type ContactBlob, type IslandSpec } from '../shared/islandSpec'
 import type { GroundGlowTuning } from '../shared/ground-glow/glowSites'
 import type { SurfTuning } from '../shared/rock-surf/surfSplash'
@@ -48,11 +48,11 @@ export const LIGHT_NODES = ['Glow_TowerWindows', 'Glow_BeaconLens', SUMMIT_RING_
 export const MONOLITH_NAMES = ['Document', 'Email', 'GitHub', 'LinkedIn'] as const
 export type MonolithName = (typeof MONOLITH_NAMES)[number]
 
-export const MONOLITH_LINKS: Record<MonolithName, string> = {
-  Document: SOCIAL_LINKS.resume,
-  Email: SOCIAL_LINKS.email,
-  GitHub: SOCIAL_LINKS.github,
-  LinkedIn: SOCIAL_LINKS.linkedin,
+export const MONOLITH_PLATFORMS: Record<MonolithName, SocialPlatform> = {
+  Document: 'resume',
+  Email: 'email',
+  GitHub: 'github',
+  LinkedIn: 'linkedin',
 }
 
 export const MONOLITH_MARKER_HEIGHT = 0.12

@@ -1,10 +1,11 @@
 import { useCallback, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { Html } from '@react-three/drei'
+import { trackEvent } from '@/analytics/analytics'
 import { DEPTHS_COPY, type MilestoneCopy } from '@/data/depthsCopy'
 import type { WallClock } from '@/utils/time'
 import type { Timeline } from '../timeline/timeline'
-import { FITTED_Z_INDEX_RANGE, PANEL_Z_INDEX_RANGE } from './constants'
+import { CARD_VIEWED_ABOVE_PRESENCE, FITTED_Z_INDEX_RANGE, PANEL_Z_INDEX_RANGE } from './constants'
 import {
   createPanelReveal,
   measurePanel,
@@ -33,6 +34,7 @@ export default function MilestonePanel({
   layout,
 }: MilestonePanelProps) {
   const cardRef = useRef<HTMLElement>(null)
+  const hasBeenViewed = useRef(false)
   const reveal = useMemo(() => createPanelReveal(), [])
   const side = panelSide(level)
   const spot = useMemo(() => panelSpot(level), [level])
@@ -54,6 +56,10 @@ export default function MilestonePanel({
     if (!card) return
     stepPanelReveal(reveal, layout, timeline, level, clock.delta)
     showPanel(card, layout === 'under' ? 0 : side, reveal.presence)
+    if (!hasBeenViewed.current && reveal.presence > CARD_VIEWED_ABOVE_PRESENCE) {
+      hasBeenViewed.current = true
+      trackEvent('milestone_viewed', { milestone: milestone.place })
+    }
   })
 
   return (

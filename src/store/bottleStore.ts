@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import * as THREE from 'three'
+import { trackEvent } from '@/analytics/analytics'
 import { IS_DEBUG } from '@/app/experience/constants'
 import {
   ALL_BOTTLES,
@@ -27,6 +28,7 @@ export function useBottlesInSettings(): readonly BottleKey[] {
 
 export function findBottle(bottle: BottleKey) {
   rememberItem('foundBottles', bottle)
+  trackEvent('bottle_found', { bottle })
   useBottleStore.setState(({ found }) => ({ found: [...found, bottle], openNote: bottle }))
   openBottleNote()
 }

@@ -1,4 +1,5 @@
 import type * as THREE from 'three'
+import { trackEvent } from '@/analytics/analytics'
 import { noteReveal } from '@/achievements/storeEvents'
 import { isRaceUnderway } from '@/store/checkpointStore'
 import { isCinematicPlaying } from '@/store/cinematicStore'
@@ -68,6 +69,7 @@ function startReachedReveal(
   if (!trigger) return false
 
   rememberItem('revealedIslands', trigger.key)
+  trackEvent('island_discovered', { island: trigger.key })
   if (isSkipped) {
     noteReveal(trigger.key)
     return false

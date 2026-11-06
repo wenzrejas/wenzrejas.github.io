@@ -1,3 +1,4 @@
+import { trackEvent } from '@/analytics/analytics'
 import { PROJECT_PANEL_COPY } from '@/data/panelCopy'
 import { PROJECT_STORIES } from '@/data/project-stories/projectStories'
 import type { ProjectKey } from '@/store/panelStore'
@@ -37,7 +38,7 @@ export default function ProjectContent({ project }: ProjectContentProps) {
         <h3 className="island-panel__heading island-panel__heading--ornate">
           {PROJECT_PANEL_COPY.previewHeading}
         </h3>
-        <ProjectGallery screenshots={showcase.screenshots} />
+        <ProjectGallery project={project} screenshots={showcase.screenshots} />
       </section>
       <section className="island-panel__section">
         <h3 className="island-panel__heading island-panel__heading--ornate">
@@ -50,7 +51,13 @@ export default function ProjectContent({ project }: ProjectContentProps) {
       ))}
       {story.action && showcase.url && (
         <div className="project-visit">
-          <a className="project-visit__link" href={showcase.url} target="_blank" rel="noreferrer">
+          <a
+            className="project-visit__link"
+            href={showcase.url}
+            target="_blank"
+            rel="noreferrer"
+            onClick={() => trackEvent('project_link_clicked', { project })}
+          >
             <Cartouche />
             <span className="project-visit__label">{story.action}</span>
           </a>

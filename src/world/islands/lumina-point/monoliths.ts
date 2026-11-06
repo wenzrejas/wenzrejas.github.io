@@ -3,6 +3,7 @@ import { boundsIn, displayColor, meshesOf, positionIn } from '@/utils/meshes'
 import { mix, rand } from '@/utils/math'
 import { easeHover } from '@/interaction/hover'
 import { MONOLITH_COPY } from '@/data/islandCopy'
+import { SOCIAL_LINKS, type SocialPlatform } from '@/data/socialLinks'
 import type { GlowSite } from '../shared/ground-glow/glowSites'
 import {
   LOGO_BOB_RATE_MAX,
@@ -11,9 +12,9 @@ import {
   LOGO_EDGE_OPACITY,
   LOGO_SPIN_RATE_MAX,
   LOGO_SPIN_RATE_MIN,
-  MONOLITH_LINKS,
   MONOLITH_MARKER_HEIGHT,
   MONOLITH_NAMES,
+  MONOLITH_PLATFORMS,
   type MonolithName,
 } from './constants'
 
@@ -44,6 +45,7 @@ export interface FloatingLogo {
 }
 
 export interface Monolith {
+  platform: SocialPlatform
   link: string
   label: string
   station: THREE.Object3D
@@ -90,8 +92,11 @@ function findMonolith(model: THREE.Object3D, name: MonolithName): Monolith | nul
   const marker = positionIn(model, station)
   marker.y = mix(marker.y, inletBounds.max.y, MONOLITH_MARKER_HEIGHT)
 
+  const platform = MONOLITH_PLATFORMS[name]
+
   return {
-    link: MONOLITH_LINKS[name],
+    platform,
+    link: SOCIAL_LINKS[platform],
     label: MONOLITH_COPY[name],
     station,
     marker,

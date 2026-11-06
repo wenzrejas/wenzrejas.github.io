@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import * as THREE from 'three'
+import { trackEvent } from '@/analytics/analytics'
 import { isSheetLayout, useSheetLayout } from '@/utils/layout'
 
 export type GroveKey = 'frontend' | 'creative' | 'visuals' | 'design'
@@ -25,12 +26,17 @@ export const usePanelStore = create<PanelState>(() => ({
   focusOffsetPixels: 0,
 }))
 
-export function openPanel(key: PanelKey, focus: THREE.Vector3) {
-  usePanelStore.getState().focus.copy(focus)
+function setActivePanel(key: PanelKey) {
+  if (usePanelStore.getState().activePanel !== key) trackEvent('panel_opened', { panel: key })
   usePanelStore.setState({ activePanel: key })
 }
 
-export const openSettings = () => usePanelStore.setState({ activePanel: 'settings' })
+export function openPanel(key: PanelKey, focus: THREE.Vector3) {
+  usePanelStore.getState().focus.copy(focus)
+  setActivePanel(key)
+}
+
+export const openSettings = () => setActivePanel('settings')
 
 export const openBottleNote = () => usePanelStore.setState({ activePanel: 'bottle' })
 
