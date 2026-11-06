@@ -1,7 +1,7 @@
 import { Component, type ReactNode } from 'react'
 
 interface FailureBoundaryProps {
-  onError: () => void
+  onError: (error: unknown) => void
   children: ReactNode
 }
 
@@ -18,7 +18,7 @@ export default class FailureBoundary extends Component<FailureBoundaryProps, Fai
 
   override componentDidCatch(error: unknown) {
     console.error(error)
-    this.props.onError()
+    this.props.onError(error)
   }
 
   override render() {

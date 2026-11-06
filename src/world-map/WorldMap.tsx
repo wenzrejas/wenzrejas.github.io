@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState, type AnimationEvent } from 'r
 import { audio } from '@/audio/audioManager'
 import { WORLD_MAP_COPY } from '@/data/worldMapCopy'
 import MapPaper from '@/loading/map-paper/MapPaper'
+import { useDialogFocus } from '@/panels/shared/island-panel/useDialogFocus'
 import { isModalDialogue, useGuideStore } from '@/store/guideStore'
 import { useLoadingStore } from '@/store/loadingStore'
 import {
@@ -28,9 +29,12 @@ export default function WorldMap() {
   const isLoaderGone = useLoadingStore((state) => state.isLoaderGone)
   const isGuideSpeaking = useGuideStore(isModalDialogue)
   const isSheetPortrait = useSheetPortrait()
+  const mapRef = useRef<HTMLElement>(null)
   const paperRef = useRef<HTMLCanvasElement>(null)
   const [selectedIsland, setSelectedIsland] = useState<IslandKey | null>(null)
   const [isListOpen, setListOpen] = useState(false)
+
+  useDialogFocus(mapRef, { isOpen: isUnfolded })
 
   const selectIsland = useCallback((island: IslandKey) => {
     setSelectedIsland(island)
@@ -40,6 +44,15 @@ export default function WorldMap() {
   useEffect(() => {
     if (isLoaderGone) void preloadWorldMap()
   }, [isLoaderGone])
+
+  useEffect(() => {
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape' || !isMapUnfolded(useViewStore.getState())) return
+      if (!isModalDialogue(useGuideStore.getState())) closeWorldMap()
+    }
+    window.addEventListener('keydown', closeOnEscape)
+    return () => window.removeEventListener('keydown', closeOnEscape)
+  }, [])
 
   useEffect(
     () =>
@@ -69,6 +82,7 @@ export default function WorldMap() {
 
   return (
     <section
+      ref={mapRef}
       className={motion ? `world-map world-map--${motion}` : 'world-map world-map--closed'}
       aria-label={WORLD_MAP_COPY.title}
       inert={isGuideSpeaking}

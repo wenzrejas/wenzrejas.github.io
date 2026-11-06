@@ -1,5 +1,8 @@
 import type { NoiseOctave } from '../procedural/valueNoise'
 
+// ── Dialog focus ──────────────────────────────────────────────────────────────
+export const DIALOG_CLOSE_BUTTON = '.close-button'
+
 // ── Mist wash ─────────────────────────────────────────────────────────────────
 export const MIST_SEED = 31
 export const MIST_WIDTH = 1200

@@ -7,7 +7,7 @@ import {
   type AchievementKey,
 } from '@/achievements/constants'
 import { ISLAND_KEYS } from '@/world/islands/shared/islandSpecs'
-import type { LiveryKey } from '@/world/ship/constants'
+import { SHIP_LIVERIES, type LiveryKey } from '@/world/ship/constants'
 import { rememberedItems, rememberedRecord, rememberText } from './visitorMemory'
 
 interface AchievementRecord {
@@ -30,9 +30,16 @@ function recallRecord(): AchievementRecord {
   const revealed = rememberedItems('revealedIslands', ISLAND_KEYS)
   const charted = [...new Set([...(record.progress.cartographer ?? []), ...revealed])]
   const earned = new Set(record.earned.filter((key) => ACHIEVEMENT_KEYS.includes(key)))
+  const isKnownLivery = Object.keys(SHIP_LIVERIES).includes(record.livery)
+  const livery = isKnownLivery ? record.livery : FRESH_RECORD.livery
   if (charted.length > 0) earned.add('landHo')
   if (isComplete('cartographer', charted)) earned.add('cartographer')
-  return { ...record, earned: [...earned], progress: { ...record.progress, cartographer: charted } }
+  return {
+    ...record,
+    earned: [...earned],
+    progress: { ...record.progress, cartographer: charted },
+    livery,
+  }
 }
 
 export const useAchievementStore = create<AchievementState>(() => ({

@@ -1,9 +1,10 @@
-import type { ReactNode } from 'react'
+import { useRef, type ReactNode } from 'react'
 import { animated, type SpringValues } from '@react-spring/web'
 import { CHECKPOINT_RUN_COPY } from '@/data/minigameCopy'
 import { PANEL_COPY } from '@/data/panelCopy'
 import Cartouche from '@/panels/shared/cartouche/Cartouche'
 import CloseButton from '@/panels/shared/close-button/CloseButton'
+import { useDialogFocus } from '@/panels/shared/island-panel/useDialogFocus'
 import type { CourseKey } from '../courses'
 import './RaceCard.scss'
 
@@ -26,8 +27,16 @@ export default function RaceCard({
   onClose,
   children,
 }: RaceCardProps) {
+  const cardRef = useRef<HTMLElement>(null)
+  useDialogFocus(cardRef, { isFocusMovedIn: false })
+
   return (
-    <animated.section className={`race-card ${className}`} style={motion} aria-live="polite">
+    <animated.section
+      ref={cardRef}
+      className={`race-card ${className}`}
+      style={motion}
+      aria-live="polite"
+    >
       <CloseButton className="race-card__close" label={PANEL_COPY.close} onClose={onClose} />
       <span className="race-card__eyebrow">{CHECKPOINT_RUN_COPY.eyebrow}</span>
       <h2 className="race-card__course">{CHECKPOINT_RUN_COPY.courses[course]}</h2>

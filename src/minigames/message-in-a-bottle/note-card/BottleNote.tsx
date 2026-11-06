@@ -1,4 +1,4 @@
-import { useId } from 'react'
+import { useId, useRef } from 'react'
 import { animated, type SpringValues } from '@react-spring/web'
 import { BOTTLE_COPY, BOTTLE_LINKS, BOTTLE_NOTES, bottlePanelLabel } from '@/data/bottleCopy'
 import { PANEL_COPY } from '@/data/panelCopy'
@@ -6,6 +6,7 @@ import Cartouche from '@/panels/shared/cartouche/Cartouche'
 import CloseButton from '@/panels/shared/close-button/CloseButton'
 import type { SheetMotion } from '@/panels/shared/island-panel/IslandPanel'
 import { useCloseOnEscape } from '@/panels/shared/island-panel/useCloseOnEscape'
+import { useDialogFocus } from '@/panels/shared/island-panel/useDialogFocus'
 import Parchment from '@/panels/shared/parchment/Parchment'
 import { openBottlePanel, useBottleStore } from '@/store/bottleStore'
 import { closePanel } from '@/store/panelStore'
@@ -19,7 +20,9 @@ export default function BottleNote({ motion }: { motion: SpringValues<SheetMotio
   const note = useBottleStore((state) => state.openNote)
   const foundCount = useBottleStore(({ found }) => collectedCount(found))
   const titleId = useId()
+  const noteRef = useRef<HTMLElement>(null)
   useCloseOnEscape()
+  useDialogFocus(noteRef)
 
   if (!note) return null
   const { title, text } = BOTTLE_NOTES[note]
@@ -27,7 +30,7 @@ export default function BottleNote({ motion }: { motion: SpringValues<SheetMotio
   const link = BOTTLE_LINKS[note]
 
   return (
-    <aside className="bottle-note" role="dialog" aria-labelledby={titleId}>
+    <aside ref={noteRef} className="bottle-note" role="dialog" aria-labelledby={titleId}>
       <animated.div className="bottle-note__sheet" style={motion}>
         <Parchment shape="loose" />
         <CloseButton className="bottle-note__close" label={PANEL_COPY.close} onClose={closePanel} />

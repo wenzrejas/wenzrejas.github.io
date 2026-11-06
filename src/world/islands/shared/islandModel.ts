@@ -1,6 +1,7 @@
 import { useLayoutEffect, useMemo } from 'react'
 import { useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
+import { DRACO_DECODER_PATH } from '@/app/experience/constants'
 import { replaceMaterials } from '@/utils/meshes'
 import { applyCloudShadow } from '@/world/environment/weather/cloudShadow'
 import type { GlowTarget } from './nightGlow'
@@ -59,7 +60,7 @@ export function applyBrightness(tints: TintTarget[], brightness: number) {
 }
 
 export function useIslandModel(url: string, brightness: number, isCloudShaded = true): IslandModel {
-  const gltf = useGLTF(url)
+  const gltf = useGLTF(url, DRACO_DECODER_PATH)
   const island = useMemo(() => prepareIslandModel(gltf, isCloudShaded), [gltf, isCloudShaded])
 
   useLayoutEffect(() => applyBrightness(island.tints, brightness), [island, brightness])

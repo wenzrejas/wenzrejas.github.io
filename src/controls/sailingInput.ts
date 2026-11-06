@@ -2,7 +2,7 @@ import { MathUtils } from 'three'
 import { FORWARD_RISE, GROUND_FORWARD, SCREEN_RIGHT } from '@/app/experience/cameraFraming'
 import type { Keys } from '@/hooks/useKeyboardInput'
 import { isRaceHoldingShip, useCheckpointStore } from '@/store/checkpointStore'
-import { isCinematicPlaying } from '@/store/cinematicStore'
+import { isCinematicPlaying, isShipReleased } from '@/store/cinematicStore'
 import { isIntroductionPending } from '@/store/guideStore'
 import { useInputStore } from '@/store/inputStore'
 import { isPanelOpen } from '@/store/panelStore'
@@ -14,7 +14,7 @@ const IDLE_INPUT = { throttle: 0, turn: 0, steering: 0 }
 
 export const isSailingHeld = () =>
   isIntroductionPending() ||
-  isCinematicPlaying() ||
+  (isCinematicPlaying() && !isShipReleased()) ||
   isPanelOpen() ||
   !isWorldInView() ||
   isRaceHoldingShip()

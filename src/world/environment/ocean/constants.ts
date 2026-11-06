@@ -14,6 +14,10 @@ export const SHORE_CALM_MAP_RESOLUTION = 512
 // ── Surface ───────────────────────────────────────────────────────────────────
 export const RAIN_DARKEN = 0.22
 
+// ── Light noise ───────────────────────────────────────────────────────────────
+export const LIGHT_NOISE_MEAN = 0.375
+export const LIGHT_NOISE_SPREAD = 0.559
+
 // ── Wind swell ────────────────────────────────────────────────────────────────
 export const PRIMARY_WAVE_X = 0.97
 export const PRIMARY_WAVE_Z = -0.26

@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { useGLTF } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
+import { DRACO_DECODER_PATH } from '@/app/experience/constants'
 import type { WallClock } from '@/utils/time'
 import { SCENERY_KIT_URL } from './constants'
 import { driftScenery } from './sceneryDrift'
@@ -12,7 +13,7 @@ interface SceneryKitProps {
 }
 
 export default function SceneryKit({ clock }: SceneryKitProps) {
-  const { scene } = useGLTF(SCENERY_KIT_URL)
+  const { scene } = useGLTF(SCENERY_KIT_URL, DRACO_DECODER_PATH)
   const kit = useMemo(() => buildSceneryKit(scene, planScenery()), [scene])
 
   useEffect(() => () => disposeSceneryKit(kit), [kit])

@@ -9,6 +9,7 @@ import PanelArt from '../panel-art/PanelArt'
 import Parchment from '../parchment/Parchment'
 import { TITLE_UNDERLINE, TITLE_UNDERLINE_BOX } from './brushStrokeModel'
 import { useCloseOnEscape } from './useCloseOnEscape'
+import { useDialogFocus } from './useDialogFocus'
 import { useMistScroll } from './useMistScroll'
 import './IslandPanel.scss'
 
@@ -54,12 +55,14 @@ export default function IslandPanel({
   }, [isCentered])
 
   useCloseOnEscape()
+  useDialogFocus(layoutRef)
 
   return (
     <aside
       ref={layoutRef}
       className={isCentered ? 'island-panel island-panel--centered' : 'island-panel'}
       role="dialog"
+      aria-modal="true"
       aria-labelledby={titleId}
     >
       <animated.div className="island-panel__sheet" style={motion}>

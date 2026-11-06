@@ -216,6 +216,7 @@ class InteractionManager {
   private activateApproached = (event: KeyboardEvent): void => {
     if (event.key !== 'Enter' || event.repeat || this.isHeld || !this.approached) return
     if (event.target instanceof Element && event.target.closest(KEYBOARD_TARGETS)) return
+    event.preventDefault()
     this.handlers.get(this.approached)?.onActivate?.()
   }
 

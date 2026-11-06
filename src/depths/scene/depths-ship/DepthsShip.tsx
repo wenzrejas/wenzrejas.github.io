@@ -2,6 +2,7 @@ import { useEffect, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
 import type * as THREE from 'three'
+import { DRACO_DECODER_PATH } from '@/app/experience/constants'
 import { useDebugStore } from '@/store/debugStore'
 import { setShipLanded } from '@/store/depthsStore'
 import type { WallClock } from '@/utils/time'
@@ -37,7 +38,7 @@ export default function DepthsShip({
   plazaSpot,
   clock,
 }: DepthsShipProps) {
-  const { scene } = useGLTF(SHIP_MODEL_URL)
+  const { scene } = useGLTF(SHIP_MODEL_URL, DRACO_DECODER_PATH)
   const ship = useMemo(() => buildDepthsShip(scene), [scene])
   const motion = useMemo(() => createShipMotion(shipSpot, ship.keelDepth), [shipSpot, ship])
 

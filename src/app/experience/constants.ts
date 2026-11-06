@@ -22,6 +22,8 @@ export const PIXEL_RATIOS: Record<GraphicsQuality, Dpr> = {
 export const CAMERA_NEAR = -1000
 export const CAMERA_FAR = 10000
 
+export const DRACO_DECODER_PATH = '/draco/'
+
 export const TOP_VIEW_HEIGHT = 500
 export const TOP_VIEW_MARGIN = 1.1
 export const SCENE_RENDER_FRAME_PRIORITY = 1

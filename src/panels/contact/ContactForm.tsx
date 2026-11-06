@@ -6,6 +6,7 @@ import { startSkyBeam } from '@/store/skyBeamStore'
 import { scrollAncestorToEnd } from '@/utils/scroll'
 import { isSheetLayout } from '@/utils/layout'
 import Cartouche from '../shared/cartouche/Cartouche'
+import { WEB3FORMS_HONEYPOT_FIELD } from './constants'
 import { deliverContact } from './contactDelivery'
 import {
   hasErrors,
@@ -94,6 +95,14 @@ export default function ContactForm() {
         error={errors.message}
         onEdit={clearError}
         isMultiline
+      />
+      <input
+        type="checkbox"
+        name={WEB3FORMS_HONEYPOT_FIELD}
+        className="contact-form__honeypot"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
       />
       <div className="contact-form__actions">
         <button

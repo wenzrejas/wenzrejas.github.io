@@ -192,6 +192,7 @@ function stepEmerging(run: DiveRun, dt: number): DiveEvent {
   run.look.focusZoom = mix(emergeFrom.focusZoom, 1, smoothstep(progress, 0, 1))
   run.look.spin = emergeFrom.spin * (1 - smoothstep(progress, 0, 1))
   run.cover = emergeFrom.cover * (1 - smoothstep(progress, 0, EMERGE_VEIL_UNTIL))
+  if (progress >= EMERGE_VEIL_UNTIL) useCinematicStore.getState().isShipReleased = true
   if (progress < 1) return null
   enterStage(run, 'idle')
   return 'settled'
@@ -232,6 +233,7 @@ export function steerCamera({ focus, look }: DiveRun) {
 export function releaseCamera() {
   const cinematic = useCinematicStore.getState()
   cinematic.isPlaying = false
+  cinematic.isShipReleased = false
   cinematic.focusBlend = 0
   cinematic.focusZoom = 1
   cinematic.spin = 0

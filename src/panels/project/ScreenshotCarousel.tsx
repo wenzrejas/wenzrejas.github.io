@@ -1,38 +1,18 @@
-import { useRef, useState, type ReactNode } from 'react'
+import { useRef, type ReactNode } from 'react'
 import { PROJECT_PANEL_COPY } from '@/data/panelCopy'
-import { useResizeEffect } from '@/hooks/useResizeEffect'
 import { scrollBehavior } from '@/store/settingsStore'
 import { useDragToScroll } from '../shared/drag-to-scroll/useDragToScroll'
+import { useScrollEdges } from '../shared/scroll-edges/useScrollEdges'
 import ArrowButton from './ArrowButton'
-import { CAROUSEL_EDGE_SLACK_PIXELS } from './constants'
 import './ScreenshotCarousel.scss'
 
 interface ScreenshotCarouselProps {
   children: ReactNode
 }
 
-interface TrackEdges {
-  isAtStart: boolean
-  isAtEnd: boolean
-}
-
 export default function ScreenshotCarousel({ children }: ScreenshotCarouselProps) {
   const trackRef = useRef<HTMLUListElement>(null)
-  const [edges, setEdges] = useState<TrackEdges>({ isAtStart: true, isAtEnd: true })
-
-  const measureEdges = () => {
-    const track = trackRef.current
-    if (!track) return
-    const isAtStart = track.scrollLeft <= CAROUSEL_EDGE_SLACK_PIXELS
-    const isAtEnd =
-      track.scrollLeft + track.clientWidth >= track.scrollWidth - CAROUSEL_EDGE_SLACK_PIXELS
-    setEdges((previous) =>
-      previous.isAtStart === isAtStart && previous.isAtEnd === isAtEnd
-        ? previous
-        : { isAtStart, isAtEnd }
-    )
-  }
-  useResizeEffect(trackRef, measureEdges)
+  const edges = useScrollEdges(trackRef)
 
   const scrollToThumbnail = (shift: number) => {
     const track = trackRef.current
@@ -55,7 +35,6 @@ export default function ScreenshotCarousel({ children }: ScreenshotCarouselProps
             ? 'screenshot-carousel__track screenshot-carousel__track--dragging'
             : 'screenshot-carousel__track'
         }
-        onScroll={measureEdges}
         {...dragHandlers}
       >
         {children}

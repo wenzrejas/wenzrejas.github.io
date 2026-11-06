@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 import Achievements from './achievements/Achievements'
 import Experience from './app/experience/Experience'
 import FailureBoundary from './app/FailureBoundary'
+import { RELOADABLE_ERROR } from './app/webgl-failure/constants'
 import WebglFailureScreen from './app/webgl-failure/WebglFailureScreen'
 import IslandTitle from './world/islands/shared/IslandTitle'
 import { IS_DEBUG } from './app/experience/constants'
@@ -22,22 +23,25 @@ import WorldMap from './world-map/WorldMap'
 const DebugTools =
   import.meta.env.DEV && IS_DEBUG ? lazy(() => import('./app/debug/DebugTools')) : null
 
+const reportAppFailure = (error: unknown) =>
+  reportWebglFailure(
+    error instanceof Error && RELOADABLE_ERROR.test(error.message) ? 'graphics' : 'crash'
+  )
+
 export default function App() {
   const hasWebglFailed = useWebglStore((state) => state.hasFailed)
 
   if (hasWebglFailed) return <WebglFailureScreen />
 
   return (
-    <>
+    <FailureBoundary onError={reportAppFailure}>
       {DebugTools && (
         <Suspense fallback={null}>
           <DebugTools />
         </Suspense>
       )}
       <Soundscape />
-      <FailureBoundary onError={reportWebglFailure}>
-        <Experience />
-      </FailureBoundary>
+      <Experience />
       <DepthsOverlay />
       <IslandTitle />
       <Hud />
@@ -51,6 +55,6 @@ export default function App() {
       <Panels />
       <WorldMap />
       <LoadingScreen />
-    </>
+    </FailureBoundary>
   )
 }

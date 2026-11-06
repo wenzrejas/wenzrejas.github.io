@@ -109,6 +109,16 @@ $invalid-placeholder-ink: #c8644e;
     color: $error-ink;
   }
 
+  &__honeypot {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    pointer-events: none;
+  }
+
   &__actions {
     margin-top: 1rem;
     display: flex;

@@ -1,0 +1,1 @@
+export const SCROLL_EDGE_SLACK_PIXELS = 1

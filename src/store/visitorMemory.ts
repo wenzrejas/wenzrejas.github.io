@@ -31,11 +31,25 @@ export function rememberedItems<Item extends string>(memory: Memory, items: read
 
 const rememberedText = (memory: Memory) => (IS_DEBUG ? null : readStored(MEMORY_KEYS[memory]))
 
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null && !Array.isArray(value)
+
+function storedOrFresh<Value>(fresh: Value, stored: unknown): Value {
+  if (Array.isArray(fresh)) return Array.isArray(stored) ? (stored as Value) : fresh
+  if (!isRecord(fresh)) return typeof stored === typeof fresh ? (stored as Value) : fresh
+  if (!isRecord(stored)) return fresh
+  const defaults = Object.entries(fresh)
+  if (defaults.length === 0) return stored as Value
+  return Object.fromEntries(
+    defaults.map(([key, value]) => [key, storedOrFresh(value, stored[key])])
+  ) as Value
+}
+
 export function rememberedRecord<Saved extends object>(memory: Memory, fresh: Saved): Saved {
   const stored = rememberedText(memory)
   if (!stored) return fresh
   try {
-    return { ...fresh, ...(JSON.parse(stored) as Partial<Saved>) }
+    return storedOrFresh(fresh, JSON.parse(stored))
   } catch {
     return fresh
   }

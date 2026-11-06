@@ -43,9 +43,13 @@ vec2 voronoiEdge(vec2 point) {
 }
 
 float fbm(vec2 point) {
+#ifdef LIGHT_NOISE
+  return LIGHT_NOISE_MEAN + LIGHT_NOISE_SPREAD * (vnoise(point) - 0.5);
+#else
   float value = 0.0, amplitude = 0.5;
   for (int i = 0; i < 2; i++) { value += amplitude * vnoise(point); point *= 2.0; amplitude *= 0.5; }
   return value;
+#endif
 }
 
 void main() {

@@ -4,6 +4,7 @@ import { isIntroductionPending } from './guideStore'
 
 interface CinematicState {
   isPlaying: boolean
+  isShipReleased: boolean
   focus: THREE.Vector3
   focusBlend: number
   focusZoom: number
@@ -13,6 +14,7 @@ interface CinematicState {
 
 export const useCinematicStore = create<CinematicState>(() => ({
   isPlaying: false,
+  isShipReleased: false,
   focus: new THREE.Vector3(),
   focusBlend: 0,
   focusZoom: 1,
@@ -21,5 +23,7 @@ export const useCinematicStore = create<CinematicState>(() => ({
 }))
 
 export const isCinematicPlaying = () => useCinematicStore.getState().isPlaying
+
+export const isShipReleased = () => useCinematicStore.getState().isShipReleased
 
 export const eventDelta = (dt: number) => (isCinematicPlaying() || isIntroductionPending() ? 0 : dt)

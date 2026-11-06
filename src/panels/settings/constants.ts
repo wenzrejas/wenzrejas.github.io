@@ -25,6 +25,9 @@ export const TAB_REVEAL: ScrollIntoViewOptions = {
   block: 'nearest',
   inline: 'nearest',
 }
+export const TAB_CARET_STEPS = { previous: -1, next: 1 } as const
+export const TAB_CARET_SCROLL_SHARE = 0.6
+export const TAB_EDGE_SLACK_PIXELS = 8
 
 // ── Choices ───────────────────────────────────────────────────────────────────
 export const SWITCH_CHOICES = ['on', 'off'] as const

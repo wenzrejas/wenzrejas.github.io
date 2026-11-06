@@ -1,6 +1,7 @@
 import { useEffect, useEffectEvent } from 'react'
 import { audio } from '@/audio/audioManager'
 import { KEYBOARD_TARGETS } from '@/interaction/constants'
+import { isWorldInView } from '@/store/viewStore'
 
 export function useCardKeys(
   isOpen: boolean,
@@ -10,6 +11,7 @@ export function useCardKeys(
 ) {
   const answer = useEffectEvent((event: KeyboardEvent) => {
     if (event.repeat || event.ctrlKey || event.metaKey || event.altKey) return
+    if (!isWorldInView()) return
     if (event.key === 'Escape') {
       onEscape()
       return

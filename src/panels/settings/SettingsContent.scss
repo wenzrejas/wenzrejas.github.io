@@ -28,13 +28,45 @@ $tab-rule-height: 1px;
 $tab-focus-room: 4px;
 $tabs-gap-above: 1.4rem;
 $tabs-gap-above-short: 0.5rem;
+$tab-caret-icon-size: 0.95rem;
+$tab-caret-clear: 1.5rem;
+$tab-caret-zone: 2.75rem;
+$tab-caret-nudge: 2px;
+
+@property --tab-more-previous {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+@property --tab-more-next {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
 
 .settings {
+  &__tab-strip {
+    position: relative;
+    flex: none;
+    margin-top: calc(#{$tabs-gap-above} - #{$tab-focus-room});
+    transition:
+      --tab-more-previous $state-change,
+      --tab-more-next $state-change;
+
+    &--more-previous {
+      --tab-more-previous: 1;
+    }
+
+    &--more-next {
+      --tab-more-next: 1;
+    }
+  }
+
   &__tabs {
     display: flex;
-    flex: none;
     gap: 0.8rem;
-    margin: calc(#{$tabs-gap-above} - #{$tab-focus-room}) calc(-1 * #{$tab-focus-room}) 0;
+    margin: 0 calc(-1 * #{$tab-focus-room});
     padding: $tab-focus-room $tab-focus-room $tab-rule-height;
     overflow: auto hidden;
     scrollbar-width: none;
@@ -51,6 +83,72 @@ $tabs-gap-above-short: 0.5rem;
       cursor: var(--cursor-grab);
       user-select: none;
     }
+  }
+
+  &__tab-strip--more-previous &__tabs,
+  &__tab-strip--more-next &__tabs {
+    scroll-padding-inline: $tab-caret-zone;
+    mask-image: linear-gradient(
+      to right,
+      transparent calc(var(--tab-more-previous) * #{$tab-caret-clear}),
+      #000000 calc(var(--tab-more-previous) * #{$tab-caret-zone}),
+      #000000 calc(100% - var(--tab-more-next) * #{$tab-caret-zone}),
+      transparent calc(100% - var(--tab-more-next) * #{$tab-caret-clear})
+    );
+  }
+
+  &__tab-caret {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    display: grid;
+    align-items: center;
+    width: $tab-caret-zone;
+    padding: 0;
+    border: none;
+    background: none;
+    font-size: $tab-caret-icon-size;
+    color: $tab-faded-ink;
+    opacity: 0;
+    pointer-events: none;
+    cursor: var(--cursor-hand);
+    transition:
+      opacity $state-change,
+      color $state-change;
+
+    svg {
+      transition: translate $state-change;
+    }
+
+    &--previous {
+      left: 0;
+      justify-items: start;
+    }
+
+    &--next {
+      right: 0;
+      justify-items: end;
+    }
+
+    @include breakpoints.hover-only {
+      &:hover {
+        color: $ink;
+      }
+
+      &--previous:hover svg {
+        translate: calc(-1 * #{$tab-caret-nudge}) 0;
+      }
+
+      &--next:hover svg {
+        translate: $tab-caret-nudge 0;
+      }
+    }
+  }
+
+  &__tab-strip--more-previous &__tab-caret--previous,
+  &__tab-strip--more-next &__tab-caret--next {
+    opacity: 1;
+    pointer-events: auto;
   }
 
   &__tab {
@@ -338,7 +436,7 @@ $tabs-gap-above-short: 0.5rem;
 
 @include breakpoints.phone-landscape {
   .settings {
-    &__tabs {
+    &__tab-strip {
       margin-top: calc(#{$tabs-gap-above-short} - #{$tab-focus-room});
     }
   }

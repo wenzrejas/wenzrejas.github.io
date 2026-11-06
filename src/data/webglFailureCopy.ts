@@ -1,8 +1,7 @@
 export const WEBGL_FAILURE_COPY = {
-  title: "The sea won't open in this browser",
+  title: 'Rough seas ahead',
   message:
-    "This portfolio is a 3D world, and your browser couldn't start the graphics it needs. Turning on hardware acceleration, updating your browser, or trying another one usually fixes it.",
-  touchMessage:
-    "This portfolio is a 3D world, and your browser couldn't start the graphics it needs. Closing other tabs, updating your browser, or trying another one usually fixes it.",
+    "The 3D world couldn't load this time. It might be the connection, your browser's graphics, or a hiccup on my end. Try again, or find me through the links below.",
   tryAgain: 'Try Again',
+  startFresh: 'Reset & Try Again',
 }

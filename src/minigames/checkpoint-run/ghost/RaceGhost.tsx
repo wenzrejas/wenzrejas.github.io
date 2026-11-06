@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
 import type * as THREE from 'three'
+import { DRACO_DECODER_PATH } from '@/app/experience/constants'
 import { RENDER_LAYER } from '@/app/experience/renderLayers'
 import { flatFootprint } from '@/utils/meshes'
 import { SHIP_MODEL_URL } from '@/world/ship/constants'
@@ -25,7 +26,7 @@ function paintGhost(
 }
 
 export default function RaceGhost() {
-  const { scene } = useGLTF(SHIP_MODEL_URL)
+  const { scene } = useGLTF(SHIP_MODEL_URL, DRACO_DECODER_PATH)
   const groupRef = useRef<THREE.Group>(null)
   const geometry = useMemo(() => buildGhostGeometry(scene), [scene])
   const outline = useMemo(() => buildGhostOutline(geometry), [geometry])

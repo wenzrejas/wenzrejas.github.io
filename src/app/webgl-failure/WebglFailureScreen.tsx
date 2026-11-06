@@ -7,15 +7,21 @@ import MapPaper from '@/loading/map-paper/MapPaper'
 import { CONTACT_LINKS } from '@/panels/contact/constants'
 import Cartouche from '@/panels/shared/cartouche/Cartouche'
 import SocialLinks from '@/panels/shared/social-links/SocialLinks'
-import { useIsTouchInput } from '@/store/inputStore'
+import { forgetVisitor } from '@/store/visitorMemory'
+import { useWebglStore } from '@/store/webglStore'
 import { useSheetLayout } from '@/utils/layout'
 import './WebglFailureScreen.scss'
 
 const reloadPage = () => window.location.reload()
 
+function startFresh() {
+  forgetVisitor()
+  reloadPage()
+}
+
 export default function WebglFailureScreen() {
   const isSmallScreen = useSheetLayout()
-  const isTouch = useIsTouchInput()
+  const isCrash = useWebglStore((state) => state.reason === 'crash')
   const paperRef = useRef<HTMLCanvasElement>(null)
 
   return (
@@ -31,11 +37,17 @@ export default function WebglFailureScreen() {
         </div>
         <div className="webgl-failure__details">
           <p className="webgl-failure__message" role="alert">
-            {isTouch ? WEBGL_FAILURE_COPY.touchMessage : WEBGL_FAILURE_COPY.message}
+            {WEBGL_FAILURE_COPY.message}
           </p>
-          <button type="button" className="webgl-failure__retry" onClick={reloadPage}>
+          <button
+            type="button"
+            className="webgl-failure__retry"
+            onClick={isCrash ? startFresh : reloadPage}
+          >
             <Cartouche />
-            <span className="webgl-failure__retry-label">{WEBGL_FAILURE_COPY.tryAgain}</span>
+            <span className="webgl-failure__retry-label">
+              {isCrash ? WEBGL_FAILURE_COPY.startFresh : WEBGL_FAILURE_COPY.tryAgain}
+            </span>
           </button>
           <section className="webgl-failure__links">
             <h2 className="webgl-failure__links-heading">{CONTACT_COPY.linksHeading}</h2>
